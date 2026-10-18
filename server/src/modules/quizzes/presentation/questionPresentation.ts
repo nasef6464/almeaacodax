@@ -1,3 +1,4 @@
+import { teachingImageIdentity } from '../../ai/application/teachingImageIdentity.js';
 const QUESTION_SUMMARY_TEXT_LIMIT = 280;
 
 const escapeHtml = (value: string) =>
@@ -43,6 +44,10 @@ export const sanitizeQuestionForLearner = (question: Record<string, any>) => {
     __v,
     ...safeQuestion
   } = question;
+  const identity = teachingImageIdentity(question);
+  // Do not trust an already-stored/forged teachingImageVersion.
+  delete safeQuestion.teachingImageVersion;
+  if (identity) safeQuestion.teachingImageVersion = identity.version;
   return safeQuestion;
 };
 

@@ -1,3 +1,4 @@
+import { teachingImageIdentity } from "../../ai/application/teachingImageIdentity.js";
 import mongoose from "mongoose";
 import { Router } from "express";
 import { StatusCodes } from "http-status-codes";
@@ -75,7 +76,7 @@ studentReviewRouter.get(
     const questionIds = cards.map((card: any) => String(card.questionId || "")).filter(Boolean);
     const questions = questionIds.length
       ? await QuestionModel.find(buildQuestionBatchQuery(questionIds))
-          .select("id questionCode text options correctOptionIndex explanation hint solvingStrategy videoUrl imageUrl imageAlt optionsEmbeddedInImage aiContext voiceExplanation skillIds skillId subSkillId pathId subject subjectId sectionId type")
+          .select("id questionCode text options correctOptionIndex explanation hint solvingStrategy videoUrl imageUrl imageAlt optionsEmbeddedInImage aiContext voiceExplanation skillIds skillId subSkillId pathId subject subjectId sectionId type sourceMeta.imageHash sourceMeta.imageVersion")
           .lean()
       : [];
 
@@ -110,6 +111,7 @@ studentReviewRouter.get(
           solvingStrategy: String(question.solvingStrategy || ""),
           videoUrl: String(question.videoUrl || ""),
           imageUrl: String(question.imageUrl || ""),
+          teachingImageVersion: teachingImageIdentity(question)?.version,
           imageAlt: String(question.imageAlt || ""),
           optionsEmbeddedInImage: Boolean(question.optionsEmbeddedInImage),
           aiContext: question.aiContext || undefined,

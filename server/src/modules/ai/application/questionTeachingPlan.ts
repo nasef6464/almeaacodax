@@ -1,4 +1,5 @@
 import { validateTeachingStoryboard, type TeachingStoryboard } from '../contracts/teachingStoryboard.js';
+import { validateTeachingImageStoryboard, type TeachingPlan } from '../contracts/teachingImageStoryboard.js';
 import { compileCompactTeachingPlan, compactTeachingInstruction, type CompactTeachingMode } from './compactTeachingPlan.js';
 
 export const teachingPlanInstruction = compactTeachingInstruction('lesson');
@@ -32,10 +33,10 @@ export function inspectQuestionTeachingPlan(raw: string) {
 }
 
 /** Existing cache stores a string; no collection migration is necessary. */
-export function decodeQuestionTeachingPlan(raw: string): { text: string; storyboard?: TeachingStoryboard } {
+export function decodeQuestionTeachingPlan(raw: string): { text: string; storyboard?: TeachingPlan } {
   try {
     const parsed = JSON.parse(raw);
-    const storyboard = compileCompactTeachingPlan(parsed) || validateTeachingStoryboard(parsed);
+    const storyboard = compileCompactTeachingPlan(parsed) || validateTeachingStoryboard(parsed) || validateTeachingImageStoryboard(parsed);
     if (storyboard) return { text: storyboard.scenes.map(scene => scene.narration).join('\n'), storyboard };
   } catch { /* legacy text */ }
   return { text: raw };
@@ -52,7 +53,8 @@ export function normalizeQuestionTeachingPlan(raw: string, fallback: string, exp
     return fallback;
   }
   const decoded = decodeQuestionTeachingPlan(raw);
-  if (decoded.storyboard) return JSON.stringify(decoded.storyboard);
+  // This legacy normalizer is v1-only; v2 is compiled with a server-owned image identity.
+  if (decoded.storyboard?.version === 1) return JSON.stringify(decoded.storyboard);
   // Never expose invalid JSON as a lesson; use the already-authorized explanation.
   const text = raw.trim();
   return (!text || /^[{\[]|^```/.test(text)) ? fallback : text.slice(0, 4000);

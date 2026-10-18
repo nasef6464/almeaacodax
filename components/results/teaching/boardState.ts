@@ -1,17 +1,20 @@
 import type { BoardAction, TeachingStoryboard } from '../../../server/src/modules/ai/contracts/teachingStoryboard';
+import type { TeachingStoryboardV2 } from '../../../server/src/modules/ai/contracts/teachingImageStoryboard';
+type TimelinePlan = Pick<TeachingStoryboard,'scenes'> & Partial<Pick<TeachingStoryboardV2,'image'>>;
+export const imageMarkDuration = (plan:TimelinePlan,index:number) => (plan.image?.marks.filter(m=>m.sceneId===plan.scenes[index]?.id).length || 0)*250;
 
 export type BoardElement = { id: string; kind: 'text' | 'formula'; content: string; emphasis?: 'highlight' | 'box'; progress: number; inkProgress?: number; history?: boolean; sourceId?: string; active?: boolean };
 export const actionDuration = (action: BoardAction) =>
   action.type === 'write' || action.type === 'transform' ? Math.min(1600, Math.max(450, action.content.length * 22)) : 250;
-export const sceneDuration = (plan: TeachingStoryboard, index: number) =>
-  plan.scenes[index].actions.reduce((sum, action) => sum + actionDuration(action), 0);
+export const sceneDuration = (plan: TimelinePlan, index: number) =>
+  imageMarkDuration(plan,index)+plan.scenes[index].actions.reduce((sum, action) => sum + actionDuration(action), 0);
 
 /** Replaying from the beginning makes seeking and resuming deterministic. */
-export function boardAt(plan: TeachingStoryboard, sceneIndex: number, elapsedMs: number, keepHistory = false): BoardElement[] {
+export function boardAt(plan: TimelinePlan, sceneIndex: number, elapsedMs: number, keepHistory = false): BoardElement[] {
   const elements = new Map<string, BoardElement>();
   let activeId: string | undefined;
   for (let i = 0; i <= sceneIndex && i < plan.scenes.length; i++) {
-    let actionStart = 0;
+    let actionStart = imageMarkDuration(plan,i);
     for (const [actionIndex, action] of plan.scenes[i].actions.entries()) {
       const duration = actionDuration(action);
       if (i === sceneIndex && elapsedMs < actionStart) break;

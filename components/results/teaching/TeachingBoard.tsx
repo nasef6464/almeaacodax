@@ -8,6 +8,8 @@ import { readableBoardText, readableBoardProse } from './boardText';
 import { QuestionPreview, type TeacherQuestionPreview } from './QuestionPreview';
 import { WhiteboardInk } from './WhiteboardInk';
 import { WhiteboardWriting } from './WhiteboardWriting';
+import {TeachingImageOverlay} from './TeachingImageOverlay';
+import type {TeachingStoryboardV2} from '../../../server/src/modules/ai/contracts/teachingImageStoryboard';
 
 const Formula: React.FC<{ content: string }> = ({ content }) => {
   const html = React.useMemo(() => {
@@ -33,7 +35,7 @@ const BoardContent: React.FC<{ content: string; kind: 'text' | 'formula' }> = ({
   })}</p>;
 };
 
-export const TeachingBoard: React.FC<{ elements: BoardElement[]; narration: string; language: string; question?: TeacherQuestionPreview; questionCompact?: boolean }> = ({ elements, narration, language, question, questionCompact }) => {
+export const TeachingBoard: React.FC<{ elements: BoardElement[]; narration: string; language: string; question?: TeacherQuestionPreview; questionCompact?: boolean; imagePlayback?:{plan:TeachingStoryboardV2;sceneIndex:number;elapsedMs:number} }> = ({ elements, narration, language, question, questionCompact, imagePlayback }) => {
   const [dark, setDark] = React.useState(false);
   const activeElement = elements.find(element => element.active) || elements[elements.length - 1];
   const activeRow = React.useRef<HTMLDivElement>(null);
@@ -49,7 +51,7 @@ export const TeachingBoard: React.FC<{ elements: BoardElement[]; narration: stri
         {dark ? <Sun size={16} /> : <Moon size={16} />}{dark ? 'خلفية بيضاء' : 'خلفية داكنة'}
       </button>
     </div>
-    <QuestionPreview question={question} compact={questionCompact} onBoard dark={dark} />
+    <QuestionPreview question={question} compact={questionCompact} onBoard dark={dark} imageOverlay={imagePlayback&&<TeachingImageOverlay {...imagePlayback} imageUrl={question?.imageUrl} expectedImageVersion={question?.teachingImageVersion}/>}/>
     <div className="min-h-48 space-y-5 px-3 py-3 sm:px-6" aria-label="خطوات السبورة">
       {elements.map((element, index) => {
         const current = element.id === activeElement?.id;
@@ -76,6 +78,6 @@ export const TeachingBoard: React.FC<{ elements: BoardElement[]; narration: stri
       <summary className="min-h-11 cursor-pointer py-3 text-xs">نص الشرح</summary>
       <p className="leading-7" aria-live="polite" aria-atomic="true">{spokenTeachingText(narration, language)}</p>
     </details>
-    <style>{`.whiteboard-page{background-image:linear-gradient(transparent 31px,rgba(100,116,139,.045) 32px);background-size:100% 32px}.whiteboard-ink-track{isolation:isolate}.whiteboard-hand{filter:drop-shadow(1px 2px 1px rgba(15,23,42,.12));transform-origin:0 0}@media(prefers-reduced-motion:reduce){.teaching-writing{clip-path:none!important}.whiteboard-hand{display:none}.whiteboard-ink path{stroke-dashoffset:0}}`}</style>
+    <style>{`.whiteboard-page{background-image:linear-gradient(transparent 31px,rgba(100,116,139,.045) 32px);background-size:100% 32px}.whiteboard-ink-track{isolation:isolate}.whiteboard-hand{filter:drop-shadow(1px 2px 1px rgba(15,23,42,.12));transform-origin:0 0}@media(prefers-reduced-motion:reduce){.teaching-writing{clip-path:none!important}.whiteboard-hand{display:none}.whiteboard-ink path,[data-testid=teaching-image-mark] path{stroke-dashoffset:0}}`}</style>
   </div>;
 };

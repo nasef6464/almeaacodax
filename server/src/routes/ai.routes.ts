@@ -1,3 +1,6 @@
+import { eligibleTeachingImageIdentity, generateTeachingImageLesson, teachingImageSchema } from "../modules/ai/application/teachingImageLesson.js";
+import { loadTeachingQuestionImage } from "../modules/ai/infrastructure/teachingQuestionImage.js";
+import { teachingImageIdentity } from "../modules/ai/application/teachingImageIdentity.js";
 import {createSchoolSpecInterpreter} from '../modules/quizzes/application/schoolAssessmentCompositionAi.js';
 import type {SchoolSpecInterpreter} from '../modules/quizzes/application/schoolAssessmentComposition.js';
 import { Router } from "express";
@@ -135,7 +138,8 @@ const questionSchema = z.object({
 });
 
 const questionAssistantSchema = z.object({
-  boardMode: z.literal("storyboard_v1").optional(),
+  boardMode: z.enum(["storyboard_v1", "storyboard_v2"]).optional(),
+  imageVersion: z.string().regex(/^[a-f0-9]{64}$/).optional(),
   boardContext: z.string().trim().max(1200).optional(),
   resultId: z.string().trim().min(1).max(160).optional(),
   context: z.enum(["result_review", "saved_review", "mistake_review", "mastery_review"]).default("result_review"),
@@ -171,6 +175,7 @@ type ProviderDescriptor = {
 };
 
 type AiCallResult = {
+  imageSentToProvider?: boolean;
   text: string;
   provider: AiProvider;
   model: string;
@@ -767,7 +772,7 @@ const aiProviderAdapters = createAiProviderAdapters({
   redactDiagnostic: redactAiDiagnostic,
 });
 
-type AiGatewayCallOptions = AiProviderCallOptions & { capability?: AiCapabilityId };
+type AiGatewayCallOptions = AiProviderCallOptions & { capability?: AiCapabilityId; requiredImage?: boolean };
 
 const callAiWithMeta = async (
   prompt: string,
@@ -777,10 +782,13 @@ const callAiWithMeta = async (
 ): Promise<AiCallResult> => {
   await loadRuntimeAiConfig();
   const errors: string[] = [];
+  let imageSentToProvider = false;
   const capability = options.capability;
   const profile = capability ? runtimeAiConfig.routeProfiles[capability] : undefined;
   const allowPaid = capabilityPaidAllowed(runtimeAiConfig.paidAllowed, profile);
   const providerCallOptions: AiProviderCallOptions = {
+    onImageDispatch: () => { imageSentToProvider = true; },
+    ...(options.singleAttempt ? { singleAttempt: true } : {}),
     ...(options.disableThinking ? { disableThinking: true } : {}),
     ...(options.jsonSchema ? { jsonSchema: options.jsonSchema } : {}),
     ...(options.timeoutMs ? { timeoutMs: options.timeoutMs } : {}),
@@ -791,6 +799,7 @@ const callAiWithMeta = async (
   };
 
   for (const provider of providerPriorityForCapability(capability)) {
+    if (options.requiredImage && (!image || provider !== 'gemini')) continue;
     const descriptor = configuredProviders().find((candidate) => candidate.id === provider);
     if (!descriptor?.configured || provider === "none") continue;
     if (isAiProviderCircuitOpen(provider)) {
@@ -804,6 +813,7 @@ const callAiWithMeta = async (
         recordAiProviderSuccess(provider);
         return {
           text: providerResponse.text,
+          imageSentToProvider,
           provider,
           model: providerResponse.model || descriptor.model,
           usedFallback: false,
@@ -831,6 +841,7 @@ const callAiWithMeta = async (
 
   return {
     text: "",
+    imageSentToProvider,
     provider: "none",
     model: "local-fallback",
     usedFallback: true,
@@ -1495,7 +1506,7 @@ aiRouter.post(
     }
 
     const question = await QuestionModel.findOne(buildDocumentsByIdsQuery([payload.questionId]))
-      .select("id questionCode text options correctOptionIndex explanation hint solvingStrategy imageUrl skillIds aiContext voiceExplanation updatedAt")
+      .select("id questionCode text options correctOptionIndex explanation hint solvingStrategy imageUrl skillIds aiContext voiceExplanation updatedAt sourceMeta.imageHash sourceMeta.imageVersion")
       .lean();
 
     const normalizeStoredOption = (value: any) => {
@@ -1605,6 +1616,7 @@ aiRouter.post(
       String(aiReadableText.length),
       String(visualDescription.length),
       String(payload.tutorSessionId || ""),
+      ...(payload.boardMode === "storyboard_v2" ? [String(payload.imageVersion || ""), String(teachingImageIdentity(question)?.version || ""), env.AI_TEACHING_IMAGE_ENABLED] : []),
       ...(payload.boardMode ? [payload.boardMode, "compact-plan-v4-reference-result", String(payload.context === 'result_review' ? correctOptionIndex : (question as any)?.correctOptionIndex), payload.boardContext || ""] : []),
     ].join("::");
     // Sharing is limited to unchanged canonical content, after the owned-review guard.
@@ -1614,10 +1626,11 @@ aiRouter.post(
       && JSON.stringify(reviewOptions) === JSON.stringify(bankOptions) && trustedExplanation === canonicalReference
       && String(review?.imageUrl || '') === String((question as any).imageUrl || '')
       && correctOptionIndex === (question as any).correctOptionIndex;
+    const visualIdentity = eligibleTeachingImageIdentity(payload, question, env.AI_TEACHING_IMAGE_ENABLED === "true", payload.context !== "result_review" || Boolean(canonicalReview));
     const sharedLesson = canonicalReview ? sharedTeachingScenario(payload, {
       questionId: payload.questionId, questionCode, questionVersion: String((question as any).updatedAt || ''),
       questionText, options, correctOptionIndex, explanation: canonicalReference, skillLabels, visualDescription, hasImage,
-      imageVersion: String((question as any).imageUrl || ''), schoolId,
+      imageVersion: payload.boardMode === "storyboard_v2" ? `${teachingImageIdentity(question)?.version || "none"}:${env.AI_TEACHING_IMAGE_ENABLED}:${visualIdentity ? "vision" : "reference"}` : String((question as any).imageUrl || ''), schoolId,
     }) : null;
     const cacheKey = sharedLesson?.cacheKey || buildQuestionAssistantCacheKey({
       userId,
@@ -1806,12 +1819,22 @@ aiRouter.post(
           usedFallback: String(secondCache.provider || "none") === "none",
           cacheHit: true,
           errors: [] as string[],
+          imageSentToProvider: false,
         };
       }
 
       const startedAt = Date.now();
       generatedHere = true;
-      const resultCall = payload.boardMode
+      const visual = visualIdentity ? await generateTeachingImageLesson({
+        identity: visualIdentity, prompt, fallback,
+        expected: { mode: teachingMode, language: teachingLanguage, trustedAnswer: trustedTeachingAnswer },
+        loadImage: () => loadTeachingQuestionImage(visualIdentity, { approvedBaseUrl: env.R2_PUBLIC_BASE_URL || "", maxBytes: 1572864, timeoutMs: 5000 }),
+        callVision: (visualPrompt, image) => callAiWithMeta(visualPrompt, "application/json", image, {
+          capability: "question_tutor", requiredImage: true, singleAttempt: true, disableThinking: true,
+          jsonSchema: teachingImageSchema(teachingMode, teachingLanguage), timeoutMs: 12000, maxOutputTokens: 900,
+        }),
+      }) : null;
+      const resultCall: AiCallResult = visual ? (visual.call || { text:"",provider:"none",model:"local-fallback",usedFallback:true,errors:[],usage:zeroAiUsage(),estimatedCostMicrosUsd:0,pricingKnown:true }) : payload.boardMode
         ? await callAiWithMeta(prompt, "application/json", undefined, {
           disableThinking: true,
           jsonSchema: compactTeachingSchema(teachingMode, teachingLanguage),
@@ -1824,7 +1847,7 @@ aiRouter.post(
         timeoutMs: env.AI_REQUEST_TIMEOUT_MS,
         maxOutputTokens: env.AI_QUESTION_ASSISTANT_MAX_OUTPUT_TOKENS,
       });
-      const responseText = payload.boardMode
+      const responseText = visual ? (visual.storyboard ? JSON.stringify(visual.storyboard) : fallback) : payload.boardMode
         ? normalizeQuestionTeachingPlan(String(resultCall.text || "").slice(0, 16000), fallback, { mode: teachingMode, language: teachingLanguage, trustedAnswer: trustedTeachingAnswer })
         : String(resultCall.text || fallback).trim().slice(0, 4_000);
       const provider = resultCall.text ? resultCall.provider : "none";
@@ -1869,7 +1892,7 @@ aiRouter.post(
         pricingKnown: resultCall.pricingKnown,
         error: provider === "none" && resultCall.errors.length ? fallbackReasonFromErrors(resultCall.errors) : undefined,
         metadata: {
-          billable: true,
+          billable: visual ? !!visual.imageSentToProvider : true,
           capability: "question_tutor",
           quotaPoolId: resultCall.quotaPoolId || "",
           cacheHit: false,
@@ -1877,7 +1900,7 @@ aiRouter.post(
           questionId: payload.questionId,
           helpLevel: payload.helpLevel,
           hasImage,
-          imageSentToProvider: false,
+          imageSentToProvider: !!resultCall.imageSentToProvider,
           promptChars: prompt.length,
           responseChars: responseText.length,
           ...(payload.boardMode && req.authUser?.role === "admin" && payload.tutorSessionId?.startsWith("board-audit-")
@@ -1897,6 +1920,7 @@ aiRouter.post(
         usedFallback: provider === "none",
         cacheHit: false,
         errors: resultCall.errors,
+        imageSentToProvider: !!resultCall.imageSentToProvider,
       };
     });
 
@@ -1916,7 +1940,7 @@ aiRouter.post(
       usedFallback: response.usedFallback || Boolean(payload.boardMode && !decodeQuestionTeachingPlan(response.text).storyboard),
       cacheHit: response.cacheHit || Boolean(sharedLesson && !generatedHere),
       hasImage,
-      imageSentToProvider: false,
+      imageSentToProvider: Boolean(generatedHere && response.imageSentToProvider),
     });
   }),
 );

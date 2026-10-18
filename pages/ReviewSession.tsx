@@ -25,6 +25,7 @@ type ReviewItem = {
     options: string[];
     imageUrl?: string;
     imageAlt?: string;
+    teachingImageVersion?: string;
     optionsEmbeddedInImage?: boolean;
     voiceExplanation?: QuestionVoiceExplanation;
     explanation?: string;

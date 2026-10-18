@@ -30,9 +30,14 @@ assert.ok(
 assert.ok(routes.includes('idempotent: true'));
 assert.ok(!routes.includes('correctOptionIndex: Number('), 'review payload must not expose answer key');
 assert.ok(
-  routes.includes('.select("id questionCode text options explanation hint solvingStrategy videoUrl imageUrl imageAlt optionsEmbeddedInImage aiContext voiceExplanation type skillIds")'),
+  routes.includes('.select("id questionCode text options explanation hint solvingStrategy videoUrl imageUrl imageAlt optionsEmbeddedInImage aiContext voiceExplanation type skillIds sourceMeta.imageHash sourceMeta.imageVersion")'),
   'due review projection must keep the bounded learner review fields without the answer key',
 );
+assert.ok(routes.includes('teachingImageVersion: teachingImageIdentity(question)?.version'), 'only opaque server-derived image identity reaches the learner');
+const dueQuestionStart = routes.indexOf('question: {');
+const dueQuestion = routes.slice(dueQuestionStart, routes.indexOf('return res.json({', dueQuestionStart));
+assert.ok(dueQuestion.includes('imageUrl:') && dueQuestion.includes('teachingImageVersion:'), 'inspect the actual populated due question DTO');
+assert.ok(!dueQuestion.includes('sourceMeta'), 'raw image source metadata must not enter the due-review response');
 
 assert.ok(sideEffects.includes('upsertReviewCardFromQuestionAttempt'));
 assert.ok(sideEffects.includes('reviewType'));

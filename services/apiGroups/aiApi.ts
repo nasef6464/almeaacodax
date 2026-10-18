@@ -1,4 +1,4 @@
-import type { TeachingStoryboard } from '../../server/src/modules/ai/contracts/teachingStoryboard';
+import type { TeachingPlan } from '../../server/src/modules/ai/contracts/teachingImageStoryboard';
 
 type ApiRequest = <T>(path: string, options?: {
   method?: "GET" | "POST" | "PATCH" | "DELETE";
@@ -30,7 +30,8 @@ export const createAiApi = (request: ApiRequest) => ({
 
   aiQuestionAssistant: (
     payload: {
-      boardMode?: "storyboard_v1";
+      boardMode?: "storyboard_v1" | "storyboard_v2";
+      imageVersion?: string;
       boardContext?: string;
       resultId?: string;
       context?: "result_review" | "saved_review" | "mistake_review" | "mastery_review";
@@ -45,7 +46,7 @@ export const createAiApi = (request: ApiRequest) => ({
       text: string;
       helpLevel: "hint" | "stronger_hint" | "concept" | "steps" | "follow_up";
       provider: AiProvider;
-      storyboard?: TeachingStoryboard;
+      storyboard?: TeachingPlan;
       model: string;
       usedFallback: boolean;
       cacheHit: boolean;

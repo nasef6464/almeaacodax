@@ -1,5 +1,6 @@
 import type { AiProviderId } from "../../application/aiProviderRouter.js";
 import { sortAiQuotaPools, type AiQuotaPoolRuntime } from "../../application/aiQuotaPools.js";
+import { fetchAiResponseWithTimeout } from './aiResponseTransport.js';
 export type AiResponseMimeType = "application/json";
 export type AiProviderRuntime = {
   apiKey?: string;
@@ -9,6 +10,8 @@ export type AiProviderRuntime = {
   quotaPools?: AiQuotaPoolRuntime[];
 };
 export type AiProviderCallOptions = {
+  singleAttempt?: boolean;
+  onImageDispatch?: () => void;
   disableThinking?: boolean;
   jsonSchema?: Record<string, unknown>;
   timeoutMs?: number;
@@ -102,15 +105,9 @@ const assertSafeAiProviderUrl = (rawUrl: string) => {
   }
 };
 export const createAiProviderAdapters = (config: AdapterConfig) => {
-  const fetchWithTimeout = async (url: string, init: RequestInit, timeoutMs = config.defaultTimeoutMs) => {
+  const fetchWithTimeout = async (url: string, init: RequestInit, timeoutMs = config.defaultTimeoutMs, boundedBody = false) => {
     assertSafeAiProviderUrl(url);
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
-    try {
-      return await fetch(url, { ...init, signal: controller.signal });
-    } finally {
-      clearTimeout(timeoutId);
-    }
+    return fetchAiResponseWithTimeout(url, init, timeoutMs, boundedBody);
   };
   const responseFailureMessage = async (provider: string, response: Response) => {
     const body = await response.text().catch(() => "");
@@ -144,17 +141,23 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
     image?: { data: string; mimeType: string },
     options: AiProviderCallOptions = {},
   ) => {
-    const pools = providerPools("gemini", options.allowPaid !== false, options.quotaPoolId);
+    const availablePools = providerPools("gemini", options.allowPaid !== false, options.quotaPoolId);
+    const pools = options.singleAttempt ? availablePools.filter(pool => pool.apiKeys.length).slice(0, 1) : availablePools;
     if (pools.every((pool) => pool.apiKeys.length === 0)) return { text: "", usage: emptyUsage() };
     const parts: Array<Record<string, unknown>> = image
       ? [{ inlineData: { mimeType: image.mimeType, data: image.data } }, { text: prompt }]
       : [{ text: prompt }];
     const errors: string[] = [];
+    let attempted = false;
     for (const pool of pools) {
       let poolRateLimited = false;
       for (const apiKey of pool.apiKeys) {
+        if (options.singleAttempt && attempted) break;
+        attempted = true;
         try {
-          const requestGeminiModel = (model: string) => fetchWithTimeout(
+          const requestGeminiModel = (model: string) => {
+            if (image) options.onImageDispatch?.();
+            return fetchWithTimeout(
             `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
             {
               method: "POST",
@@ -166,7 +169,7 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
                   ...(responseMimeType && options.jsonSchema ? { responseJsonSchema: options.jsonSchema } : {}),
                   // 3.8 cannot disable thinking: reserve a bounded combined budget for
                   // reasoning plus the short board JSON instead of silently truncating it.
-                  ...(options.maxOutputTokens ? { maxOutputTokens: options.disableThinking && model === 'gemini-3.8-flash'
+                  ...(options.maxOutputTokens ? { maxOutputTokens: !options.singleAttempt && options.disableThinking && model === 'gemini-3.8-flash'
                     ? 1024 : options.maxOutputTokens } : {}),
                   ...(options.disableThinking && /^gemini-2\.5-flash(?:$|-)/.test(model)
                     ? { thinkingConfig: { thinkingBudget: 0 } }
@@ -176,10 +179,12 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
               }),
             },
             options.timeoutMs,
+            options.singleAttempt,
           );
+          };
           let actualModel = pool.model;
           let response = await requestGeminiModel(actualModel);
-          if (!response.ok && (response.status === 404 || response.status === 429)) {
+          if (!options.singleAttempt && !response.ok && (response.status === 404 || response.status === 429)) {
             if (pool.model === "gemini-4-argon" || pool.model === "gemini-argon") {
               actualModel = "gemini-2.5-flash";
               response = await requestGeminiModel("gemini-2.5-flash");
@@ -376,6 +381,7 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
     image?: { data: string; mimeType: string },
     options: AiProviderCallOptions = {},
   ): Promise<AiProviderResponse> => {
+    if (image && provider !== 'gemini') throw new Error('Selected provider does not support image input');
     if (provider === "gemini") return callGemini(prompt, responseMimeType, image, options);
     if (provider === "ollama") return callOllama(prompt, responseMimeType, options);
     if (provider === "lmstudio") return callLmStudio(prompt, responseMimeType, options);

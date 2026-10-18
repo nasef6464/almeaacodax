@@ -1,4 +1,5 @@
 import { getCanonicalQuestionSkillIds } from "./quizSubmissionReadModelContext.js";
+import { teachingImageIdentity } from '../../ai/application/teachingImageIdentity.js';
 
 type QuizSubmissionAnswerReviewInput = {
   orderedQuestions: any[];
@@ -47,6 +48,7 @@ export const buildQuizSubmissionAnswerReview = ({
       explanation: question.explanation || "",
       videoUrl: question.videoUrl || "",
       imageUrl: question.imageUrl || "",
+      teachingImageVersion: teachingImageIdentity(question)?.version,
       imageAlt: question.imageAlt || "",
       optionsEmbeddedInImage: Boolean(question.optionsEmbeddedInImage),
       voiceExplanation: question.voiceExplanation || undefined,

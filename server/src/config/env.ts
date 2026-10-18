@@ -115,6 +115,7 @@ const envSchema = z.object({
   AI_QUESTION_ASSISTANT_PER_MINUTE: z.coerce.number().int().min(1).max(60).default(8),
   AI_QUESTION_ASSISTANT_MAX_OUTPUT_TOKENS: z.coerce.number().int().min(64).max(2000).default(450),
   AI_QUESTION_ASSISTANT_CACHE_MINUTES: z.coerce.number().int().min(1).max(1440).default(30),
+  AI_TEACHING_IMAGE_ENABLED: z.enum(['true','false']).default('false'),
   GEMINI_API_KEY: z.string().optional(),
   GEMINI_MODEL: z.string().default("gemini-2.5-flash"),
   OPENROUTER_API_KEY: z.string().optional(),

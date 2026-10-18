@@ -1650,7 +1650,7 @@ const ReviewSolutions = ({
               key={`${resultId}::${q.questionId}`}
               resultId={resultId}
               questionId={q.questionId}
-              question={{ text: q.text, imageUrl: q.imageUrl, options: q.options }}
+              question={{ text: q.text, imageUrl: q.imageUrl, options: q.options, teachingImageVersion: (q as any).teachingImageVersion }}
               hasImage={Boolean(q.imageUrl || questionHasInlineMedia)}
             />
 
