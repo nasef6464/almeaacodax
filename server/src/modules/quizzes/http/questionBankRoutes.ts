@@ -347,8 +347,9 @@ questionBankRouter.patch(
       }
     }
     const regionSafe = invalidateStaleTeachingRegions(mergedPayload);
+    if(regionSafe!==mergedPayload) payload.aiContext=regionSafe.aiContext;
     const sanitizedPayload = sanitizeWorkflowUpdate(
-      { ...payload, ...(regionSafe!==mergedPayload?{aiContext:regionSafe.aiContext}:{}), skillIds: canonicalSkills.skillIds, skillId: canonicalSkills.skillId, subSkillId: canonicalSkills.subSkillId, subSkillIds: canonicalSkills.subSkillIds } as Record<string, unknown>,
+      { ...payload, skillIds: canonicalSkills.skillIds, skillId: canonicalSkills.skillId, subSkillId: canonicalSkills.subSkillId, subSkillIds: canonicalSkills.subSkillIds } as Record<string, unknown>,
       req.authUser!,
     );
     const updated = await QuestionModel.findOneAndUpdate(documentQuery, sanitizedPayload, { new: true });
