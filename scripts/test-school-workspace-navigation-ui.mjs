@@ -46,7 +46,9 @@ let browser;try{
   await page.getByRole('button',{name:'لوحة المدرسة',exact:true}).click();await page.getByRole('heading',{name:'القسم: overview',exact:true}).waitFor();
   if(mobile)await page.getByRole('button',{name:'فتح أقسام لوحة التحكم',exact:true}).click();
   await page.evaluate(()=>{window.restrict(true);window.setActive('overview')});
-  await nav.getByRole('button',{name:'نظرة عامة',exact:true}).waitFor();assert.equal(await nav.locator('summary').count(),1,'No empty or unauthorized groups');
+  await nav.getByRole('button',{name:'نظرة عامة',exact:true}).waitFor();
+  await nav.locator('summary').nth(1).waitFor({state:'detached'});
+  assert.equal(await nav.locator('summary').count(),1,'No empty or unauthorized groups');
   assert.deepEqual(await page.evaluate(()=>window.calls),['skills']);assert.deepEqual(errors,[]);
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));await page.close();
  }
