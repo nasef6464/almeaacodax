@@ -1,4 +1,10 @@
 const optionLetters = ["أ", "ب", "ج", "د"] as const;
+/** Owned reviews retain learning context, not staff-only region approval/source metadata. */
+export const reviewQuestionAiContext = (context:Record<string,any>|null|undefined) => {
+  if(!context)return undefined;
+  const {teachingRegions,...safe}=typeof context.toObject==='function'?context.toObject():context;
+  return safe;
+};
 const latinOptionLetters = ["A", "B", "C", "D"] as const;
 
 const normalizeLearnerOption = (value: unknown, index: number, isLatin = false) => {

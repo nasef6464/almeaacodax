@@ -1,3 +1,7 @@
+## Approved image regions — 2026-10-18
+Shared browser-safe validation/source binding: server/src/modules/ai/contracts/verifiedTeachingRegions.ts. Staff image editor: dashboards/admin/builders/QuestionTeachingRegionsEditor.tsx. Deterministic scene composition: server/src/modules/ai/application/verifiedTeachingRegions.ts. Existing Question CRUD and whiteboard retain ownership.
+Evidence: docs/audits/VERIFIED_TEACHING_REGIONS_2026-10-18.md (release pending).
+
 Image teaching (2026-10-18, validation pending): teachingImageIdentity/teachingImageStoryboard own opaque image versions and additive v2 validation; teachingQuestionImage owns R2-only bounded transient image bytes. teachingImageLesson compiles compact content and normalized marks with server-owned identity/reference answer. Existing question-assistant owns auth, budgets, version/eligibility-keyed cache and usage. QuestionPreview measures rendered image content; TeachingImageOverlay and boardState share scene clock, while quickTeachingPlan remaps expanded solution marks to the first operation. No new service/collection/grade authority.
 
 Whiteboard motion (2026-10-17, validation pending): WhiteboardWriting measures rendered row geometry and positions the locally authored WhiteboardHand. WhiteboardInk derives its stroke and nib from optional local boardAt inkProgress. useTeachingPlayback waits for actual speech start. TeachingBoard owns the optional transcript. No provider schema, image inference, data access or backend ownership change.

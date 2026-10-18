@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import {questionTeachingRegionsSchema,validStoredTeachingRegions} from './questionTeachingRegions.js';
 
 const questionMathExpressionSchema = new Schema(
   {
@@ -19,6 +20,7 @@ const questionAiContextSchema = new Schema(
     mathExpressions: { type: [questionMathExpressionSchema], default: [] },
     concepts: { type: [String], default: [] },
     requiredData: { type: [String], default: [] },
+    teachingRegions: {type:questionTeachingRegionsSchema,default:undefined,validate:{validator:validStoredTeachingRegions,message:'Invalid teaching regions'}},
     version: { type: Number, default: 1 },
   },
   { _id: false },

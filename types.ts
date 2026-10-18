@@ -1,4 +1,6 @@
 
+import type {VerifiedTeachingRegions} from './server/src/modules/ai/contracts/verifiedTeachingRegions';
+
 export enum Role {
     STUDENT = 'student',
     TEACHER = 'teacher',
@@ -615,6 +617,7 @@ export interface QuestionMathExpression {
 }
 
 export interface QuestionAiContext {
+    teachingRegions?: VerifiedTeachingRegions;
     readableText?: string;
     speechText?: string;
     visualDescription?: string;

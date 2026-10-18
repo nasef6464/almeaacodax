@@ -1,3 +1,7 @@
+## Approved image regions — 2026-10-18
+Additive optional Question.aiContext.teachingRegions (default undefined), <=4 normalized staff-approved boxes with exact source key. No migration/backfill/production content write. Old questions retain baseline behavior; source replacement invalidates approval. Existing stored review image identity remains historical guard.
+Evidence: docs/audits/VERIFIED_TEACHING_REGIONS_2026-10-18.md (release pending).
+
 ## Assessment display priority — 2026-10-16
 Optional integer Quiz.displayPriority1..1000000, no default/backfill or historical evidence rewrite. Additive non-sparse indexes quiz_display_priority, quiz_subject_display_priority, quiz_path_display_priority support global/path+subject/path sort shapes. Missing priorities retain automatic fallback; new explicit ranks precede them. Rollback can stop reading/writing the optional field while retaining metadata/indexes. No production migration script, destructive index operation or data cutover. Published index presence/performance remains unproven until read-only metadata verification.
 

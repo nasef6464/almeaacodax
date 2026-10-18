@@ -1,4 +1,5 @@
 import { z } from "zod";
+import {validateTeachingRegions,type VerifiedTeachingRegions} from '../../ai/contracts/verifiedTeachingRegions.js';
 
 const questionMathExpressionSchema = z.object({
   latex: z.string().max(1000).default(""),
@@ -15,6 +16,7 @@ const questionAiContextSchema = z.object({
   mathExpressions: z.array(questionMathExpressionSchema).max(32).default([]),
   concepts: z.array(z.string().max(240)).max(32).default([]),
   requiredData: z.array(z.string().max(500)).max(64).default([]),
+  teachingRegions:z.custom<VerifiedTeachingRegions>(v=>!!validateTeachingRegions(v),{message:'Invalid teaching regions'}).optional(),
   version: z.number().int().min(1).max(100).default(1),
 });
 
