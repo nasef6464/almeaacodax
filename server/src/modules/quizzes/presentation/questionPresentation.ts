@@ -47,7 +47,8 @@ export const sanitizeQuestionForLearner = (question: Record<string, any>) => {
   const identity = teachingImageIdentity(question);
   // Do not trust an already-stored/forged teachingImageVersion.
   delete safeQuestion.teachingImageVersion;
-  return { ...safeQuestion, ...(identity ? { teachingImageVersion: identity.version } : {}) };
+  if (identity) safeQuestion.teachingImageVersion = identity.version;
+  return safeQuestion;
 };
 
 

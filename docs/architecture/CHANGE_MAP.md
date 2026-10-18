@@ -92,3 +92,5 @@ Student report/history source separation reuses persisted learningContext and ca
 
 ## New question activity provenance — 2026-10-10
 Question activity reporting delegates provenance to the quizzes application resolver and counts to utils/studentQuestionActivity. Existing telemetry/review writers emit additive metadata; grading/mastery side effects retain their owners.
+
+2026-10-18 — Smart teacher image rollout (PR572): provider response deadline/body-size transport extracted from aiProviderAdapters to aiResponseTransport; adapter retains URL validation and provider/key policy. No public route or data authority migration.

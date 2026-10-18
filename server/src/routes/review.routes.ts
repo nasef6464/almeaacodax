@@ -120,7 +120,7 @@ reviewRouter.get(
             text: String(question.text || ""),
             options: normalizeQuestionOptions(question),
             imageUrl: String(question.imageUrl || ""),
-          teachingImageVersion: teachingImageIdentity(question)?.version,
+            teachingImageVersion: teachingImageIdentity(question)?.version,
             imageAlt: String(question.imageAlt || ""),
             questionCode: String(question.questionCode || ""),
             explanation: String(question.explanation || ""),
