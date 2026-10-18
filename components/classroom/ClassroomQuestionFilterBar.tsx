@@ -1,6 +1,7 @@
 import React from 'react';
 import { Filter, RotateCcw, Search } from 'lucide-react';
 import { useStore } from '../../store/useStore';
+import {schoolSkillOptions} from '../../utils/schoolSkillsDisplay';
 
 export interface ClassroomFilterState {
   pathId?: string;
@@ -35,7 +36,7 @@ export const ClassroomQuestionFilterBar: React.FC<ClassroomQuestionFilterBarProp
   totalCount,
   filteredCount,
 }) => {
-  const { paths, subjects, sections, skills } = useStore();
+  const { paths, subjects, sections, skills, nestedSkills=[] } = useStore();
 
   const activePathId = filters.pathId || filters.track || '';
   const activeSubjectId = filters.subjectId || filters.subject || '';
@@ -50,11 +51,7 @@ export const ClassroomQuestionFilterBar: React.FC<ClassroomQuestionFilterBarProp
     ? sections.filter((sec) => sec.subjectId === activeSubjectId)
     : [];
 
-  const availableSkills = activeSectionId
-    ? skills.filter((sk) => sk.sectionId === activeSectionId)
-    : activeSubjectId
-      ? skills.filter((sk) => sk.subjectId === activeSubjectId)
-      : [];
+  const availableSkills = schoolSkillOptions(skills,nestedSkills,activeSubjectId,activeSectionId);
 
   const hasActiveFilters = Boolean(
     activePathId || activeSubjectId || activeSectionId || activeSkillId || filters.difficulty || filters.search

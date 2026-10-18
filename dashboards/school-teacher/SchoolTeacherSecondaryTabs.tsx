@@ -1,7 +1,7 @@
 import React from 'react';
 import {useStore} from '../../store/useStore';
 import {DisplayListControls,useDisplayLimit} from '../../components/DisplayListControls';
-import {schoolCatalogLabel} from '../../utils/schoolSkillsDisplay';
+import {schoolCatalogLabel,schoolSkillLabel} from '../../utils/schoolSkillsDisplay';
 import { BookOpenCheck, CalendarClock, Plus, Presentation, Target, Trophy, Zap } from 'lucide-react';
 import { SmartClassroomReportsSection } from '../../components/classroom/SmartClassroomReportsSection';
 import { ClassSkillGapsRadar } from '../../components/classroom/ClassSkillGapsRadar';
@@ -40,7 +40,7 @@ export const SchoolTeacherPreparedQuestions: React.FC<PreparedQuestionsProps> = 
   onToggleChallenge,
   onApplyTemplate,
 }) => {
- const {subjects,skills}=useStore();
+ const {subjects,skills,nestedSkills=[]}=useStore();
  const rows=useDisplayLimit(12,[selectedSchool.schoolId,filters.pathId,filters.subjectId,filters.sectionId,filters.skillId,filters.difficulty,filters.search].join('|'));
  return (
   <div className="space-y-6 animate-fade-in" dir="rtl">
@@ -96,7 +96,7 @@ export const SchoolTeacherPreparedQuestions: React.FC<PreparedQuestionsProps> = 
                         </div>
                       )}
                       <small className="mt-2 block text-slate-500 text-[11px]">
-                        {schoolCatalogLabel(subjects,question.subjectId||question.subject,'مادة غير مصنفة')} · {question.difficulty || 'متوسط'} · {question.options?.length || 4} خيارات · المهارة: {schoolCatalogLabel(skills,question.skillIds?.[0],'عام')}
+                        {schoolCatalogLabel(subjects,question.subjectId||question.subject,'مادة غير مصنفة')} · {question.difficulty || 'متوسط'} · {question.options?.length || 4} خيارات · المهارة: {schoolSkillLabel(question.skillIds?.[0],skills,nestedSkills,subjects,'عام')}
                       </small>
                     </div>
                   </label>

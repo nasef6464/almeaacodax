@@ -3,7 +3,7 @@ import { AlertTriangle, ChevronLeft, RefreshCw, Target, Zap } from 'lucide-react
 import { Link } from 'react-router-dom';
 import {useStore} from '../../store/useStore';
 import {DisplayListControls,useDisplayLimit} from '../DisplayListControls';
-import {classroomSubjectKey,filterClassroomSkillsReports,schoolCatalogLabel} from '../../utils/schoolSkillsDisplay';
+import {classroomSubjectKey,filterClassroomSkillsReports,schoolCatalogLabel,schoolSkillLabel} from '../../utils/schoolSkillsDisplay';
 import { useClassroomTeacherReports } from '../../hooks/useClassroomTeacherReports';
 import {
   buildClassroomSkillDiagnostics,
@@ -31,7 +31,7 @@ export const ClassSkillGapsRadar: React.FC<ClassSkillGapsRadarProps> = ({
   assignments,
   onLaunchChallengeForSkill,
 }) => {
-  const {paths,subjects,skills:catalogSkills}=useStore();
+  const {paths,subjects,skills:catalogSkills,nestedSkills=[]}=useStore();
   const [selectedClassId, setSelectedClassId] = useState(assignments[0]?.classId || '');
   const [selectedPathId, setSelectedPathId] = useState('all');
   const [selectedSubjectId, setSelectedSubjectId] = useState('all');
@@ -76,14 +76,14 @@ export const ClassSkillGapsRadar: React.FC<ClassSkillGapsRadarProps> = ({
     buildClassroomSkillDiagnostics(scopedReports).map((diagnostic) => ({
       key: diagnostic.scopeKey,
       skillId: diagnostic.skillId,
-      skillName: schoolCatalogLabel(diagnostic.skillId.startsWith('subject:')?subjects:catalogSkills,diagnostic.skillId.startsWith('subject:')?diagnostic.subjectId:diagnostic.skillId,diagnostic.skillId.startsWith('subject:')?'مادة غير مصنفة':'مهارة غير مصنفة'),
+      skillName: schoolSkillLabel(diagnostic.skillId,catalogSkills,nestedSkills,subjects),
       pathId: diagnostic.pathId,
       subjectId: diagnostic.subjectId,
       accuracy: diagnostic.accuracy ?? 0,
       totalAttempts: diagnostic.totalAnswered,
       studentsAtRiskCount: 0,
     })),
-  [scopedReports,subjects,catalogSkills]);
+  [scopedReports,subjects,catalogSkills,nestedSkills]);
 
   const criticalGapsCount = skills.filter((skill) => skill.accuracy < 60).length;
   const masteredSkillsCount = skills.filter((skill) => skill.accuracy >= 80).length;
