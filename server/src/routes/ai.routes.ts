@@ -1,4 +1,5 @@
 import { eligibleTeachingImageIdentity, generateTeachingImageLesson, teachingImageSchema } from "../modules/ai/application/teachingImageLesson.js";
+import { TEACHING_IMAGE_GROUNDING_POLICY } from '../modules/ai/application/teachingImageGrounding.js';
 import { loadTeachingQuestionImage } from "../modules/ai/infrastructure/teachingQuestionImage.js";
 import { teachingImageIdentity } from "../modules/ai/application/teachingImageIdentity.js";
 import {createSchoolSpecInterpreter} from '../modules/quizzes/application/schoolAssessmentCompositionAi.js';
@@ -1616,7 +1617,7 @@ aiRouter.post(
       String(aiReadableText.length),
       String(visualDescription.length),
       String(payload.tutorSessionId || ""),
-      ...(payload.boardMode === "storyboard_v2" ? [String(payload.imageVersion || ""), String(teachingImageIdentity(question)?.version || ""), env.AI_TEACHING_IMAGE_ENABLED] : []),
+      ...(payload.boardMode === "storyboard_v2" ? [String(payload.imageVersion || ""), String(teachingImageIdentity(question)?.version || ""), env.AI_TEACHING_IMAGE_ENABLED, TEACHING_IMAGE_GROUNDING_POLICY] : []),
       ...(payload.boardMode ? [payload.boardMode, "compact-plan-v4-reference-result", String(payload.context === 'result_review' ? correctOptionIndex : (question as any)?.correctOptionIndex), payload.boardContext || ""] : []),
     ].join("::");
     // Sharing is limited to unchanged canonical content, after the owned-review guard.

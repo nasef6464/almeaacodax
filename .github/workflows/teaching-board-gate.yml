@@ -44,6 +44,7 @@ jobs:
       - run: node --import ./server/node_modules/tsx/dist/loader.mjs scripts/test-teaching-image-loader.ts
       - run: node --import ./server/node_modules/tsx/dist/loader.mjs scripts/test-teaching-image-provider.ts
       - run: node --import ./server/node_modules/tsx/dist/loader.mjs scripts/test-teaching-image-lesson.ts
+      - run: node --import ./server/node_modules/tsx/dist/loader.mjs scripts/test-teaching-image-grounding.ts
       - run: node --import ./server/node_modules/tsx/dist/loader.mjs scripts/test-teaching-image-motion.ts
       - run: node --import ./server/node_modules/tsx/dist/loader.mjs scripts/test-teaching-image-http.ts
       - run: npx playwright install --with-deps chromium

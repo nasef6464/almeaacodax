@@ -1,9 +1,15 @@
 import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
 import { sharedTeachingScenario } from '../server/src/modules/ai/application/sharedTeachingScenario';
 const source = { questionId: 'q-1', questionCode: 'Q1', questionVersion: 'v1', questionText: '2+2=?', options: ['3', '4'], correctOptionIndex: 1, explanation: '2+2=4', skillLabels: ['جمع'], visualDescription: '', hasImage: false, imageVersion: 'img1', schoolId: 'school1' };
 const request = { boardMode: 'storyboard_v1', helpLevel: 'steps', message: 'اشرح حل هذا السؤال مباشرة بخطوات قصيرة، واكتب المعطيات والمعادلات على السبورة.' };
 const first = sharedTeachingScenario(request, source);
 assert.ok(first);
+const legacyV1='teaching:'+createHash('sha256').update(JSON.stringify(['shared-teaching-v1',source.schoolId,source.questionId,source.questionVersion,source.imageVersion,first.prompt])).digest('hex');
+assert.equal(first.cacheKey,legacyV1,'unchanged text-mode cache policy');
+const visual=sharedTeachingScenario({...request,boardMode:'storyboard_v2'},source)!;
+const oldVisual='teaching:'+createHash('sha256').update(JSON.stringify(['shared-teaching-v2-image-policy1',source.schoolId,source.questionId,source.questionVersion,source.imageVersion,visual.prompt])).digest('hex');
+assert.notEqual(visual.cacheKey,oldVisual,'old coordinate-policy plans must not be reused');
 assert.deepEqual(sharedTeachingScenario({ ...request, userId: 'student2', resultId: 'r2', tutorSessionId: 'new', selectedOptionIndex: 0 } as any, source), first, 'generic lesson must not depend on learner identity or answers');
 assert.doesNotMatch(first.prompt, /student2|r2|new/);
 assert.notEqual(sharedTeachingScenario(request, { ...source, explanation: 'تصحيح الحل' })?.cacheKey, first.cacheKey);
