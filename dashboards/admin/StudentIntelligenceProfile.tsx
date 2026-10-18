@@ -1,4 +1,5 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useId, useMemo, useRef } from 'react';
+import {createPortal} from 'react-dom';
 import {
   Activity, Award, BookOpen, ChevronRight, TrendingDown,
   TrendingUp, Users, Zap, Clock, BarChart3, Target,
@@ -76,6 +77,24 @@ export const StudentIntelligenceProfile: React.FC<StudentIntelligenceProfileProp
   student, classAverage, classTotalStudents, completedLessons = [],
   onClose, onSendAlert, onAssignTest, onOpenReport,
 }) => {
+  const titleId = useId();
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    const previousFocus = document.activeElement as HTMLElement | null;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    closeRef.current?.focus();
+    return () => {document.body.style.overflow = previousOverflow;previousFocus?.focus();};
+  }, [student.id]);
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Escape') {event.preventDefault();event.stopPropagation();onClose();return;}
+    if (event.key !== 'Tab') return;
+    const elements = Array.from(dialogRef.current?.querySelectorAll<HTMLElement>('button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex="0"]') || []).filter(element => element.getClientRects().length > 0);
+    const first = elements[0], last = elements[elements.length - 1];
+    if (event.shiftKey && document.activeElement === first) {event.preventDefault();last?.focus();}
+    else if (!event.shiftKey && document.activeElement === last) {event.preventDefault();first?.focus();}
+  };
   // ── اشتقاق المهارات من كل النتائج ──────────────────────────────────────────
   const aggregatedSkills = useMemo(() => {
     const map = new Map<string, { skill: string; total: number; count: number }>();
@@ -118,13 +137,14 @@ export const StudentIntelligenceProfile: React.FC<StudentIntelligenceProfileProp
   };
   const sc = statusConfig[student.status];
 
-  return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/40 backdrop-blur-sm flex items-start justify-end p-4">
-      <div className="w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden animate-in slide-in-from-right duration-300">
+  if (typeof document === 'undefined') return null;
+  return createPortal(
+    <div dir="rtl" onKeyDown={handleKeyDown} onClick={event => {if (event.target === event.currentTarget) onClose();}} className="fixed inset-0 z-[100] bg-black/40 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6">
+      <div ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby={titleId} className="flex max-h-[calc(100dvh-1.5rem)] w-full max-w-2xl flex-col bg-white rounded-3xl shadow-2xl overflow-hidden sm:max-h-[calc(100dvh-3rem)]">
 
         {/* ── رأس الصفحة ── */}
-        <div className="relative bg-gradient-to-br from-indigo-600 via-violet-600 to-purple-700 px-6 py-5 text-white">
-          <button onClick={onClose} className="absolute left-4 top-4 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors">
+        <div className="relative shrink-0 bg-gradient-to-br from-indigo-600 via-violet-600 to-purple-700 px-6 py-5 pl-16 text-white">
+          <button ref={closeRef} type="button" aria-label="إغلاق تفاصيل الطالب" onClick={onClose} className="absolute left-4 top-4 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors">
             <ArrowLeft size={18} />
           </button>
           <div className="flex items-start gap-4">
@@ -132,7 +152,7 @@ export const StudentIntelligenceProfile: React.FC<StudentIntelligenceProfileProp
               {student.name.charAt(0)}
             </div>
             <div className="min-w-0">
-              <h2 className="text-xl font-black truncate">{student.name}</h2>
+              <h2 id={titleId} className="text-xl font-black truncate">{student.name}</h2>
               <p className="text-white/80 text-sm mt-0.5">{student.className} • {student.schoolName}</p>
               <div className={`mt-2 inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-black ${sc.bg}`}>
                 {sc.icon} {sc.label}
@@ -141,7 +161,7 @@ export const StudentIntelligenceProfile: React.FC<StudentIntelligenceProfileProp
           </div>
         </div>
 
-        <div className="p-5 space-y-5 overflow-y-auto max-h-[calc(100vh-200px)]">
+        <div className="min-h-0 p-5 space-y-5 overflow-y-auto">
 
           {/* ── إحصائيات سريعة ── */}
           <div className="grid grid-cols-3 gap-3">
@@ -282,6 +302,6 @@ export const StudentIntelligenceProfile: React.FC<StudentIntelligenceProfileProp
 
         </div>
       </div>
-    </div>
+    </div>, document.body
   );
 };

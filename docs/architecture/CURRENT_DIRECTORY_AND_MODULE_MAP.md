@@ -1,3 +1,6 @@
+## School navigation clarity — 2026-10-18
+components/DashboardSectionNav.tsx owns optional single-expanded-group presentation and breadcrumbs; the existing role dashboards retain item permissions, tab IDs and selection handlers. SkillsTreeManager owns staff choose-material presentation and defers its existing coverage read until selection. Existing catalog helper resolves assessment labels. No route, API, DB, auth or data ownership migration. Evidence: docs/audits/CLEAR_SCHOOL_NAVIGATION_2026-10-18.md.
+
 ## School skills display — 2026-10-18
 utils/schoolSkillsDisplay.ts owns display-only canonical/legacy subject matching and subject/section-scoped catalog options; skill labels delegate to existing classroomSkillResolver across skills, nestedSkills and their children. Existing teacher/supervisor components own subject selection and reuse DisplayListControls. Existing route, school assignment, authorization, report aggregation, data and grading ownership are unchanged. Evidence: docs/audits/SUPERVISOR_TEACHER_CALM_UX_2026-10-18.md.
 
@@ -324,3 +327,5 @@ server/src/modules/quizzes/application/schoolAssessmentQuestionEvidence.ts owns 
 2026-10-18: aiResponseTransport owns bounded provider body buffering/deadline; aiProviderAdapters retains public URL validation, provider selection and single-attempt policy. Approved image-rollout env flag remains false by default.
 
 2026-10-18 grounding correction: teachingImageGrounding owns the internal native0..1000 y/x provider schema and strict conversion to the unchanged public normalized v2 marks. Its policy versions both image private/shared caches; text v1 cache identity is unchanged.
+
+StudentIntelligenceProfile owns its body portal, bounded dialog/scroll and keyboard focus restoration; SupervisorDashboard retains student selection and existing action callbacks. DashboardLayout accepts an optional role caption; its other callers retain the existing default. No analytics or data authority changed. Evidence: CLEAR_SCHOOL_NAVIGATION_2026-10-18.md.

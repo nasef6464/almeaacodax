@@ -136,7 +136,9 @@ export const SchoolTeacherSkillsRadar: React.FC<{ selectedSchool: any }> = ({ se
   </div>
 );
 
-export const SchoolTeacherAssessments: React.FC<{ selectedSchool: any; onCreateAssessment: () => void }> = ({ selectedSchool, onCreateAssessment }) => (
+export const SchoolTeacherAssessments: React.FC<{ selectedSchool: any; onCreateAssessment: () => void }> = ({ selectedSchool, onCreateAssessment }) => {
+ const subjects = useStore(state => state.subjects);
+ return (
   <div className="space-y-6 animate-fade-in" dir="rtl">
     <div className="rounded-3xl border border-slate-100 bg-white p-6 shadow-xs">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -170,7 +172,7 @@ export const SchoolTeacherAssessments: React.FC<{ selectedSchool: any; onCreateA
                     {assessment.ownedByTeacher && <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-[10px] font-black text-indigo-700">من إنشائي</span>}
                     <span className={`rounded-full px-2 py-0.5 text-[10px] font-black ${status.className}`}>{status.label}</span>
                   </div>
-                  <p className="mt-1 text-xs text-slate-500">المادة: {assessment.subjectId || 'عام'} · {assessment.classIds.length} فصول موجهة · نوع الاختبار: {assessment.quizKind || 'اختبار مدرسي'}</p>
+                  <p className="mt-1 text-xs text-slate-500">المادة: {schoolCatalogLabel(subjects,assessment.subjectId,assessment.quizKind === 'mock' ? 'متعدد المواد' : 'مادة غير مصنفة')} · {assessment.classIds.length} فصول موجهة · نوع الاختبار: {assessment.quizKind === 'mock' ? 'اختبار محاكي' : assessment.quizKind === 'practice' ? 'تدريب' : 'اختبار مدرسي'}</p>
                 </div>
                 <div className="flex items-center gap-2 text-xs font-bold text-slate-600">
                   <CalendarClock size={15} /> {assessment.dueDate ? `تاريخ التسليم: ${assessment.dueDate}` : 'بدون موعد نهائي'}
@@ -183,6 +185,8 @@ export const SchoolTeacherAssessments: React.FC<{ selectedSchool: any; onCreateA
     </div>
   </div>
 );
+
+};
 
 export const SchoolTeacherCertificates: React.FC<{ onOpenCertificate: () => void }> = ({ onOpenCertificate }) => (
   <div className="space-y-6 animate-fade-in" dir="rtl">

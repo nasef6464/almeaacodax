@@ -1,4 +1,4 @@
-import { DashboardSectionNav } from '../../components/DashboardSectionNav';
+import { DashboardSectionBreadcrumb, DashboardSectionNav } from '../../components/DashboardSectionNav';
 import { resolveSupervisorSchoolScope } from '../../utils/supervisorSchoolScope';
 // v2.2-utf8-cachebust-force-bundle-refresh
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
@@ -974,6 +974,12 @@ export const AdminDashboard: React.FC = () => {
         }
     }, [activeTab, enhancedMenuItems]);
 
+    const teacherNavGroups = [
+        { label: 'الرئيسية', ids: ['overview'] },
+        { label: 'المحتوى والدورات', ids: ['courses', 'lessons', 'library'] },
+        { label: 'المهارات وبنك الأسئلة', ids: ['skills', 'questions'] },
+        { label: 'الاختبارات والحصص', ids: ['quizzes', 'barcode-tests', 'live-sessions'] },
+    ];
     const renderSidebar = () => (
         <div className="py-6 space-y-1">
             <div className="mb-8 px-6">
@@ -983,11 +989,7 @@ export const AdminDashboard: React.FC = () => {
                 </p>
                 {user.role === Role.TEACHER && <TeacherWorkspaceSwitcher />}
             </div>
-            {user.role === Role.TEACHER ? <DashboardSectionNav items={enhancedMenuItems} activeId={activeTab} onSelect={setActiveAdminTab} groups={[
-                { label: 'البداية', ids: ['overview'] },
-                { label: 'المحتوى والتحضير', ids: ['courses', 'lessons', 'library', 'questions', 'skills'] },
-                { label: 'التدريس والتقويم', ids: ['live-sessions', 'quizzes', 'barcode-tests'] },
-            ]} /> : (<>            {enhancedMenuItems.map((item) => (
+            {user.role === Role.TEACHER ? <DashboardSectionNav collapsible items={enhancedMenuItems} activeId={activeTab} onSelect={setActiveAdminTab} groups={teacherNavGroups} /> : (<>            {enhancedMenuItems.map((item) => (
                 <button
                     key={item.id}
                     onClick={() => setActiveAdminTab(item.id)}
@@ -2082,7 +2084,8 @@ export const AdminDashboard: React.FC = () => {
     };
 
     return (
-        <DashboardLayout sidebar={renderSidebar()}>
+        <DashboardLayout sidebar={renderSidebar()} workspaceTitle={user.role === Role.TEACHER ? 'مدرب المنصة' : undefined}>
+            {user.role === Role.TEACHER && <DashboardSectionBreadcrumb items={enhancedMenuItems} groups={teacherNavGroups} activeId={activeTab} homeLabel="لوحة مدرب المنصة" onHome={() => setActiveAdminTab('overview')} />}
             <React.Suspense fallback={<AdminTabLoading />}>
                 {renderContent()}
             </React.Suspense>

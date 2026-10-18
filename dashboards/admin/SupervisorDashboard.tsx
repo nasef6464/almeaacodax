@@ -1,5 +1,5 @@
 import { SupervisorFollowUpPriorities } from './SupervisorFollowUpPriorities';
-import { DashboardSectionNav } from '../../components/DashboardSectionNav';
+import { DashboardSectionBreadcrumb, DashboardSectionNav } from '../../components/DashboardSectionNav';
 import { DisplayListControls, useDisplayLimit } from '../../components/DisplayListControls';
 import { resolveSupervisorSchoolScope } from '../../utils/supervisorSchoolScope';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -552,9 +552,16 @@ export const SupervisorDashboard: React.FC = () => {
     { id: 'skills' as const, label: 'خريطة المهارات', icon: <Target size={20} /> },
     { id: 'reports' as const, label: 'تقارير الأداء', icon: <ClipboardList size={20} /> },
   ];
+  const sidebarGroups = [
+    { label: 'الرئيسية', ids: ['overview'] },
+    { label: 'الطلاب والحصص', ids: ['students', 'live-sessions'] },
+    { label: 'الاختبارات والمراقبة', ids: ['tests', 'live-monitoring'] },
+    { label: 'المهارات والتقارير', ids: ['skills', 'reports'] },
+  ];
 
   return (
     <DashboardLayout
+      workspaceTitle="الإشراف"
       sidebar={
         <div className="py-6 space-y-1">
           <div className="mb-8 px-6">
@@ -564,15 +571,12 @@ export const SupervisorDashboard: React.FC = () => {
             </h2>
             <p className="text-xs text-gray-500 mt-1">متابعة الفصول والمهارات والتقارير</p>
           </div>
-          <DashboardSectionNav items={sidebarItems.map(item => ({ ...item, badge: item.id === 'students' ? `${supervisorScopeSummary.weakStudentsCount} ضعيف` : undefined }))} activeId={activeTab} onSelect={id => setActiveTab(id as SupervisorTab)} groups={[
-            { label: 'البداية', ids: ['overview'] },
-            { label: 'العمل اليومي', ids: ['students', 'tests', 'live-sessions'] },
-            { label: 'التحليل والمتابعة', ids: ['skills', 'reports', 'live-monitoring'] },
-          ]} />
+          <DashboardSectionNav collapsible items={sidebarItems.map(item => ({ ...item, badge: item.id === 'students' ? `${supervisorScopeSummary.weakStudentsCount} ضعيف` : undefined }))} activeId={activeTab} onSelect={id => setActiveTab(id as SupervisorTab)} groups={sidebarGroups} />
         </div>
       }
     >
       <div className="space-y-6 animate-fade-in print:bg-white print:p-0">
+        <DashboardSectionBreadcrumb items={sidebarItems} groups={sidebarGroups} activeId={activeTab} homeLabel="لوحة الإشراف" onHome={() => setActiveTab('overview')} />
         {/* Mobile-only page title — always visible for auditing, sidebar title is hidden on small screens */}
         <div className="flex md:hidden items-center gap-2 px-1 pt-1">
           <GraduationCap className="text-indigo-600 shrink-0" size={20} />
