@@ -7,11 +7,13 @@ import {isolatedMongo} from './school-assessment-test-fixture.js';
 const argument=(name:string)=>process.argv.find(v=>v.startsWith('--'+name+'='))?.slice(name.length+3);
 const credentialFile=argument('credentials');const imageDir=argument('images');
 if(!credentialFile||!imageDir)throw Error('Explicit --credentials and --images are required; secrets are never printed');
+const model=argument('model');
+if(!model)throw Error('Explicit --model is required; do not spend audit budget on a local env model by accident');
 const require=createRequire(new URL('../server/package.json',import.meta.url));
 const credentials=require('dotenv').parse(fs.readFileSync(credentialFile));
 if(!credentials.GEMINI_API_KEY)throw Error('Existing Gemini credential unavailable; do not create a new key');
-const model=argument('model')||credentials.GEMINI_MODEL||'gemini-2.5-flash';
 const close=await isolatedMongo();const original=globalThis.fetch;let server:any;let providerAttempts=0;
+const providerStatuses:number[]=[];
 const run='image-live-'+Date.now();const cases:any[]=[];
 const maxCalls=Number(argument('max-calls')||3);if(!Number.isInteger(maxCalls)||maxCalls<1||maxCalls>3)throw Error('Budget must be1..3');
 const sampleNames=argument('samples')?.split(',');
@@ -32,7 +34,7 @@ try{
   if(url.startsWith('https://generativelanguage.googleapis.com/')){
    if(++providerAttempts>maxCalls)throw Error('Real-provider audit budget exhausted');
    const request=JSON.parse(String(init?.body));assert.equal(request.generationConfig.maxOutputTokens,900);assert.ok(request.contents[0].parts[0].inlineData);
-   return original(input,init);
+   const response=await original(input,init);providerStatuses.push(response.status);return response;
   }
   throw Error('Unexpected outbound request in bounded audit');
  };
@@ -51,7 +53,7 @@ try{
   if(!passed)break;
  }
  const usage=await AiInteractionModel.find({'metadata.tutorSessionId':run}).select('provider model inputTokens outputTokens totalTokens usageEstimated estimatedCostMicrosUsd pricingKnown latencyMs metadata.imageSentToProvider').lean();
- const report={run,model,providerAttempts,cases,usage,passed:cases.length>0&&cases.length===samples.length&&providerAttempts===cases.length&&usage.length===cases.length&&cases.every(c=>c.passed)&&usage.every((u:any)=>!u.usageEstimated&&u.outputTokens>0&&u.outputTokens<=900),boundary:'At most3real provider requests through normal local gateway/quota/ledger; synthetic images and disposable loopback DB. No production questions/results/progress changed. Manual region/reference review still required.'};
+ const report={run,model,providerAttempts,providerStatuses,cases,usage,passed:cases.length>0&&cases.length===samples.length&&providerAttempts===cases.length&&usage.length===cases.length&&cases.every(c=>c.passed)&&usage.every((u:any)=>!u.usageEstimated&&u.outputTokens>0&&u.outputTokens<=900),boundary:'At most3real provider requests through normal local gateway/quota/ledger; synthetic images and disposable loopback DB. No production questions/results/progress changed. Manual region/reference review still required.'};
  fs.writeFileSync(argument('output')||'scratch/teaching-image-live-proof.json',JSON.stringify(report,null,2));
  console.log(JSON.stringify({passed:report.passed,providerAttempts,usageRecords:usage.length}));
  if(!report.passed)process.exitCode=1;

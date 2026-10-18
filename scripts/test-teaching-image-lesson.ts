@@ -7,7 +7,7 @@ const identity=teachingImageIdentity(question)!;
 const request={boardMode:'storyboard_v2',helpLevel:'steps',imageVersion:identity.version};
 assert.ok(eligibleTeachingImageIdentity(request,question,true,true));
 for(const [r,enabled,current] of [[request,false,true],[request,true,false],[{...request,imageVersion:'old'},true,true],[{...request,boardContext:'private'},true,true],[{...request,helpLevel:'follow_up'},true,true]] as const)assert.equal(eligibleTeachingImageIdentity(r,question,enabled,current),null);
-const raw=JSON.stringify({format:'compact_v1',mode:'lesson',language:'ar-SA',narration:'نحدد الطول.',board:'6',kind:'formula',prompt:'ما المساحة؟',explanation:'نضرب الطول بالعرض.',solution:['6 \\times 4 = 24'],solutionKind:'formula',marks:[{sceneId:'given',kind:'box',x:.1,y:.1,width:.4,height:.4}]});
+const raw=JSON.stringify({format:'compact_v1',mode:'lesson',language:'ar-SA',narration:'نحدد الطول.',board:'6',kind:'formula',prompt:'ما المساحة؟',explanation:'نضرب الطول بالعرض.',solution:['6 \\times 4 = 24'],solutionKind:'formula',marks:[{sceneId:'given',kind:'box',box_2d:[100,100,500,500]}]});
 let loads=0,calls=0;
 let actualPrompt='';
 const args={identity,prompt:'trusted',fallback:'مرجع',expected:{mode:'lesson' as const,trustedAnswer:'24'},loadImage:async()=>{loads++;return {data:'test',mimeType:'image/png' as const};},callVision:async()=>{calls++;return {text:raw,imageSentToProvider:true};}};

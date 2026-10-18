@@ -315,3 +315,5 @@ server/src/modules/quizzes/application/schoolAssessmentQuestionEvidence.ts owns 
 2026-10-15 result display ownership: components/quiz/QuizSubjectResults owns material-first cards and saved main/subskill evidence; QuizSectionResults owns optional independent timed sections; QuizAnswerDistribution owns correct/wrong/unanswered split. Results reuses these components and existing actions; no data authority or route change.
 
 2026-10-18: aiResponseTransport owns bounded provider body buffering/deadline; aiProviderAdapters retains public URL validation, provider selection and single-attempt policy. Approved image-rollout env flag remains false by default.
+
+2026-10-18 grounding correction: teachingImageGrounding owns the internal native0..1000 y/x provider schema and strict conversion to the unchanged public normalized v2 marks. Its policy versions both image private/shared caches; text v1 cache identity is unchanged.
