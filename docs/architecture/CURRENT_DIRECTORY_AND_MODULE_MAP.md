@@ -1,3 +1,6 @@
+## School skills display — 2026-10-18
+utils/schoolSkillsDisplay.ts owns display-only canonical/legacy subject matching and readable catalog labels (including nested skills). Existing teacher/supervisor components own subject selection and reuse DisplayListControls. Existing route, school assignment, authorization, report aggregation, data and grading ownership are unchanged. Evidence: docs/audits/SUPERVISOR_TEACHER_CALM_UX_2026-10-18.md.
+
 ## Approved image regions — 2026-10-18
 Shared browser-safe validation/source binding: server/src/modules/ai/contracts/verifiedTeachingRegions.ts. Staff image editor: dashboards/admin/builders/QuestionTeachingRegionsEditor.tsx. Deterministic scene composition: server/src/modules/ai/application/verifiedTeachingRegions.ts. Existing Question CRUD and whiteboard retain ownership.
 Evidence: docs/audits/VERIFIED_TEACHING_REGIONS_2026-10-18.md (release pending).

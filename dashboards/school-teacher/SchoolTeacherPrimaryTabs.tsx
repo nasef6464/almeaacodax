@@ -1,4 +1,7 @@
 import React from 'react';
+import {useStore} from '../../store/useStore';
+import {DisplayListControls,useDisplayLimit} from '../../components/DisplayListControls';
+import {schoolCatalogLabel} from '../../utils/schoolSkillsDisplay';
 import { Bookmark, BookOpenCheck, Presentation, School, Trophy, UsersRound, Zap } from 'lucide-react';
 
 interface PrimaryTabsProps {
@@ -17,7 +20,10 @@ export const SchoolTeacherOverview: React.FC<PrimaryTabsProps> = ({
   onOpenCertificate,
   onOpenClass,
   onTabChange,
-}) => (
+}) => {
+ const subjects=useStore(state=>state.subjects);
+ const rows=useDisplayLimit(6,selectedSchool.schoolId);
+ return (
   <div className="space-y-6 animate-fade-in" dir="rtl">
     <div className="rounded-3xl bg-gradient-to-l from-indigo-800 via-indigo-900 to-slate-900 p-6 text-white shadow-lg">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -116,7 +122,7 @@ export const SchoolTeacherOverview: React.FC<PrimaryTabsProps> = ({
         <span className="text-xs text-slate-400">اضغط على أي فصل لبدء الحصة الذكية مباشرة</span>
       </div>
       <div className="grid gap-4 md:grid-cols-2">
-        {selectedSchool.assignments.map((assignment: any) => (
+        {selectedSchool.assignments.slice(0,rows.limit).map((assignment: any) => (
           <div
             key={assignment.assignmentId}
             className="rounded-2xl border border-slate-100 bg-slate-50/50 p-5 hover:border-indigo-200 transition-all flex flex-col justify-between"
@@ -125,12 +131,9 @@ export const SchoolTeacherOverview: React.FC<PrimaryTabsProps> = ({
               <div className="flex items-center justify-between">
                 <span className="font-black text-slate-900 text-base">{assignment.className}</span>
                 <span className="rounded-md bg-indigo-100 px-2 py-0.5 text-xs font-bold text-indigo-800">
-                  {assignment.subjectId || 'تكليف عام'}
+                  {schoolCatalogLabel(subjects,assignment.subjectId,'تكليف عام')}
                 </span>
               </div>
-              <p className="mt-2 text-xs text-slate-500">
-                المادة: {assignment.subjectId || 'تكليف دراسي عام'} · نظام التقييم الذكي
-              </p>
               <p className="mt-1 text-xs font-bold text-emerald-700">
                 {assignment.studentCount || 0} طالب في الفصل
               </p>
@@ -157,6 +160,7 @@ export const SchoolTeacherOverview: React.FC<PrimaryTabsProps> = ({
       </div>
     </div>
 
+    <DisplayListControls {...rows} total={selectedSchool.assignments.length} label="فصولي"/>
     <details className="rounded-3xl border border-slate-100 bg-white p-6 shadow-xs">
       <summary className="cursor-pointer">
         <h2 className="text-base font-black text-slate-900">طلاب فصولي المسندة</h2>
@@ -184,7 +188,7 @@ export const SchoolTeacherOverview: React.FC<PrimaryTabsProps> = ({
       </div>
     </details>
   </div>
-);
+);};
 
 export const SchoolTeacherSmartClassroom: React.FC<Omit<PrimaryTabsProps, 'userName' | 'onOpenCertificate'>> = ({
   selectedSchool,

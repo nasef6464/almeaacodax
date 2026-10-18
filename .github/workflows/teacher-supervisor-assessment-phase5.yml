@@ -8,6 +8,12 @@ on:
       - 'dashboards/admin/UnifiedQuizBuilder.tsx'
       - 'dashboards/SchoolTeacherDashboard.tsx'
       - 'dashboards/school-teacher/**'
+      - 'components/classroom/ClassSkillGapsRadar.tsx'
+      - 'components/classroom/ClassroomQuestionFilterBar.tsx'
+      - 'utils/schoolSkillsDisplay.ts'
+      - 'scripts/test-school-skills-display*'
+      - 'scripts/fixtures/school-skills-display.tsx'
+      - 'dashboards/admin/SupervisorDashboard.tsx'
       - 'dashboards/admin/SupervisorOverviewPanel.tsx'
       - 'dashboards/admin/SupervisorTestsManager.tsx'
       - 'server/src/modules/quizzes/**'
@@ -63,3 +69,20 @@ jobs:
 
       - name: API typecheck
         run: npm run server:check
+
+      - name: Subject-first skills and display regression
+        run: node --import ./server/node_modules/tsx/dist/loader.mjs scripts/test-school-skills-display.ts
+
+      - name: Install focused browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Staff subject filters desktop and mobile
+        run: node scripts/test-school-skills-display-browser.mjs --artifacts=audit-artifacts/school-skills-display
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: school-skills-display-ui
+          path: audit-artifacts/school-skills-display/*.png
+          if-no-files-found: ignore
+          retention-days: 3

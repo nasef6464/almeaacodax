@@ -15,3 +15,9 @@ Authorized review explanation reuses existing text generation; deterministic com
 - Independent read-only reviewer: no confirmed P1/P2. No provider or production data writes.
 
 Production publication and scoped verification pending. Isolated persistence plus browser fixture do not prove production content editing; no real bank annotations were created. No claims of new audible phone certification, free-form vision accuracy, handwritten glyph generation or production scale.
+
+## Published scoped evidence
+
+PR574 source85323dfd merged6aa10a001d91da0dda8410a4e1b16f47b5dde031 after17SUCCESS/5conditionalSKIP/all3requiredPASS. Vercel dpl_47jMDF7nQLPu8SHhdyQpeU3fDBs3 productionREADY/main alias; API6aa10a001d91/ready=true/DBconnected; PostDeploySmoke39135280562 SUCCESS. Initial429/timeout resolved during rollout; no access control bypass.
+
+Published owned learner390px PASS with1synthetic AI response and mocked speech/21APIreads, entry/vectorhand/v1fallback/pausecontrol/optionaltranscript/nooverflow. Original marker-style-after-pause assertion was transient and lost its marker after UI progression; harness now verifies explicit paused control state. No product correction was required. Published actual staff editor390px PASS on existing primary image: draw1box and approve UNSAVED draft, close browser without Save. No content/attempt/results/progress writes, zero real provider calls; normal authentication writes are separate. Actual metadata persistence remains certified by isolated HTTP, not a production content write. Proof scratch/whiteboard-verified-regions-published-proof.json and scratch/verified-regions-published-admin-proof.json. This update is carried in next focused UX batch; source code remains exact CI-tested release.

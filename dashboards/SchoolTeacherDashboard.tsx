@@ -34,8 +34,8 @@ const SCHOOL_TEACHER_NAV_ITEMS: Array<{ id: SchoolTeacherTab; label: string; ico
   { id: 'overview', label: 'نظرة عامة', icon: <LayoutDashboard size={19} /> },
   { id: 'smart-classroom', label: 'إدارة الحصص والجدول', icon: <Presentation size={19} /> },
   { id: 'prepared-questions', label: 'بنك التحضير المسبق', icon: <Target size={19} /> },
-  { id: 'reports', label: 'تقارير الحصص والمهارات', icon: <BarChart3 size={19} /> },
-  { id: 'skills-radar', label: 'رادار فجوات الفصول', icon: <Award size={19} /> },
+  { id: 'reports', label: 'تقارير الحصص', icon: <BarChart3 size={19} /> },
+  { id: 'skills-radar', label: 'مهارات الفصول', icon: <Award size={19} /> },
   { id: 'assessments', label: 'اختباراتي وتكليفاتي', icon: <BookOpenCheck size={19} /> },
   { id: 'certificates', label: 'شهادات التقدير والتحفيز', icon: <Trophy size={19} /> },
 ];

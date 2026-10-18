@@ -48,13 +48,13 @@ export const ClassroomQuestionFilterBar: React.FC<ClassroomQuestionFilterBarProp
 
   const availableSections = activeSubjectId
     ? sections.filter((sec) => sec.subjectId === activeSubjectId)
-    : sections;
+    : [];
 
   const availableSkills = activeSectionId
     ? skills.filter((sk) => sk.sectionId === activeSectionId)
     : activeSubjectId
       ? skills.filter((sk) => sk.subjectId === activeSubjectId)
-      : skills;
+      : [];
 
   const hasActiveFilters = Boolean(
     activePathId || activeSubjectId || activeSectionId || activeSkillId || filters.difficulty || filters.search
@@ -141,7 +141,7 @@ export const ClassroomQuestionFilterBar: React.FC<ClassroomQuestionFilterBarProp
         <div>
           <label className="block text-[11px] font-bold text-slate-500 mb-1">المهارة الرئيسية</label>
           <select
-            value={activeSectionId}
+            aria-label="المهارة الرئيسية" disabled={!activeSubjectId} value={activeSectionId}
             onChange={(e) =>
               onChange({
                 ...filters,
@@ -151,7 +151,7 @@ export const ClassroomQuestionFilterBar: React.FC<ClassroomQuestionFilterBarProp
             }
             className="w-full rounded-xl border border-slate-200 bg-white p-2 text-xs font-bold text-slate-800 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
           >
-            <option value="">كل المهارات الرئيسية</option>
+            <option value="">{activeSubjectId?'كل المهارات الرئيسية':'اختر المادة أولًا'}</option>
             {availableSections.map((sec) => (
               <option key={sec.id} value={sec.id}>
                 {sec.name}
@@ -164,11 +164,11 @@ export const ClassroomQuestionFilterBar: React.FC<ClassroomQuestionFilterBarProp
         <div>
           <label className="block text-[11px] font-bold text-slate-500 mb-1">المهارة الفرعية</label>
           <select
-            value={activeSkillId}
+            aria-label="المهارة الفرعية" disabled={!activeSubjectId} value={activeSkillId}
             onChange={(e) => onChange({ ...filters, skillId: e.target.value })}
             className="w-full rounded-xl border border-slate-200 bg-white p-2 text-xs font-bold text-slate-800 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
           >
-            <option value="">كل المهارات الفرعية</option>
+            <option value="">{activeSubjectId?'كل المهارات الفرعية':'اختر المادة أولًا'}</option>
             {availableSkills.map((sk) => (
               <option key={sk.id} value={sk.id}>
                 {sk.name}
