@@ -1,5 +1,5 @@
-import React, { useEffect, useId, useMemo, useRef } from 'react';
-import {createPortal} from 'react-dom';
+import React, { useId, useMemo } from 'react';
+import {DashboardDialog} from '../../components/DashboardDialog';
 import {
   Activity, Award, BookOpen, ChevronRight, TrendingDown,
   TrendingUp, Users, Zap, Clock, BarChart3, Target,
@@ -78,23 +78,6 @@ export const StudentIntelligenceProfile: React.FC<StudentIntelligenceProfileProp
   onClose, onSendAlert, onAssignTest, onOpenReport,
 }) => {
   const titleId = useId();
-  const dialogRef = useRef<HTMLDivElement>(null);
-  const closeRef = useRef<HTMLButtonElement>(null);
-  useEffect(() => {
-    const previousFocus = document.activeElement as HTMLElement | null;
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    closeRef.current?.focus();
-    return () => {document.body.style.overflow = previousOverflow;previousFocus?.focus();};
-  }, [student.id]);
-  const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === 'Escape') {event.preventDefault();event.stopPropagation();onClose();return;}
-    if (event.key !== 'Tab') return;
-    const elements = Array.from(dialogRef.current?.querySelectorAll<HTMLElement>('button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex="0"]') || []).filter(element => element.getClientRects().length > 0);
-    const first = elements[0], last = elements[elements.length - 1];
-    if (event.shiftKey && document.activeElement === first) {event.preventDefault();last?.focus();}
-    else if (!event.shiftKey && document.activeElement === last) {event.preventDefault();first?.focus();}
-  };
   // ── اشتقاق المهارات من كل النتائج ──────────────────────────────────────────
   const aggregatedSkills = useMemo(() => {
     const map = new Map<string, { skill: string; total: number; count: number }>();
@@ -137,14 +120,12 @@ export const StudentIntelligenceProfile: React.FC<StudentIntelligenceProfileProp
   };
   const sc = statusConfig[student.status];
 
-  if (typeof document === 'undefined') return null;
-  return createPortal(
-    <div dir="rtl" onKeyDown={handleKeyDown} onClick={event => {if (event.target === event.currentTarget) onClose();}} className="fixed inset-0 z-[100] bg-black/40 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6">
-      <div ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby={titleId} className="flex max-h-[calc(100dvh-1.5rem)] w-full max-w-2xl flex-col bg-white rounded-3xl shadow-2xl overflow-hidden sm:max-h-[calc(100dvh-3rem)]">
+  return (
+      <DashboardDialog key={student.id} onClose={onClose} labelledBy={titleId} className="max-w-2xl bg-white rounded-3xl shadow-2xl">
 
         {/* ── رأس الصفحة ── */}
         <div className="relative shrink-0 bg-gradient-to-br from-indigo-600 via-violet-600 to-purple-700 px-6 py-5 pl-16 text-white">
-          <button ref={closeRef} type="button" aria-label="إغلاق تفاصيل الطالب" onClick={onClose} className="absolute left-4 top-4 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors">
+          <button type="button" aria-label="إغلاق تفاصيل الطالب" onClick={onClose} className="absolute left-4 top-4 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors">
             <ArrowLeft size={18} />
           </button>
           <div className="flex items-start gap-4">
@@ -301,7 +282,6 @@ export const StudentIntelligenceProfile: React.FC<StudentIntelligenceProfileProp
           </div>
 
         </div>
-      </div>
-    </div>, document.body
+      </DashboardDialog>
   );
 };

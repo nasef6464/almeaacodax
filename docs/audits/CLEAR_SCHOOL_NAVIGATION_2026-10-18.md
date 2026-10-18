@@ -21,7 +21,15 @@ The supplied screenshot showed the student header behind the fixed site header a
 
 The profile now portals to `document.body`, above the site layers, with a viewport-bounded centered flex card and internally scrolling content. Header/close stay visible; the dialog is labelled, receives initial focus, traps Tab, closes on Escape and restores focus/body scrolling. Existing report, alert and assignment callbacks and all score derivation are unchanged.
 
+The shared presentation boundary is `components/DashboardDialog.tsx`, reused by the student profile and its assignment picker so moving between them does not reintroduce the same stacking problem. Student selection, titles and callbacks remain in the existing dashboard/profile.
+
 `test-student-profile-overlay-ui.mjs` reproduces a fixed child constrained by a transformed/clipped ancestor (RED:400px rather than740px coverage). GREEN additionally covers an opacity stacking ancestor beneath a128px site header at390/1280, using hit testing to prove the close button is above the header; checks all three actions, scrolling, focus, Escape, reopening, overflow and restoration. Screenshot review confirms the entire card stays in the viewport. No student record is required for this fixture.
+
+## Clarified assignment catalog
+
+The owner explicitly clarified that the individual-student assignment picker must list tests created by the current supervisor personally. The old predicate checked only `isPublished`, incorrectly admitting the platform catalog and other authors. `supervisorAssignmentCatalog.ts` now requires current `createdBy`, school ownership, central school mode and publication. Owner IDs and assigned-teacher IDs do not substitute for authorship. The picker resolves its selected definition from this same eligible list, shows an actionable empty state and preserves existing assignment persistence/alert callbacks. Backend authorization remains authoritative.
+
+`test-supervisor-own-assignment-catalog.ts` observed RED with the former broad publication predicate, then GREEN for the current author, other authors, assignment/owner-ID privilege widening, public definitions, drafts and missing identity. The canonical quiz object is retained. The existing supervisor dashboard contract also passes, including preserved assignment behavior. All seven existing navigation destinations are tested by opening their groups, with the current page restored and visibly selected; no hidden-text substitution.
 
 No authentication, RBAC, scoring, payment, schema or production data changes. No provider calls. This is navigation and display work, not a redesign of every school subsystem.
 
@@ -31,6 +39,6 @@ No authentication, RBAC, scoring, payment, schema or production data changes. No
 
 `test-staff-skills-entry-ui.mjs`: observed RED because choose-first was absent in the actual skill manager; GREEN for teacher/supervisor material switching/reset, no initial broad coverage read, pinned subject, unchanged admin listing, and readable school assessment labels. Gateways are isolated fixtures. This is a browser behavior test, not a production persistence claim.
 
-The existing school skills display and role-dashboard presentation browser suites pass, and the nine-part teacher/supervisor contract bundle passes. Question coverage, HTML safety and PLAN8 integrity contracts pass. Typecheck and production build are run for the final code. All three new browser suites are included in the existing isolated deep premerge gate. Independent read-only review found no confirmed P1/P2 issues in the navigation/skills slice. An additional reviewer turn for the final mobile caption was unavailable due to the reviewer usage limit; the screenshot repair is covered by direct diff inspection, the focused browser suite and required CI, not represented as independently reviewed.
+The existing school skills display and role-dashboard presentation browser suites pass, and the nine-part teacher/supervisor contract bundle passes. Question coverage, HTML safety and PLAN8 integrity contracts pass. Typecheck and production build are run for the final code. All three new browser suites are included in the existing isolated deep premerge gate. Independent read-only review found no confirmed P1/P2 issues in the navigation/skills slice. A subsequent independent read-only frontend review also found no actionable P1/P2 in the final shared dialog, profile and current-author assignment catalog. Reviewers did not run the tests; the execution evidence above comes from the primary worktree.
 
 Published journeys and exact-head CI are release requirements and remain pending until separately recorded. No synthetic production records will be created for navigation certification.
