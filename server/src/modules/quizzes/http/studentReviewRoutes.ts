@@ -6,7 +6,7 @@ import { z } from "zod";
 import { requireAuth } from "../../../middleware/auth.js";
 import { QuestionModel } from "../../../models/Question.js";
 import { ReviewCardModel } from "../../../models/ReviewCard.js";
-import { normalizeQuestionOptions } from "../presentation/reviewQuestionPresentation.js";
+import { normalizeQuestionOptions,reviewQuestionAiContext } from "../presentation/reviewQuestionPresentation.js";
 import { asyncHandler } from "../../../utils/asyncHandler.js";
 
 const libraryQuerySchema = z.object({
@@ -114,7 +114,7 @@ studentReviewRouter.get(
           teachingImageVersion: teachingImageIdentity(question)?.version,
           imageAlt: String(question.imageAlt || ""),
           optionsEmbeddedInImage: Boolean(question.optionsEmbeddedInImage),
-          aiContext: question.aiContext || undefined,
+          aiContext: reviewQuestionAiContext(question.aiContext),
           voiceExplanation: question.voiceExplanation || undefined,
           skillIds: Array.isArray(question.skillIds) ? question.skillIds.map(String) : [],
           skillId: question.skillId ? String(question.skillId) : undefined,

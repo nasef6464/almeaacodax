@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { Question } from '../../../types';
 import { RichTextEditor } from '../../../components/RichTextEditor';
 import { QuestionVoiceExplanationEditor } from './QuestionVoiceExplanationEditor';
+import {QuestionTeachingRegionsEditor} from './QuestionTeachingRegionsEditor';
 import { Save, X, Wand2, Loader2, BookOpen, ImagePlus, Trash2 } from 'lucide-react';
 import { useStore } from '../../../store/useStore';
 import { generateQuizQuestion } from '../../../services/aiService';
@@ -53,6 +54,7 @@ const normalizeQuestionForEditing = (source?: Partial<Question>, fallbackSubject
     skillIds: [],
     subSkillIds: [],
     ...(source || {}),
+    sourceMeta:source?.imageUrl?{...source.sourceMeta,imageVersion:source.sourceMeta?.imageVersion||1}:source?.sourceMeta,
     type,
     options,
     correctOptionIndex: Math.max(0, Math.min(Number(source?.correctOptionIndex ?? 0), Math.max(options.length - 1, 0))),
@@ -181,9 +183,11 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
         ...prev,
         imageUrl: uploaded.publicUrl,
         imageAlt: prev.imageAlt || prev.questionCode || 'صورة السؤال',
+        aiContext:{...prev.aiContext,teachingRegions:undefined},
         sourceMeta: {
           ...(prev.sourceMeta || {}),
           imageVersion: Math.max(1, Number(prev.sourceMeta?.imageVersion || (prev.imageUrl ? 1 : 0)) + 1),
+          imageHash:'',
         },
       }));
     } catch (error) {
@@ -404,9 +408,7 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
               <div className="mt-3 rounded-xl bg-red-50 px-3 py-2 text-xs font-bold text-red-700">{questionImageError}</div>
             ) : null}
             {question.imageUrl ? (
-              <div className="mt-4 overflow-hidden rounded-2xl border border-indigo-100 bg-white p-2">
-                <img src={question.imageUrl} alt={question.imageAlt || 'صورة السؤال'} className="mx-auto max-h-80 w-full object-contain" />
-              </div>
+              <QuestionTeachingRegionsEditor question={question} value={question.aiContext?.teachingRegions} disabled={isSaving||isUploadingQuestionImage} onChange={teachingRegions=>setQuestion(prev=>({...prev,aiContext:{...prev.aiContext,teachingRegions}}))}/>
             ) : (
               <div className="mt-3 text-xs font-bold text-slate-500">لا توجد صورة أساسية للسؤال بعد.</div>
             )}

@@ -11,7 +11,7 @@ import { ReviewCardModel } from "../models/ReviewCard.js";
 import { SkillProgressModel } from "../models/SkillProgress.js";
 import { SubjectModel } from "../models/Subject.js";
 import { updateSkillProgressFromQuestionAttempt } from "../modules/quizzes/application/quizSubmissionSideEffects.js";
-import { normalizeQuestionOptions } from "../modules/quizzes/presentation/reviewQuestionPresentation.js";
+import { normalizeQuestionOptions,reviewQuestionAiContext } from "../modules/quizzes/presentation/reviewQuestionPresentation.js";
 import { sm2 } from "../services/spacedRepetition.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
@@ -128,7 +128,7 @@ reviewRouter.get(
             solvingStrategy: String(question.solvingStrategy || ""),
             videoUrl: String(question.videoUrl || ""),
             optionsEmbeddedInImage: Boolean(question.optionsEmbeddedInImage),
-            aiContext: question.aiContext || undefined,
+            aiContext: reviewQuestionAiContext(question.aiContext),
             voiceExplanation: question.voiceExplanation || undefined,
             type: String(question.type || "mcq"),
             skillIds: Array.isArray(question.skillIds) ? question.skillIds.map(String) : [],

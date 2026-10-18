@@ -3,10 +3,18 @@ on:
   pull_request:
     paths:
       - 'components/results/**'
+      - 'dashboards/admin/builders/QuestionTeachingRegionsEditor.tsx'
+      - 'dashboards/admin/builders/UnifiedQuestionBuilder.tsx'
+      - 'types.ts'
+      - 'server/src/models/Question.ts'
+      - 'server/src/models/questionTeachingRegions.ts'
       - 'server/src/modules/ai/**'
       - 'server/src/routes/ai.routes.ts'
       - 'server/src/config/env.ts'
       - 'server/src/modules/quizzes/presentation/questionPresentation.ts'
+      - 'server/src/modules/quizzes/presentation/reviewQuestionPresentation.ts'
+      - 'server/src/modules/quizzes/http/questionQuerySchemas.ts'
+      - 'server/src/modules/quizzes/http/questionBankRoutes.ts'
       - 'server/src/modules/quizzes/application/quizSubmissionAnswerReview.ts'
       - 'server/src/modules/quizzes/http/studentReviewRoutes.ts'
       - 'server/src/routes/review.routes.ts'
@@ -14,6 +22,7 @@ on:
       - 'scripts/test-teaching-*.**'
       - 'scripts/fixtures/teaching-board.*'
       - 'scripts/fixtures/teaching-image.*'
+      - 'scripts/fixtures/teaching-regions.*'
       - '.github/workflows/teaching-board-gate.yml'
 jobs:
   teaching-board:
@@ -47,10 +56,13 @@ jobs:
       - run: node --import ./server/node_modules/tsx/dist/loader.mjs scripts/test-teaching-image-grounding.ts
       - run: node --import ./server/node_modules/tsx/dist/loader.mjs scripts/test-teaching-image-motion.ts
       - run: node --import ./server/node_modules/tsx/dist/loader.mjs scripts/test-teaching-image-http.ts
+      - run: node --import ./server/node_modules/tsx/dist/loader.mjs scripts/test-teaching-verified-regions.ts
+      - run: node --import ./server/node_modules/tsx/dist/loader.mjs scripts/test-teaching-regions-http.ts
       - run: npx playwright install --with-deps chromium
       - run: node scripts/test-teaching-board-browser.mjs --artifacts=audit-artifacts/teaching-board
       - run: node scripts/test-teaching-motion-browser.mjs --artifacts=audit-artifacts/teaching-board
       - run: node scripts/test-teaching-image-browser.mjs --artifacts=audit-artifacts/teaching-board
+      - run: node scripts/test-teaching-regions-browser.mjs --artifacts=audit-artifacts/teaching-board
       - uses: actions/upload-artifact@v4
         if: always()
         with:

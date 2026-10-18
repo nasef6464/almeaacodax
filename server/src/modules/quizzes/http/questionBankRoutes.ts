@@ -1,4 +1,5 @@
 import { assertSchoolQuestionBankWrite } from '../application/schoolAssessmentQuestionEvidence.js';
+import {invalidateStaleTeachingRegions} from '../../ai/contracts/verifiedTeachingRegions.js';
 import { Router } from "express";
 import { StatusCodes } from "http-status-codes";
 import mongoose from "mongoose";
@@ -242,7 +243,7 @@ questionBankRouter.post(
     if (!approvalIntegrity.ok) {
       return res.status(StatusCodes.BAD_REQUEST).json({ message: approvalIntegrity.message });
     }
-    const created = await QuestionModel.create(payload);
+    const created = await QuestionModel.create(invalidateStaleTeachingRegions(payload));
     res.status(StatusCodes.CREATED).json(created);
   }),
 );
@@ -345,6 +346,8 @@ questionBankRouter.patch(
         return res.status(StatusCodes.BAD_REQUEST).json({ message: approvalIntegrity.message });
       }
     }
+    const regionSafe = invalidateStaleTeachingRegions(mergedPayload);
+    if(regionSafe!==mergedPayload) payload.aiContext=regionSafe.aiContext;
     const sanitizedPayload = sanitizeWorkflowUpdate(
       { ...payload, skillIds: canonicalSkills.skillIds, skillId: canonicalSkills.skillId, subSkillId: canonicalSkills.subSkillId, subSkillIds: canonicalSkills.subSkillIds } as Record<string, unknown>,
       req.authUser!,

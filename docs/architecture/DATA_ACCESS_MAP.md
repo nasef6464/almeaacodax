@@ -1,3 +1,7 @@
+## Approved image regions — 2026-10-18
+Optional Question.aiContext.teachingRegions uses existing protected question-bank POST/PATCH and existing school/staff scope. No collection/query/index added. Both owned review DTOs strip staff metadata; learner sees only opaque image identity and approved normalized box marks through authorized AI response. Existing learner sanitization removes aiContext.
+Evidence: docs/audits/VERIFIED_TEACHING_REGIONS_2026-10-18.md (release pending).
+
 Teaching image version (2026-10-18): current owned review question projections additionally select sourceMeta.imageHash/imageVersion solely to compute opaque teachingImageVersion; raw source metadata is not returned by learner projection. New result review snapshots may retain this optional opaque version; no historical backfill/scoring change. Existing AiQuestionAssistCache stores compact v2 text/marks, never image bytes; existing school/source/private boundaries retained. No new query/collection/index.
 
 ## On-demand teaching scenario cache — 2026-10-17 (PR569 pending)

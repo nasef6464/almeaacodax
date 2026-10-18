@@ -1,5 +1,7 @@
 import { eligibleTeachingImageIdentity, generateTeachingImageLesson, teachingImageSchema } from "../modules/ai/application/teachingImageLesson.js";
 import { TEACHING_IMAGE_GROUNDING_POLICY } from '../modules/ai/application/teachingImageGrounding.js';
+import {approvedTeachingRegions} from '../modules/ai/contracts/verifiedTeachingRegions.js';
+import {attachVerifiedTeachingRegions} from '../modules/ai/application/verifiedTeachingRegions.js';
 import { loadTeachingQuestionImage } from "../modules/ai/infrastructure/teachingQuestionImage.js";
 import { teachingImageIdentity } from "../modules/ai/application/teachingImageIdentity.js";
 import {createSchoolSpecInterpreter} from '../modules/quizzes/application/schoolAssessmentCompositionAi.js';
@@ -1627,7 +1629,7 @@ aiRouter.post(
       && JSON.stringify(reviewOptions) === JSON.stringify(bankOptions) && trustedExplanation === canonicalReference
       && String(review?.imageUrl || '') === String((question as any).imageUrl || '')
       && correctOptionIndex === (question as any).correctOptionIndex;
-    const visualIdentity = eligibleTeachingImageIdentity(payload, question, env.AI_TEACHING_IMAGE_ENABLED === "true", payload.context !== "result_review" || Boolean(canonicalReview));
+    const visualIdentity = eligibleTeachingImageIdentity(payload, question, env.AI_TEACHING_IMAGE_ENABLED === "true" && !approvedTeachingRegions(question), payload.context !== "result_review" || Boolean(canonicalReview));
     const sharedLesson = canonicalReview ? sharedTeachingScenario(payload, {
       questionId: payload.questionId, questionCode, questionVersion: String((question as any).updatedAt || ''),
       questionText, options, correctOptionIndex, explanation: canonicalReference, skillLabels, visualDescription, hasImage,
@@ -1848,9 +1850,10 @@ aiRouter.post(
         timeoutMs: env.AI_REQUEST_TIMEOUT_MS,
         maxOutputTokens: env.AI_QUESTION_ASSISTANT_MAX_OUTPUT_TOKENS,
       });
-      const responseText = visual ? (visual.storyboard ? JSON.stringify(visual.storyboard) : fallback) : payload.boardMode
+      const baseResponseText = visual ? (visual.storyboard ? JSON.stringify(visual.storyboard) : fallback) : payload.boardMode
         ? normalizeQuestionTeachingPlan(String(resultCall.text || "").slice(0, 16000), fallback, { mode: teachingMode, language: teachingLanguage, trustedAnswer: trustedTeachingAnswer })
         : String(resultCall.text || fallback).trim().slice(0, 4_000);
+      const responseText = attachVerifiedTeachingRegions(baseResponseText,payload,question,payload.context!=="result_review"||Boolean(canonicalReview));
       const provider = resultCall.text ? resultCall.provider : "none";
       const model = resultCall.text ? resultCall.model : "local-fallback";
       const cacheMinutes = provider === "none"
