@@ -35,7 +35,8 @@ try {
   await page.route('https://fixture.images/**', async route => {
     const n=Number(new URL(route.request().url()).pathname.match(/(\d+)\.png/)[1]);
     const portrait=n===3; const w=portrait?180:600,h=portrait?500:220;
-    const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><rect width="100%" height="100%" fill="white"/><rect x="${w*.1}" y="${h*.2}" width="${w*.4}" height="${h*.3}" fill="#e0f2fe" stroke="#0e7490" stroke-width="3"/><text x="${w*.2}" y="${h*.4}" font-size="24">${['6 × 4','1/2 + 1/4','A | B','معطيات السؤال'][n]||''}</text></svg>`;
+    const drawing=n===0?'<rect x="110" y="40" width="330" height="130" fill="#e0f2fe" stroke="#0e7490" stroke-width="3"/><text x="270" y="210" font-size="36">6</text><text x="465" y="115" font-size="36">4</text>':n===1?'<g font-size="38" text-anchor="middle"><text x="200" y="75">1</text><path d="M165 95H235" stroke="black" stroke-width="3"/><text x="200" y="145">2</text><text x="300" y="115">+</text><text x="400" y="75">1</text><path d="M365 95H435" stroke="black" stroke-width="3"/><text x="400" y="145">4</text></g>':n===2?'<rect x="80" y="30" width="440" height="150" fill="#e0f2fe" stroke="#0e7490" stroke-width="3"/><path d="M300 30V180M80 100H520" stroke="#0e7490" stroke-width="3"/><text x="175" y="80" font-size="38">A</text><text x="395" y="80" font-size="38">B</text>':`<rect x="${w*.1}" y="${h*.2}" width="${w*.7}" height="${h*.5}" fill="#e0f2fe" stroke="#0e7490" stroke-width="3"/><text x="${w*.15}" y="${h*.4}" font-size="22">معطيات السؤال</text>`;
+    const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><rect width="100%" height="100%" fill="white"/>${drawing}</svg>`;
     await new Promise(r=>setTimeout(r,200));await route.fulfill({status:200,contentType:'image/svg+xml',body:svg});
   });
   await page.goto(`http://127.0.0.1:${server.address().port}`);
@@ -60,7 +61,10 @@ try {
     await page.getByTestId('teacher-question').locator('summary').click();assert.equal(await page.getByTestId('teaching-image-overlay').isVisible(),false);
     await page.getByTestId('teacher-question').locator('summary').click();await page.getByTestId('teaching-image-mark').waitFor();
     await page.screenshot({path:path.join(artifacts,name+'-390.png')});
-    await page.getByTestId('teacher-question').locator('img').screenshot({path:path.join(artifacts,'source-'+name+'.png')});
+    const overlay=page.getByTestId('teaching-image-content-rect');
+    await overlay.evaluate(e=>{e.style.visibility='hidden';});
+    try{await page.getByTestId('teacher-question').locator('img').screenshot({path:path.join(artifacts,'source-'+name+'.png')});}
+    finally{await overlay.evaluate(e=>{e.style.visibility='';});}
     await page.getByRole('button',{name:'All',exact:true}).click();assert.equal(await page.getByTestId('teaching-image-mark').count(),3);
     await page.emulateMedia({reducedMotion:'reduce'});await page.getByRole('button',{name:'Half',exact:true}).click();
     assert.equal(await page.getByTestId('whiteboard-marker').isVisible(),false);

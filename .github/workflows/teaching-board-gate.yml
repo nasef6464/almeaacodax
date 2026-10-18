@@ -5,14 +5,29 @@ on:
       - 'components/results/**'
       - 'server/src/modules/ai/**'
       - 'server/src/routes/ai.routes.ts'
+      - 'server/src/config/env.ts'
+      - 'server/src/modules/quizzes/presentation/questionPresentation.ts'
+      - 'server/src/modules/quizzes/application/quizSubmissionAnswerReview.ts'
+      - 'server/src/modules/quizzes/http/studentReviewRoutes.ts'
+      - 'server/src/routes/review.routes.ts'
       - 'services/apiGroups/aiApi.ts'
       - 'scripts/test-teaching-*.**'
       - 'scripts/fixtures/teaching-board.*'
+      - 'scripts/fixtures/teaching-image.*'
       - '.github/workflows/teaching-board-gate.yml'
 jobs:
   teaching-board:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    services:
+      mongo:
+        image: mongo:7
+        ports: ['27017:27017']
+        options: >-
+          --health-cmd "mongosh --quiet --eval 'db.adminCommand({ping:1})'"
+          --health-interval 10s --health-timeout 5s --health-retries 10
+    env:
+      ASSESSMENT_TEST_MONGODB_URI: mongodb://127.0.0.1:27017/teaching_image_test
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -25,9 +40,16 @@ jobs:
       - run: node --import ./server/node_modules/tsx/dist/loader.mjs scripts/test-teaching-audio.ts
       - run: node --import ./server/node_modules/tsx/dist/loader.mjs scripts/test-teaching-motion.ts
       - run: node --import ./server/node_modules/tsx/dist/loader.mjs scripts/test-teaching-scenario-cache.ts
+      - run: node --import ./server/node_modules/tsx/dist/loader.mjs scripts/test-teaching-image.ts
+      - run: node --import ./server/node_modules/tsx/dist/loader.mjs scripts/test-teaching-image-loader.ts
+      - run: node --import ./server/node_modules/tsx/dist/loader.mjs scripts/test-teaching-image-provider.ts
+      - run: node --import ./server/node_modules/tsx/dist/loader.mjs scripts/test-teaching-image-lesson.ts
+      - run: node --import ./server/node_modules/tsx/dist/loader.mjs scripts/test-teaching-image-motion.ts
+      - run: node --import ./server/node_modules/tsx/dist/loader.mjs scripts/test-teaching-image-http.ts
       - run: npx playwright install --with-deps chromium
       - run: node scripts/test-teaching-board-browser.mjs --artifacts=audit-artifacts/teaching-board
       - run: node scripts/test-teaching-motion-browser.mjs --artifacts=audit-artifacts/teaching-board
+      - run: node scripts/test-teaching-image-browser.mjs --artifacts=audit-artifacts/teaching-board
       - uses: actions/upload-artifact@v4
         if: always()
         with:
