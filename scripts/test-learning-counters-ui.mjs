@@ -32,14 +32,15 @@ try{
   assert.ok(box.height<=68,`counter strip ${box.height}px must stay compact at ${width}px`);
   for(const group of await page.getByRole('group').all()){
    assert.ok((await group.boundingBox()).height<=68,'foundation and mock counters remain one compact row');
-   const cells=await group.locator(':scope > *').all();
-   const positions=await Promise.all(cells.map(cell=>cell.boundingBox()));
+   // Read siblings in one layout snapshot; per-element protocol reads can sample different positions during layout changes.
+   const positions=await group.evaluate(node=>Array.from(node.children,cell=>{const b=cell.getBoundingClientRect();return {x:b.x,y:b.y,width:b.width,height:b.height};}));
    assert.equal(positions.length,3);
    assert.ok(positions.every(p=>Math.abs(p.y-positions[0].y)<2));
   }
   const buttons=await counters.getByRole('button').all();
   assert.equal(buttons.length,3,'one control for each filter, without duplicate counter cards');
-  const bounds=await Promise.all(buttons.map(b=>b.boundingBox()));
+  const bounds=await counters.locator('button').evaluateAll(nodes=>nodes.map(node=>{const b=node.getBoundingClientRect();return {x:b.x,y:b.y,width:b.width,height:b.height};}));
+  assert.equal(bounds.length,3,'geometry snapshot must contain all filter buttons');
   assert.ok(bounds.every(b=>b.height>=44&&b.width>=44),'retain touch targets');
   assert.ok(bounds.every(b=>Math.abs(b.y-bounds[0].y)<2),'all three counters share one row');
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'no horizontal overflow');
