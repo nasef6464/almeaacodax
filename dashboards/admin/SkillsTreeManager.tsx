@@ -15,6 +15,7 @@ interface SkillsTreeManagerProps {
 
 export const SkillsTreeManager: React.FC<SkillsTreeManagerProps> = ({ subjectId }) => {
   const {
+    user,
     paths,
     subjects,
     sections,
@@ -35,6 +36,8 @@ export const SkillsTreeManager: React.FC<SkillsTreeManagerProps> = ({ subjectId 
 
   const [selectedPathId, setSelectedPathId] = useState<string>('');
   const [selectedSubjectId, setSelectedSubjectId] = useState<string>(subjectId || '');
+  const isStaff = user?.role === 'teacher' || user?.role === 'supervisor';
+  const needsSubject = isStaff && !subjectId && !selectedSubjectId;
   const [expandedMainSkillId, setExpandedMainSkillId] = useState<string | null>(null);
   const [expandedSubSkillId, setExpandedSubSkillId] = useState<string | null>(null);
 
@@ -57,7 +60,7 @@ export const SkillsTreeManager: React.FC<SkillsTreeManagerProps> = ({ subjectId 
   );
 
   const mainSkills = useMemo(
-    () => sections.filter((section) => {
+    () => needsSubject ? [] : sections.filter((section) => {
       if (subjectId) return section.subjectId === subjectId;
       if (selectedSubjectId) return section.subjectId === selectedSubjectId;
       if (selectedPathId) {
@@ -65,7 +68,7 @@ export const SkillsTreeManager: React.FC<SkillsTreeManagerProps> = ({ subjectId 
       }
       return true;
     }),
-    [filteredSubjects, sections, selectedPathId, selectedSubjectId, subjectId]
+    [filteredSubjects, sections, selectedPathId, selectedSubjectId, subjectId, needsSubject]
   );
 
   const subSkillsByMainSkill = useMemo(() => {
@@ -116,6 +119,10 @@ export const SkillsTreeManager: React.FC<SkillsTreeManagerProps> = ({ subjectId 
 
   useEffect(() => {
     let active = true;
+    if (needsSubject) {
+      setServerQuestionCount(null);setSubSkillCounts(null);setSectionQuestionCounts(null);setIsLoadingServerQuestionCount(false);
+      return;
+    }
     const loadQuestionCoverage = async () => {
       setIsLoadingServerQuestionCount(true);
       try {
@@ -145,7 +152,7 @@ export const SkillsTreeManager: React.FC<SkillsTreeManagerProps> = ({ subjectId 
     return () => {
       active = false;
     };
-  }, [selectedPathId, selectedSubjectId, subjectId]);
+  }, [selectedPathId, selectedSubjectId, subjectId, needsSubject]);
 
   const handleSubSkillQuestionCount = useCallback((id: string, count: number) => {
     setSubSkillCounts((prev) => {
@@ -422,7 +429,8 @@ export const SkillsTreeManager: React.FC<SkillsTreeManagerProps> = ({ subjectId 
         </div>
         <button
           onClick={openAddMainSkillModal}
-          className="bg-indigo-600 text-white px-4 py-2 rounded-xl font-bold hover:bg-indigo-700 transition-colors flex items-center gap-2 shadow-sm"
+          disabled={needsSubject}
+          className="bg-indigo-600 text-white px-4 py-2 rounded-xl font-bold hover:bg-indigo-700 transition-colors flex items-center gap-2 shadow-sm disabled:opacity-50"
         >
           <Plus size={18} />
           إضافة مهارة رئيسة
@@ -448,13 +456,13 @@ export const SkillsTreeManager: React.FC<SkillsTreeManagerProps> = ({ subjectId 
           <select
             data-testid="skills-filter-subject"
             value={selectedSubjectId}
-            onChange={(e) => setSelectedSubjectId(e.target.value)}
+            onChange={(e) => {setSelectedSubjectId(e.target.value);setExpandedMainSkillId(null);setExpandedSubSkillId(null);}}
             className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 flex-1"
-            aria-label="فلتر المادة - اختر المسار أولا"
-            title="اختر المسار أولا لتفعيل فلتر المواد"
-            disabled={!selectedPathId}
+            aria-label={isStaff ? 'المادة' : 'فلتر المادة - اختر المسار أولا'}
+            title={isStaff ? 'اختر المادة لعرض مهاراتها' : 'اختر المسار أولا لتفعيل فلتر المواد'}
+            disabled={!isStaff && !selectedPathId}
           >
-            <option value="">كل المواد</option>
+            <option value="">{isStaff ? 'اختر المادة' : 'كل المواد'}</option>
             {filteredSubjects.map((subject) => (
               <option key={subject.id} value={subject.id}>{subject.name}</option>
             ))}
@@ -462,7 +470,7 @@ export const SkillsTreeManager: React.FC<SkillsTreeManagerProps> = ({ subjectId 
         </div>
       )}
 
-      <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
+      {needsSubject ? <p role="status" className="rounded-2xl border border-sky-200 bg-sky-50 p-6 text-center text-sm font-bold text-sky-800">اختر المادة لعرض مهاراتها</p> : <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
         <div data-testid="skills-counter-main" className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
           <div className="text-gray-500 text-sm mb-1">المهارات الرئيسة</div>
           <div className="text-2xl font-bold text-indigo-600">{mainSkills.length}</div>
@@ -489,6 +497,7 @@ export const SkillsTreeManager: React.FC<SkillsTreeManagerProps> = ({ subjectId 
         </div>
       </div>
 
+      }
       <div className="space-y-4">
         {mainSkills.map((mainSkill) => {
           const mainSubSkills = subSkillsByMainSkill.get(mainSkill.id) || [];

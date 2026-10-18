@@ -5,9 +5,10 @@ import { Menu, X } from 'lucide-react';
 interface DashboardLayoutProps {
     children: React.ReactNode;
     sidebar: React.ReactNode;
+    workspaceTitle?: string;
 }
 
-export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, sidebar }) => {
+export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, sidebar, workspaceTitle = 'إدارة المنصة' }) => {
     const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
     return (
@@ -25,7 +26,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, side
                     <Menu size={16} className="text-indigo-600" />
                     <span>أقسام اللوحة والتبويبات</span>
                 </button>
-                <span className="text-[11px] font-bold text-gray-400">إدارة المنصة</span>
+                <span className="text-[11px] font-bold text-gray-400">{workspaceTitle}</span>
             </div>
 
             {/* Mobile Slide-Over Drawer */}

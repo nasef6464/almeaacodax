@@ -182,9 +182,19 @@ async function inspectRoute(page, viewport, routeSpec) {
     if (mobile) await page.getByRole('button', { name: 'فتح أقسام لوحة التحكم', exact: true }).click();
     const navigation = page.locator('nav[aria-label="أقسام اللوحة"]:visible');
     navigationLabels = await navigation.getByRole('button').allTextContents();
+    // Prove reachability by actually opening each group, rather than requiring
+    // all tools to compete on screen or counting hidden button text as visible.
+    for (const summary of await navigation.locator('summary').all()) {
+      if (await summary.locator('..').getAttribute('open') === null) await summary.click();
+      navigationLabels.push(...await navigation.getByRole('button').allTextContents());
+      if (mobile && !(await page.getByRole('dialog').isVisible())) throw new Error('Group expansion closed the navigation drawer');
+    }
+    navigationLabels = [...new Set(navigationLabels)];
+    const currentGroup = navigation.locator('details').filter({has:page.locator('button[aria-current="page"]')});
+    if (await currentGroup.count() && await currentGroup.getAttribute('open') === null) await currentGroup.locator('summary').click();
     const expected = ['الملخص العام', 'متابعة الطلاب', 'الحصص المباشرة', 'الاختبارات والتحليل', 'المراقبة الحية', 'خريطة المهارات', 'تقارير الأداء'];
     const missing = expected.filter(label => !navigationLabels.some(text => text.includes(label)));
-    const activeCount = await navigation.locator('button[aria-current="page"]').count();
+    const activeCount = await navigation.locator('button[aria-current="page"]:visible').count();
     if (missing.length || activeCount !== 1) navigationFailure = `missing navigation: ${missing.join(',')}; active=${activeCount}`;
     if (mobile) await page.getByRole('button', { name: 'إغلاق القائمة', exact: true }).click();
   }

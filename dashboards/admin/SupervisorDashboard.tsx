@@ -1,5 +1,7 @@
 import { SupervisorFollowUpPriorities } from './SupervisorFollowUpPriorities';
-import { DashboardSectionNav } from '../../components/DashboardSectionNav';
+import {ownPublishedSchoolAssessments} from './supervisorTests/supervisorAssignmentCatalog';
+import {DashboardDialog} from '../../components/DashboardDialog';
+import { DashboardSectionBreadcrumb, DashboardSectionNav } from '../../components/DashboardSectionNav';
 import { DisplayListControls, useDisplayLimit } from '../../components/DisplayListControls';
 import { resolveSupervisorSchoolScope } from '../../utils/supervisorSchoolScope';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -552,9 +554,16 @@ export const SupervisorDashboard: React.FC = () => {
     { id: 'skills' as const, label: 'خريطة المهارات', icon: <Target size={20} /> },
     { id: 'reports' as const, label: 'تقارير الأداء', icon: <ClipboardList size={20} /> },
   ];
+  const sidebarGroups = [
+    { label: 'الرئيسية', ids: ['overview'] },
+    { label: 'الطلاب والحصص', ids: ['students', 'live-sessions'] },
+    { label: 'الاختبارات والمراقبة', ids: ['tests', 'live-monitoring'] },
+    { label: 'المهارات والتقارير', ids: ['skills', 'reports'] },
+  ];
 
   return (
     <DashboardLayout
+      workspaceTitle="الإشراف"
       sidebar={
         <div className="py-6 space-y-1">
           <div className="mb-8 px-6">
@@ -564,15 +573,12 @@ export const SupervisorDashboard: React.FC = () => {
             </h2>
             <p className="text-xs text-gray-500 mt-1">متابعة الفصول والمهارات والتقارير</p>
           </div>
-          <DashboardSectionNav items={sidebarItems.map(item => ({ ...item, badge: item.id === 'students' ? `${supervisorScopeSummary.weakStudentsCount} ضعيف` : undefined }))} activeId={activeTab} onSelect={id => setActiveTab(id as SupervisorTab)} groups={[
-            { label: 'البداية', ids: ['overview'] },
-            { label: 'العمل اليومي', ids: ['students', 'tests', 'live-sessions'] },
-            { label: 'التحليل والمتابعة', ids: ['skills', 'reports', 'live-monitoring'] },
-          ]} />
+          <DashboardSectionNav collapsible items={sidebarItems.map(item => ({ ...item, badge: item.id === 'students' ? `${supervisorScopeSummary.weakStudentsCount} ضعيف` : undefined }))} activeId={activeTab} onSelect={id => setActiveTab(id as SupervisorTab)} groups={sidebarGroups} />
         </div>
       }
     >
       <div className="space-y-6 animate-fade-in print:bg-white print:p-0">
+        <DashboardSectionBreadcrumb items={sidebarItems} groups={sidebarGroups} activeId={activeTab} homeLabel="لوحة الإشراف" onHome={() => setActiveTab('overview')} />
         {/* Mobile-only page title — always visible for auditing, sidebar title is hidden on small screens */}
         <div className="flex md:hidden items-center gap-2 px-1 pt-1">
           <GraduationCap className="text-indigo-600 shrink-0" size={20} />
@@ -1793,27 +1799,27 @@ export const SupervisorDashboard: React.FC = () => {
           .filter((g) => (user.groupIds || []).includes(g.id) || g.supervisorIds?.includes(user.id))
           .map((g) => ({ id: g.id, name: g.name, studentIds: g.studentIds }));
         // اختبارات المشرف المنشورة فقط
-        const supervisorQuizzes = quizzes.filter((q) => q.isPublished);
+        const supervisorQuizzes = ownPublishedSchoolAssessments(quizzes, user.id);
         const pickedQuiz = supervisorQuizzes.find((q) => q.id === pickedQuizId);
         return (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-            <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden">
-              <div className="bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-4 text-white flex items-center justify-between">
+          <DashboardDialog label="إرسال اختبار لطالب" onClose={() => {setAssignToStudentId(null);setPickedQuizId('');}} className="max-w-md bg-white rounded-2xl shadow-2xl">
+              <div className="shrink-0 bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-4 text-white flex items-center justify-between">
                 <div>
                   <p className="text-xs font-bold opacity-80">إرسال اختبار لطالب</p>
                   <h3 className="text-base font-black">{student?.name || assignToStudentId}</h3>
                   {studentGroup && <p className="text-xs opacity-70">{studentGroup.name}</p>}
                 </div>
-                <button type="button" onClick={() => { setAssignToStudentId(null); setPickedQuizId(''); }}
+                <button type="button" aria-label="إغلاق توجيه الاختبار" onClick={() => { setAssignToStudentId(null); setPickedQuizId(''); }}
                   className="p-1.5 hover:bg-white/20 rounded-lg transition-colors">
                   <span className="text-white font-black text-lg">✕</span>
                 </button>
               </div>
-              <div className="p-5 max-h-[80vh] overflow-y-auto space-y-3">
+              <div className="min-h-0 p-5 overflow-y-auto space-y-3">
                 {/* اختيار الاختبار */}
                 <div>
-                  <label className="text-xs font-black text-gray-700 mb-1.5 block">اختر الاختبار</label>
+                  <label htmlFor="supervisor-student-assessment" className="text-xs font-black text-gray-700 mb-1.5 block">اختباراتي المدرسية المنشورة</label>
                   <select
+                    id="supervisor-student-assessment"
                     value={pickedQuizId}
                     onChange={(e) => setPickedQuizId(e.target.value)}
                     className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm font-bold text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-400"
@@ -1823,6 +1829,7 @@ export const SupervisorDashboard: React.FC = () => {
                       <option key={q.id} value={q.id}>{q.title}</option>
                     ))}
                   </select>
+                  {supervisorQuizzes.length === 0 && <div className="mt-3 rounded-xl border border-dashed border-sky-200 bg-sky-50 p-3 text-sm text-sky-900"><p>انشر اختبارًا مدرسيًا من إنشائك ليظهر هنا.</p><button type="button" onClick={() => {setAssignToStudentId(null);setPickedQuizId('');setActiveTab('tests');}} className="mt-2 rounded-lg border border-sky-200 bg-white px-3 py-2 font-bold">إدارة الاختبارات</button></div>}
                 </div>
                 {pickedQuiz && (
                   <QuizAssignWidget
@@ -1860,8 +1867,7 @@ export const SupervisorDashboard: React.FC = () => {
                   />
                 )}
               </div>
-            </div>
-          </div>
+          </DashboardDialog>
         );
       })()}
 

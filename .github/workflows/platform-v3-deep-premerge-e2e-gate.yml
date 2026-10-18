@@ -243,6 +243,10 @@ jobs:
           node scripts/smoke-supervisor-assessment-report-ui.mjs
           node scripts/test-school-assessment-report-ui.mjs
           node scripts/test-school-assessment-management-ui.mjs
+            node scripts/test-school-workspace-navigation-ui.mjs
+            node scripts/test-staff-skills-entry-ui.mjs
+            node scripts/test-student-profile-overlay-ui.mjs
+            server/node_modules/.bin/tsx scripts/test-supervisor-own-assignment-catalog.ts
           node scripts/test-school-assessment-composition-ui.mjs
           node scripts/test-school-assessment-commands-ui.mjs
           node scripts/test-school-assessment-subjects-ui.mjs

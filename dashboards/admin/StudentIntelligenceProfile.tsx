@@ -1,4 +1,5 @@
-import React, { useMemo } from 'react';
+import React, { useId, useMemo } from 'react';
+import {DashboardDialog} from '../../components/DashboardDialog';
 import {
   Activity, Award, BookOpen, ChevronRight, TrendingDown,
   TrendingUp, Users, Zap, Clock, BarChart3, Target,
@@ -76,6 +77,7 @@ export const StudentIntelligenceProfile: React.FC<StudentIntelligenceProfileProp
   student, classAverage, classTotalStudents, completedLessons = [],
   onClose, onSendAlert, onAssignTest, onOpenReport,
 }) => {
+  const titleId = useId();
   // ── اشتقاق المهارات من كل النتائج ──────────────────────────────────────────
   const aggregatedSkills = useMemo(() => {
     const map = new Map<string, { skill: string; total: number; count: number }>();
@@ -119,12 +121,11 @@ export const StudentIntelligenceProfile: React.FC<StudentIntelligenceProfileProp
   const sc = statusConfig[student.status];
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/40 backdrop-blur-sm flex items-start justify-end p-4">
-      <div className="w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden animate-in slide-in-from-right duration-300">
+      <DashboardDialog key={student.id} onClose={onClose} labelledBy={titleId} className="max-w-2xl bg-white rounded-3xl shadow-2xl">
 
         {/* ── رأس الصفحة ── */}
-        <div className="relative bg-gradient-to-br from-indigo-600 via-violet-600 to-purple-700 px-6 py-5 text-white">
-          <button onClick={onClose} className="absolute left-4 top-4 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors">
+        <div className="relative shrink-0 bg-gradient-to-br from-indigo-600 via-violet-600 to-purple-700 px-6 py-5 pl-16 text-white">
+          <button type="button" aria-label="إغلاق تفاصيل الطالب" onClick={onClose} className="absolute left-4 top-4 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors">
             <ArrowLeft size={18} />
           </button>
           <div className="flex items-start gap-4">
@@ -132,7 +133,7 @@ export const StudentIntelligenceProfile: React.FC<StudentIntelligenceProfileProp
               {student.name.charAt(0)}
             </div>
             <div className="min-w-0">
-              <h2 className="text-xl font-black truncate">{student.name}</h2>
+              <h2 id={titleId} className="text-xl font-black truncate">{student.name}</h2>
               <p className="text-white/80 text-sm mt-0.5">{student.className} • {student.schoolName}</p>
               <div className={`mt-2 inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-black ${sc.bg}`}>
                 {sc.icon} {sc.label}
@@ -141,7 +142,7 @@ export const StudentIntelligenceProfile: React.FC<StudentIntelligenceProfileProp
           </div>
         </div>
 
-        <div className="p-5 space-y-5 overflow-y-auto max-h-[calc(100vh-200px)]">
+        <div className="min-h-0 p-5 space-y-5 overflow-y-auto">
 
           {/* ── إحصائيات سريعة ── */}
           <div className="grid grid-cols-3 gap-3">
@@ -281,7 +282,6 @@ export const StudentIntelligenceProfile: React.FC<StudentIntelligenceProfileProp
           </div>
 
         </div>
-      </div>
-    </div>
+      </DashboardDialog>
   );
 };

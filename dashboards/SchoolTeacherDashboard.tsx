@@ -1,4 +1,4 @@
-import { DashboardSectionNav } from '../components/DashboardSectionNav';
+import { DashboardSectionBreadcrumb, DashboardSectionNav } from '../components/DashboardSectionNav';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Award, BarChart3, BookOpenCheck, LayoutDashboard, Presentation, School, Target, Trophy } from 'lucide-react';
@@ -38,6 +38,14 @@ const SCHOOL_TEACHER_NAV_ITEMS: Array<{ id: SchoolTeacherTab; label: string; ico
   { id: 'skills-radar', label: 'مهارات الفصول', icon: <Award size={19} /> },
   { id: 'assessments', label: 'اختباراتي وتكليفاتي', icon: <BookOpenCheck size={19} /> },
   { id: 'certificates', label: 'شهادات التقدير والتحفيز', icon: <Trophy size={19} /> },
+];
+
+const SCHOOL_TEACHER_NAV_GROUPS = [
+  { label: 'الرئيسية', ids: ['overview'] },
+  { label: 'الحصص وتحضير الأسئلة', ids: ['smart-classroom', 'prepared-questions'] },
+  { label: 'الاختبارات والتكليفات', ids: ['assessments'] },
+  { label: 'المهارات والتقارير', ids: ['skills-radar', 'reports'] },
+  { label: 'الشهادات', ids: ['certificates'] },
 ];
 
 export const SchoolTeacherDashboard: React.FC = () => {
@@ -182,7 +190,7 @@ export const SchoolTeacherDashboard: React.FC = () => {
     <div className="py-6 space-y-1" dir="rtl">
       <div className="mb-6 px-6">
         <div className="flex items-center gap-2 text-indigo-700 font-bold text-xs mb-1">
-          <School size={14} /> مساحة مدرسة مستقلة (B2B)
+          <School size={14} /> مساحة المدرسة
         </div>
         <h2 className="text-lg font-black text-gray-900">لوحة معلم المدرسة</h2>
         <p className="text-xs text-gray-500 mt-0.5">{selectedSchool.schoolName}</p>
@@ -201,11 +209,7 @@ export const SchoolTeacherDashboard: React.FC = () => {
         )}
         <div className="mt-3"><TeacherWorkspaceSwitcher /></div>
       </div>
-      <DashboardSectionNav items={SCHOOL_TEACHER_NAV_ITEMS} activeId={activeTab} onSelect={id => handleTabChange(id as SchoolTeacherTab)} groups={[
-        { label: 'البداية', ids: ['overview'] },
-        { label: 'التحضير والتدريس', ids: ['smart-classroom', 'prepared-questions', 'assessments'] },
-        { label: 'المتابعة والتحفيز', ids: ['reports', 'skills-radar', 'certificates'] },
-      ]} />
+      <DashboardSectionNav collapsible items={SCHOOL_TEACHER_NAV_ITEMS} activeId={activeTab} onSelect={id => handleTabChange(id as SchoolTeacherTab)} groups={SCHOOL_TEACHER_NAV_GROUPS} />
 
     </div>
   );
@@ -240,6 +244,7 @@ export const SchoolTeacherDashboard: React.FC = () => {
 
     return (
       <div className="space-y-6">
+        <DashboardSectionBreadcrumb items={SCHOOL_TEACHER_NAV_ITEMS} groups={SCHOOL_TEACHER_NAV_GROUPS} activeId={activeTab} homeLabel="لوحة معلم المدرسة" onHome={() => handleTabChange('overview')} />
         {activeTeacherSession && (
           <div className="flex flex-wrap items-center justify-between gap-4 rounded-3xl border-2 border-indigo-500 bg-gradient-to-r from-indigo-950 via-slate-900 to-indigo-900 p-5 text-white shadow-xl animate-fade-in" dir="rtl">
             <div className="flex items-center gap-3.5">
@@ -293,7 +298,7 @@ export const SchoolTeacherDashboard: React.FC = () => {
 
   return (
     <>
-      <DashboardLayout sidebar={sidebar}>{renderContent()}</DashboardLayout>
+      <DashboardLayout sidebar={sidebar} workspaceTitle="معلم المدرسة">{renderContent()}</DashboardLayout>
       {showAssessmentBuilder && (
         <UnifiedQuizBuilder
           role="teacher"
