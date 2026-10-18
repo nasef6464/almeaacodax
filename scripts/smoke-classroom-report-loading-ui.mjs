@@ -14,8 +14,9 @@ import{ClassSkillGapsRadar}from'./components/classroom/ClassSkillGapsRadar';
 function Harness(){const[school,setSchool]=useState('school-a');const state=useClassroomTeacherReports(school,window.mode==='hook');
 return <MemoryRouter><button onClick={()=>setSchool('school-b')}>Change school</button>{window.mode==='hook'?<><pre>{JSON.stringify(state.reports.map(r=>r.sessionId))}</pre><p role="alert">{state.error}</p><button onClick={()=>void state.reload()}>Reload</button></>:window.mode==='radar'?<ClassSkillGapsRadar schoolId={school} assignments={[]}/>:<SmartClassroomReportsSection schoolId={school} assignments={[]} smartClassroomEnabled/>}</MemoryRouter>}
 createRoot(document.getElementById('root')).render(<Harness/>);`, resolveDir: process.cwd(), loader: 'tsx' }, bundle: true, write: false, plugins: [{ name: 'mail-free-api-fixture', setup(builder) {
+  builder.onResolve({filter:/store\/useStore$/},()=>({path:'store',namespace:'fixture'}));
   builder.onResolve({ filter: /services\/api$/ }, () => ({ path: 'api', namespace: 'fixture' }));
-  builder.onLoad({ filter: /.*/, namespace: 'fixture' }, () => ({ contents: `export const api={getClassroomTeacherHistory:(schoolId,token,view)=>new Promise((resolve,reject)=>window.historyRequests.push({schoolId,view,resolve,reject})),get:(path)=>new Promise((resolve,reject)=>window.detailRequests.push({path,resolve,reject}))};`, loader: 'js' }));
+  builder.onLoad({ filter: /.*/, namespace: 'fixture' }, args => ({ contents: args.path==='store'?`const state={paths:[{id:'path',name:'المسار'}],subjects:[{id:'رياضيات',name:'رياضيات'}],skills:[{id:'skill',name:'مهارة تجريبية'}],nestedSkills:[]};export const useStore=select=>select?select(state):state;`:`export const api={getClassroomTeacherHistory:(schoolId,token,view)=>new Promise((resolve,reject)=>window.historyRequests.push({schoolId,view,resolve,reject})),get:(path)=>new Promise((resolve,reject)=>window.detailRequests.push({path,resolve,reject}))};`, loader: 'js' }));
 } }] });
 const browser = await chromium.launch({ headless: true });
 const fixture = { sessionId: 'saved-session', schoolId: 'school-b', classId: 'class', className: 'الفصل التجريبي', status: 'ended', endedAt: '2026-10-10T10:00:00Z', roster: { expected: 24, joined: 24, absentFromSession: 0 }, totals: { responses: 10, correct: 6 }, questions: [{ questionId: 'q', text: 'سؤال محفوظ', skillIds: ['skill'], pathId: 'path', subject: 'رياضيات', answered: 10, correct: 6 }] };
@@ -59,7 +60,10 @@ try {
   await radar.getByRole('button', { name: 'إعادة تحميل المهارات' }).click();
   await radar.waitForFunction(() => window.historyRequests.length === 2);
   await radar.evaluate(fixture => window.historyRequests[1].resolve({ sessions: [fixture] }), fixture);
-  await radar.getByRole('heading', { name: 'skill' }).waitFor();
+  await radar.getByText('اختر المادة لعرض مهاراتها',{exact:true}).waitFor();
+  assert.equal(await radar.getByRole('heading',{name:'مهارة تجريبية',exact:true}).count(),0,'no skill rows before selecting the subject');
+  await radar.getByLabel('المادة',{exact:true}).selectOption('رياضيات');
+  await radar.getByRole('heading', { name: 'مهارة تجريبية',exact:true }).waitFor();
   assert.equal(await radar.evaluate(() => window.historyRequests.every(r => r.view === 'summary')), true);
   assert.equal(await radar.evaluate(() => window.detailRequests.length), 0, 'radar must not fetch student detail');
   assert.equal(await radar.getByText('60%', { exact: true }).count() > 0, true);
