@@ -63,9 +63,9 @@ const roleConfigs = {
       { name: "teacher-platform-overview", path: "/instructor-dashboard", persona: "platform", expectAny: ["لوحة مدرب المنصة", "نظرة عامة"], minBody: 700 },
       { name: "teacher-school-overview", path: "/school-teacher-dashboard?tab=overview", persona: "school", expectAny: ["مساحة تعليمية مدرسية معتمدة", "ابدأ من فصلك"], minBody: 500 },
       { name: "teacher-smart-classroom", path: "/school-teacher-dashboard?tab=smart-classroom", persona: "school", expectAny: ["مركز إدارة وإطلاق الحصص الذكية", "إطلاق حصة"], minBody: 450 },
-      { name: "teacher-prepared-bank", path: "/school-teacher-dashboard?tab=prepared-questions", persona: "school", expectAny: ["بنك التحضير المسبق"], minBody: 450 },
+      { name: "teacher-prepared-bank", path: "/school-teacher-dashboard?tab=prepared-questions", persona: "school", expectAny: ["تحضير الحصص والأسئلة"], selectors: ['select[aria-label="المهارة الرئيسية"]', 'select[aria-label="المهارة الفرعية"]'], minBody: 450 },
       { name: "teacher-school-reports", path: "/school-teacher-dashboard?tab=reports", persona: "school", expectAny: ["سجل وتقارير الحصص الذكية وتشخيص المهارات", "لا توجد حصص مطابقة"], minBody: 250 },
-      { name: "teacher-skills-radar", path: "/school-teacher-dashboard?tab=skills-radar", persona: "school", expectAny: ["رادار فجوات الفصل المهارية", "متوسط دقة الفصل"], minBody: 250 },
+      { name: "teacher-skills-radar", path: "/school-teacher-dashboard?tab=skills-radar", persona: "school", expectAny: ["مهارات الفصل"], expectAll: ["مهارات الفصل", "اختر المادة لعرض مهاراتها"], selectors: ['select[aria-label="المادة"]:not(:disabled):has(option:checked[value="all"])', 'select[aria-label="المسار"]:not(:disabled)'], minBody: 150 },
       { name: "teacher-assessments", path: "/school-teacher-dashboard?tab=assessments", persona: "school", expectAny: ["اختبارات وتكليفات المدرسة الموجهة لفصولي", "اختبار مركزي"], minBody: 350 },
       {
         name: "teacher-platform-reports",
@@ -304,12 +304,12 @@ async function inspectCheckpoint(page, role, checkpoint, viewport) {
     // content instead of sampling that transient blank frame.
     await page
       .waitForFunction(
-        ({ expectAny, minBody }) => {
+        ({ expectAny, expectAll, minBody }) => {
           const bodyText = document.body.innerText || "";
-          const expectedReady = (expectAny || []).length === 0 || (expectAny || []).some((value) => bodyText.includes(value));
+          const expectedReady = ((expectAny || []).length === 0 || (expectAny || []).some((value) => bodyText.includes(value))) && (expectAll || []).every(value => bodyText.includes(value));
           return bodyText.length >= minBody && expectedReady;
         },
-        { expectAny: checkpoint.expectAny || [], minBody: Number(checkpoint.minBody || 250) },
+        { expectAny: checkpoint.expectAny || [], expectAll: checkpoint.expectAll || [], minBody: Number(checkpoint.minBody || 250) },
         { timeout: 8_000 },
       )
       .catch(() => undefined);
@@ -326,7 +326,7 @@ async function inspectCheckpoint(page, role, checkpoint, viewport) {
   await page.screenshot({ path: screenshot, fullPage: true }).catch(() => undefined);
 
   const state = await page.evaluate(
-    ({ expectAny, selectors, mojibakeSource }) => {
+    ({ expectAny, expectAll, selectors, mojibakeSource }) => {
       const bodyText = document.body.innerText || "";
       const selectorState = (selectors || []).map((selector) => {
         const element = document.querySelector(selector);
@@ -344,7 +344,7 @@ async function inspectCheckpoint(page, role, checkpoint, viewport) {
         href: location.href,
         title: document.title,
         bodyLength: bodyText.length,
-        hasExpectedText: (expectAny || []).length === 0 || (expectAny || []).some((value) => bodyText.includes(value)),
+        hasExpectedText: ((expectAny || []).length === 0 || (expectAny || []).some((value) => bodyText.includes(value))) && (expectAll || []).every(value => bodyText.includes(value)),
         hasLoginForm: Boolean(document.querySelector('input[type="password"]')) && /تسجيل الدخول|Login|البريد الإلكتروني/.test(bodyText),
         hasLoadingState: Array.from(document.querySelectorAll("body *")).some((el) => {
           const rect = el.getBoundingClientRect();
@@ -364,6 +364,7 @@ async function inspectCheckpoint(page, role, checkpoint, viewport) {
     },
     {
       expectAny: checkpoint.expectAny || [],
+      expectAll: checkpoint.expectAll || [],
       selectors: checkpoint.selectors || [],
       mojibakeSource: MOJIBAKE.source,
     },

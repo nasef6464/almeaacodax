@@ -1,4 +1,7 @@
 import React from 'react';
+import {useStore} from '../../store/useStore';
+import {DisplayListControls,useDisplayLimit} from '../../components/DisplayListControls';
+import {schoolCatalogLabel,schoolSkillLabel} from '../../utils/schoolSkillsDisplay';
 import { BookOpenCheck, CalendarClock, Plus, Presentation, Target, Trophy, Zap } from 'lucide-react';
 import { SmartClassroomReportsSection } from '../../components/classroom/SmartClassroomReportsSection';
 import { ClassSkillGapsRadar } from '../../components/classroom/ClassSkillGapsRadar';
@@ -36,13 +39,16 @@ export const SchoolTeacherPreparedQuestions: React.FC<PreparedQuestionsProps> = 
   onToggleQuestion,
   onToggleChallenge,
   onApplyTemplate,
-}) => (
+}) => {
+ const {subjects,skills,nestedSkills=[]}=useStore();
+ const rows=useDisplayLimit(12,[selectedSchool.schoolId,filters.pathId,filters.subjectId,filters.sectionId,filters.skillId,filters.difficulty,filters.search].join('|'));
+ return (
   <div className="space-y-6 animate-fade-in" dir="rtl">
     <div className="rounded-3xl border border-slate-100 bg-white p-6 shadow-xs">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-100 pb-4">
         <div>
           <h2 className="flex items-center gap-2 text-xl font-black text-slate-900">
-            <Target className="text-indigo-600" size={22} /> بنك التحضير المسبق وحزم التحدي الصفية
+            <Target className="text-indigo-600" size={22} /> تحضير الحصص والأسئلة
           </h2>
           <p className="mt-1 text-xs text-slate-500">حضّر حزم الحصص والأسئلة وعيّن أسئلة التحدي مسبقاً قبل دخول الحصة لضمان الجاهزية اللحظية.</p>
         </div>
@@ -75,7 +81,7 @@ export const SchoolTeacherPreparedQuestions: React.FC<PreparedQuestionsProps> = 
           <div className="mt-6 text-center py-10 text-xs text-slate-400">جارٍ تحميل بنك الأسئلة المعتمد...</div>
         ) : (
           <div className="mt-4 space-y-2.5 max-h-[560px] overflow-y-auto">
-            {filteredQuestions.map((question) => {
+            {filteredQuestions.slice(0,rows.limit).map((question) => {
               const isChecked = selectedQuestionIds.includes(question.questionId);
               const isChallenge = challengeQuestionIds.includes(question.questionId);
               return (
@@ -90,7 +96,7 @@ export const SchoolTeacherPreparedQuestions: React.FC<PreparedQuestionsProps> = 
                         </div>
                       )}
                       <small className="mt-2 block text-slate-500 text-[11px]">
-                        {question.subject || question.type} · {question.difficulty || 'متوسط'} · {question.options?.length || 4} خيارات · المهارة: {question.skillIds?.[0] || 'عام'}
+                        {schoolCatalogLabel(subjects,question.subjectId||question.subject,'مادة غير مصنفة')} · {question.difficulty || 'متوسط'} · {question.options?.length || 4} خيارات · المهارة: {schoolSkillLabel(question.skillIds?.[0],skills,nestedSkills,subjects,'عام')}
                       </small>
                     </div>
                   </label>
@@ -102,12 +108,13 @@ export const SchoolTeacherPreparedQuestions: React.FC<PreparedQuestionsProps> = 
                 </div>
               );
             })}
+            <DisplayListControls {...rows} total={filteredQuestions.length} label="أسئلة التحضير"/>
           </div>
         )}
       </div>
     </div>
   </div>
-);
+);};
 
 export const SchoolTeacherReports: React.FC<{
   selectedSchool: any;

@@ -1184,12 +1184,12 @@ export const SupervisorDashboard: React.FC = () => {
           <div className="space-y-6">
             <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
               <div>
-                <h1 className="text-2xl font-black text-gray-900">خريطة تمكن المهارات (Curriculum Skills Map)</h1>
-                <p className="mt-1 text-sm text-gray-500">خريطة توضيحية لنسبة تمكن الطلاب مع فصل المسارات والمواد بدون دمج المهارات المتشابهة.</p>
+                <h1 className="text-2xl font-black text-gray-900">مهارات المادة</h1>
+                <p className="mt-1 text-sm text-gray-500">اختر المادة أولًا، ثم افتح التفاصيل التي تحتاجها.</p>
               </div>
               <div className="flex flex-wrap gap-2">
                 <select
-                  value={skillPathFilter}
+                  aria-label="المسار" value={skillPathFilter}
                   onChange={(event) => {
                     setSkillPathFilter(event.target.value);
                     setSkillSubjectFilter('all');
@@ -1200,16 +1200,19 @@ export const SupervisorDashboard: React.FC = () => {
                   {skillPathOptions.map((path) => <option key={path.id} value={path.id}>{path.name}</option>)}
                 </select>
                 <select
-                  value={skillSubjectFilter}
+                  aria-label="المادة" value={skillSubjectFilter}
                   onChange={(event) => setSkillSubjectFilter(event.target.value)}
                   className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-black text-slate-700"
                 >
-                  <option value="all">كل المواد</option>
+                  <option value="all">اختر المادة</option>
                   {skillSubjectOptions.map((subject) => <option key={subject.id} value={subject.id}>{subject.name}</option>)}
                 </select>
               </div>
             </div>
 
+            {skillSubjectFilter==='all' ? <div className="rounded-2xl border border-dashed border-sky-200 bg-sky-50 p-6 text-center text-sm font-bold text-sky-800">اختر المادة لعرض مهاراتها</div> : <>
+            <div className="grid grid-cols-3 gap-2">{[['تحتاج متابعة',skillsOverviewList.critical.length],['قيد التعزيز',skillsOverviewList.watch.length],['متقنة',skillsOverviewList.mastered.length]].map(([name,count])=><div key={name} className="rounded-xl border border-slate-100 bg-white p-3 text-center"><div className="text-xl font-black text-indigo-700">{count}</div><div className="text-xs font-bold text-slate-500">{name}</div></div>)}</div>
+            <details className="rounded-2xl border border-slate-100 bg-white p-4"><summary className="cursor-pointer text-sm font-bold text-indigo-700">عرض مهارات الطلاب</summary>
             {/* مصفوفة طالب × مهارة */}
             <ClassSkillsMapPanel
               pathId={skillPathFilter}
@@ -1220,6 +1223,8 @@ export const SupervisorDashboard: React.FC = () => {
               onSelectStudent={(id) => setSelectedStudentId(id)}
             />
 
+            </details>
+            <details className="rounded-2xl border border-slate-100 bg-white p-4"><summary className="cursor-pointer text-sm font-bold text-indigo-700">تفاصيل مستويات المهارات</summary>
             <div className="border-t border-gray-100 pt-4">
               <h3 className="text-sm font-black text-gray-700 mb-4">تفصيل المهارات حسب مستوى التمكن</h3>
             </div>
@@ -1319,6 +1324,7 @@ export const SupervisorDashboard: React.FC = () => {
                 <DisplayListControls {...masteredRows} total={skillsOverviewList.mastered.length} label="المهارات المتقنة" />
               </div>
             </div>
+            </details></>}
           </div>
         )}
 

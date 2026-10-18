@@ -1,0 +1,25 @@
+import assert from 'node:assert/strict';
+import {classroomSubjectKey,filterClassroomSkillsReports,schoolCatalogLabel,schoolSkillLabel,schoolSkillOptions} from '../utils/schoolSkillsDisplay.js';
+const reports:any[]=[{classId:'a',subjectName:'اسم قديم',questions:[{subjectId:'math',subject:'رياضيات',pathId:'p',skillIds:['same'],answered:2,correct:1},{subjectId:'verbal',subject:'لفظي',pathId:'p',skillIds:['same'],answered:4,correct:4}]},{classId:'b',subjectName:'رياضيات',questions:[{subject:'math',pathId:'other',skillIds:['same'],answered:5,correct:3}]}];
+const before=JSON.stringify(reports);
+assert.equal(classroomSubjectKey(reports[0].questions[0],reports[0]),'math');
+assert.equal(classroomSubjectKey({},reports[0]),'اسم قديم');
+assert.deepEqual(filterClassroomSkillsReports(reports,'all','all'),[],'choose a subject before rendering skills');
+const math=filterClassroomSkillsReports(reports,'p','math');
+assert.equal(math.length,1);assert.equal(math[0].questions.length,1);assert.equal(math[0].questions[0].correct,1);
+assert.equal(filterClassroomSkillsReports(reports,'all','math').length,2,'legacy subject key is supported');
+assert.equal(filterClassroomSkillsReports(reports,'p','verbal')[0].questions[0].correct,4);
+assert.equal(JSON.stringify(reports),before,'display filtering must not change report data');
+assert.equal(schoolCatalogLabel([{id:'math',name:'الرياضيات'}],'math','غير مصنفة'),'الرياضيات');
+assert.equal(schoolCatalogLabel([{id:'parent',name:'قسم',subSkills:[{id:'nested',name:'مهارة فرعية'}]}],'nested','عام'),'مهارة فرعية');
+assert.equal(schoolCatalogLabel([],'private-internal-id','غير مصنفة'),'غير مصنفة');
+assert.equal(schoolCatalogLabel([],'مهارة لغوية','غير مصنفة'),'مهارة لغوية','legacy readable Arabic labels remain useful');
+assert.equal(schoolSkillLabel('standalone',[],[{id:'standalone',name:'مهارة مستقلة',subSkills:[{id:'deep',name:'فرعية متداخلة'}]}] as any,[]),'مهارة مستقلة');
+assert.equal(schoolSkillLabel('deep',[],[{id:'standalone',name:'مهارة مستقلة',subSkills:[{id:'deep',name:'فرعية متداخلة'}]}] as any,[]),'فرعية متداخلة');
+assert.equal(schoolSkillLabel('unknown-private-id',[],[],[]),'مهارة غير مصنفة');
+console.log('School subject-first display: canonical/legacy keys, path isolation, unchanged evidence, readable labels PASS');
+
+const roots:any[]=[{id:'root',name:'رئيسية',subjectId:'math',sectionId:'s',subSkills:[{id:'child',name:'فرعية'}]},{id:'foreign',name:'لفظية',subjectId:'verbal',sectionId:'v'}];
+assert.deepEqual(schoolSkillOptions(roots,[],'','s'),[]);
+assert.deepEqual(schoolSkillOptions(roots,[],'math','s').map(s=>s.id),['root','child']);
+assert.deepEqual(schoolSkillOptions(roots,[],'math','v'),[]);

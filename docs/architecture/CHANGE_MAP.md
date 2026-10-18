@@ -1,3 +1,6 @@
+## School skills display — 2026-10-18
+Existing authorized report hook → schoolSkillsDisplay canonical subject key → teacher/supervisor subject-first view → existing detail sections/display limits. No request, authority, scoring, persisted record or migration change.
+
 ## Approved image regions — 2026-10-18
 Question editor → existing protected question CRUD → shared strict region validation/source invalidation → canonical Question metadata → teaching image identity/cache → deterministic first-scene v2 boxes. Existing text generation and renderer reused; no additional provider/image-fetch operation.
 Evidence: docs/audits/VERIFIED_TEACHING_REGIONS_2026-10-18.md (release pending).

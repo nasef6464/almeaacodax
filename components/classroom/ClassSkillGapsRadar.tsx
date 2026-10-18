@@ -1,6 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { AlertTriangle, ChevronLeft, RefreshCw, Target, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import {useStore} from '../../store/useStore';
+import {DisplayListControls,useDisplayLimit} from '../DisplayListControls';
+import {classroomSubjectKey,filterClassroomSkillsReports,schoolCatalogLabel,schoolSkillLabel} from '../../utils/schoolSkillsDisplay';
 import { useClassroomTeacherReports } from '../../hooks/useClassroomTeacherReports';
 import {
   buildClassroomSkillDiagnostics,
@@ -28,9 +31,11 @@ export const ClassSkillGapsRadar: React.FC<ClassSkillGapsRadarProps> = ({
   assignments,
   onLaunchChallengeForSkill,
 }) => {
+  const {paths,subjects,skills:catalogSkills,nestedSkills=[]}=useStore();
   const [selectedClassId, setSelectedClassId] = useState(assignments[0]?.classId || '');
   const [selectedPathId, setSelectedPathId] = useState('all');
   const [selectedSubjectId, setSelectedSubjectId] = useState('all');
+  const rows=useDisplayLimit(6,[schoolId,selectedClassId,selectedPathId,selectedSubjectId].join('|'));
   const { reports, loading, error, reload } = useClassroomTeacherReports(schoolId);
 
   const selectedClass = assignments.find((assignment) => assignment.classId === selectedClassId) || assignments[0];
@@ -51,7 +56,7 @@ export const ClassSkillGapsRadar: React.FC<ClassSkillGapsRadarProps> = ({
     () => Array.from(new Set(
       classReports.flatMap((report) => report.questions
         .filter((question) => selectedPathId === 'all' || String(question.pathId || '') === selectedPathId)
-        .map((question) => String(question.subjectId || question.subject || report.subjectName || ''))
+        .map((question) => classroomSubjectKey(question,report))
         .filter(Boolean)),
     )).sort((a, b) => a.localeCompare(b, 'ar')),
     [classReports, selectedPathId],
@@ -63,28 +68,22 @@ export const ClassSkillGapsRadar: React.FC<ClassSkillGapsRadarProps> = ({
   }, [selectedSubjectId, subjectOptions]);
 
   const scopedReports = useMemo(
-    () => classReports.map((report) => ({
-      ...report,
-      questions: report.questions.filter((question) =>
-        (selectedPathId === 'all' || String(question.pathId || '') === selectedPathId) &&
-        (selectedSubjectId === 'all' || String(question.subject || report.subjectName || '') === selectedSubjectId),
-      ),
-    })).filter((report) => report.questions.length > 0),
-    [classReports, selectedPathId, selectedSubjectId],
+    () => filterClassroomSkillsReports(classReports,selectedPathId,selectedSubjectId),
+    [classReports,selectedPathId,selectedSubjectId],
   );
 
   const skills = useMemo<SkillRow[]>(() =>
     buildClassroomSkillDiagnostics(scopedReports).map((diagnostic) => ({
       key: diagnostic.scopeKey,
       skillId: diagnostic.skillId,
-      skillName: diagnostic.skillName,
+      skillName: schoolSkillLabel(diagnostic.skillId,catalogSkills,nestedSkills,subjects),
       pathId: diagnostic.pathId,
       subjectId: diagnostic.subjectId,
       accuracy: diagnostic.accuracy ?? 0,
       totalAttempts: diagnostic.totalAnswered,
       studentsAtRiskCount: 0,
     })),
-  [scopedReports]);
+  [scopedReports,subjects,catalogSkills,nestedSkills]);
 
   const criticalGapsCount = skills.filter((skill) => skill.accuracy < 60).length;
   const masteredSkillsCount = skills.filter((skill) => skill.accuracy >= 80).length;
@@ -100,10 +99,10 @@ export const ClassSkillGapsRadar: React.FC<ClassSkillGapsRadarProps> = ({
             <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-rose-50 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400">
               <Target size={18} />
             </span>
-            <h2 className="text-xl font-black text-slate-900 dark:text-white">رادار فجوات الفصل المهارية</h2>
+            <h2 className="text-xl font-black text-slate-900 dark:text-white">مهارات الفصل</h2>
           </div>
           <p className="mt-1 text-xs text-slate-500">
-            تحليل ما يصل إلى 50 حصة حديثة، مع عزل المسار والمادة قبل تجميع المهارات.
+            اختر المادة لمتابعة نقاط القوة وما يحتاج إلى تدريب.
           </p>
         </div>
 
@@ -124,7 +123,7 @@ export const ClassSkillGapsRadar: React.FC<ClassSkillGapsRadarProps> = ({
             </select>
           )}
           <select
-            value={selectedPathId}
+            aria-label="المسار" value={selectedPathId}
             onChange={(event) => {
               setSelectedPathId(event.target.value);
               setSelectedSubjectId('all');
@@ -132,25 +131,25 @@ export const ClassSkillGapsRadar: React.FC<ClassSkillGapsRadarProps> = ({
             className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold text-slate-800 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
           >
             <option value="all">كل المسارات</option>
-            {pathOptions.map((pathId) => <option key={pathId} value={pathId}>{pathId}</option>)}
+            {pathOptions.map((pathId) => <option key={pathId} value={pathId}>{schoolCatalogLabel(paths,pathId,'مسار غير مصنف')}</option>)}
           </select>
           <select
-            value={selectedSubjectId}
+            aria-label="المادة" value={selectedSubjectId}
             onChange={(event) => setSelectedSubjectId(event.target.value)}
             className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold text-slate-800 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
           >
-            <option value="all">كل المواد</option>
-            {subjectOptions.map((subject) => <option key={subject} value={subject}>{subject}</option>)}
+            <option value="all">اختر المادة</option>
+            {subjectOptions.map((subject) => <option key={subject} value={subject}>{schoolCatalogLabel(subjects,subject,'مادة غير مصنفة')}</option>)}
           </select>
         </div>
       </div>
 
-      <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
+      {selectedSubjectId!=='all'&&<div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
         <Kpi label="متوسط دقة الفصل" value={skills.length ? `${avgClassAccuracy}%` : '—'} />
         <Kpi label="فجوات حرجة (<60%)" value={criticalGapsCount} tone="rose" />
         <Kpi label="مهارات متقنة (≥80%)" value={masteredSkillsCount} tone="emerald" />
         <Kpi label="الفصل المعروض" value={selectedClass?.className || 'الفصل المسند'} tone="indigo" />
-      </div>
+      </div>}
 
       {loading ? (
         <div className="mt-6 rounded-2xl border border-dashed border-slate-200 p-8 text-center text-sm font-bold text-slate-500">
@@ -158,13 +157,13 @@ export const ClassSkillGapsRadar: React.FC<ClassSkillGapsRadarProps> = ({
         </div>
       ) : error ? (
         <div className="mt-6 rounded-2xl border border-rose-200 p-5 text-center"><p className="text-sm text-rose-600" role="alert">{error}</p><button type="button" onClick={() => void reload()} className="mt-3 inline-flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-xs font-bold"><RefreshCw size={14} /> إعادة تحميل المهارات</button></div>
-      ) : skills.length === 0 ? (
+      ) : selectedSubjectId==='all' ? <div className="mt-6 rounded-2xl border border-dashed border-sky-200 bg-sky-50 p-6 text-center text-sm font-bold text-sky-800">اختر المادة لعرض مهاراتها</div> : skills.length === 0 ? (
         <div className="mt-6 rounded-2xl border border-dashed border-slate-200 p-8 text-center text-sm font-bold text-slate-500">
           لا توجد أدلة مهارية مطابقة للنطاق المحدد حتى الآن.
         </div>
       ) : (
         <div className="mt-6 grid gap-3 sm:grid-cols-2">
-          {skills.map((skill) => {
+          {skills.slice(0,rows.limit).map((skill) => {
             const isCritical = skill.accuracy < 60;
             const isMastered = skill.accuracy >= 80;
             const statusBg = isCritical
@@ -179,7 +178,7 @@ export const ClassSkillGapsRadar: React.FC<ClassSkillGapsRadarProps> = ({
                 <div>
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <div className="text-[10px] font-black text-slate-400">{skill.pathId || 'مسار غير محدد'} · {skill.subjectId || 'مادة غير محددة'}</div>
+                      <div className="text-[10px] font-black text-slate-400">{schoolCatalogLabel(paths,skill.pathId,'مسار غير مصنف')} · {schoolCatalogLabel(subjects,skill.subjectId,'مادة غير مصنفة')}</div>
                       <h3 className="mt-1 text-xs sm:text-sm font-black text-slate-900 dark:text-white">{skill.skillName}</h3>
                     </div>
                     <span className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-black ${
@@ -224,6 +223,7 @@ export const ClassSkillGapsRadar: React.FC<ClassSkillGapsRadarProps> = ({
           })}
         </div>
       )}
+      {selectedSubjectId!=='all'&&<DisplayListControls {...rows} total={skills.length} label="مهارات المادة"/>}
     </section>
   );
 };
