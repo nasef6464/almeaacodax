@@ -3,21 +3,21 @@ import {api} from '../../../services/api';
 import type {SchoolAssessmentLearnerPage,SchoolAssessmentLearnerStatus} from '../../../types/schoolAssessments';
 import {SchoolAssessmentLearnerResult} from './SchoolAssessmentLearnerResult';
 
-type Props={actorId:string;quizId:string};
+type Props={actorId:string;quizId:string;schoolId?:string};
 // Remount on principal/definition change so no old roster or selected review is
 // visible even during the render before effects clean up the previous request.
-export const SchoolAssessmentLearnersPanel:React.FC<Props>=props=><Learners key={JSON.stringify([props.actorId,props.quizId])} {...props}/>;
-const Learners:React.FC<Props>=({quizId})=>{
+export const SchoolAssessmentLearnersPanel:React.FC<Props>=props=><Learners key={JSON.stringify([props.actorId,props.quizId,props.schoolId])} {...props}/>;
+const Learners:React.FC<Props>=({quizId,schoolId})=>{
  const [query,setQuery]=useState<{page:number;status:SchoolAssessmentLearnerStatus;search:string}>({page:1,status:'all',search:''});
  const [draftSearch,setDraftSearch]=useState(''),[revision,setRevision]=useState(0),[selected,setSelected]=useState<string|null>(null);
  const key=JSON.stringify([query,revision]);
  const [state,setState]=useState<{key:string;data?:SchoolAssessmentLearnerPage;error?:boolean}>({key:''});
  useEffect(()=>{
   let cancelled=false;
-  api.schoolAssessmentLearners(quizId,{...query,limit:50}).then(data=>{if(!cancelled)setState({key,data});})
+  api.schoolAssessmentLearners(quizId,{...query,limit:50},schoolId).then(data=>{if(!cancelled)setState({key,data});})
    .catch(()=>{if(!cancelled)setState({key,error:true});});
   return()=>{cancelled=true;};
- },[quizId,key]);
+ },[quizId,key,schoolId]);
  const data=state.key===key?state.data:undefined,error=state.key===key&&state.error;
  const change=(patch:Partial<typeof query>)=>{setSelected(null);setQuery(current=>({...current,...patch}));};
  return <section dir="rtl" aria-label="نتائج الطلاب" className="space-y-4 rounded-2xl border bg-white p-4">
@@ -41,6 +41,6 @@ const Learners:React.FC<Props>=({quizId})=>{
    </table></div>}
    <nav aria-label="صفحات الطلاب" className="flex items-center gap-3"><button type="button" disabled={query.page<=1} onClick={()=>change({page:query.page-1})} className="rounded-lg border p-2 disabled:opacity-40">السابق</button><button type="button" disabled={query.page>=data.pagination.totalPages} onClick={()=>change({page:query.page+1})} className="rounded-lg border p-2 disabled:opacity-40">التالي</button></nav>
   </>}
-  {selected&&<SchoolAssessmentLearnerResult key={selected} quizId={quizId} resultId={selected} onClose={()=>setSelected(null)}/>}
+  {selected&&<SchoolAssessmentLearnerResult schoolId={schoolId} key={selected} quizId={quizId} resultId={selected} onClose={()=>setSelected(null)}/>}
  </section>;
 };

@@ -244,6 +244,8 @@ jobs:
           node scripts/test-school-assessment-report-ui.mjs
           node scripts/test-school-assessment-management-ui.mjs
           node scripts/test-school-director-workspace-ui.mjs
+          node scripts/test-director-assessment-actions-ui.mjs
+          node scripts/test-director-assessment-builder-ui.mjs
             node scripts/test-school-workspace-navigation-ui.mjs
             node scripts/test-staff-skills-entry-ui.mjs
             node scripts/test-student-profile-overlay-ui.mjs

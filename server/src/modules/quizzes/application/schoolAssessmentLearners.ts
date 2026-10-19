@@ -10,7 +10,8 @@ import {requireSchoolDirectorCapability} from '../../schools/application/schoolD
 
 async function assertLearnerEvidenceAccess(context:SchoolAssessmentContext){
  if(context.actor.role!=='school_admin')return;
- const capability=context.actor.schoolId&&await requireSchoolDirectorCapability(context.actor.id,context.actor.schoolId,'SCHOOL_REPORTS_DETAILED_VIEW','SCHOOL_INTELLIGENCE');
+ const schoolId=context.schoolId||context.actor.schoolId;
+ const capability=schoolId&&await requireSchoolDirectorCapability(context.actor.id,schoolId,'SCHOOL_REPORTS_DETAILED_VIEW','SCHOOL_INTELLIGENCE');
  if(!capability)throw Object.assign(new Error('صلاحية التقارير التفصيلية ووحدة التحليلات المدرسية مطلوبة لعرض نتائج الطلاب'),{statusCode:403});
 }
 

@@ -161,7 +161,7 @@ export const SchoolDirectorAcademicCenter: React.FC<{
                 {counts.assessments}
               </span>
             </h3>
-            <div className="mt-4"><DirectorAssessmentCards items={assessments} schoolId={school.schoolId}/></div>
+            <div className="mt-4"><DirectorAssessmentCards items={assessments} schoolId={school.schoolId} classes={classes} onRefresh={load}/></div>
             <button type="button" onClick={()=>setShowCreate(value=>!value)} className="mt-4 rounded-xl bg-indigo-700 px-4 py-2 text-sm font-bold text-white">{showCreate?'إلغاء الإضافة':'إضافة اختبار'}</button>
             {showCreate&&<div className="mt-3 grid gap-3">
               <label className="text-xs font-bold">عنوان الاختبار<input aria-label="عنوان الاختبار" value={assessment.title} onChange={e=>setAssessment({...assessment,title:e.target.value})} className="mt-1 block w-full rounded-xl border px-3 py-2 text-sm"/></label>

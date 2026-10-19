@@ -1,3 +1,5 @@
+import {schoolAssessmentRequestScope} from '../modules/quizzes/http/schoolAssessmentRequestScope.js';
+import {resolveSchoolAssessmentContext} from '../modules/quizzes/application/schoolAssessmentManagementPolicy.js';
 import { buildAdminAssessmentCatalogScope } from '../modules/quizzes/application/adminAssessmentCatalogScope.js';
 import { Router } from "express";
 import { StatusCodes } from "http-status-codes";
@@ -380,7 +382,10 @@ quizRouter.post(
 
 const handleQuizUpdate = asyncHandler(async (req, res) => {
   let payload = quizSchema.partial().parse(req.body);
-  const documentQuery = buildOwnedDocumentQuery(req.params.id, req.authUser!);
+  const requestedScope=schoolAssessmentRequestScope(req.query);
+  if(requestedScope.schoolId&&req.authUser!.role!=='school_admin')throw Object.assign(new Error('Explicit school context requires a school director'),{statusCode:403});
+  if(req.authUser!.role==='school_admin')await resolveSchoolAssessmentContext(req.authUser!,String(req.params.id),requestedScope);
+  const documentQuery = req.authUser!.role==='school_admin'?buildDocumentQuery(String(req.params.id)):buildOwnedDocumentQuery(req.params.id, req.authUser!);
   const existing = await QuizModel.findOne(documentQuery);
 
   if (!existing) {
@@ -401,7 +406,7 @@ const handleQuizUpdate = asyncHandler(async (req, res) => {
     ...existing.toObject(),
     ...payload,
   };
-  const directorManagement=await authorizeSchoolDirectorEdit(req.authUser!,existing.toObject(),proposedState);
+  const directorManagement=await authorizeSchoolDirectorEdit(req.authUser!,existing.toObject(),proposedState,requestedScope);
   validateQuizWindow(proposedState);
   const isTeacherDirectedAssessment =
     req.authUser?.role === "teacher" && hasDirectedQuizTargets(proposedState);

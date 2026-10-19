@@ -1,3 +1,6 @@
+## Director assessment management — 2026-10-19
+DirectorAssessmentCards reuses UnifiedQuizBuilder with the actual school_admin role, a scoped persistence callback and school-specific target options. Existing assessment panels/API methods propagate an optional selected school. quizzes/http/schoolAssessmentRequestScope validates request context; schoolAssessmentManagementPolicy reloads membership/capability/module for that school and binds private school drafts to their owner. The existing quiz PATCH retains editing/version/result integrity; schoolDirectorWorkspace additionally lists school-owned private copies. No new collections, grading changes or primary-school mutation. Defaults without explicit scope remain unchanged. Evidence: docs/audits/SCHOOL_DIRECTOR_ASSESSMENT_MANAGEMENT_2026-10-19.md.
+
 ## School director workspace presentation — 2026-10-19
 `dashboards/SchoolDirectorDashboard.tsx` keeps existing school-scoped orchestration. `dashboards/school-director/` owns its navigation definitions, named catalog fields, paginated approved-question picker and assessment-card presentation. Cards reuse existing school-assessment summary/learner panels and commands; server authority remains in the existing schools/quizzes modules. No API/data/RBAC ownership change.
 

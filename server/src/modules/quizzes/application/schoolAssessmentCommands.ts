@@ -8,9 +8,9 @@ import {resolveSchoolAssessmentContext,assertSchoolAssessmentOperation} from './
 import {normalizeSchoolAssessmentCommand,schoolCommandIdentity,type SchoolAssessmentCommandResult} from './schoolAssessmentCommandSchema.js';
 import {prepareSchoolCommandEffects} from './schoolAssessmentCommandOperations.js';
 
-export async function executeSchoolAssessmentCommand(principal:{id?:unknown;_id?:unknown},quizId:string,raw:unknown,options:{publish?:typeof publishInAppNotificationEvents}={}){
+export async function executeSchoolAssessmentCommand(principal:{id?:unknown;_id?:unknown},quizId:string,raw:unknown,options:{publish?:typeof publishInAppNotificationEvents;schoolId?:string}={}){
   const command=normalizeSchoolAssessmentCommand(raw);
-  const context=await resolveSchoolAssessmentContext(principal,quizId);
+  const context=await resolveSchoolAssessmentContext(principal,quizId,{schoolId:options.schoolId});
   await assertSchoolAssessmentOperation(context,command.operation);
   const canonicalId=String(context.quiz.id||context.quiz._id),actorId=context.actor.id;
   const identity=schoolCommandIdentity(actorId,canonicalId,command);

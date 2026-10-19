@@ -12,7 +12,7 @@ export type SchoolAssessmentOperation = 'edit' | 'clone' | 'retarget' | 'reopen'
 
 // Accept only a principal identity. Scope is reloaded; caller-supplied school or role
 // fields never widen it. This context is server-only and contains no serialized roster.
-export async function resolveSchoolAssessmentContext(principal: { id?: unknown; _id?: unknown }, quizId: string) {
+export async function resolveSchoolAssessmentContext(principal: { id?: unknown; _id?: unknown }, quizId: string, options:{schoolId?:string}={}) {
   const actorId = String(principal.id || principal._id || '');
   const stored = await UserModel.findOne(buildDocumentQuery(actorId)).setOptions({strictQuery:false}).lean();
   if (!stored || stored.isActive === false) fail(403, 'Active staff required');
@@ -32,15 +32,25 @@ export async function resolveSchoolAssessmentContext(principal: { id?: unknown; 
     ? { schoolIds: [] as string[], groupIds: teacherClassIds }
     : {schoolIds:directory.schoolIds,groupIds:directory.groupIds};
   let directorCanManage=false;
+  if(options.schoolId&&actor.role!=='school_admin')fail(403,'Explicit school context requires a school director');
+  const schoolId=actor.role==='school_admin'?(options.schoolId||actor.schoolId):undefined;
   if (actor.role === 'school_admin') {
-    if(!actor.schoolId)fail(403,'Active school context required');
+    if(!schoolId)fail(403,'Active school context required');
     const [manage,report]=await Promise.all([
-      requireSchoolDirectorCapability(actor.id,actor.schoolId!,'SCHOOL_ASSESSMENTS_MANAGE','SCHOOL_ASSESSMENTS'),
-      requireSchoolDirectorCapability(actor.id,actor.schoolId!,'SCHOOL_REPORTS_AGGREGATE_VIEW','SCHOOL_ASSESSMENTS'),
+      requireSchoolDirectorCapability(actor.id,schoolId!,'SCHOOL_ASSESSMENTS_MANAGE','SCHOOL_ASSESSMENTS'),
+      requireSchoolDirectorCapability(actor.id,schoolId!,'SCHOOL_REPORTS_AGGREGATE_VIEW','SCHOOL_ASSESSMENTS'),
     ]);
     if(!manage&&!report)fail(403,'School assessment permission and module required');
+    // Untargeted school drafts belong to one school, even when their author
+    // manages several schools. Legacy author-owned drafts retain primary scope.
+    if(!hasTargets&&quiz!.ownerType==='school'){
+      const ownerSchool=await GroupModel.findOne({type:'SCHOOL',...buildDocumentQuery(String(quiz!.ownerId||''))})
+        .setOptions({strictQuery:false}).select('id _id').lean();
+      const draftSchoolId=ownerSchool?String((ownerSchool as any).id||ownerSchool._id):actor.schoolId;
+      if(!draftSchoolId||String(draftSchoolId)!==String(schoolId))fail(404,'Assessment outside assigned scope');
+    }
     directorCanManage=Boolean(manage);
-    scope.schoolIds = [actor.schoolId!];
+    scope.schoolIds = [schoolId!];
     const children = await GroupModel.find({parentId:{$in:scope.schoolIds},type:{$in:['CLASS','PRIVATE_GROUP']}}).select('id _id').lean();
     scope.groupIds = ids([...scope.schoolIds,...children.map((g:any)=>g.id||g._id)]);
   }
@@ -68,7 +78,7 @@ export async function resolveSchoolAssessmentContext(principal: { id?: unknown; 
   // Private copies and classes without enrolled learners must still be manageable
   // by their authorized author; this never turns an empty audience into everyone.
   if(!hasVisibleTarget&&!canManage)fail(404,'Assessment outside assigned scope');
-  return { actor, quiz:quiz!, scope, targetPredicate, authorityPredicate:authority, canManage };
+  return { actor, schoolId, quiz:quiz!, scope, targetPredicate, authorityPredicate:authority, canManage };
 }
 export type SchoolAssessmentContext = Awaited<ReturnType<typeof resolveSchoolAssessmentContext>>;
 export async function assertSchoolAssessmentOperation(context: SchoolAssessmentContext, operation: SchoolAssessmentOperation) {

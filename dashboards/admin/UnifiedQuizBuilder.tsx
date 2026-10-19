@@ -28,7 +28,9 @@ interface MockSection {
 }
 
 export interface UnifiedQuizBuilderProps {
-  role: "admin" | "supervisor" | "teacher";
+  role: "admin" | "supervisor" | "teacher" | "school_admin";
+  persistQuiz?: (id:string,payload:Partial<Quiz>)=>Promise<Quiz>;
+  targetGroupOptions?:{id:string;name:string;type:string}[];
   allowedGroupIds?: string[];
   allowedPathIds?: string[];
   editingQuiz?: Quiz;
@@ -84,6 +86,8 @@ const BASE_STEPS = [
 // ─── Main Component ───────────────────────────────────────────────────────────
 export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
   role,
+  persistQuiz,
+  targetGroupOptions,
   allowedGroupIds,
   allowedPathIds,
   editingQuiz,
@@ -106,13 +110,14 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
   const isAdmin = role === "admin";
   const isSupervisor = role === "supervisor";
   const isTeacher = role === "teacher";
+  const isDirector = role === "school_admin";
   const steps = useMemo(() => [
     ...BASE_STEPS,
     {
       num: 4 as WizardStep,
-      label: isAdmin ? "النشر والاستهداف" : isSupervisor ? "التوجيه للفصول والطلاب" : "التكليف لفصولي",
+      label: isDirector ? "التوجيه لمدرستي" : isAdmin ? "النشر والاستهداف" : isSupervisor ? "التوجيه للفصول والطلاب" : "التكليف لفصولي",
     },
-  ], [isAdmin, isSupervisor]);
+  ], [isAdmin, isSupervisor,isDirector]);
 
   const seedQuiz=editingQuiz??initialDefinition;
 
@@ -175,7 +180,7 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
   const [dueDate, setDueDate] = useState(seedQuiz?.dueDate ?? restoredDraft?.dueDate ?? "");
   // Supervisors create school-directed assessments that are immediately usable by
   // their in-scope students. Teachers retain the approval workflow.
-  const [isPublished, setIsPublished] = useState(seedQuiz?.isPublished ?? restoredDraft?.isPublished ?? (isAdmin || isSupervisor));
+  const [isPublished, setIsPublished] = useState(seedQuiz?.isPublished ?? restoredDraft?.isPublished ?? (isAdmin || isSupervisor || isDirector));
   const [showOnPlatform, setShowOnPlatform] = useState(isAdmin ? (seedQuiz?.showOnPlatform ?? restoredDraft?.showOnPlatform ?? true) : false);
   const [accessType, setAccessType] = useState<"free" | "paid" | "package">(
     (seedQuiz?.access?.type as "free" | "paid" | "package") ?? restoredDraft?.accessType ?? "free",
@@ -253,8 +258,8 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
     [subjects, pathId],
   );
   const availableGroups = useMemo(
-    () => (allowedGroupIds ? groups.filter((g) => allowedGroupIds.includes(g.id)) : groups),
-    [groups, allowedGroupIds],
+    () => (allowedGroupIds ? (targetGroupOptions||groups).filter((g) => allowedGroupIds.includes(g.id)) : (targetGroupOptions||groups)),
+    [groups, allowedGroupIds,targetGroupOptions],
   );
 
   // Auto-set pathId from subject
@@ -461,7 +466,7 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
 
       let saved: Quiz;
       if (editingQuiz) {
-        saved = (await updateQuiz(editingQuiz.id, payload)) as Quiz;
+        saved = persistQuiz?await persistQuiz(editingQuiz.id,payload):(await updateQuiz(editingQuiz.id, payload)) as Quiz;
         // Keep existing fields that weren't updated
         saved = { ...editingQuiz, ...saved };
       } else {
@@ -497,7 +502,7 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
               {editingQuiz ? "تعديل" : "إنشاء"} {KIND_CONFIG[kind].label}
             </h2>
             <p className="text-white/80 text-sm mt-0.5">
-              {isAdmin ? "مدير المنصة — صلاحيات كاملة" : isSupervisor ? "مشرف — موجّه لمجموعاتك" : "معلم — يُرسل للمراجعة قبل النشر"}
+              {isDirector ? "مدير المدرسة — ضمن صلاحيات المدرسة المختارة" : isAdmin ? "مدير المنصة — صلاحيات كاملة" : isSupervisor ? "مشرف — موجّه لمجموعاتك" : "معلم — يُرسل للمراجعة قبل النشر"}
             </p>
           </div>
           {onClose && (
@@ -1161,7 +1166,7 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
               <div className="flex items-center gap-4 border border-gray-100 rounded-2xl p-4 bg-gray-50">
                 <div className="flex-1">
                   <p className="text-sm font-black text-gray-800">
-                    {isAdmin ? "نشر الاختبار" : isSupervisor ? "تفعيل التوجيه" : "إرسال للمراجعة"}
+                    {isDirector ? "نشر الاختبار لمدرستي" : isAdmin ? "نشر الاختبار" : isSupervisor ? "تفعيل التوجيه" : "إرسال للمراجعة"}
                   </p>
                   <p className="text-xs text-gray-500 mt-0.5">
                     {isTeacher
@@ -1221,7 +1226,7 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
                 disabled={saving || !stepValid[3]}
                 className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-emerald-600 text-white font-bold text-sm hover:bg-emerald-700 transition-all shadow-sm disabled:opacity-50">
                 {saving ? <Loader2 size={15} className="animate-spin" /> : <Check size={15} />}
-                {isAdmin ? "حفظ ونشر" : isSupervisor ? "حفظ وتوجيه" : "إرسال للمراجعة"}
+                {isDirector ? "حفظ الاختبار" : isAdmin ? "حفظ ونشر" : isSupervisor ? "حفظ وتوجيه" : "إرسال للمراجعة"}
               </button>
             )}
           </div>

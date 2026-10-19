@@ -50,7 +50,7 @@ export async function cloneSchoolAssessment(context:SchoolAssessmentContext){
   const id='school_quiz_'+randomUUID();
   const created=await QuizModel.create({...definition,_id:id,id,title:source.title+' — نسخة',mode:'central',
     targetGroupIds:[],targetUserIds:[],learningPlacements:[],isPublished:false,showOnPlatform:false,
-    ownerType:'school',ownerId:context.actor.id,createdBy:context.actor.id,approvalStatus:'draft',
+    ownerType:'school',ownerId:context.actor.role==='school_admin'?(context.schoolId||context.actor.schoolId):context.actor.id,createdBy:context.actor.id,approvalStatus:'draft',
     access:{type:'free'},opensAt:null,closesAt:null,dueDate:null});
   return created.toObject();
 }
@@ -68,10 +68,10 @@ export function schoolAssessmentWrite(quiz:any,patch:any,query:any,contentEdit=f
   };
 }
 
-export async function authorizeSchoolDirectorEdit(principal:any,quiz:any,proposed:any){
+export async function authorizeSchoolDirectorEdit(principal:any,quiz:any,proposed:any,options:{schoolId?:string}={}){
   if(principal.role!=='school_admin')return false;
-  const context=await resolveSchoolAssessmentContext(principal,String(quiz.id||quiz._id));
-  if(quiz.ownerType!=='school'||quiz.mode!=='central'||proposed.mode!=='central')
+  const context=await resolveSchoolAssessmentContext(principal,String(quiz.id||quiz._id),options);
+  if(context.actor.role!=='school_admin'||quiz.ownerType!=='school'||(quiz.mode!=='central'&&!quiz.targetGroupIds?.length&&!quiz.targetUserIds?.length)||proposed.mode!==quiz.mode)
     throw Object.assign(new Error('School assessment management required'),{statusCode:403});
   await assertSchoolAssessmentAudience(context,proposed);
   return true;

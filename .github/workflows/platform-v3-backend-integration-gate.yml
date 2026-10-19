@@ -106,6 +106,7 @@ jobs:
           server/node_modules/.bin/tsx scripts/test-school-assessment-report.ts
           server/node_modules/.bin/tsx scripts/test-school-assessment-learners.ts
           server/node_modules/.bin/tsx scripts/test-school-assessment-editing.ts
+          server/node_modules/.bin/tsx scripts/test-director-assessment-management.ts
           server/node_modules/.bin/tsx scripts/test-school-assessment-teacher-authority.ts
           server/node_modules/.bin/tsx scripts/test-school-assessment-composition.ts
           server/node_modules/.bin/tsx scripts/test-school-assessment-composition-http.ts
