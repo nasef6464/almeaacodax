@@ -9,7 +9,10 @@ const capabilities = ['SCHOOL_ASSESSMENTS_MANAGE','SCHOOL_SMART_CLASSROOM_VIEW',
 includesAll(permissions, capabilities, 'G12 academic and transfer permissions are allowlisted');
 includesAll(workspace, ['buildSchoolDirectorAcademicWorkspace','buildSchoolDirectorClassOptions','createSchoolDirectorAssessment','createSchoolDirectorIntervention','transferSchoolDirectorStudent','Assessment learning path required','showOnPlatform: false','Use class move inside the same school'], 'G12 reuses existing academic engines and explicit transfer boundary');
 includesAll(routes, [...capabilities,'SCHOOL_ASSESSMENTS','SMART_CLASSROOM','INTERVENTION_CENTER','transfer-target-classes','Transfer requires active permission and contract in both schools','schools.director.student.transfer_school'], 'G12 APIs apply permission and entitlement gates');
-includesAll(academic, [...capabilities,'لا تُدمج نتائج المدرسة والتعلم الذاتي','اكتب TRANSFER للتأكيد'], 'director academic UI is permission/module aware and makes transfer explicit');
+includesAll(academic, [...capabilities,'DirectorAssessmentCards','اكتب TRANSFER للتأكيد'], 'director academic UI is permission/module aware and makes transfer explicit');
+const assessmentCards = await read('dashboards/school-director/DirectorAssessmentCards.tsx');
+includesAll(assessmentCards,['schoolAssessmentContext','SchoolAssessmentSummaryPanel','SchoolAssessmentLearnersPanel'], 'director assessment details reuse school-scoped authority and report boundaries');
+assert.ok(!assessmentCards.includes('examResults'), 'director cards must not merge personal result storage');
 includesAll(delegation, capabilities, 'Platform Admin can grant every G12 capability');
 includesAll(users, ['الشخصية/مساحة العمل','السياقات المدرسية الفعلية','مدرب منصة + معلم مدرسة'], 'user export labels personas and actual school contexts');
 includesAll(api, ['createSchoolDirectorAssessment:','getSchoolDirectorSmartClassrooms:','createSchoolDirectorIntervention:','getSchoolDirectorTransferTargetClasses:','transferSchoolDirectorStudent:'], 'G12 UI uses real APIs');
