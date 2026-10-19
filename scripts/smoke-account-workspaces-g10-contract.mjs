@@ -5,7 +5,7 @@ const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 const [workspace, routes, app, header, dashboard, api, integration] = await Promise.all([
   read('server/src/modules/schools/application/schoolDirectorWorkspace.ts'),
   read('server/src/routes/schoolAccess.routes.ts'),
-  read('App.tsx'),
+  read('app/AppRouteTree.tsx'),
   read('components/Header.tsx'),
   read('dashboards/SchoolDirectorDashboard.tsx'),
   read('services/api.ts'),

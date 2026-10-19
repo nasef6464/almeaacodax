@@ -1,3 +1,6 @@
+import {DirectorCatalogFields} from './school-director/DirectorCatalogFields';
+import {DirectorQuestionPicker} from './school-director/DirectorQuestionPicker';
+import {DirectorAssessmentCards,type DirectorAssessment} from './school-director/DirectorAssessmentCards';
 import React, { useEffect, useState } from "react";
 import { BookOpenCheck, BrainCircuit, Radio, ShieldAlert } from "lucide-react";
 import { api } from "../services/api";
@@ -9,17 +12,21 @@ type School = {
   modules: string[];
 };
 type Classroom = { classId: string; className: string };
-type Student = { studentId: string; name: string };
+type Student = { studentId: string; name: string; classId?:string };
 
 export const SchoolDirectorAcademicCenter: React.FC<{
   school: School;
+  area?: 'assessments'|'sessions'|'interventions'|'transfer';
   schools: School[];
   classes: Classroom[];
   students: Student[];
   onRefresh: () => Promise<void>;
-}> = ({ school, schools, classes, students, onRefresh }) => {
+}> = ({ school, schools, classes, students, onRefresh, area }) => {
   const can = (permission: string, module: string) =>
-    school.permissions.includes(permission) && school.modules.includes(module);
+    school.permissions.includes(permission) && school.modules.includes(module) && (!area || (permission.startsWith('SCHOOL_ASSESSMENTS')?area==='assessments':permission.startsWith('SCHOOL_SMART')?area==='sessions':permission.startsWith('SCHOOL_INTERVENTIONS')?area==='interventions':area==='transfer'));
+  const [assessments,setAssessments]=useState<DirectorAssessment[]>([]);
+  const [showCreate,setShowCreate]=useState(false);
+  const [interventionSubject,setInterventionSubject]=useState('');
   const [counts, setCounts] = useState({
     assessments: 0,
     sessions: 0,
@@ -30,11 +37,11 @@ export const SchoolDirectorAcademicCenter: React.FC<{
     classId: classes[0]?.classId || "",
     pathId: "",
     subjectId: "",
-    questionIds: "",
+    questionIds: [] as string[],
   });
   const [intervention, setIntervention] = useState({
     classId: classes[0]?.classId || "",
-    studentId: students[0]?.studentId || "",
+    studentId: "",
     skillId: "",
     pathId: "",
   });
@@ -60,6 +67,7 @@ export const SchoolDirectorAcademicCenter: React.FC<{
         ? api.getSchoolDirectorInterventions(school.schoolId)
         : Promise.resolve({ interventions: [] }),
     ]);
+    setAssessments(a.assessments || []);
     setCounts({
       assessments: a.assessments?.length || 0,
       sessions: s.sessions?.length || 0,
@@ -75,7 +83,7 @@ export const SchoolDirectorAcademicCenter: React.FC<{
       classId: classes[0]?.classId || "",
       pathId: "",
       subjectId: "",
-      questionIds: "",
+      questionIds: [] as string[],
     });
     setIntervention({
       classId: classes[0]?.classId || "",
@@ -90,6 +98,8 @@ export const SchoolDirectorAcademicCenter: React.FC<{
       confirmation: "",
     });
     setTargetClasses([]);
+    setInterventionSubject('');
+    setShowCreate(false);
     setMessage("");
   }, [school.schoolId]);
 
@@ -133,48 +143,44 @@ export const SchoolDirectorAcademicCenter: React.FC<{
       data-testid="director-academic-center"
     >
       <div>
-        <p className="text-xs font-black text-fuchsia-600">
-          تشغيل أكاديمي اختياري
-        </p>
         <h2 className="mt-1 text-xl font-black">
-          الاختبارات والفصول الذكية والتدخلات
+          {area==='assessments'?'اختبارات المدرسة':area==='interventions'?'الدعم والمهارات':area==='sessions'?'الحصص الذكية':area==='transfer'?'النقل بين المدارس':'الاختبارات والفصول الذكية والتدخلات'}
         </h2>
-        <p className="mt-1 text-xs text-slate-500">
-          كل مصدر مستقل، ولا تُدمج نتائج المدرسة والتعلم الذاتي في درجة واحدة.
-        </p>
       </div>
       {message && (
         <p className="mt-4 rounded-xl bg-slate-50 px-4 py-3 text-sm font-bold">
           {message}
         </p>
       )}
-      <div className="mt-5 grid gap-4 xl:grid-cols-3">
+      <div className="mt-5 grid gap-4">
         {can("SCHOOL_ASSESSMENTS_MANAGE", "SCHOOL_ASSESSMENTS") && (
           <article className="rounded-2xl border border-indigo-100 bg-indigo-50/50 p-4">
             <h3 className="flex items-center gap-2 font-black">
-              <BookOpenCheck size={18} /> اختبارات المدرسة{" "}
+              <BookOpenCheck size={18} /> أحدث الاختبارات{" "}
               <span className="mr-auto rounded-full bg-white px-2">
                 {counts.assessments}
               </span>
             </h3>
-            <div className="mt-3 grid gap-2">
-              <input value={assessment.title} onChange={(e) => setAssessment({ ...assessment, title: e.target.value })} placeholder="عنوان الاختبار" className="rounded-xl border bg-white px-3 py-2 text-sm" />
-              <select value={assessment.classId} onChange={(e) => setAssessment({ ...assessment, classId: e.target.value })} className="rounded-xl border bg-white px-3 py-2 text-sm">
-                {classes.map((item) => (<option key={item.classId} value={item.classId}>{item.className}</option>))}
-              </select>
-              <input value={assessment.pathId} onChange={(e) => setAssessment({ ...assessment, pathId: e.target.value })} placeholder="معرّف المسار التعليمي" className="rounded-xl border bg-white px-3 py-2 text-sm" />
-              <input value={assessment.questionIds} onChange={(e) => setAssessment({ ...assessment, questionIds: e.target.value })} placeholder="معرّفات أسئلة معتمدة، مفصولة بفاصلة" className="rounded-xl border bg-white px-3 py-2 text-sm" />
+            <div className="mt-4"><DirectorAssessmentCards items={assessments} schoolId={school.schoolId}/></div>
+            <button type="button" onClick={()=>setShowCreate(value=>!value)} className="mt-4 rounded-xl bg-indigo-700 px-4 py-2 text-sm font-bold text-white">{showCreate?'إلغاء الإضافة':'إضافة اختبار'}</button>
+            {showCreate&&<div className="mt-3 grid gap-3">
+              <label className="text-xs font-bold">عنوان الاختبار<input aria-label="عنوان الاختبار" value={assessment.title} onChange={e=>setAssessment({...assessment,title:e.target.value})} className="mt-1 block w-full rounded-xl border px-3 py-2 text-sm"/></label>
+              <label className="text-xs font-bold">فصل الاختبار<select aria-label="فصل الاختبار" value={assessment.classId} onChange={e=>setAssessment({...assessment,classId:e.target.value})} className="mt-1 block w-full rounded-xl border px-3 py-2 text-sm"><option value="">اختر الفصل</option>{classes.map(item=><option key={item.classId} value={item.classId}>{item.className}</option>)}</select></label>
+              <DirectorCatalogFields pathId={assessment.pathId} subjectId={assessment.subjectId} labels={{path:'مسار الاختبار',subject:'مادة الاختبار'}} onChange={choice=>setAssessment({...assessment,pathId:choice.pathId,subjectId:choice.subjectId,questionIds:[]})}/>
+              <p className="text-xs text-slate-600">يُنشر الاختبار مباشرة للفصل المحدد عند الإنشاء.</p>
+              <DirectorQuestionPicker key={assessment.pathId+'|'+assessment.subjectId} pathId={assessment.pathId} subjectId={assessment.subjectId} value={assessment.questionIds} onChange={questionIds=>setAssessment({...assessment,questionIds})}/>
               <button
-                disabled={pending === "assessment" || !assessment.title.trim() || !assessment.classId || !assessment.pathId.trim() || !assessment.questionIds.trim()}
+                disabled={pending === "assessment" || !assessment.title.trim() || !assessment.classId || !assessment.pathId || !assessment.subjectId || !assessment.questionIds.length}
                 onClick={() => void run("assessment", async () => {
-                  await api.createSchoolDirectorAssessment(school.schoolId, { ...assessment, questionIds: assessment.questionIds.split(",").map((id) => id.trim()).filter(Boolean) });
-                  setAssessment({ ...assessment, title: "", questionIds: "" });
+                  await api.createSchoolDirectorAssessment(school.schoolId, { ...assessment, title:assessment.title.trim() });
+                  setAssessment({ ...assessment, title: "", questionIds: [] });
+                  setShowCreate(false);
                 }, "تم إنشاء اختبار المدرسة من بنك الأسئلة الحالي.")}
                 className="rounded-xl bg-indigo-700 py-2 text-sm font-black text-white"
               >
                 إنشاء الاختبار
               </button>
-            </div>
+            </div>}
           </article>
         )}
         {can("SCHOOL_SMART_CLASSROOM_VIEW", "SMART_CLASSROOM") && (
@@ -202,15 +208,15 @@ export const SchoolDirectorAcademicCenter: React.FC<{
             </h3>
             {can("SCHOOL_INTERVENTIONS_MANAGE", "INTERVENTION_CENTER") && (
               <div className="mt-3 grid gap-2">
-                <select value={intervention.studentId} onChange={(e) => setIntervention({ ...intervention, studentId: e.target.value })} className="rounded-xl border bg-white px-3 py-2 text-sm">
-                  {students.map((item) => (<option key={item.studentId} value={item.studentId}>{item.name}</option>))}
+                <select aria-label="طالب الدعم" value={intervention.studentId} onChange={(e) => setIntervention({ ...intervention, studentId: e.target.value })} className="rounded-xl border bg-white px-3 py-2 text-sm">
+                  <option value="">اختر الطالب</option>
+                  {students.filter(item=>item.classId===intervention.classId).map((item) => (<option key={item.studentId} value={item.studentId}>{item.name}</option>))}
                 </select>
-                <select value={intervention.classId} onChange={(e) => setIntervention({ ...intervention, classId: e.target.value })} className="rounded-xl border bg-white px-3 py-2 text-sm">
+                <select aria-label="فصل الدعم" value={intervention.classId} onChange={(e) => setIntervention({ ...intervention, classId: e.target.value,studentId:'' })} className="rounded-xl border bg-white px-3 py-2 text-sm">
                   {classes.map((item) => (<option key={item.classId} value={item.classId}>{item.className}</option>))}
                 </select>
-                <input value={intervention.skillId} onChange={(e) => setIntervention({ ...intervention, skillId: e.target.value })} placeholder="معرّف المهارة" className="rounded-xl border bg-white px-3 py-2 text-sm" />
-                <input value={intervention.pathId} onChange={(e) => setIntervention({ ...intervention, pathId: e.target.value })} placeholder="معرّف المسار العلاجي" className="rounded-xl border bg-white px-3 py-2 text-sm" />
-                <button onClick={() => void run("intervention", async () => { await api.createSchoolDirectorIntervention(school.schoolId, intervention); }, "تم إنشاء التدخل وربط خطة علاجية بالطالب.")} className="rounded-xl bg-emerald-700 py-2 text-sm font-black text-white">
+                <DirectorCatalogFields pathId={intervention.pathId} subjectId={interventionSubject} skillId={intervention.skillId} labels={{path:'المسار العلاجي',subject:'مادة الدعم',skill:'المهارة'}} onChange={choice=>{setInterventionSubject(choice.subjectId);setIntervention({...intervention,pathId:choice.pathId,skillId:choice.skillId});}}/>
+                <button disabled={pending==='intervention'||!intervention.studentId||!intervention.classId||!intervention.pathId||!intervention.skillId} onClick={() => void run("intervention", async () => { await api.createSchoolDirectorIntervention(school.schoolId, intervention); }, "تم إنشاء التدخل وربط خطة علاجية بالطالب.")} className="rounded-xl bg-emerald-700 py-2 text-sm font-black text-white">
                   إنشاء تدخل
                 </button>
               </div>

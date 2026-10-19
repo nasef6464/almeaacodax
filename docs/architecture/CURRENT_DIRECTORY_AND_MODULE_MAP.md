@@ -1,3 +1,6 @@
+## School director workspace presentation — 2026-10-19
+`dashboards/SchoolDirectorDashboard.tsx` keeps existing school-scoped orchestration. `dashboards/school-director/` owns its navigation definitions, named catalog fields, paginated approved-question picker and assessment-card presentation. Cards reuse existing school-assessment summary/learner panels and commands; server authority remains in the existing schools/quizzes modules. No API/data/RBAC ownership change.
+
 ## School navigation clarity — 2026-10-18
 components/DashboardSectionNav.tsx owns optional single-expanded-group presentation and breadcrumbs; the existing role dashboards retain item permissions, tab IDs and selection handlers. SkillsTreeManager owns staff choose-material presentation and defers its existing coverage read until selection. Existing catalog helper resolves assessment labels. No route, API, DB, auth or data ownership migration. Evidence: docs/audits/CLEAR_SCHOOL_NAVIGATION_2026-10-18.md.
 
