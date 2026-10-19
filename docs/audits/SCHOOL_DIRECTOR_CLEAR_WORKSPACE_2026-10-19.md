@@ -26,3 +26,6 @@ Branch: codex/school-director-clear-workspace.
 ## Evidence / limits
 Local images: scratch/director-clear-workspace-ui/390.png and1280.png; final logs scratch/director-workspace-typecheck-final.log and scratch/director-workspace-build-final.log.
 No whole-schools closure, scale certificate, new permissions, migrations or AI usage claimed.
+
+## Exact-head CI follow-up
+PR578 initial head043f3e7f: required backend and cross-phase gates PASS; deep39208104247 FAIL in the new browser fixture during rapid school switching (a navigation button became hidden between its visibility read and click). Downstream skipped suites are not counted as passes. Product source unchanged; fixture now waits for the current overview breadcrumb and expanded overview group before selecting the next group. Local390/1280 PASS and independent review confirm unchanged assertions. Final exact-head CI must pass before merge.
