@@ -1,0 +1,4 @@
+import assert from 'node:assert/strict';
+import {classifySkillEvidence,classifyStudentEvidence} from '../server/src/modules/quizzes/application/learningEvidencePolicy.js';
+assert.equal(classifySkillEvidence(1,1),'insufficient');assert.equal(classifySkillEvidence(5,4),'ready');assert.equal(classifySkillEvidence(5,2),'support');assert.equal(classifySkillEvidence(5,3),'developing');assert.equal(classifySkillEvidence(0,0),'unmeasured');
+assert.equal(classifyStudentEvidence([]),'unmeasured');assert.equal(classifyStudentEvidence([{status:'ready'},{status:'insufficient'}]),'insufficient');assert.equal(classifyStudentEvidence([{status:'ready'},{status:'support'}]),'support');assert.equal(classifyStudentEvidence([{status:'ready'}]),'ready');console.log('PASS reporting policy: minimum evidence,consistent thresholds,no readiness from missing skills.');

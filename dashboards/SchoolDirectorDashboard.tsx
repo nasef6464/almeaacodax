@@ -1,3 +1,4 @@
+import {SchoolLearningEvidencePanel} from './school-learning/SchoolLearningEvidencePanel';
 import {DashboardLayout} from '../components/DashboardLayout';
 import {DashboardSectionNav,DashboardSectionBreadcrumb} from '../components/DashboardSectionNav';
 import {directorNavItems,directorNavGroups} from './school-director/directorNavigation';
@@ -142,6 +143,7 @@ export const SchoolDirectorDashboard: React.FC = () => {
     {(error || notice) && <div className={`mt-5 rounded-2xl border px-4 py-3 text-sm font-bold ${error ? 'border-rose-200 bg-rose-50 text-rose-700' : 'border-emerald-200 bg-emerald-50 text-emerald-700'}`}>{error || notice}</div>}
 
     {loadedSchoolId!==selectedSchool.schoolId?<p role="status" className="mt-6">جارٍ تحميل المدرسة…</p>:<>
+    {section==='learning-evidence'&&<div className="mt-6"><SchoolLearningEvidencePanel key={selectedSchool.schoolId} schoolId={selectedSchool.schoolId} classes={(overview?.classes||[]).map(c=>({id:c.classId,name:c.className}))} onOpenTests={navItems.some(i=>i.id==='assessments')?()=>setActiveSection('assessments'):undefined} onOpenClassrooms={navItems.some(i=>i.id==='sessions')?()=>setActiveSection('sessions'):undefined}/></div>}
     {section==='overview' && overview && <section className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-3">{metricCards(overview).map(({ label, value, icon: Icon, tone }) => <article key={label} className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm"><div className={`flex h-9 w-9 items-center justify-center rounded-xl ${tone}`}><Icon size={18} /></div><p className="mt-3 text-xs font-bold text-slate-500">{label}</p><p className="mt-1 text-2xl font-black">{value}</p></article>)}</section>}
 
     {['classes','teachers','reports'].includes(section) && <SchoolDirectorDelegatedOperations key={selectedSchool.schoolId+section} area={section as 'classes'|'teachers'|'reports'} school={selectedSchool} classes={overview?.classes||[]} onRefresh={() => refresh(selectedSchool, search)} />}

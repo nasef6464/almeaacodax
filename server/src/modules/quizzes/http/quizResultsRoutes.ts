@@ -1,3 +1,4 @@
+import {readLearningEvidence} from '../application/learningEvidence.js';
 import { Router } from "express";
 import { StatusCodes } from "http-status-codes";
 import { requireAuth, requireActiveAuth, requireRole } from "../../../middleware/auth.js";
@@ -52,6 +53,10 @@ const buildResultTaxonomyScopeFilter = (query: { pathId?: string; subjectId?: st
 
 
 export const quizResultsRouter = Router();
+
+quizResultsRouter.get('/results/learning-evidence',requireAuth,requireActiveAuth,requireRole(['admin','school_admin','supervisor','teacher']),asyncHandler(async(req,res)=>{
+ res.set('Cache-Control','private, no-store').json(await readLearningEvidence(req.authUser!,req.query));
+}));
 
 quizResultsRouter.get(
   "/results",

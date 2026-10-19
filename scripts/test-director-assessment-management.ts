@@ -65,6 +65,9 @@ try{
  const copy=await json(await request(resource+'/clone'+scope,'POST',{}),201);assert.equal(copy.isPublished,false);assert.equal(copy.ownerType,'school');
  await json(await request('/quizzes/'+copy.id+scope,'PATCH',{targetGroupIds:[String(classB._id)],questionIds:['dq1']}));
  await json(await request('/quizzes/'+copy.id+scope,'PATCH',{isPublished:true}));
+ const central=await json(await request('/school-access/director/schools/'+schoolB._id+'/academic/assessments','POST',{title:'اختبار مركزي للمدرسة',classId:'',targetScope:'school',pathId:'director-path',subjectId:'director-subject',questionIds:['dq1']}),201);
+ await json(await request('/school-access/director/schools/'+schoolC._id+'/academic/assessments','POST',{title:'اختبار مركزي مرفوض',classId:'',targetScope:'school',pathId:'director-path',subjectId:'director-subject',questionIds:['dq1']}),403);
+ const centralQuiz=await QuizModel.findById(central.assessment.assessmentId).lean();assert.deepEqual(centralQuiz!.targetGroupIds,[String(schoolB._id)]);assert.equal(centralQuiz!.mode,'central');
  await json(await request(resource+'/report'+scope));const learners=await json(await request(resource+'/learners'+scope));assert.equal(learners.pagination.total,1);
  assert.ok([403,404].includes((await request(resource+'/context?schoolId='+schoolC._id)).status));
  await json(await request('/quizzes/'+quiz.id+scope,'PATCH',{targetGroupIds:[String(classC._id)]}),403);

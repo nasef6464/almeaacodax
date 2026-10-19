@@ -165,14 +165,14 @@ export const SchoolDirectorAcademicCenter: React.FC<{
             <button type="button" onClick={()=>setShowCreate(value=>!value)} className="mt-4 rounded-xl bg-indigo-700 px-4 py-2 text-sm font-bold text-white">{showCreate?'إلغاء الإضافة':'إضافة اختبار'}</button>
             {showCreate&&<div className="mt-3 grid gap-3">
               <label className="text-xs font-bold">عنوان الاختبار<input aria-label="عنوان الاختبار" value={assessment.title} onChange={e=>setAssessment({...assessment,title:e.target.value})} className="mt-1 block w-full rounded-xl border px-3 py-2 text-sm"/></label>
-              <label className="text-xs font-bold">فصل الاختبار<select aria-label="فصل الاختبار" value={assessment.classId} onChange={e=>setAssessment({...assessment,classId:e.target.value})} className="mt-1 block w-full rounded-xl border px-3 py-2 text-sm"><option value="">اختر الفصل</option>{classes.map(item=><option key={item.classId} value={item.classId}>{item.className}</option>)}</select></label>
+              <label className="text-xs font-bold">فصل الاختبار<select aria-label="فصل الاختبار" value={assessment.classId} onChange={e=>setAssessment({...assessment,classId:e.target.value})} className="mt-1 block w-full rounded-xl border px-3 py-2 text-sm"><option value="">اختر الفصل أو المدرسة</option><option value={school.schoolId}>المدرسة بالكامل — اختبار مركزي</option>{classes.map(item=><option key={item.classId} value={item.classId}>{item.className}</option>)}</select></label>
               <DirectorCatalogFields pathId={assessment.pathId} subjectId={assessment.subjectId} labels={{path:'مسار الاختبار',subject:'مادة الاختبار'}} onChange={choice=>setAssessment({...assessment,pathId:choice.pathId,subjectId:choice.subjectId,questionIds:[]})}/>
               <p className="text-xs text-slate-600">يُنشر الاختبار مباشرة للفصل المحدد عند الإنشاء.</p>
               <DirectorQuestionPicker key={assessment.pathId+'|'+assessment.subjectId} pathId={assessment.pathId} subjectId={assessment.subjectId} value={assessment.questionIds} onChange={questionIds=>setAssessment({...assessment,questionIds})}/>
               <button
                 disabled={pending === "assessment" || !assessment.title.trim() || !assessment.classId || !assessment.pathId || !assessment.subjectId || !assessment.questionIds.length}
                 onClick={() => void run("assessment", async () => {
-                  await api.createSchoolDirectorAssessment(school.schoolId, { ...assessment, title:assessment.title.trim() });
+                  await api.createSchoolDirectorAssessment(school.schoolId, { ...assessment, title:assessment.title.trim(), ...(assessment.classId===school.schoolId?{classId:"",targetScope:"school" as const}:{}) });
                   setAssessment({ ...assessment, title: "", questionIds: [] });
                   setShowCreate(false);
                 }, "تم إنشاء اختبار المدرسة من بنك الأسئلة الحالي.")}

@@ -1,3 +1,4 @@
+import {SchoolLearningEvidencePanel} from '../school-learning/SchoolLearningEvidencePanel';
 import { SupervisorFollowUpPriorities } from './SupervisorFollowUpPriorities';
 import {ownPublishedSchoolAssessments} from './supervisorTests/supervisorAssignmentCatalog';
 import {DashboardDialog} from '../../components/DashboardDialog';
@@ -142,18 +143,20 @@ const getRequestedSupervisorTab = (): SupervisorTab | null => {
 
 export const SupervisorDashboard: React.FC = () => {
   const { user, groups, users, quizzes, paths, subjects, updateQuiz, assignStudentToGroupAsync, removeStudentFromGroupAsync } = useStore();
-  const resultEvidence = useScopedAssessmentResults(user.id);
-  const examResults = resultEvidence.results;
   const [scopedStudentUsers, setScopedStudentUsers] = useState<any[]>([]);
   const [scopedStudentUsersLoaded, setScopedStudentUsersLoaded] = useState(false);
-  const [activeTab, setActiveTabState] = useState<SupervisorTab>(() => getRequestedSupervisorTab() || 'overview');
+  const [activeTab, setActiveTabState] = useState<SupervisorTab>(() => getRequestedSupervisorTab() || 'students');
+  const [showRosterOperations,setShowRosterOperations]=useState(false);
+  const needsLegacyEvidence=!['students','skills'].includes(activeTab)||showRosterOperations;
+  const resultEvidence = useScopedAssessmentResults(user.id,undefined,false,activeTab==='tests'?'school_assessment':'platform_self_study',needsLegacyEvidence);
+  const examResults = resultEvidence.results;
 
   const setActiveTab = React.useCallback((newTab: SupervisorTab) => {
     setActiveTabState(newTab);
     const url = new URL(window.location.href);
-    const currentTab = url.searchParams.get('tab') || 'overview';
+    const currentTab = url.searchParams.get('tab') || 'students';
     if (currentTab !== newTab) {
-      if (newTab === 'overview') {
+      if (newTab === 'students') {
         url.searchParams.delete('tab');
       } else {
         url.searchParams.set('tab', newTab);
@@ -164,7 +167,7 @@ export const SupervisorDashboard: React.FC = () => {
 
   useEffect(() => {
     const handlePopState = () => {
-      const requested = getRequestedSupervisorTab() || 'overview';
+      const requested = getRequestedSupervisorTab() || 'students';
       setActiveTabState(requested);
     };
     window.addEventListener('popstate', handlePopState);
@@ -215,6 +218,8 @@ export const SupervisorDashboard: React.FC = () => {
   }, [activeTab]);
 
   useEffect(() => {
+    if(!needsLegacyEvidence){setScopedStudentUsersLoaded(false);setScopedStudentUsers([]);return;}
+    let cancelled=false;
     // The API is already tenant-scoped for a supervisor. Keep this data local so a
     // partial global client store can never turn a valid school roster into zero.
     const loadStudents = async () => {
@@ -225,7 +230,7 @@ export const SupervisorDashboard: React.FC = () => {
         let page = 1;
         let hasMore = true;
 
-        while (hasMore) {
+        while (hasMore && !cancelled) {
           const response = await api.getAdminUsers({ role: Role.STUDENT as Role, limit: 100, page });
           if (response?.users && response.users.length > 0) {
             allStudents = [...allStudents, ...response.users];
@@ -240,7 +245,7 @@ export const SupervisorDashboard: React.FC = () => {
           }
         }
 
-        setScopedStudentUsers(allStudents.map(u => ({
+        if(!cancelled)setScopedStudentUsers(allStudents.map(u => ({
             id: u._id || u.id || '',
             name: u.name,
             email: u.email,
@@ -260,13 +265,14 @@ export const SupervisorDashboard: React.FC = () => {
       } catch (error) {
         console.error('Error fetching students:', error);
       } finally {
-        setScopedStudentUsersLoaded(true);
+        if(!cancelled)setScopedStudentUsersLoaded(true);
       }
     };
 
     setScopedStudentUsersLoaded(false);
     loadStudents();
-  }, [user.id]);
+    return()=>{cancelled=true;};
+  }, [user.id,needsLegacyEvidence]);
 
   const skillPathOptions = useMemo(
     () => paths.filter((path) => path.isActive !== false),
@@ -354,14 +360,14 @@ export const SupervisorDashboard: React.FC = () => {
       const gs = studentClass?.metadata?.settings as Record<string, unknown> | undefined;
       const grade = String(gs?.grade || gs?.gradeName || gs?.stage || gs?.level || 'غير محدد').trim();
       const weakSkills = [...(latest?.skillsAnalysis || [])].filter((s) => Number(s.mastery || 0) < 70).sort((a, b) => Number(a.mastery || 0) - Number(b.mastery || 0)).slice(0, 3).map((s) => s.skill).filter(Boolean);
-      const reason = results.length === 0 ? 'لم يبدأ القياس' : avg < 60 ? 'بحاجة لتدخل عاجل' : avg < 75 ? 'تحت المراقبة' : 'مستواه ممتاز';
+      const reason = results.length === 0 ? 'لا توجد أدلة محملة' : avg < 60 ? 'بحاجة لتدخل عاجل' : avg < 75 ? 'تحت المراقبة' : 'مستواه ممتاز';
       const status = results.length === 0 || avg < 60 ? 'danger' : avg < 75 ? 'watch' : 'good';
       const hasFollowUp = assignedFollowUps.some((q) =>
         (q.targetUserIds || []).includes(student.id) || (studentClass?.id ? (q.targetGroupIds || []).includes(studentClass.id) : false));
       return {
         id: student.id, name: student.name, email: student.email || '', schoolName: studentSchool?.name || 'بدون مدرسة',
         className: studentClass?.name || 'بدون فصل', classId: studentClass?.id || '', schoolId: studentSchool?.id || '', groupIds: student.groupIds || [], gradeName: grade, average: avg,
-        attempts: results.length, latestQuiz: latest?.quizTitle || 'لم يبدأ بعد',
+        attempts: results.length, latestQuiz: latest?.quizTitle || 'لا توجد نتائج محملة',
         weakSkills, followUpReason: reason, status, hasAssignedFollowUp: hasFollowUp,
         latestScore: latest ? Number(latest.score || 0) : null,
         previousScore: results[1] ? Number(results[1].score || 0) : null,
@@ -395,14 +401,14 @@ export const SupervisorDashboard: React.FC = () => {
     
     const improvedStudentsCount = scopedStudents.filter((s) => {
       const r = scopedResults.filter((res) => res.userId === s.id).sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
-      return r.length >= 2 && Number(r[0].score || 0) > Number(r[1].score || 0);
+      return r.length >= 2 && Boolean(r[0].quizId) && r[0].quizId===r[1].quizId && r[0].learningContext===r[1].learningContext && Number(r[0].score || 0) > Number(r[1].score || 0);
     }).length;
     const declinedCount = scopedStudents.filter((s) => {
       const r = scopedResults.filter((res) => res.userId === s.id).sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
-      return r.length >= 2 && Number(r[0].score || 0) < Number(r[1].score || 0);
+      return r.length >= 2 && Boolean(r[0].quizId) && r[0].quizId===r[1].quizId && r[0].learningContext===r[1].learningContext && Number(r[0].score || 0) < Number(r[1].score || 0);
     }).length;
 
-    const pendingFollowUpCount = allStudentsList.filter((s) => (s.attempts === 0 || s.average < 70) && !s.hasAssignedFollowUp).length;
+    const pendingFollowUpCount = allStudentsList.filter((s) => s.attempts > 0 && s.average < 70 && !s.hasAssignedFollowUp).length;
 
     return {
       schoolCount: scopedSchoolIds.size, groupCount: scopedGroupList.length, studentCount: scopedStudents.length,
@@ -482,7 +488,8 @@ export const SupervisorDashboard: React.FC = () => {
   };
 
   const sendWeeklyFollowUpAlert = async () => {
-    const pendingStudents = supervisorScopeSummary.allStudentsList.filter((s) => (s.attempts === 0 || s.average < 70) && !s.hasAssignedFollowUp);
+    if(resultEvidence.loading||resultEvidence.error||resultEvidence.hasMore||resultEvidence.truncatedScope)return;
+    const pendingStudents = supervisorScopeSummary.allStudentsList.filter((s) => s.attempts > 0 && s.average < 70 && !s.hasAssignedFollowUp);
     if (!pendingStudents.length) return;
     setWeeklyAlertState('sending');
     try {
@@ -513,7 +520,7 @@ export const SupervisorDashboard: React.FC = () => {
   const exportScopeDataToCSV = () => {
     const students = supervisorScopeSummary.allStudentsList;
     if (!students.length) return;
-    const headers = ['اسم الطالب', 'البريد الإلكتروني', 'المدرسة', 'الفصل', 'المرحلة', 'عدد المحاولات', 'متوسط الدرجات', 'الحالة التقييمية'];
+    const headers = ['اسم الطالب', 'البريد الإلكتروني', 'المدرسة', 'الفصل', 'المرحلة', 'عدد المحاولات', 'متوسط الدرجات', 'الحالة التقييمية', 'المصدر', 'تغطية النتائج'];
     const rows = students.map((s) => [
       s.name,
       s.email,
@@ -523,6 +530,8 @@ export const SupervisorDashboard: React.FC = () => {
       s.attempts,
       `${s.average}%`,
       s.followUpReason,
+      activeTab==='tests'?'اختبارات المدرسة':'أسئلة المنصة',
+      resultEvidence.hasMore||resultEvidence.truncatedScope?'جزئية — نتائج محملة':'النتائج المحملة',
     ]);
 
     const csvContent = '\uFEFF' + [headers.join(','), ...rows.map((e) => e.map(val => `"${String(val).replace(/"/g, '""')}"`).join(','))].join('\n');
@@ -547,7 +556,7 @@ export const SupervisorDashboard: React.FC = () => {
 
   const sidebarItems = [
     { id: 'overview' as const, label: 'الملخص العام', icon: <BarChart3 size={20} /> },
-    { id: 'students' as const, label: 'متابعة الطلاب', icon: <Users size={20} />, badge: supervisorScopeSummary.studentCount },
+    { id: 'students' as const, label: 'تعلم الطلاب وجاهزيتهم', icon: <Users size={20} />, badge: supervisorScopeSummary.studentCount },
     { id: 'live-sessions' as const, label: 'الحصص المباشرة', icon: <Video size={20} /> },
     { id: 'tests' as const, label: 'الاختبارات والتحليل', icon: <ClipboardList size={20} /> },
     { id: 'live-monitoring' as const, label: 'المراقبة الحية', icon: <Activity size={20} /> },
@@ -573,7 +582,7 @@ export const SupervisorDashboard: React.FC = () => {
             </h2>
             <p className="text-xs text-gray-500 mt-1">متابعة الفصول والمهارات والتقارير</p>
           </div>
-          <DashboardSectionNav collapsible items={sidebarItems.map(item => ({ ...item, badge: item.id === 'students' ? `${supervisorScopeSummary.weakStudentsCount} ضعيف` : undefined }))} activeId={activeTab} onSelect={id => setActiveTab(id as SupervisorTab)} groups={sidebarGroups} />
+          <DashboardSectionNav collapsible items={sidebarItems.map(item => ({ ...item, badge: item.id === 'students' && scopedStudentUsersLoaded ? `${supervisorScopeSummary.studentCount} طالب` : undefined }))} activeId={activeTab} onSelect={id => setActiveTab(id as SupervisorTab)} groups={sidebarGroups} />
         </div>
       }
     >
@@ -635,7 +644,7 @@ export const SupervisorDashboard: React.FC = () => {
               <strong className="text-lg text-gray-900">{supervisorScopeSummary.studentCount} طالب</strong>
             </div>
             <div>
-              <span className="text-gray-500 block text-xs">متوسط التحصيل الإجمالي:</span>
+              <span className="text-gray-500 block text-xs">متوسط سجل المنصة المحمّل:</span>
               <strong className="text-lg text-indigo-700">{supervisorScopeSummary.averageScore}%</strong>
             </div>
             <div>
@@ -645,7 +654,7 @@ export const SupervisorDashboard: React.FC = () => {
           </div>
         </div>
 
-        <ScopedAssessmentResultsStatus {...resultEvidence}/>
+        {needsLegacyEvidence&&<ScopedAssessmentResultsStatus {...resultEvidence}/>}
 
         {/* ===== LIVE SESSIONS TAB ===== */}
         {activeTab === 'live-sessions' && <LiveSessionsManager />}
@@ -717,6 +726,7 @@ export const SupervisorDashboard: React.FC = () => {
         {selectedStudentId && activeStudentDetails && (
           <StudentIntelligenceProfile
             student={activeStudentDetails}
+            onOpenEvidence={()=>{setSelectedStudentId(null);setShowRosterOperations(false);setActiveTab("students");}}
             classAverage={
               supervisorScopeSummary.groupSnapshots.find(
                 (g) => g.id === activeStudentDetails.classId,
@@ -741,6 +751,7 @@ export const SupervisorDashboard: React.FC = () => {
         )}
 
         {/* ===== OVERVIEW TAB ===== */}
+        {activeTab==='overview'&&<div className="rounded-2xl border border-sky-200 bg-sky-50 p-4 text-sm"><strong>المؤشرات أدناه من سجل أسئلة المنصة المحمّل فقط.</strong><p className="mt-1">للحكم على مهارات الطلاب، اختر المصدر والمادة في التعلم والجاهزية. نتائج اختبارات المدرسة والحصص لها تقارير مستقلة.</p><button onClick={()=>setActiveTab('students')} className="mt-2 rounded-lg border bg-white px-3 py-2 font-bold">افتح التعلم والجاهزية</button></div>}
         {activeTab === 'overview' && (
           <div className="space-y-5">
             {/* Streamlined Welcome Hero Banner */}
@@ -804,7 +815,7 @@ export const SupervisorDashboard: React.FC = () => {
             {/* KPIs */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
               <KpiCard title="مجموع الطلاب" value={supervisorScopeSummary.studentCount} subtitle="تحت الإشراف المباشر" icon={<Users size={18} />} color="blue" />
-              <KpiCard title="بحاجة لمتابعة" value={supervisorScopeSummary.weakStudentsCount} subtitle={`${supervisorScopeSummary.inactiveCount} لم يبدأ القياس`} icon={<UserX size={18} />} color="rose" />
+              <KpiCard title="بحاجة لمتابعة" value={supervisorScopeSummary.weakStudentsCount} subtitle={`${supervisorScopeSummary.inactiveCount} بدون نتائج منصة محملة`} icon={<UserX size={18} />} color="rose" />
               <KpiCard title="متوسط الدرجات" value={`${supervisorScopeSummary.averageScore}%`} subtitle={`${supervisorScopeSummary.resultCount} محاولة اختبار`} icon={<Target size={18} />} color="emerald"
                 trend={supervisorScopeSummary.improvedStudentsCount >= supervisorScopeSummary.declinedCount ? { value: `${supervisorScopeSummary.improvedStudentsCount} تحسنوا`, up: true } : { value: `${supervisorScopeSummary.declinedCount} تراجعوا`, up: false }}
               />
@@ -821,7 +832,7 @@ export const SupervisorDashboard: React.FC = () => {
                   </h3>
                   <p className="text-xs text-gray-500 mt-0.5">تحديد الحالات الأكثر حرجاً للإصلاح الفوري وتوجيه المعلمين</p>
                 </div>
-                <button onClick={() => void sendWeeklyFollowUpAlert()} disabled={weeklyAlertState === 'sending' || supervisorScopeSummary.pendingFollowUpCount === 0}
+                <button onClick={() => void sendWeeklyFollowUpAlert()} disabled={weeklyAlertState === 'sending' || supervisorScopeSummary.pendingFollowUpCount === 0 || resultEvidence.loading || resultEvidence.error || resultEvidence.hasMore || resultEvidence.truncatedScope}
                   className="rounded-xl bg-indigo-600 px-3.5 py-1.5 text-xs font-bold text-white hover:bg-indigo-700 disabled:opacity-50 flex items-center gap-1.5 transition-all transform hover:-translate-y-0.5 shadow-xs"
                 >
                   {weeklyAlertState === 'sending' ? <Loader2 size={13} className="animate-spin" /> : <Send size={13} />}
@@ -955,15 +966,18 @@ export const SupervisorDashboard: React.FC = () => {
         )}
 
         {/* ===== STUDENTS TAB ===== */}
-        {activeTab === 'students' && (
+        {activeTab === 'students' && <div className="flex justify-end"><button type="button" onClick={()=>setShowRosterOperations(value=>!value)} className="rounded-xl border bg-white px-3 py-2 text-sm">{showRosterOperations?'العودة للتعلم والجاهزية':'إدارة بيانات الطلاب'}</button></div>}
+        {activeTab === 'students'&&!showRosterOperations&&<SchoolLearningEvidencePanel classes={supervisorScopeSummary.groupSnapshots.map(g=>({id:g.id,name:g.name}))} onOpenTests={()=>setActiveTab('tests')} onOpenClassrooms={()=>setActiveTab('reports')}/>}
+        {activeTab==='students'&&showRosterOperations&&!scopedStudentUsersLoaded&&<p role="status">جارٍ تحميل قائمة الطلاب…</p>}
+        {activeTab === 'students' && showRosterOperations && scopedStudentUsersLoaded && (
           <div className="space-y-6">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
               <div>
-                <h1 className="text-2xl font-black text-gray-900">متابعة تحصيل الطلاب</h1>
+                <h1 className="text-2xl font-black text-gray-900">إدارة الطلاب — سجل أسئلة المنصة المحمّل</h1>
                 <p className="mt-1 text-sm text-gray-500">عرض أداء الطلاب في نطاقك، وإرسال التدخلات والتنبيهات المباشرة، وإدارة نقل وإضافة الطلاب</p>
               </div>
               <div className="flex gap-2">
-                <button onClick={() => void sendWeeklyFollowUpAlert()} disabled={weeklyAlertState === 'sending' || supervisorScopeSummary.pendingFollowUpCount === 0}
+                <button onClick={() => void sendWeeklyFollowUpAlert()} disabled={weeklyAlertState === 'sending' || supervisorScopeSummary.pendingFollowUpCount === 0 || resultEvidence.loading || resultEvidence.error || resultEvidence.hasMore || resultEvidence.truncatedScope}
                   className="rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-indigo-700 disabled:opacity-50 flex items-center gap-2"
                 >
                   {weeklyAlertState === 'sending' ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
@@ -978,7 +992,7 @@ export const SupervisorDashboard: React.FC = () => {
               <div className="flex flex-wrap gap-2 border-b border-gray-100 pb-3">
                 {[
                   { id: 'all' as const, label: 'كل الطلاب', count: supervisorScopeSummary.allStudentsList.length, color: 'text-gray-700 bg-gray-50 border-gray-200' },
-                  { id: 'unmeasured' as const, label: 'لم يبدأ القياس', count: supervisorScopeSummary.inactiveCount, color: 'text-slate-700 bg-slate-50 border-slate-200' },
+                  { id: 'unmeasured' as const, label: 'بدون نتائج منصة محملة', count: supervisorScopeSummary.inactiveCount, color: 'text-slate-700 bg-slate-50 border-slate-200' },
                   { id: 'critical' as const, label: 'تدخل عاجل (<60%)', count: supervisorScopeSummary.allStudentsList.filter((s) => s.attempts > 0 && s.status === 'danger').length, color: 'text-rose-700 bg-rose-50 border-rose-100' },
                   { id: 'watch' as const, label: 'تحت المراقبة (60-75%)', count: supervisorScopeSummary.allStudentsList.filter((s) => s.status === 'watch').length, color: 'text-amber-700 bg-amber-50 border-amber-100' },
                   { id: 'outstanding' as const, label: 'المتميزون (>85%)', count: supervisorScopeSummary.allStudentsList.filter((s) => s.average >= 85).length, color: 'text-emerald-700 bg-emerald-50 border-emerald-100' },
@@ -1020,7 +1034,7 @@ export const SupervisorDashboard: React.FC = () => {
                 >
                   <option value="all">كل الحالات التقييمية</option>
                   <option value="urgent">عاجل جداً</option>
-                  <option value="inactive">غير نشط (لم يختبر)</option>
+                  <option value="inactive">بدون نتائج منصة محملة</option>
                   <option value="low">منخفض التحصيل</option>
                 </select>
               </div>
@@ -1184,155 +1198,9 @@ export const SupervisorDashboard: React.FC = () => {
           </div>
         )}
 
-        {activeTab === 'students' ? <DisplayListControls {...studentRows} total={filteredStudents.length} label="قائمة الطلاب" /> : null}
+        {activeTab === 'students' && showRosterOperations ? <DisplayListControls {...studentRows} total={filteredStudents.length} label="قائمة الطلاب" /> : null}
         {/* ===== SKILLS TAB ===== */}
-        {activeTab === 'skills' && (
-          <div className="space-y-6">
-            <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-              <div>
-                <h1 className="text-2xl font-black text-gray-900">مهارات المادة</h1>
-                <p className="mt-1 text-sm text-gray-500">اختر المادة أولًا، ثم افتح التفاصيل التي تحتاجها.</p>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                <select
-                  aria-label="المسار" value={skillPathFilter}
-                  onChange={(event) => {
-                    setSkillPathFilter(event.target.value);
-                    setSkillSubjectFilter('all');
-                  }}
-                  className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-black text-slate-700"
-                >
-                  <option value="all">كل المسارات</option>
-                  {skillPathOptions.map((path) => <option key={path.id} value={path.id}>{path.name}</option>)}
-                </select>
-                <select
-                  aria-label="المادة" value={skillSubjectFilter}
-                  onChange={(event) => setSkillSubjectFilter(event.target.value)}
-                  className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-black text-slate-700"
-                >
-                  <option value="all">اختر المادة</option>
-                  {skillSubjectOptions.map((subject) => <option key={subject.id} value={subject.id}>{subject.name}</option>)}
-                </select>
-              </div>
-            </div>
-
-            {skillSubjectFilter==='all' ? <div className="rounded-2xl border border-dashed border-sky-200 bg-sky-50 p-6 text-center text-sm font-bold text-sky-800">اختر المادة لعرض مهاراتها</div> : <>
-            <div className="grid grid-cols-3 gap-2">{[['تحتاج متابعة',skillsOverviewList.critical.length],['قيد التعزيز',skillsOverviewList.watch.length],['متقنة',skillsOverviewList.mastered.length]].map(([name,count])=><div key={name} className="rounded-xl border border-slate-100 bg-white p-3 text-center"><div className="text-xl font-black text-indigo-700">{count}</div><div className="text-xs font-bold text-slate-500">{name}</div></div>)}</div>
-            <details className="rounded-2xl border border-slate-100 bg-white p-4"><summary className="cursor-pointer text-sm font-bold text-indigo-700">عرض مهارات الطلاب</summary>
-            {/* مصفوفة طالب × مهارة */}
-            <ClassSkillsMapPanel
-              pathId={skillPathFilter}
-              subjectId={skillSubjectFilter}
-              scopeLabels={Object.fromEntries([...subjects.map(subject => [subject.id, subject.name]), ...paths.map(path => [`path:${path.id}`, path.name])])}
-              students={supervisorScopeSummary.allStudentsList}
-              groupSnapshots={supervisorScopeSummary.groupSnapshots}
-              onSelectStudent={(id) => setSelectedStudentId(id)}
-            />
-
-            </details>
-            <details className="rounded-2xl border border-slate-100 bg-white p-4"><summary className="cursor-pointer text-sm font-bold text-indigo-700">تفاصيل مستويات المهارات</summary>
-            <div className="border-t border-gray-100 pt-4">
-              <h3 className="text-sm font-black text-gray-700 mb-4">تفصيل المهارات حسب مستوى التمكن</h3>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-              
-              {/* Critical Skills Column */}
-              <div className="rounded-2xl border border-rose-100 bg-rose-50/20 p-5 shadow-xs space-y-4">
-                <div className="flex items-center justify-between border-b border-rose-100 pb-3">
-                  <h3 className="text-base font-black text-rose-800 flex items-center gap-2">
-                    <AlertTriangle size={18} />
-                    مهارات حرجة (ضعف شديد)
-                  </h3>
-                  <span className="rounded-md bg-rose-100 px-2 py-0.5 text-xs font-bold text-rose-700">{skillsOverviewList.critical.length} مهارات</span>
-                </div>
-                
-                {skillsOverviewList.critical.length === 0 ? (
-                  <p className="text-xs text-gray-400 text-center py-6">لا توجد مهارات حرجة في هذا النطاق.</p>
-                ) : skillsOverviewList.critical.slice(0, criticalRows.limit).map((sk) => (
-                  <div key={sk.key} className="rounded-xl border border-white bg-white p-4 shadow-xs space-y-3">
-                    <div className="flex justify-between items-start">
-                      <h4 className="text-sm font-bold text-gray-900 max-w-[70%] truncate" title={sk.skill}>{sk.skill}</h4>
-                      <span className="rounded-lg bg-rose-50 px-2 py-0.5 text-xs font-black text-rose-600">{sk.mastery}%</span>
-                    </div>
-                    <div className="h-2 rounded-full bg-gray-100 overflow-hidden">
-                      <div className="h-full rounded-full bg-rose-500" style={{ width: `${Math.max(6, sk.mastery)}%` }} />
-                    </div>
-                    <div className="flex justify-between items-center text-[11px] text-gray-500 pt-1">
-                      <span>{sk.affectedStudents} طلاب متعثرين</span>
-                      <button onClick={() => setSelectedSkillFilter({ name: sk.skill, level: 'critical', students: supervisorScopeSummary.allStudentsList.filter((s) => s.resultsList.some((result) => (result.skillsAnalysis || []).some((candidate) => String(candidate.pathId || '') === String(sk.pathId || '') && String(candidate.subjectId || '') === String(sk.subjectId || '') && String(candidate.skillId || candidate.skill || '') === String(sk.skillId || sk.skill || '') && Number(candidate.mastery || 0) < 75))).map((s) => s.id) })}
-                        className="font-bold text-indigo-600 hover:text-indigo-700 transition-colors">عرض الطلاب ←</button>
-                    </div>
-                  </div>
-                ))}
-                <DisplayListControls {...criticalRows} total={skillsOverviewList.critical.length} label="المهارات الحرجة" />
-              </div>
-
-              {/* Needs Improvement Column */}
-              <div className="rounded-2xl border border-amber-100 bg-amber-50/20 p-5 shadow-xs space-y-4">
-                <div className="flex items-center justify-between border-b border-amber-100 pb-3">
-                  <h3 className="text-base font-black text-amber-800 flex items-center gap-2">
-                    <Activity size={18} />
-                    مهارات قيد التطوير والتعزيز
-                  </h3>
-                  <span className="rounded-md bg-amber-100 px-2 py-0.5 text-xs font-bold text-amber-700">{skillsOverviewList.watch.length} مهارات</span>
-                </div>
-
-                {skillsOverviewList.watch.length === 0 ? (
-                  <p className="text-xs text-gray-400 text-center py-6">لا توجد مهارات قيد التعزيز.</p>
-                ) : skillsOverviewList.watch.slice(0, watchRows.limit).map((sk) => (
-                  <div key={sk.key} className="rounded-xl border border-white bg-white p-4 shadow-xs space-y-3">
-                    <div className="flex justify-between items-start">
-                      <h4 className="text-sm font-bold text-gray-900 max-w-[70%] truncate" title={sk.skill}>{sk.skill}</h4>
-                      <span className="rounded-lg bg-amber-50 px-2 py-0.5 text-xs font-black text-amber-600">{sk.mastery}%</span>
-                    </div>
-                    <div className="h-2 rounded-full bg-gray-100 overflow-hidden">
-                      <div className="h-full rounded-full bg-amber-500" style={{ width: `${Math.max(6, sk.mastery)}%` }} />
-                    </div>
-                    <div className="flex justify-between items-center text-[11px] text-gray-500 pt-1">
-                      <span>{sk.affectedStudents} طلاب يحتاجون تعزيز</span>
-                      <button onClick={() => setSelectedSkillFilter({ name: sk.skill, level: 'watch', students: supervisorScopeSummary.allStudentsList.filter((s) => s.resultsList.some((result) => (result.skillsAnalysis || []).some((candidate) => String(candidate.pathId || '') === String(sk.pathId || '') && String(candidate.subjectId || '') === String(sk.subjectId || '') && String(candidate.skillId || candidate.skill || '') === String(sk.skillId || sk.skill || '') && Number(candidate.mastery || 0) < 75))).map((s) => s.id) })}
-                        className="font-bold text-indigo-600 hover:text-indigo-700 transition-colors">عرض الطلاب ←</button>
-                    </div>
-                  </div>
-                ))}
-                <DisplayListControls {...watchRows} total={skillsOverviewList.watch.length} label="مهارات تحتاج تحسين" />
-              </div>
-
-              {/* Mastered Skills Column */}
-              <div className="rounded-2xl border border-emerald-100 bg-emerald-50/20 p-5 shadow-xs space-y-4">
-                <div className="flex items-center justify-between border-b border-emerald-100 pb-3">
-                  <h3 className="text-base font-black text-emerald-800 flex items-center gap-2">
-                    <CheckCircle2 size={18} />
-                    مهارات ممتازة (تمكن عالي)
-                  </h3>
-                  <span className="rounded-md bg-emerald-100 px-2 py-0.5 text-xs font-bold text-emerald-700">{skillsOverviewList.mastered.length} مهارات</span>
-                </div>
-
-                {skillsOverviewList.mastered.length === 0 ? (
-                  <p className="text-xs text-gray-400 text-center py-6">لا تتوفر مهارات بنسبة تمكن عالية حالياً.</p>
-                ) : skillsOverviewList.mastered.slice(0, masteredRows.limit).map((sk) => (
-                  <div key={sk.key} className="rounded-xl border border-white bg-white p-4 shadow-xs space-y-3">
-                    <div className="flex justify-between items-start">
-                      <h4 className="text-sm font-bold text-gray-900 max-w-[70%] truncate" title={sk.skill}>{sk.skill}</h4>
-                      <span className="rounded-lg bg-emerald-50 px-2 py-0.5 text-xs font-black text-emerald-600">{sk.mastery}%</span>
-                    </div>
-                    <div className="h-2 rounded-full bg-gray-100 overflow-hidden">
-                      <div className="h-full rounded-full bg-emerald-500" style={{ width: `${Math.max(6, sk.mastery)}%` }} />
-                    </div>
-                    <div className="flex justify-between items-center text-[11px] text-gray-500 pt-1">
-                      <span>التمكن ممتاز للطلاب</span>
-                      <span className="text-[10px] text-emerald-700 font-bold bg-emerald-50 rounded px-1.5 py-0.5">جاهزة</span>
-                    </div>
-                  </div>
-                ))}
-                <DisplayListControls {...masteredRows} total={skillsOverviewList.mastered.length} label="المهارات المتقنة" />
-              </div>
-            </div>
-            </details></>}
-          </div>
-        )}
+        {activeTab === 'skills' && <SchoolLearningEvidencePanel classes={supervisorScopeSummary.groupSnapshots.map(g=>({id:g.id,name:g.name}))} onOpenTests={()=>setActiveTab('tests')} onOpenClassrooms={()=>setActiveTab('reports')}/>}
 
         {/* ===== REPORTS TAB ===== */}
         {activeTab === 'reports' && (
@@ -1340,6 +1208,7 @@ export const SupervisorDashboard: React.FC = () => {
             <SmartClassroomReportsPanel />
             <SmartClassroomIntelligencePanel />
             <SmartClassroomInterventionPanel />
+            <details className="rounded-2xl border bg-white p-4"><summary className="cursor-pointer font-bold text-indigo-800">سجل أسئلة المنصة المحمّل — الفصول والتصدير</summary><p className="my-3 text-xs text-slate-500">المصدر: أسئلة المنصة فقط. اكتمال التغطية مبين أعلى الصفحة؛ قياس المهارات حسب المصدر متاح في التعلم والجاهزية.</p>
             {/* تقرير الفصل الجديد */}
             <ClassReportPanel
               students={supervisorScopeSummary.allStudentsList}
@@ -1354,7 +1223,7 @@ export const SupervisorDashboard: React.FC = () => {
             <div className="border-t border-gray-100 pt-4">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                  <h1 className="text-2xl font-black text-gray-900">تقارير أداء فصول المدرسة والتحصيل</h1>
+                  <h1 className="text-2xl font-black text-gray-900">سجل أسئلة المنصة — مقارنة الفصول</h1>
                   <p className="mt-1 text-sm text-gray-500">تحليل مقارن للمستويات الدراسية والفصول للمشرفين</p>
                 </div>
               <div className="flex items-center gap-2 print:hidden">
@@ -1363,9 +1232,9 @@ export const SupervisorDashboard: React.FC = () => {
                 <button
                   onClick={() => {
                     const rows = [
-                      ['الفصل', 'عدد الطلاب', 'المحاولات', 'الطلاب الضعفاء', 'المعدل%'],
+                      ['الفصل', 'عدد الطلاب', 'المحاولات', 'الطلاب الضعفاء', 'المعدل%', 'المصدر', 'التغطية'],
                       ...supervisorScopeSummary.groupSnapshots.map(g => [
-                        g.name, g.studentCount, g.attempts, g.weakStudents, g.average
+                        g.name, g.studentCount, g.attempts, g.weakStudents, g.average, "أسئلة المنصة", resultEvidence.hasMore||resultEvidence.truncatedScope?"جزئية":"النتائج المحملة"
                       ])
                     ];
                     const csv = rows.map(r => r.join(',')).join('\n');
@@ -1557,8 +1426,8 @@ export const SupervisorDashboard: React.FC = () => {
               {/* Progress Summary Statistics */}
               <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm space-y-4">
                 <div className="flex justify-between items-center border-b border-gray-100 pb-3">
-                  <h3 className="text-base font-black text-gray-900">إحصائيات التقدم والتحصيل الكلي</h3>
-                  <span className="text-xs text-indigo-600 font-bold bg-indigo-50 px-2 py-0.5 rounded-md">مؤشرات أسبوعية</span>
+                  <h3 className="text-base font-black text-gray-900">إحصائيات سجل المنصة المحمّل</h3>
+                  <span className="text-xs text-indigo-600 font-bold bg-indigo-50 px-2 py-0.5 rounded-md">حسب النتائج المحمّلة</span>
                 </div>
                 <div className="grid grid-cols-2 gap-3 h-[calc(100%-3rem)]">
                   <div className="rounded-2xl border border-emerald-100 bg-emerald-50/50 p-4 text-center flex flex-col justify-center transition-all hover:bg-emerald-50 shadow-xs">
@@ -1579,12 +1448,13 @@ export const SupervisorDashboard: React.FC = () => {
                   <div className="rounded-2xl border border-indigo-100 bg-indigo-50/50 p-4 text-center flex flex-col justify-center transition-all hover:bg-indigo-50 shadow-xs">
                     <Target size={24} className="mx-auto mb-1.5 text-indigo-600" />
                     <div className="text-2xl sm:text-3xl font-black text-indigo-700">{supervisorScopeSummary.averageScore}%</div>
-                    <div className="text-[11px] font-bold text-indigo-700 mt-1">معدل التحصيل العام</div>
+                    <div className="text-[11px] font-bold text-indigo-700 mt-1">متوسط السجل المحمّل</div>
                   </div>
                 </div>
               </div>
             </div>
             </div>{/* close border-t wrapper */}
+            </details>
           </div>
         )}
 
@@ -1693,7 +1563,7 @@ export const SupervisorDashboard: React.FC = () => {
                     <strong className="text-xl font-black text-indigo-900 mt-1 block">{supervisorScopeSummary.studentCount}</strong>
                   </div>
                   <div className="p-3 bg-white rounded-xl border border-gray-100 text-center">
-                    <span className="text-[11px] font-bold text-gray-500 block">متوسط تحصيل المدرسة</span>
+                    <span className="text-[11px] font-bold text-gray-500 block">متوسط نتائج المنصة المحملة</span>
                     <strong className="text-xl font-black text-emerald-600 mt-1 block">{supervisorScopeSummary.averageScore}%</strong>
                   </div>
                   <div className="p-3 bg-white rounded-xl border border-gray-100 text-center">

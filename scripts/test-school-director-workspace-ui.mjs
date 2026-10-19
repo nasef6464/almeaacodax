@@ -55,10 +55,10 @@ try{
  assert.equal(query.limit,20);assert.equal(query.subject,'math');assert.equal(query.approvalStatus,'approved');
  await page.getByLabel('اختيار السؤال 1',{exact:true}).check();
  await page.getByRole('button',{name:'التالي',exact:true}).click();await page.getByText('صفحة 2',{exact:true}).waitFor();assert.equal(await page.getByLabel('اختيار السؤال 1',{exact:true}).isChecked(),true,'Keep canonical selection across pages');
- await page.getByLabel('مسار الاختبار',{exact:true}).selectOption('p2');await page.getByLabel('مادة الاختبار',{exact:true}).selectOption('bio');await page.getByText('الأسئلة المختارة: 0',{exact:true}).waitFor();await page.getByLabel('مسار الاختبار',{exact:true}).selectOption('p');await page.getByLabel('مادة الاختبار',{exact:true}).selectOption('math');await page.getByLabel('اختيار السؤال 1',{exact:true}).check();await page.getByLabel('عنوان الاختبار',{exact:true}).fill('اختبار جديد');await page.getByLabel('فصل الاختبار',{exact:true}).selectOption('c');
+ await page.getByLabel('مسار الاختبار',{exact:true}).selectOption('p2');await page.getByLabel('مادة الاختبار',{exact:true}).selectOption('bio');await page.getByText('الأسئلة المختارة: 0',{exact:true}).waitFor();await page.getByLabel('مسار الاختبار',{exact:true}).selectOption('p');await page.getByLabel('مادة الاختبار',{exact:true}).selectOption('math');await page.getByLabel('اختيار السؤال 1',{exact:true}).check();await page.getByLabel('عنوان الاختبار',{exact:true}).fill('اختبار جديد');await page.getByLabel('فصل الاختبار',{exact:true}).selectOption(width===390?'c':'school');
  await page.getByRole('button',{name:'إنشاء الاختبار',exact:true}).click();
  await page.waitForFunction(()=>window.writes.length===1);
- assert.deepEqual(await page.evaluate(()=>window.writes[0]),{id:'school',payload:{title:'اختبار جديد',classId:'c',pathId:'p',subjectId:'math',questionIds:['question']}});
+ assert.deepEqual(await page.evaluate(()=>window.writes[0]),{id:'school',payload:{title:'اختبار جديد',classId:width===390?'c':'',pathId:'p',subjectId:'math',questionIds:['question'],...(width===1280?{targetScope:'school'}:{})}});
  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'No viewport overflow');assert.deepEqual(errors,[]);
  await page.evaluate(()=>scrollTo(0,0));
  await page.screenshot({path:artifacts+'/'+width+'.png',fullPage:true});
