@@ -5,7 +5,10 @@ import {chromium} from 'playwright';
 import {readFileSync,readdirSync} from 'node:fs';
 
 const caller = readFileSync('dashboards/admin/SupervisorDashboard.tsx','utf8');
-assert.match(caller, /<ClassSkillsMapPanel\s+pathId=\{skillPathFilter\}\s+subjectId=\{skillSubjectFilter\}/);
+assert.equal((caller.match(/<SchoolLearningEvidencePanel\b/g)||[]).length,2,
+  'Student follow-up and skills use the same source/subject-first evidence center');
+assert.doesNotMatch(caller, /<ClassSkillsMapPanel\b/,
+  'The former loaded-history matrix no longer drives supervisor readiness');
 const consoleSource = readFileSync('components/classroom/ClassroomActiveSessionPanel.tsx','utf8');
 assert.match(consoleSource, /isTeacher && <ClassroomOptionalPulse canPrepareSupport=\{data\?\.status === 'live'\}/);
 const bundle = await build({stdin:{resolveDir:process.cwd(),loader:'tsx',contents:`
