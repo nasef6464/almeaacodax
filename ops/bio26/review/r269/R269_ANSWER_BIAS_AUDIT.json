@@ -1,0 +1,25 @@
+{
+  "release": "R269",
+  "reviewOnly": true,
+  "rootCause": "R268 24/24 correct answers were in A; strong position cue.",
+  "sourceQuestionCount": 24,
+  "sourceDistribution": {
+    "A": 24,
+    "B": 0,
+    "C": 0,
+    "D": 0
+  },
+  "repairedDistribution": {
+    "A": 6,
+    "B": 6,
+    "C": 6,
+    "D": 6
+  },
+  "validOptions": true,
+  "uniqueIds": 24,
+  "stemsPreserved": true,
+  "rationalesPreserved": true,
+  "semanticDedupeProtectedBank": "NOT_RUN",
+  "independentScienceReview": "PENDING",
+  "productionImport": "NONE"
+}
