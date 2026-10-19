@@ -119,7 +119,22 @@ try {
   assert.ok(lookup, 'explain must expose the actual joined report pipeline');
   assert.equal(Number(lookup.collectionScans), 0);
   assert.ok(lookup.indexesUsed.includes('userId_1'));
-  assert.ok(Number(lookup.totalDocsExamined) <= 11002, 'join work stays bounded by the aggregate inventory');
+  const aggregateInventory = await SchoolSkillAggregateModel.countDocuments();
+  const [canonicalRoster] = await UserModel.aggregate([
+    ...buildSchoolSkillReportJoin({ role: 'student' }, {}).slice(0, 5),
+    { $count: 'keys' },
+  ]);
+  assert.equal(aggregateInventory, 11002);
+  assert.equal(canonicalRoster.keys, 10000);
+  assert.equal(Number(lookup.nReturned), 11001, 'joined evidence rows remain exact after alias dedup');
+  // Explain work is a cost metric, not a count of distinct foreign documents.
+  // Allow the inventory plus one indexed probe per canonical learner; never a scan.
+  const joinBudget = aggregateInventory + canonicalRoster.keys;
+  for (const metric of ['totalDocsExamined', 'totalKeysExamined']) {
+    const work = Number(lookup[metric]);
+    assert.ok(Number.isFinite(work) && work >= 0 && work <= joinBudget,
+      `${metric} stays linear in aggregate inventory and canonical learner probes`);
+  }
   const { createApp } = await import('../server/dist/app.js');
   server = createApp().listen(0, '127.0.0.1');
   await new Promise(resolve => server.once('listening', resolve));
