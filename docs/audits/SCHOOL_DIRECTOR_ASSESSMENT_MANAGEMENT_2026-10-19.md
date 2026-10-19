@@ -19,3 +19,6 @@ Private school drafts must match their owning school; legacy author-owned drafts
 
 ## Delivery
 Required CI must pass on final source SHA before merge. Production verification will open/cancel existing forms and read results only; isolated writes are not production write certification.
+
+## First exact-head CI follow-up
+Initial d37a883d CI exposed an outdated supervisor source assertion for the builder publication default and an unregistered additive definition GET. Updated the assertion to include the actual director role and registered that one authorized route in APPROVED_CONTRACT_EXTENSIONS; immutable baseline untouched. The new reminder HTTP assertion requires transactions; moved the test into the existing isolated replica step rather than standalone Mongo. Product code unchanged by these CI corrections. Local supervisor contract PASS; current architecture re-audit/gate preserves all preexisting generated artifacts byte-for-byte. Final source SHA must pass required checks.

@@ -12,6 +12,7 @@
   "backendRouteSignatures": [
     "learningCompletionRouter|GET|/learning-completion",
     "schoolAssessmentsRouter|GET|/:id/context",
+    "schoolAssessmentsRouter|GET|/:id/definition",
     "schoolAssessmentsRouter|GET|/:id/report",
     "schoolAssessmentsRouter|GET|/:id/learners",
     "schoolAssessmentsRouter|GET|/:id/results/:resultId",
