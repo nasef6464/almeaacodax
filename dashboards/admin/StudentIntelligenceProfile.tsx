@@ -37,6 +37,7 @@ interface StudentIntelligenceProfileProps {
   onSendAlert: () => void;
   onAssignTest: () => void;
   onOpenReport?: (id: string) => void;
+  onOpenEvidence?:()=>void;
 }
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -74,8 +75,8 @@ const ScoreChip: React.FC<{ score: number; label: string }> = ({ score, label })
 
 // ── Main Component ────────────────────────────────────────────────────────────
 export const StudentIntelligenceProfile: React.FC<StudentIntelligenceProfileProps> = ({
-  student, classAverage, classTotalStudents, completedLessons = [],
-  onClose, onSendAlert, onAssignTest, onOpenReport,
+  student, classAverage, classTotalStudents, completedLessons,
+  onClose, onSendAlert, onAssignTest, onOpenReport, onOpenEvidence,
 }) => {
   const titleId = useId();
   // ── اشتقاق المهارات من كل النتائج ──────────────────────────────────────────
@@ -100,7 +101,8 @@ export const StudentIntelligenceProfile: React.FC<StudentIntelligenceProfileProp
   const strongSkillsAgg = aggregatedSkills.filter((s) => s.mastery >= 75).slice(-3);
 
   // ── تطور الأداء ──────────────────────────────────────────────────────────────
-  const trend = student.latestScore !== null && student.previousScore !== null
+  const comparable=Boolean(student.resultsList[0]?.quizId&&student.resultsList[0]?.quizId===student.resultsList[1]?.quizId&&student.resultsList[0]?.learningContext===student.resultsList[1]?.learningContext);
+  const trend = comparable && student.latestScore !== null && student.previousScore !== null
     ? student.latestScore - student.previousScore : null;
   const trendLabel = trend === null ? null : trend > 0 ? `↑ +${trend}%` : trend < 0 ? `↓ ${trend}%` : 'ثابت';
   const trendColor = trend === null ? '' : trend > 0 ? 'text-emerald-600' : trend < 0 ? 'text-rose-600' : 'text-gray-500';
@@ -143,11 +145,12 @@ export const StudentIntelligenceProfile: React.FC<StudentIntelligenceProfileProp
         </div>
 
         <div className="min-h-0 p-5 space-y-5 overflow-y-auto">
+          {onOpenEvidence&&<div className="rounded-xl border border-sky-200 bg-sky-50 p-3 text-sm"><p>سجل أسئلة المنصة المحمّل. قياس المهارات والجاهزية متاح حسب المصدر والمادة.</p><button onClick={onOpenEvidence} className="mt-2 rounded-lg border bg-white px-3 py-2 font-bold">افتح قياس المهارات</button></div>}
 
           {/* ── إحصائيات سريعة ── */}
           <div className="grid grid-cols-3 gap-3">
-            <ScoreChip score={student.average} label="المتوسط العام" />
-            <ScoreChip score={classAverage} label="متوسط الفصل" />
+            <ScoreChip score={student.average} label="متوسط المحاولات المحملة" />
+            <ScoreChip score={classAverage} label="متوسط الفصل المحمل" />
             <div className="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3 text-center">
               <div className={`text-2xl font-black ${trendColor}`}>{trendLabel ?? '—'}</div>
               <div className="text-xs font-bold text-gray-500 mt-0.5">آخر تطور</div>
@@ -166,7 +169,7 @@ export const StudentIntelligenceProfile: React.FC<StudentIntelligenceProfileProp
           {/* ── نشاط المنصة الذاتي ── */}
           <div className="rounded-2xl border border-blue-100 bg-blue-50 p-4">
             <p className="text-xs font-black text-blue-800 mb-3 flex items-center gap-2">
-              <BookOpen size={14} /> نشاط الطالب على المنصة
+              <BookOpen size={14} /> سجل المحاولات المحمّل
             </p>
             <div className="grid grid-cols-3 gap-2 text-center">
               <div className="rounded-xl bg-white border border-blue-100 p-2.5">
@@ -174,18 +177,18 @@ export const StudentIntelligenceProfile: React.FC<StudentIntelligenceProfileProp
                 <div className="text-[11px] text-blue-600 font-bold">اختبار ذاتي</div>
               </div>
               <div className="rounded-xl bg-white border border-blue-100 p-2.5">
-                <div className="text-lg font-black text-blue-800">{completedLessons.length}</div>
+                <div className="text-lg font-black text-blue-800">{completedLessons?.length??'غير متاح'}</div>
                 <div className="text-[11px] text-blue-600 font-bold">درس مكتمل</div>
               </div>
               <div className="rounded-xl bg-white border border-blue-100 p-2.5">
-                <div className="text-lg font-black text-blue-800">{student.latestQuiz !== 'لم يبدأ بعد' ? 'نشط' : 'غير نشط'}</div>
+                <div className="text-lg font-black text-blue-800">{student.attempts?'توجد نتائج':'بدون نتائج محملة'}</div>
                 <div className="text-[11px] text-blue-600 font-bold">الحالة</div>
               </div>
             </div>
           </div>
 
           {/* ── خريطة المهارات ── */}
-          {aggregatedSkills.length > 0 && (
+          {!onOpenEvidence&&aggregatedSkills.length > 0 && (
             <div className="space-y-3">
               <h3 className="text-sm font-black text-gray-800 flex items-center gap-2">
                 <Target size={16} className="text-violet-500" /> خريطة المهارات
@@ -199,7 +202,7 @@ export const StudentIntelligenceProfile: React.FC<StudentIntelligenceProfileProp
           )}
 
           {/* ── التوصيات ── */}
-          {(weakSkillsAgg.length > 0 || strongSkillsAgg.length > 0) && (
+          {!onOpenEvidence&&(weakSkillsAgg.length > 0 || strongSkillsAgg.length > 0) && (
             <div className="space-y-2">
               <h3 className="text-sm font-black text-gray-800 flex items-center gap-2">
                 <Zap size={16} className="text-amber-500" /> التوصيات

@@ -1,9 +1,11 @@
+import type {LearningEvidenceQuery,LearningEvidenceReport} from '../../types/learningEvidence';
 import type {SchoolAssessmentReport,SchoolAssessmentCompositionSpec,SchoolAssessmentCompositionPreview,SchoolAssessmentCommand,SchoolAssessmentCommandResult} from '../../types/schoolAssessments';
 import type {Quiz,QuizResult} from '../../types';
 import type {SchoolAssessmentLearnerPage,SchoolAssessmentLearnerQuery} from '../../types/schoolAssessments';
 type Request = <T>(path:string,options?:{method?:'GET'|'POST'|'PATCH';cache?:RequestCache;body?:unknown})=>Promise<T>;
 const inSchool=(path:string,schoolId?:string)=>schoolId?path+(path.includes('?')?'&':'?')+'schoolId='+encodeURIComponent(schoolId):path;
 export const createSchoolAssessmentsApi=(request:Request)=>({
+  learningEvidence:(query:LearningEvidenceQuery)=>request<LearningEvidenceReport>('/quizzes/results/learning-evidence?'+new URLSearchParams(Object.entries(query).filter(([,value])=>value!==undefined).map(([key,value])=>[key,String(value)])),{cache:'no-store'}),
   composeSchoolAssessment:(spec:SchoolAssessmentCompositionSpec)=>request<SchoolAssessmentCompositionPreview>('/school-assessments/compose',{method:'POST',body:spec,cache:'no-store'}),
   schoolAssessmentReport:(id:string,schoolId?:string)=>request<SchoolAssessmentReport>(inSchool(`/school-assessments/${encodeURIComponent(id)}/report`,schoolId),{cache:'no-store'}),
   schoolAssessmentLearners:(id:string,query:SchoolAssessmentLearnerQuery={},schoolId?:string)=>request<SchoolAssessmentLearnerPage>(inSchool(`/school-assessments/${encodeURIComponent(id)}/learners?${new URLSearchParams(Object.entries(query).filter(([,value])=>value!==undefined).map(([key,value])=>[key,String(value)]))}`,schoolId),{cache:'no-store'}),

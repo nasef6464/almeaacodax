@@ -56,8 +56,18 @@ const ROLE_CANDIDATES = [
 
 const ROUTES = [
   {
-    name: "supervisor-overview",
+    name: "supervisor-learning-entry",
     path: "/supervisor-dashboard",
+    minBodyLength: 400,
+    minControlCount: 8,
+    expectedTextGroups: [
+      ["التعلم والجاهزية", "أسئلة المنصة", "اختبارات المدرسة"],
+      ["اختر المادة لعرض الطلاب ومهاراتهم.", "إدارة بيانات الطلاب"],
+    ],
+  },
+  {
+    name: "supervisor-overview",
+    path: "/supervisor-dashboard?tab=overview",
     minBodyLength: 1200,
     minControlCount: 12,
     expectedTextGroups: [
@@ -69,7 +79,7 @@ const ROUTES = [
   },
   {
     name: "supervisor-decision-center",
-    path: "/supervisor-dashboard",
+    path: "/supervisor-dashboard?tab=overview",
     allowScopeNotice: true,
     requireSupervisorScopeCard: true,
     requireSupervisorRoleContract: true,
@@ -192,7 +202,7 @@ async function inspectRoute(page, viewport, routeSpec) {
     navigationLabels = [...new Set(navigationLabels)];
     const currentGroup = navigation.locator('details').filter({has:page.locator('button[aria-current="page"]')});
     if (await currentGroup.count() && await currentGroup.getAttribute('open') === null) await currentGroup.locator('summary').click();
-    const expected = ['الملخص العام', 'متابعة الطلاب', 'الحصص المباشرة', 'الاختبارات والتحليل', 'المراقبة الحية', 'خريطة المهارات', 'تقارير الأداء'];
+    const expected = ['الملخص العام', 'تعلم الطلاب وجاهزيتهم', 'الحصص المباشرة', 'الاختبارات والتحليل', 'المراقبة الحية', 'خريطة المهارات', 'تقارير الأداء'];
     const missing = expected.filter(label => !navigationLabels.some(text => text.includes(label)));
     const activeCount = await navigation.locator('button[aria-current="page"]:visible').count();
     if (missing.length || activeCount !== 1) navigationFailure = `missing navigation: ${missing.join(',')}; active=${activeCount}`;

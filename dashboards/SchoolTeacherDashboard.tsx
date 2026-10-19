@@ -1,3 +1,4 @@
+import {SchoolLearningEvidencePanel} from './school-learning/SchoolLearningEvidencePanel';
 import { DashboardSectionBreadcrumb, DashboardSectionNav } from '../components/DashboardSectionNav';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -22,6 +23,7 @@ import {
 } from './school-teacher/SchoolTeacherSecondaryTabs';
 
 type SchoolTeacherTab =
+  | 'learning-evidence'
   | 'overview'
   | 'smart-classroom'
   | 'prepared-questions'
@@ -31,11 +33,12 @@ type SchoolTeacherTab =
   | 'certificates';
 
 const SCHOOL_TEACHER_NAV_ITEMS: Array<{ id: SchoolTeacherTab; label: string; icon: React.ReactNode }> = [
+  { id: 'learning-evidence',label:'التعلم والجاهزية',icon:<Target size={19}/> },
   { id: 'overview', label: 'نظرة عامة', icon: <LayoutDashboard size={19} /> },
   { id: 'smart-classroom', label: 'إدارة الحصص والجدول', icon: <Presentation size={19} /> },
   { id: 'prepared-questions', label: 'بنك التحضير المسبق', icon: <Target size={19} /> },
   { id: 'reports', label: 'تقارير الحصص', icon: <BarChart3 size={19} /> },
-  { id: 'skills-radar', label: 'مهارات الفصول', icon: <Award size={19} /> },
+  { id: 'skills-radar', label: 'مهارات الحصص', icon: <Award size={19} /> },
   { id: 'assessments', label: 'اختباراتي وتكليفاتي', icon: <BookOpenCheck size={19} /> },
   { id: 'certificates', label: 'شهادات التقدير والتحفيز', icon: <Trophy size={19} /> },
 ];
@@ -44,7 +47,7 @@ const SCHOOL_TEACHER_NAV_GROUPS = [
   { label: 'الرئيسية', ids: ['overview'] },
   { label: 'الحصص وتحضير الأسئلة', ids: ['smart-classroom', 'prepared-questions'] },
   { label: 'الاختبارات والتكليفات', ids: ['assessments'] },
-  { label: 'المهارات والتقارير', ids: ['skills-radar', 'reports'] },
+  { label: 'المهارات والتقارير', ids: ['learning-evidence', 'skills-radar', 'reports'] },
   { label: 'الشهادات', ids: ['certificates'] },
 ];
 
@@ -217,6 +220,9 @@ export const SchoolTeacherDashboard: React.FC = () => {
   const renderContent = () => {
     let tabNode: React.ReactNode = null;
     switch (activeTab) {
+      case 'learning-evidence':
+        tabNode=<SchoolLearningEvidencePanel key={selectedSchool.schoolId} schoolId={selectedSchool.schoolId} classes={(selectedSchool.assignments||[]).map((a:any)=>({id:a.classId,name:a.className}))} allowedSubjectIds={(selectedSchool.assignments||[]).some((a:any)=>!a.subjectId)?undefined:(selectedSchool.assignments||[]).map((a:any)=>a.subjectId)} onOpenTests={()=>handleTabChange('assessments')} onOpenClassrooms={()=>handleTabChange('reports')}/>;
+        break;
       case 'overview':
         tabNode = <SchoolTeacherOverview selectedSchool={selectedSchool} userName={user?.name} onOpenScheduler={() => openScheduler()} onOpenCertificate={() => setShowCertificateModal(true)} onOpenClass={openScheduler} onTabChange={handleTabChange} />;
         break;

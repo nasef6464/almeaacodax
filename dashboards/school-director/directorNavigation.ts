@@ -2,7 +2,7 @@ import type {DashboardNavItem,DashboardNavGroup} from '../../components/Dashboar
 export const directorNavGroups:DashboardNavGroup[]=[
   {label:'البداية',ids:['overview']},
   {label:'إدارة المدرسة',ids:['students','classes','teachers']},
-  {label:'التعلم والمتابعة',ids:['assessments','sessions','interventions','reports']},
+  {label:'التعلم والمتابعة',ids:['learning-evidence','assessments','sessions','interventions','reports']},
   {label:'عمليات حساسة',ids:['transfer']},
 ];
 export function directorNavItems(school:{permissions:string[];modules:string[]}):DashboardNavItem[] {
@@ -12,6 +12,7 @@ export function directorNavItems(school:{permissions:string[];modules:string[]})
     {id:'students',label:'الطلاب',visible:can('SCHOOL_STUDENTS_VIEW')},
     {id:'classes',label:'الفصول',visible:can('SCHOOL_CLASSES_MANAGE','SCHOOL_CORE')},
     {id:'teachers',label:'المعلمون والتكليفات',visible:can('SCHOOL_TEACHERS_ASSIGN','SCHOOL_CORE')},
+    {id:'learning-evidence',label:'التعلم والجاهزية',visible:can('SCHOOL_REPORTS_DETAILED_VIEW','SCHOOL_INTELLIGENCE')},
     {id:'assessments',label:'اختبارات المدرسة',visible:can('SCHOOL_ASSESSMENTS_MANAGE','SCHOOL_ASSESSMENTS')},
     {id:'sessions',label:'الحصص الذكية',visible:can('SCHOOL_SMART_CLASSROOM_VIEW','SMART_CLASSROOM')},
     {id:'interventions',label:'الدعم والمهارات',visible:can('SCHOOL_INTERVENTIONS_VIEW','INTERVENTION_CENTER')||can('SCHOOL_INTERVENTIONS_MANAGE','INTERVENTION_CENTER')},

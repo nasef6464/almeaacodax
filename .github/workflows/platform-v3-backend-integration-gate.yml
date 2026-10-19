@@ -102,6 +102,8 @@ jobs:
         env:
           ASSESSMENT_TEST_MONGODB_URI: mongodb://127.0.0.1:27017
         run: |
+          server/node_modules/.bin/tsx scripts/test-learning-evidence-policy.ts
+          server/node_modules/.bin/tsx scripts/test-learning-evidence.ts
           server/node_modules/.bin/tsx scripts/test-school-assessment-workspace.ts
           server/node_modules/.bin/tsx scripts/test-school-assessment-report.ts
           server/node_modules/.bin/tsx scripts/test-school-assessment-learners.ts

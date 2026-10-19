@@ -1,3 +1,6 @@
+## School learning evidence — 2026-10-19
+Readiness and skill-support decisions now belong to quizzes/application/learningEvidence and its explicit reporting policy, displayed by dashboards/school-learning/SchoolLearningEvidencePanel in the three school staff workspaces. Supervisor students/skills entry uses this source-first center; old roster operations and platform-history export remain explicitly separate. New default entry avoids sampled legacy result/all-roster loads; legacy consumers load on demand with cancellation guards. Classroom reporting and school assessment definition/assignment/scoring owners are unchanged. Director creation adds explicit whole-school central targeting through the existing school-scoped capability guard; class scope remains default.
+
 ## School skills display — 2026-10-18
 Existing authorized report hook → schoolSkillsDisplay canonical subject key → teacher/supervisor subject-first view → existing detail sections/display limits. No request, authority, scoring, persisted record or migration change.
 
