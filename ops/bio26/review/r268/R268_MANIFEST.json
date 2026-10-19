@@ -1,0 +1,78 @@
+{
+  "release": "R268",
+  "branch": "review/bio26-r268-diagnostic-20261019",
+  "root": "ops/bio26/review/r268",
+  "reviewOnly": true,
+  "files": [
+    {
+      "path": "ops/bio26/review/r268/assets/BIO26-S03-03.svg",
+      "utf16Length": 4234
+    },
+    {
+      "path": "ops/bio26/review/r268/assets/BIO26-S04-02.svg",
+      "utf16Length": 4222
+    },
+    {
+      "path": "ops/bio26/review/r268/assets/BIO26-S07-03.svg",
+      "utf16Length": 4048
+    },
+    {
+      "path": "ops/bio26/review/r268/assets/BIO26-S09-03.svg",
+      "utf16Length": 3824
+    },
+    {
+      "path": "ops/bio26/review/r268/assets/BIO26-S10-02.svg",
+      "utf16Length": 4820
+    },
+    {
+      "path": "ops/bio26/review/r268/assets/BIO26-S11-02.svg",
+      "utf16Length": 4035
+    },
+    {
+      "path": "ops/bio26/review/r268/assets/BIO26-S12-03.svg",
+      "utf16Length": 3999
+    },
+    {
+      "path": "ops/bio26/review/r268/assets/BIO26-S13-03.svg",
+      "utf16Length": 4254
+    },
+    {
+      "path": "ops/bio26/review/r268/assets/BIO26-S16-02.svg",
+      "utf16Length": 4637
+    },
+    {
+      "path": "ops/bio26/review/r268/assets/BIO26-S18-02.svg",
+      "utf16Length": 4469
+    },
+    {
+      "path": "ops/bio26/review/r268/assets/BIO26-S19-03.svg",
+      "utf16Length": 4446
+    },
+    {
+      "path": "ops/bio26/review/r268/assets/BIO26-S20-04.svg",
+      "utf16Length": 4651
+    },
+    {
+      "path": "ops/bio26/review/r268/R268_12_DIAGNOSTIC_SKILLS.md",
+      "utf16Length": 20383
+    },
+    {
+      "path": "ops/bio26/review/r268/R268_24_EXPLAINED_MCQS.json",
+      "utf16Length": 22701
+    },
+    {
+      "path": "ops/bio26/review/r268/R268_INDEX.html",
+      "utf16Length": 5244
+    },
+    {
+      "path": "ops/bio26/review/r268/R268_QA.json",
+      "utf16Length": 3999
+    },
+    {
+      "path": "ops/bio26/review/r268/R268_CHECKPOINT.md",
+      "utf16Length": 928
+    }
+  ],
+  "taxonomySHA": "a2ee6daf6279354db6bce723c8110c9d966e3370",
+  "notes": "GitHub blob SHA1 verifies uploaded text objects; no SHA256 claimed. Commit SHA to be verified after writing."
+}
