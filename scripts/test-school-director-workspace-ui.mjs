@@ -70,12 +70,12 @@ try{
  await select('الطلاب');await page.getByRole('heading',{name:'طلاب مدرستي',exact:true}).waitFor();
  assert.equal(await page.getByRole('heading',{name:'طلاب المدرسة الثانية',exact:true}).count(),0);
  await changeSchool('school2');await page.waitForFunction(()=>typeof window.resolveSchool2==='function');await page.evaluate(()=>window.resolveSchool2());
- await select('اختبارات المدرسة');await page.getByText('اختبار الحساب',{exact:true}).waitFor();assert.equal(await page.getByRole('button',{name:'النتائج والإدارة',exact:true}).isEnabled(),false,'No cross-school report entry through primary-context API');
+ await select('اختبارات المدرسة');await page.getByText('اختبار الحساب',{exact:true}).waitFor();assert.equal(await page.getByRole('button',{name:'النتائج والإدارة',exact:true}).isEnabled(),true,'A freshly authorized delegated school can open its reports');
  await page.evaluate(()=>window.delaySchool2=false);await changeSchool('school');await select('الطلاب');await page.getByRole('button',{name:'إضافة طالب',exact:true}).click();await page.getByPlaceholder('اسم الطالب',{exact:true}).fill('طالب جديد');await page.getByPlaceholder('البريد الإلكتروني',{exact:true}).fill('fixture@example.invalid');await page.getByPlaceholder('كلمة مرور مؤقتة',{exact:true}).fill('fixture-password');await page.getByRole('button',{name:'إنشاء وربط',exact:true}).click();await page.waitForFunction(()=>typeof window.finishAdd==='function');await changeSchool('school2');await select('الطلاب');await page.getByRole('heading',{name:'طلاب المدرسة الثانية',exact:true}).waitFor();await page.evaluate(()=>window.finishAdd());await page.waitForTimeout(150);await page.getByRole('heading',{name:'طلاب المدرسة الثانية',exact:true}).waitFor();
  await page.goto(`http://127.0.0.1:${server.address().port}/?restricted`);await page.getByRole('heading',{name:'لوحة مدير المدرسة',exact:true}).waitFor();
  if(width===390)await page.getByRole('button',{name:'فتح أقسام لوحة التحكم',exact:true}).click();
  assert.equal(await page.getByRole('button',{name:'اختبارات المدرسة',exact:true}).count(),0,'No unauthorized destinations');
  assert.deepEqual(await page.evaluate(()=>window.calls),[]);await page.close();
  }
- console.log('PASS director390/1280: scoped navigation,lazy centers,material-first skills/reset,approved paginated question picker,image-only questions,canonical create payload,school switching/stale response isolation,secondary-school report gate,restricted destinations,no errors/overflow.');
+ console.log('PASS director390/1280: scoped navigation,lazy centers,material-first skills/reset,approved paginated question picker,image-only questions,canonical create payload,school switching/stale response isolation,delegated-school report access,restricted destinations,no errors/overflow.');
 }finally{await browser?.close();await new Promise(r=>server.close(r));}

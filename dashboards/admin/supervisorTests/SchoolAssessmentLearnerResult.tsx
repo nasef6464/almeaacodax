@@ -5,12 +5,12 @@ import type {QuizResult} from '../../../types';
 import {QuizSubjectResults} from '../../../components/quiz/QuizSubjectResults';
 import {QuestionContentRenderer} from '../../../components/classroom/QuestionContentRenderer';
 
-export const SchoolAssessmentLearnerResult:React.FC<{quizId:string;resultId:string;onClose:()=>void}>=({quizId,resultId,onClose})=>{
+export const SchoolAssessmentLearnerResult:React.FC<{quizId:string;resultId:string;schoolId?:string;onClose:()=>void}>=({quizId,resultId,onClose,schoolId})=>{
  const [revision,setRevision]=useState(0),[state,setState]=useState<{result?:QuizResult;error?:boolean}>({});
  useEffect(()=>{let cancelled=false;setState({});
-  api.schoolAssessmentLearnerResult(quizId,resultId).then(data=>{if(!cancelled)setState({result:data.result});})
+  api.schoolAssessmentLearnerResult(quizId,resultId,schoolId).then(data=>{if(!cancelled)setState({result:data.result});})
    .catch(()=>{if(!cancelled)setState({error:true});});return()=>{cancelled=true;};
- },[quizId,resultId,revision]);
+ },[quizId,resultId,revision,schoolId]);
  return <section aria-label="تفاصيل نتيجة الطالب" className="space-y-3 rounded-xl border border-indigo-200 p-3">
   <div className="flex justify-between gap-3"><h4 className="font-bold">النتيجة المحفوظة للطالب</h4><button type="button" onClick={onClose} className="rounded-lg border p-2">إغلاق النتيجة</button></div>
   {state.error?<div role="alert"><p>تعذر تحميل النتيجة.</p><button type="button" onClick={()=>setRevision(n=>n+1)} className="rounded-lg border p-2">إعادة تحميل النتيجة</button></div>:!state.result?<p role="status">جارٍ تحميل النتيجة…</p>:<>

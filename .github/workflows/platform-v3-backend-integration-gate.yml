@@ -126,6 +126,7 @@ jobs:
           docker exec "$MONGO_CONTAINER_ID" mongosh --quiet --port 27018 --eval 'rs.initiate({_id:"school_assessment_commands",members:[{_id:0,host:"127.0.0.1:27018"}]}); for(let i=0;i<150;i++){if(db.hello().isWritablePrimary)quit(0);sleep(200);}quit(1);'
           server/node_modules/.bin/tsx scripts/test-school-assessment-commands.ts
           server/node_modules/.bin/tsx scripts/test-school-assessment-commands-http.ts
+          server/node_modules/.bin/tsx scripts/test-director-assessment-management.ts
           server/node_modules/.bin/tsx scripts/test-school-assessment-subjects.ts
           server/node_modules/.bin/tsx scripts/test-school-assessment-subject-persistence.ts
           server/node_modules/.bin/tsx scripts/test-school-assessment-section-evidence.ts

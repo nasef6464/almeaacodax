@@ -3,14 +3,14 @@ import {api} from '../../../services/api';
 import type {SchoolAssessmentReport} from '../../../types/schoolAssessments';
 import {SchoolAssessmentReportView} from './SchoolAssessmentReportView';
 
-export const SchoolAssessmentSummaryPanel:React.FC<{quizId:string;actorId:string}>=({quizId,actorId})=>{
-  const identity=JSON.stringify([actorId,quizId]);
+export const SchoolAssessmentSummaryPanel:React.FC<{quizId:string;actorId:string;schoolId?:string}>=({quizId,actorId,schoolId})=>{
+  const identity=JSON.stringify([actorId,quizId,schoolId]);
   const [revision,setRevision]=useState(0);
   const [state,setState]=useState<{identity:string;data?:SchoolAssessmentReport;error?:boolean}>({identity:''});
   useEffect(()=>{
     let cancelled=false;
     setState({identity});
-    api.schoolAssessmentReport(quizId).then(data=>{if(!cancelled)setState({identity,data});})
+    api.schoolAssessmentReport(quizId,schoolId).then(data=>{if(!cancelled)setState({identity,data});})
       .catch(()=>{if(!cancelled)setState({identity,error:true});});
     return ()=>{cancelled=true;};
   },[identity,revision,quizId]);

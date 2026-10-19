@@ -236,7 +236,7 @@ export const buildSchoolDirectorAcademicWorkspace = async (schoolId: string, inc
     ? (await UserModel.find(schoolStudentFilter(scope.school, scope.schoolId, scope.classes)).select('id _id').lean()).map(idOf)
     : [];
   const [assessments, sessions, interventions] = await Promise.all([
-    include.assessments ? QuizModel.find(schoolAssessmentAudience(scope.schoolId, classIds, studentIds)).select("id title subjectId targetGroupIds isPublished dueDate").sort({ createdAt: -1 }).limit(100).lean() : [],
+    include.assessments ? QuizModel.find({$or:[schoolAssessmentAudience(scope.schoolId, classIds, studentIds),{ownerType:'school',ownerId:scope.schoolId,mode:'central',isPublished:false,targetGroupIds:{$size:0},targetUserIds:{$size:0}}]}).select("id title subjectId targetGroupIds isPublished dueDate").sort({ createdAt: -1 }).limit(100).lean() : [],
     include.sessions ? ClassroomSessionModel.find({ schoolId: scope.schoolId }).select("_id schoolId classId teacherId status createdAt endedAt").sort({ createdAt: -1 }).limit(100).lean() : [],
     include.interventions ? SchoolInterventionModel.find({ schoolId: scope.schoolId }).select("_id classId skillId targetStudentIds actionRef status baseline outcomeSnapshot createdAt").sort({ createdAt: -1 }).limit(100).lean() : [],
   ]);
