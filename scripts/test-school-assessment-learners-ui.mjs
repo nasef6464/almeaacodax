@@ -14,12 +14,12 @@ const root=createRoot(document.getElementById('root'));window.show=(id='q')=>roo
 `},bundle:true,format:'iife',platform:'browser',write:false});
 const server=createServer((_,res)=>{res.setHeader('Content-Type','text/html;charset=utf-8');res.end('<html dir="rtl"><meta charset="utf-8"><main id="root"></main><script>'+bundle.outputFiles[0].text+'</script></html>');});
 await new Promise(r=>server.listen(0,'127.0.0.1',r));
-const browser=await chromium.launch({headless:true,...(process.argv.includes('--chrome')?{channel:'chrome'}:{})});
+const browser=await chromium.launch({headless:true,...(process.argv.find(a=>a.startsWith('--executable='))?{executablePath:process.argv.find(a=>a.startsWith('--executable=')).slice(13)}:{}),...(process.argv.includes('--chrome')?{channel:'chrome'}:{})});
 try{
  const page=await browser.newPage();const url='http://127.0.0.1:'+server.address().port;
  for(const width of [390,1280]){
-  await page.setViewportSize({width,height:844});await page.goto(url);
-  await page.getByText('طالب الصفحة 1',{exact:true}).waitFor();await page.getByText(/1005/).first().waitFor();
+  await page.setViewportSize({width,height:844});await page.goto(url);await page.getByRole('tab',{name:'الطلاب',exact:true}).click();
+  await page.getByText('طالب الصفحة 1',{exact:true}).waitFor();await page.getByRole('region',{name:'نتائج الطلاب',exact:true}).getByText(/1005/).first().waitFor();
   assert.equal(await page.evaluate(()=>window.bulkReads),0,'Opening the per-test workspace never loads bulk question reviews');
   await page.getByRole('button',{name:'التالي',exact:true}).click();await page.getByText('طالب الصفحة 2',{exact:true}).waitFor();
   assert.equal(await page.getByText('طالب الصفحة 1',{exact:true}).count(),0,'replace page rather than accumulating');
@@ -33,7 +33,7 @@ try{
   const last=await page.evaluate(()=>window.calls.at(-1));assert.equal(last.page,1);assert.equal(last.status,'not_completed');
   await page.getByLabel('بحث عن طالب').fill('اسم');await page.getByRole('button',{name:'بحث',exact:true}).click();
   await page.waitForFunction(()=>window.calls.at(-1).search==='اسم');
-  await page.evaluate(()=>{window.fail=true;window.show('new-quiz')});await page.getByRole('alert').waitFor();
+  await page.evaluate(()=>{window.fail=true;window.show('new-quiz')});await page.getByRole('tab',{name:'الطلاب',exact:true}).click();await page.getByRole('alert').waitFor();
   assert.equal(await page.getByText('طالب لم يؤد',{exact:true}).count(),0,'failed new identity never exposes old roster');
   await page.getByRole('button',{name:'إعادة المحاولة',exact:true}).click();await page.getByText('طالب الصفحة 1',{exact:true}).waitFor();
  }

@@ -11,7 +11,10 @@ includesAll(workspace, ['buildSchoolDirectorAcademicWorkspace','buildSchoolDirec
 includesAll(routes, [...capabilities,'SCHOOL_ASSESSMENTS','SMART_CLASSROOM','INTERVENTION_CENTER','transfer-target-classes','Transfer requires active permission and contract in both schools','schools.director.student.transfer_school'], 'G12 APIs apply permission and entitlement gates');
 includesAll(academic, [...capabilities,'DirectorAssessmentCards','اكتب TRANSFER للتأكيد'], 'director academic UI is permission/module aware and makes transfer explicit');
 const assessmentCards = await read('dashboards/school-director/DirectorAssessmentCards.tsx');
-includesAll(assessmentCards,['schoolAssessmentContext','SchoolAssessmentSummaryPanel','SchoolAssessmentLearnersPanel'], 'director assessment details reuse school-scoped authority and report boundaries');
+includesAll(assessmentCards,['schoolAssessmentContext','SchoolAssessmentReportWorkspace','schoolId={schoolId}'], 'director assessment details reuse school-scoped authority and report boundaries');
+const reportWorkspace = await read('dashboards/admin/supervisorTests/SchoolAssessmentReportWorkspace.tsx');
+includesAll(reportWorkspace,['SchoolAssessmentSummaryPanel','SchoolAssessmentLearnersPanel','schoolId?:string','{...props}'], 'shared report workspace forwards director scope to report and roster');
+assert.ok(!reportWorkspace.includes('examResults'), 'shared workspace must not merge personal result storage');
 assert.ok(!assessmentCards.includes('examResults'), 'director cards must not merge personal result storage');
 includesAll(delegation, capabilities, 'Platform Admin can grant every G12 capability');
 includesAll(users, ['الشخصية/مساحة العمل','السياقات المدرسية الفعلية','مدرب منصة + معلم مدرسة'], 'user export labels personas and actual school contexts');

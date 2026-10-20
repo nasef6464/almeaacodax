@@ -37,7 +37,8 @@ createRoot(document.getElementById('root')).render(mode==='compose'?<Compose/>:m
   }catch{res.writeHead(500,{'content-type':'application/json'});res.end('{"message":"Isolated proxy failed"}');}
  });
  await new Promise(r=>frontend.listen(0,'127.0.0.1',r));
- const browser=await chromium.launch({headless:true,...(chrome?{channel:'chrome'}:{})});
+ const executable=process.argv.find(arg=>arg.startsWith('--executable='))?.slice(13);
+ const browser=await chromium.launch({headless:true,...(executable?{executablePath:executable}:chrome?{channel:'chrome'}:{})});
  try{
   const page=await browser.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
   const url='http://127.0.0.1:'+frontend.address().port;
@@ -51,8 +52,11 @@ createRoot(document.getElementById('root')).render(mode==='compose'?<Compose/>:m
    await page.getByText('العلوم: المطلوب 2، المتاح 2، المختار 2',{exact:true}).waitFor();
    await page.getByRole('button',{name:'مراجعة الأسئلة وتحديد الطلاب',exact:true}).click();await page.getByText('أسئلة المسودة: 5',{exact:true}).waitFor();
    const before=audit.length;
-   await page.goto(url+'/?mode=report');await page.getByText('student',{exact:true}).waitFor();await page.getByText('absent',{exact:true}).waitFor();
+   await page.goto(url+'/?mode=report');await page.getByText('المستهدفون',{exact:true}).waitFor();
+   assert.ok(!audit.slice(before).some(r=>r.path.includes('/learners')),'Summary does not load student names');
+   await page.getByRole('tab',{name:'المواد والمهارات',exact:true}).click();await page.getByRole('button',{name:'الرياضيات',exact:true}).click();
    await page.getByRole('region',{name:'تحليل مادة الرياضيات',exact:true}).waitFor();
+   await page.getByRole('tab',{name:'الطلاب',exact:true}).click();await page.getByText('student',{exact:true}).waitFor();await page.getByText('absent',{exact:true}).waitFor();
    assert.ok(!audit.slice(before).some(r=>r.path.includes('/results/scoped')||r.path.includes('/results/')),'Opening analytics has no bulk or selected question reviews');
    await page.getByRole('button',{name:'عرض النتيجة',exact:true}).click();
    await page.getByRole('region',{name:'تفاصيل نتيجة الطالب',exact:true}).getByText('سؤال 0',{exact:true}).waitFor();

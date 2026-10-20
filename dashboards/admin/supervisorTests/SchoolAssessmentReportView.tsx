@@ -1,14 +1,11 @@
 import React from 'react';
-import type {SchoolAssessmentDimension,SchoolAssessmentReport} from '../../../types/schoolAssessments';
+import {SchoolAssessmentDimensionTable as Dimension} from './SchoolAssessmentDimensionTable';
+import {SchoolAssessmentOverview} from './SchoolAssessmentOverview';
+import {SchoolAssessmentMaterialAnalysis} from './SchoolAssessmentMaterialAnalysis';
+import type {SchoolAssessmentLearnerStatus,SchoolAssessmentReport} from '../../../types/schoolAssessments';
 
 const value=(n:number|null)=>n===null?'غير متاح':String(n);
-const Dimension:React.FC<{title:string;rows:SchoolAssessmentDimension[]}>=({title,rows})=>rows.length>0?<section className="rounded-2xl border bg-white p-4">
-  <h3 className="mb-3 font-bold">{title}</h3>
-  <div className="overflow-x-auto"><table className="w-full text-right text-sm"><thead><tr><th scope="col">الاسم</th><th scope="col">الطلاب</th><th scope="col">الصحيح / الأسئلة</th><th scope="col">نسبة الإجابات الصحيحة</th></tr></thead>
-    <tbody>{rows.map(row=><tr key={row.id} className="border-t"><th scope="row" className="py-3 font-medium">{row.label||row.id}</th><td>{row.learners}</td><td>{value(row.correct)} / {value(row.questions)}</td><td>{value(row.average)}{row.average!==null?'٪':''}</td></tr>)}</tbody>
-  </table></div>
-</section>:null;
-export const SchoolAssessmentReportView:React.FC<{report:SchoolAssessmentReport}>=({report})=><div dir="rtl" className="space-y-4">
+const LegacyReportView:React.FC<{report:SchoolAssessmentReport}>=({report})=><div dir="rtl" className="space-y-4">
   <p className="text-sm text-gray-600">الملخص يشمل جميع الطلاب المستهدفين ضمن صلاحيتك، ويعتمد آخر محاولة مدرسية لكل طالب.</p>
   <dl className="grid grid-cols-2 gap-3 md:grid-cols-4">{[
     ['المستهدفون',report.audience.targeted],['أدوا الاختبار',report.participation.completed],['لم يؤدوا',report.participation.notCompleted],
@@ -28,3 +25,5 @@ export const SchoolAssessmentReportView:React.FC<{report:SchoolAssessmentReport}
     <Dimension title="مهارات بدون تصنيف مادة محفوظ" rows={report.skills.filter(row=>!row.subjectId)}/>
   </>:<><Dimension title="أقسام المحاكي" rows={report.sections}/><Dimension title="المهارات" rows={report.skills}/></>}
 </div>;
+
+export const SchoolAssessmentReportView:React.FC<{report:SchoolAssessmentReport;presentation?:'all'|'summary'|'analysis';onOpenLearners?:(status:SchoolAssessmentLearnerStatus)=>void}>=({report,presentation='all',onOpenLearners})=>presentation==='summary'?<SchoolAssessmentOverview report={report} onOpenLearners={onOpenLearners}/>:presentation==='analysis'?<SchoolAssessmentMaterialAnalysis report={report}/>:<LegacyReportView report={report}/>;

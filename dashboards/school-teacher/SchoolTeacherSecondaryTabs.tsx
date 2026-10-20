@@ -1,4 +1,5 @@
-import React from 'react';
+import React,{useEffect,useState} from 'react';
+import {SchoolAssessmentDetailsDialog} from '../admin/supervisorTests/SchoolAssessmentDetailsDialog';
 import {useStore} from '../../store/useStore';
 import {DisplayListControls,useDisplayLimit} from '../../components/DisplayListControls';
 import {schoolCatalogLabel,schoolSkillLabel} from '../../utils/schoolSkillsDisplay';
@@ -138,6 +139,10 @@ export const SchoolTeacherSkillsRadar: React.FC<{ selectedSchool: any }> = ({ se
 
 export const SchoolTeacherAssessments: React.FC<{ selectedSchool: any; onCreateAssessment: () => void }> = ({ selectedSchool, onCreateAssessment }) => {
  const subjects = useStore(state => state.subjects);
+ const user=useStore(state=>state.user);
+ const rows=useDisplayLimit(6,selectedSchool.schoolId);
+ const [selected,setSelected]=useState<{id:string;title:string;schoolId:string}|null>(null);
+ useEffect(()=>setSelected(null),[selectedSchool.schoolId]);
  return (
   <div className="space-y-6 animate-fade-in" dir="rtl">
     <div className="rounded-3xl border border-slate-100 bg-white p-6 shadow-xs">
@@ -156,7 +161,7 @@ export const SchoolTeacherAssessments: React.FC<{ selectedSchool: any; onCreateA
         {selectedSchool.assessments.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/50 p-8 text-center text-slate-500">لا توجد اختبارات مدرسية موجهة لفصولك حالياً.</div>
         ) : (
-          selectedSchool.assessments.map((assessment: any) => {
+          selectedSchool.assessments.slice(0,rows.limit).map((assessment: any) => {
             const status = assessment.isPublished
               ? { label: 'منشور', className: 'bg-emerald-100 text-emerald-700' }
               : assessment.approvalStatus === 'pending_review'
@@ -176,13 +181,16 @@ export const SchoolTeacherAssessments: React.FC<{ selectedSchool: any; onCreateA
                 </div>
                 <div className="flex items-center gap-2 text-xs font-bold text-slate-600">
                   <CalendarClock size={15} /> {assessment.dueDate ? `تاريخ التسليم: ${assessment.dueDate}` : 'بدون موعد نهائي'}
+                  <button type="button" onClick={()=>setSelected({id:assessment.assessmentId,title:assessment.title,schoolId:selectedSchool.schoolId})} className="rounded-xl border border-indigo-200 bg-white px-3 py-2 text-indigo-700">النتائج والتحليل</button>
                 </div>
               </div>
             );
           })
         )}
       </div>
+      <DisplayListControls {...rows} total={selectedSchool.assessments.length} label="اختبارات المدرسة"/>
     </div>
+    {selected&&selected.schoolId===selectedSchool.schoolId&&<SchoolAssessmentDetailsDialog key={selected.schoolId+'|'+selected.id} quizId={selected.id} title={selected.title} actorId={user.id} onClose={()=>setSelected(null)}/>}
   </div>
 );
 
