@@ -44,7 +44,7 @@ try{
   const unknown=page.getByRole('row').filter({hasText:'حكم غير محفوظ'});assert.ok(!(await unknown.innerText()).includes('يحتاج دعمًا'));
   await page.getByRole('tab',{name:'المواد والمهارات',exact:true}).click();
   await page.getByText('اختر المادة لعرض تحليلها.',{exact:true}).waitFor();assert.equal(await page.getByText('مهارة الحساب',{exact:true}).count(),0);
-  await page.getByRole('button',{name:'الرياضيات',exact:true}).click();await page.getByText('مهارة الحساب',{exact:true}).waitFor();assert.equal(await page.getByText('مهارة الذرات',{exact:true}).count(),0);
+  await page.getByRole('button',{name:'الرياضيات',exact:true}).click();await page.getByText('مهارة الحساب',{exact:true}).waitFor();await page.getByText(/متوسط درجة المادة/).waitFor();assert.equal(await page.getByText('مهارة الذرات',{exact:true}).count(),0);
   await page.getByRole('button',{name:'العلوم',exact:true}).click();await page.getByText('مهارة الذرات',{exact:true}).waitFor();assert.equal(await page.getByText('مهارة الحساب',{exact:true}).count(),0);
   assert.equal(await page.evaluate(()=>window.calls.filter(x=>x.kind==='report').length),1,'Tab/material switches reuse the loaded summary');
   await page.getByRole('tab',{name:'الملخص',exact:true}).focus();await page.keyboard.press('ArrowLeft');assert.equal(await page.getByRole('tab',{name:'الطلاب',exact:true}).getAttribute('aria-selected'),'true');
