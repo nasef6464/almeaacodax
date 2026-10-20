@@ -190,7 +190,7 @@ export const SchoolTeacherAssessments: React.FC<{ selectedSchool: any; onCreateA
       </div>
       <DisplayListControls {...rows} total={selectedSchool.assessments.length} label="اختبارات المدرسة"/>
     </div>
-    {selected?.schoolId===selectedSchool.schoolId&&<SchoolAssessmentDetailsDialog key={selected.schoolId+'|'+selected.id} quizId={selected.id} title={selected.title} actorId={user.id} onClose={()=>setSelected(null)}/>}
+    {selected&&selected.schoolId===selectedSchool.schoolId&&<SchoolAssessmentDetailsDialog key={selected.schoolId+'|'+selected.id} quizId={selected.id} title={selected.title} actorId={user.id} onClose={()=>setSelected(null)}/>}
   </div>
 );
 
