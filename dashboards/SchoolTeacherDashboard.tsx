@@ -221,7 +221,7 @@ export const SchoolTeacherDashboard: React.FC = () => {
     let tabNode: React.ReactNode = null;
     switch (activeTab) {
       case 'learning-evidence':
-        tabNode=<SchoolLearningEvidencePanel key={selectedSchool.schoolId} schoolId={selectedSchool.schoolId} classes={(selectedSchool.assignments||[]).map((a:any)=>({id:a.classId,name:a.className}))} allowedSubjectIds={(selectedSchool.assignments||[]).some((a:any)=>!a.subjectId)?undefined:(selectedSchool.assignments||[]).map((a:any)=>a.subjectId)} onOpenTests={()=>handleTabChange('assessments')} onOpenClassrooms={()=>handleTabChange('reports')}/>;
+        tabNode=<SchoolLearningEvidencePanel key={selectedSchool.schoolId} schoolId={selectedSchool.schoolId} classes={(selectedSchool.assignments||[]).map((a:any)=>({id:a.classId,name:a.className,subjectId:a.subjectId}))} allowedSubjectIds={(selectedSchool.assignments||[]).some((a:any)=>!a.subjectId)?undefined:(selectedSchool.assignments||[]).map((a:any)=>a.subjectId)} onOpenTests={()=>handleTabChange('assessments')} onOpenClassrooms={()=>handleTabChange('reports')}/>;
         break;
       case 'overview':
         tabNode = <SchoolTeacherOverview selectedSchool={selectedSchool} userName={user?.name} onOpenScheduler={() => openScheduler()} onOpenCertificate={() => setShowCertificateModal(true)} onOpenClass={openScheduler} onTabChange={handleTabChange} />;
