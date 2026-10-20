@@ -87,7 +87,9 @@ includesAll(primaryTabs, [
 includesAll(secondaryTabs, [
   'اختباراتي وتكليفاتي',
   'إنشاء اختبار / تدريب',
-  'selectedSchool.assessments.map',
+  'selectedSchool.assessments.slice(0,rows.limit).map',
+  'useDisplayLimit(6,selectedSchool.schoolId)',
+  'SchoolAssessmentDetailsDialog',
   'assessment.ownedByTeacher',
   'assessment.approvalStatus',
   'assessment.isPublished',
