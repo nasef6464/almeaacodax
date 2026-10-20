@@ -1,3 +1,6 @@
+## Teacher catalog and mastered-result guidance — 2026-10-20
+quizzes/application/teacherAssessmentSubjects owns the existing pure mock-section/fallback material extraction shared by teacher report scope and schools/application/teacherAssessmentClassIds catalog filtering. Results retains display-only skill focus and mastered continuation. Existing report authority, grading and persistence are unchanged.
+
 ## School learning evidence — 2026-10-19
 quizzes/application/learningEvidence reloads staff identity, uses existing school directory/canonical subject-bound teaching assignments and director detailed-report module/capability, then aggregates the full authorized roster. learningEvidencePolicy defines measured-skill reporting thresholds. GET /quizzes/results/learning-evidence is read-only/additive. dashboards/school-learning/SchoolLearningEvidencePanel is the shared source/material/class/period-first presentation in supervisor, school teacher and director workspaces. Legacy supervisor roster operations retain explicit platform-only loaded-history labels; tests use school-only result context. No schema, grading or write-semantic migration.
 

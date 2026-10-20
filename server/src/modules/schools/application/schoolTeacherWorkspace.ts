@@ -103,7 +103,7 @@ export const buildSchoolTeacherWorkspace = async (actor: LegacySchoolUser): Prom
           ] },
         ],
       })
-        .select("id title subjectId targetGroupIds targetUserIds dueDate quizKind approvalStatus isPublished ownerId createdBy")
+        .select("id title subjectId mockExam.enabled mockExam.sections.subjectId targetGroupIds targetUserIds dueDate quizKind approvalStatus isPublished ownerId createdBy")
         .sort({ dueDate: 1, updatedAt: -1 })
         .limit(100)
         .lean()

@@ -32,7 +32,7 @@ includesAll(workspace, [
   '{ isPublished: true }',
   '{ ownerId: actor.id }',
   '{ createdBy: actor.id }',
-  '.select("id title subjectId targetGroupIds targetUserIds dueDate quizKind approvalStatus isPublished ownerId createdBy")',
+  '.select("id title subjectId mockExam.enabled mockExam.sections.subjectId targetGroupIds targetUserIds dueDate quizKind approvalStatus isPublished ownerId createdBy")',
   'approvalStatus: assessment.approvalStatus || undefined',
   'isPublished: assessment.isPublished === true',
   'ownedByTeacher: [assessment.ownerId, assessment.createdBy].some',
