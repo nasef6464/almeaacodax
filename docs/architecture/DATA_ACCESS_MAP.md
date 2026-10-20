@@ -1,3 +1,6 @@
+## Teacher catalog and mastered-result guidance — 2026-10-20
+SchoolTeacherWorkspace adds only mockExam.enabled and mockExam.sections.subjectId to the existing bounded quiz projection, then intersects catalog audience with same-class assignments for all required materials. No extra DB query, serialized field, collection, index or authority grant.
+
 ## Complete source-separated school learning evidence — 2026-10-19
 learningEvidence owns the new read aggregation: authorized User roster (canonical identities/roster memberships) → indexed userId QuizResult lookup with explicit learningContext and recent period → newest entire attempt per quiz → selected subject/path skill counts → full student/skill classifications and summary before12row paging. No200student or100result sample; no raw answers/questionReview returned. First24weakest skill details are projected and clearly labelled when truncated; status uses all measured skills. Minimum5recorded answers, support<60, ready>=80 for measured evidence only; invalid counts prevent readiness. Unknown historical source excluded; no inference from current quiz ownership. Fresh subject-bound teacher assignments and director detailed permission/module apply per request.20sDB limit; no-store; no polling/providers. No new collections/indexes or production-scale certificate.
 

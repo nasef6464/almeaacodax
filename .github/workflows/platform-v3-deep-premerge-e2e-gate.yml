@@ -264,6 +264,7 @@ jobs:
           node scripts/test-detailed-analysis-filter-ui.mjs
           node scripts/test-live-quiz-question-ui.mjs
           node scripts/test-quiz-result-summary-ui.mjs --styles
+          node scripts/test-result-mastery-guidance-ui.mjs
           node scripts/test-school-assessment-learners-ui.mjs
           node scripts/smoke-quiz-availability-ui.mjs
           node scripts/smoke-review-existing-practice-ui.mjs

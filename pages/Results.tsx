@@ -356,13 +356,15 @@ const Results: React.FC = () => {
       .sort((a, b) => a.mastery - b.mastery);
   }, [latestResult, skills, lessons, quizzes, libraryItems, questions, topics, subjects, sections]);
 
-  const weakestSkill = analysisItems[0];
+  const focusSkills = analysisItems.filter((item) => item.status !== 'strong');
+  const weakestSkill = focusSkills[0];
+  const allSkillsStrong = analysisItems.length > 0 && focusSkills.length === 0;
   const summaryTone = getFriendlyResultMessage(latestResult?.score || 0);
   const scoreTone = getScoreVisualTone(latestResult?.score || 0);
   const strongSkillsCount = analysisItems.filter((item) => item.status === 'strong').length;
   const averageSkillsCount = analysisItems.filter((item) => item.status === 'average').length;
   const weakSkillsCount = analysisItems.filter((item) => item.status === 'weak').length;
-  const topThreeFocusSkills = analysisItems.slice(0, 3);
+  const topThreeFocusSkills = focusSkills.slice(0, 3);
   const strongSkills = React.useMemo(() => {
     return analysisItems.filter((item) => item.status === 'strong').slice(0, 4);
   }, [analysisItems]);
@@ -370,14 +372,18 @@ const Results: React.FC = () => {
     return analysisItems.filter((item) => item.status === 'weak').slice(0, 10);
   }, [analysisItems]);
   const isFullResult = resultDepth === 'full';
-  const simplestNextStep = weakestSkill?.lessonTitle
+  const simplestNextStep = allSkillsStrong
+    ? 'أتقنت المهارات المقاسة في هذه المحاولة. واصل التعلم بتحدٍ جديد.'
+    : !weakestSkill
+      ? 'راجع الحلول أولًا؛ لا توجد أدلة مهارية كافية لتحديد خطة تحسين.'
+      : weakestSkill?.lessonTitle
     ? 'ابدأ بشرح قصير لهذه المهارة ثم انتقل للتدريب.'
     : weakestSkill?.quizTitle
       ? 'ابدأ بتدريب قصير الآن ثم أعد القياس بعده.'
       : 'ابدأ بخطوة صغيرة على المهارة الأضعف ثم أعد الاختبار لاحقًا.';
   const studentFriendlyChecklist = getStudentFriendlyChecklist(latestResult?.score || 0);
   const quickResultHighlights = React.useMemo(() => {
-    const nextSkillLabel = displayText(weakestSkill?.skillName) || 'ابدأ بمراجعة الحلول';
+    const nextSkillLabel = displayText(weakestSkill?.skillName) || (allSkillsStrong ? 'المهارات المقاسة متقنة' : 'ابدأ بمراجعة الحلول');
     const nextActionLabel = isFullResult ? simplestNextStep : studentFriendlyChecklist[0]?.title || 'ابدأ بخطوة صغيرة';
 
     return [
@@ -397,10 +403,12 @@ const Results: React.FC = () => {
         tone: 'default' as const,
       },
     ];
-  }, [isFullResult, latestResult?.score, simplestNextStep, studentFriendlyChecklist, weakestSkill?.skillName]);
+  }, [allSkillsStrong, isFullResult, latestResult?.score, simplestNextStep, studentFriendlyChecklist, weakestSkill?.skillName]);
   const guardianFollowUpSummary = weakestSkill
     ? `نتيجة الاختبار ${latestResult?.score || 0}%. أضعف مهارة ظهرت هي "${weakestSkill.skillName}" بنسبة ${weakestSkill.mastery}%. الخطوة المناسبة الآن: ${weakestSkill.actionText}`
-    : `نتيجة الاختبار ${latestResult?.score || 0}%. لا توجد مهارات تفصيلية كافية في هذه المحاولة، والأفضل مراجعة الحلول ثم إعادة اختبار قصير.`;
+    : allSkillsStrong
+      ? `نتيجة الاختبار ${latestResult?.score || 0}%. أتقنت المهارات المقاسة في هذه المحاولة. الخطوة التالية: مواصلة التعلم بتحدٍ جديد.`
+      : `نتيجة الاختبار ${latestResult?.score || 0}%. لا توجد مهارات تفصيلية كافية في هذه المحاولة، والأفضل مراجعة الحلول ثم إعادة اختبار قصير.`;
   const bookSessionLink = React.useMemo(() => {
     if (!weakestSkill) return '/book-session';
 
@@ -448,8 +456,8 @@ const Results: React.FC = () => {
       return [
         {
           id: 'review',
-          title: 'راجع الحلول أولًا',
-          body: 'افتح مراجعة الحلول لتعرف مواضع الخطأ قبل أي تدريب جديد.',
+          title: allSkillsStrong ? 'راجع طرق الحل' : 'راجع الحلول أولًا',
+          body: allSkillsStrong ? 'ثبّت طرق الحل التي أتقنتها ثم انتقل لتحدٍ جديد.' : 'افتح مراجعة الحلول لتعرف مواضع الخطأ قبل أي تدريب جديد.',
           label: 'مراجعة الحلول',
           tone: 'emerald',
         },
@@ -525,8 +533,12 @@ const Results: React.FC = () => {
     }
 
     return cards.slice(0, 4);
-  }, [bookSessionLink, weakestSkill]);
+  }, [allSkillsStrong, bookSessionLink, weakestSkill]);
   const postResultJourney = React.useMemo(() => {
+    if (allSkillsStrong) return [
+      { id: 'review', title: 'ثبّت طرق الحل', body: questionReviewCount > 0 ? `${questionReviewCount} سؤال متاح للمراجعة.` : 'لا توجد تفاصيل حلول محفوظة لهذه المحاولة.', label: 'مراجعة الحلول', Icon: Eye, tone: 'emerald', action: 'review' as const, disabled: questionReviewCount === 0 },
+      { id: 'continue', title: 'واصل التعلم', body: 'انتقل إلى مهمة جديدة في مسارك.', label: 'العودة لمساري', Icon: Target, tone: 'indigo', to: '/dashboard' },
+    ];
     const lessonTitle = weakestSkill?.lessonTopicTitle || weakestSkill?.lessonTitle || weakestSkill?.skillName;
     const quizTitle = weakestSkill?.quizTitle || 'تدريب قصير على نفس المهارة';
 
@@ -570,7 +582,7 @@ const Results: React.FC = () => {
         to: buildSkillReportActionLink({ pathId: weakestSkill?.pathId, subjectId: weakestSkill?.subjectId, skillId: weakestSkill?.skillId }),
       },
     ];
-  }, [questionReviewCount, weakestSkill]);
+  }, [allSkillsStrong, questionReviewCount, weakestSkill]);
   const copyGuardianSummary = async () => {
     try {
       await navigator.clipboard.writeText(guardianFollowUpSummary);
@@ -971,7 +983,7 @@ const Results: React.FC = () => {
               الخطوة التالية الموصى بها
             </div>
             <h3 className="mt-2 text-lg sm:text-xl font-black text-gray-900">
-              {weakestSkill ? `خطة علاجية لمهارة: ${weakestSkill.skillName}` : 'خطة ما بعد الاختبار'}
+              {weakestSkill ? `خطة تحسين لمهارة: ${weakestSkill.skillName}` : allSkillsStrong ? 'جاهز لتحدٍ جديد' : 'خطة ما بعد الاختبار'}
             </h3>
             <p className="mt-1 text-xs font-bold text-gray-500 leading-relaxed">
               {simplestNextStep}
@@ -989,7 +1001,7 @@ const Results: React.FC = () => {
           <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
             <div className="text-sm font-black text-gray-900">مسار ما بعد الاختبار</div>
             <span className="self-start rounded-full bg-white px-3 py-1 text-[11px] font-black text-slate-700 shadow-xs">
-              شرح ثم تدريب ثم قياس
+              {allSkillsStrong ? 'تثبيت الإتقان ثم متابعة المسار' : 'شرح ثم تدريب ثم قياس'}
             </span>
           </div>
           <div className="grid grid-cols-1 gap-2.5 md:grid-cols-4">
@@ -1239,12 +1251,12 @@ const Results: React.FC = () => {
             })
           ) : (
             <div className="rounded-2xl border border-dashed border-gray-200 p-6 text-center text-sm text-gray-500">
-              لا توجد تفاصيل مهارية محفوظة لهذه المحاولة بعد.
+              {allSkillsStrong ? 'المهارات المقاسة متقنة؛ لا توجد أولوية تحسين في هذه المحاولة.' : 'لا توجد تفاصيل مهارية محفوظة لهذه المحاولة بعد.'}
             </div>
           )}
         </div>
 
-        {analysisItems.length > topThreeFocusSkills.length ? (
+        {focusSkills.length > topThreeFocusSkills.length ? (
           <div className="mt-4 rounded-2xl border border-gray-100 bg-gray-50 p-3">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-xs font-bold leading-6 text-gray-600">توجد مهارات إضافية. نعرض أهم 3 فقط هنا.</p>
