@@ -4,8 +4,7 @@ import {api} from '../../services/api';
 import type {Quiz} from '../../types';
 import {DashboardDialog} from '../../components/DashboardDialog';
 import {DisplayListControls,useDisplayLimit} from '../../components/DisplayListControls';
-import {SchoolAssessmentSummaryPanel} from '../admin/supervisorTests/SchoolAssessmentSummaryPanel';
-import {SchoolAssessmentLearnersPanel} from '../admin/supervisorTests/SchoolAssessmentLearnersPanel';
+import {SchoolAssessmentReportWorkspace} from '../admin/supervisorTests/SchoolAssessmentReportWorkspace';
 import {SchoolAssessmentReopenDialog} from '../admin/supervisorTests/SchoolAssessmentReopenDialog';
 import {useSchoolAssessmentCommands} from '../admin/supervisorTests/useSchoolAssessmentCommands';
 const Builder=React.lazy(()=>import('../admin/UnifiedQuizBuilder').then(module=>({default:module.UnifiedQuizBuilder})));
@@ -53,8 +52,7 @@ export function DirectorAssessmentCards({items,schoolId,classes=[],onRefresh}: {
      </div>
      {context.canManage&&!context.canEditContent&&<p className="text-xs text-slate-500">لتغيير أسئلة اختبار منشور أو له محاولات محفوظة، أنشئ نسخة للتعديل.</p>}
      {!context.canManage&&<p className="text-xs text-slate-500">النتائج متاحة حسب صلاحيتك؛ إجراءات التعديل تتطلب صلاحية إدارة هذا الاختبار.</p>}
-     <SchoolAssessmentSummaryPanel quizId={selectedId} actorId={user.id} schoolId={schoolId}/>
-     <SchoolAssessmentLearnersPanel quizId={selectedId} actorId={user.id} schoolId={schoolId}/>
+     <SchoolAssessmentReportWorkspace quizId={selectedId} actorId={user.id} schoolId={schoolId}/>
     </>}
     {notice&&<p role="status" className="text-sm">{notice}</p>}
    </div>

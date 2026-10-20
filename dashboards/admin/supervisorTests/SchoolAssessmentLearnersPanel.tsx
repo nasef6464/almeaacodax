@@ -3,18 +3,18 @@ import {api} from '../../../services/api';
 import type {SchoolAssessmentLearnerPage,SchoolAssessmentLearnerStatus} from '../../../types/schoolAssessments';
 import {SchoolAssessmentLearnerResult} from './SchoolAssessmentLearnerResult';
 
-type Props={actorId:string;quizId:string;schoolId?:string};
+type Props={actorId:string;quizId:string;schoolId?:string;initialStatus?:SchoolAssessmentLearnerStatus};
 // Remount on principal/definition change so no old roster or selected review is
 // visible even during the render before effects clean up the previous request.
-export const SchoolAssessmentLearnersPanel:React.FC<Props>=props=><Learners key={JSON.stringify([props.actorId,props.quizId,props.schoolId])} {...props}/>;
-const Learners:React.FC<Props>=({quizId,schoolId})=>{
- const [query,setQuery]=useState<{page:number;status:SchoolAssessmentLearnerStatus;search:string}>({page:1,status:'all',search:''});
+export const SchoolAssessmentLearnersPanel:React.FC<Props>=props=><Learners key={JSON.stringify([props.actorId,props.quizId,props.schoolId,props.initialStatus])} {...props}/>;
+const Learners:React.FC<Props>=({quizId,schoolId,initialStatus='all'})=>{
+ const [query,setQuery]=useState<{page:number;status:SchoolAssessmentLearnerStatus;search:string}>({page:1,status:initialStatus,search:''});
  const [draftSearch,setDraftSearch]=useState(''),[revision,setRevision]=useState(0),[selected,setSelected]=useState<string|null>(null);
  const key=JSON.stringify([query,revision]);
  const [state,setState]=useState<{key:string;data?:SchoolAssessmentLearnerPage;error?:boolean}>({key:''});
  useEffect(()=>{
   let cancelled=false;
-  api.schoolAssessmentLearners(quizId,{...query,limit:50},schoolId).then(data=>{if(!cancelled)setState({key,data});})
+  api.schoolAssessmentLearners(quizId,{...query,limit:12},schoolId).then(data=>{if(!cancelled)setState({key,data});})
    .catch(()=>{if(!cancelled)setState({key,error:true});});
   return()=>{cancelled=true;};
  },[quizId,key,schoolId]);
@@ -22,7 +22,7 @@ const Learners:React.FC<Props>=({quizId,schoolId})=>{
  const change=(patch:Partial<typeof query>)=>{setSelected(null);setQuery(current=>({...current,...patch}));};
  return <section dir="rtl" aria-label="نتائج الطلاب" className="space-y-4 rounded-2xl border bg-white p-4">
   <h3 className="font-black">نتائج الطلاب</h3>
-  <p className="text-sm text-gray-600">آخر محاولة لكل طالب مستهدف ضمن صلاحيتك. «لم يؤدِّ» تعني عدم وجود نتيجة لهذا الاختبار المدرسي.</p>
+  <p className="text-sm text-gray-600">آخر محاولة لكل طالب مستهدف ضمن صلاحيتك. «لم يؤدِّ» تعني عدم وجود نتيجة لهذا الاختبار المدرسي؛ الدعم حسب حكم اجتيازه المحفوظ، وليس حدًا عامًا للدرجات.</p>
   <div className="flex flex-wrap gap-3">
    <label className="text-sm">حالة الأداء<select aria-label="حالة الأداء" value={query.status} onChange={event=>change({page:1,status:event.target.value as SchoolAssessmentLearnerStatus})} className="mr-2 rounded-lg border p-2">
     <option value="all">جميع المستهدفين</option><option value="completed">أكملوا الاختبار</option><option value="not_completed">لم يؤدوا الاختبار</option><option value="needs_support">يحتاجون دعمًا</option>

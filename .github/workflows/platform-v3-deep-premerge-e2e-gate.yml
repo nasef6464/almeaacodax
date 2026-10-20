@@ -242,6 +242,7 @@ jobs:
           node scripts/smoke-notification-stream-lifecycle.mjs
           node scripts/smoke-supervisor-assessment-report-ui.mjs
           node scripts/test-school-assessment-report-ui.mjs
+          node scripts/test-school-assessment-clear-workspace-ui.mjs
           node scripts/test-school-assessment-management-ui.mjs
           node scripts/test-school-director-workspace-ui.mjs
           node scripts/test-supervisor-learning-entry-ui.mjs

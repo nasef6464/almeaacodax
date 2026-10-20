@@ -22,6 +22,13 @@ try{
   await assert.rejects(()=>assertTeacherDirectedQuizScope(actor,{subjectId:'math',targetUserIds:[String(learners[1]._id)]}),{statusCode:403});
   await assert.rejects(()=>assertTeacherDirectedQuizScope(actor,{subjectId:'math',targetGroupIds:[String(a._id),String(b._id)]}),{statusCode:403});
   await assert.rejects(()=>assertTeacherDirectedQuizScope(actor,{subjectId:'math',targetGroupIds:[String(a._id)],mockExam:{enabled:true,sections:[{subjectId:'math'},{subjectId:'chem'}]}} as any),{statusCode:403});
+  const {QuizModel}=await import('../server/src/models/Quiz.js');
+  const {resolveSchoolAssessmentContext}=await import('../server/src/modules/quizzes/application/schoolAssessmentManagementPolicy.js');
+  const {buildSchoolAssessmentReport}=await import('../server/src/modules/quizzes/application/schoolAssessmentReport.js');
+  await QuizModel.create({_id:'teacher-report',title:'teacher report',pathId:'path',subjectId:'math',targetGroupIds:[String(a._id)],ownerId:actor.id});
+  const reportContext=await resolveSchoolAssessmentContext(actor,'teacher-report');
+  assert.equal((await buildSchoolAssessmentReport(reportContext)).audience.targeted,1);
+  await assert.rejects(()=>resolveSchoolAssessmentContext(actor,'teacher-report',{schoolId:String(school._id)}),{statusCode:403});
   const membership=await SchoolMembershipModel.create({userId:actor.id,schoolId:String(school._id),role:'teacher',status:'inactive'});
   await assert.rejects(()=>assertTeacherDirectedQuizScope(actor,{subjectId:'math',targetGroupIds:[String(a._id)]}),{statusCode:403});
   await SchoolMembershipModel.updateOne({_id:membership._id},{$set:{status:'active'}});
