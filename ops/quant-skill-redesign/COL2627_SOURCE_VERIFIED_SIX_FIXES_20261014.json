@@ -1,0 +1,87 @@
+{
+  "auditDate": "2026-10-14",
+  "subjectId": "sub_1777779748206",
+  "bank": "COL2627",
+  "backupStatus": "old values captured in per-item patch",
+  "writesAllowedOnlyWithExactOldCodeSubjectAndPair": true,
+  "changes": [
+    {
+      "questionCode": "QDR-QNT-COL2627-P008-Q23",
+      "old": {
+        "skillId": "skill_quant_02",
+        "subSkillId": "sub_quant_02_4"
+      },
+      "new": {
+        "skillId": "skill_quant_07",
+        "subSkillId": "sub_quant_07_4"
+      },
+      "sourcePage": 8,
+      "review": "absolute-value source questions, existing current concept"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P008-Q24",
+      "old": {
+        "skillId": "skill_quant_02",
+        "subSkillId": "sub_quant_02_4"
+      },
+      "new": {
+        "skillId": "skill_quant_07",
+        "subSkillId": "sub_quant_07_4"
+      },
+      "sourcePage": 8,
+      "review": "absolute-value source questions, existing current concept"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P008-Q25",
+      "old": {
+        "skillId": "skill_quant_02",
+        "subSkillId": "sub_quant_02_4"
+      },
+      "new": {
+        "skillId": "skill_quant_07",
+        "subSkillId": "sub_quant_07_4"
+      },
+      "sourcePage": 8,
+      "review": "absolute-value source questions, existing current concept"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P008-Q26",
+      "old": {
+        "skillId": "skill_quant_02",
+        "subSkillId": "sub_quant_02_4"
+      },
+      "new": {
+        "skillId": "skill_quant_07",
+        "subSkillId": "sub_quant_07_4"
+      },
+      "sourcePage": 8,
+      "review": "absolute-value source questions, existing current concept"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P008-Q27",
+      "old": {
+        "skillId": "skill_quant_02",
+        "subSkillId": "sub_quant_02_4"
+      },
+      "new": {
+        "skillId": "skill_quant_07",
+        "subSkillId": "sub_quant_07_4"
+      },
+      "sourcePage": 8,
+      "review": "absolute-value source questions, existing current concept"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P062-Q24",
+      "old": {
+        "skillId": "skill_quant_19",
+        "subSkillId": "sub_quant_20_1"
+      },
+      "new": {
+        "skillId": "skill_quant_20",
+        "subSkillId": "sub_quant_20_1"
+      },
+      "sourcePage": 62,
+      "review": "triangle angles, retain subskill, fix parent"
+    }
+  ]
+}

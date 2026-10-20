@@ -1,0 +1,968 @@
+{
+  "date": "2026-10-15",
+  "mode": "READ_ONLY_VALIDATED_SNAPSHOT_POST_PARTIAL_UPDATE",
+  "scope": "Quant FND26/COL2627 and 95 current subskill drills",
+  "totals": {
+    "mainFoundationTopics": 25,
+    "childFoundationTopics": 95,
+    "allFoundationTopics": 120,
+    "mainSkills": 25,
+    "subskillsCurrentlyLive": 95,
+    "FND26": 858,
+    "COL2627": 946
+  },
+  "postRepair": {
+    "sourceVerifiedReclassifications": 81,
+    "skillIdsArraysSynced": 38,
+    "skillIdsArraysPending": 43,
+    "pendingCodesAndExpectedPairs": [
+      {
+        "code": "QDR-QNT-COL2627-P043-Q24",
+        "before": [
+          "skill_quant_08",
+          "sub_quant_08_4"
+        ],
+        "after": [
+          "skill_quant_09",
+          "sub_quant_09_4"
+        ]
+      },
+      {
+        "code": "QDR-QNT-COL2627-P043-Q27",
+        "before": [
+          "skill_quant_08",
+          "sub_quant_08_4"
+        ],
+        "after": [
+          "skill_quant_09",
+          "sub_quant_09_4"
+        ]
+      },
+      {
+        "code": "QDR-QNT-COL2627-P039-Q01",
+        "before": [
+          "skill_quant_08",
+          "sub_quant_08_1"
+        ],
+        "after": [
+          "skill_quant_09",
+          "sub_quant_09_1"
+        ]
+      },
+      {
+        "code": "QDR-QNT-COL2627-P039-Q02",
+        "before": [
+          "skill_quant_08",
+          "sub_quant_08_1"
+        ],
+        "after": [
+          "skill_quant_09",
+          "sub_quant_09_1"
+        ]
+      },
+      {
+        "code": "QDR-QNT-COL2627-P039-Q03",
+        "before": [
+          "skill_quant_08",
+          "sub_quant_08_1"
+        ],
+        "after": [
+          "skill_quant_09",
+          "sub_quant_09_1"
+        ]
+      },
+      {
+        "code": "QDR-QNT-COL2627-P039-Q04",
+        "before": [
+          "skill_quant_08",
+          "sub_quant_08_4"
+        ],
+        "after": [
+          "skill_quant_09",
+          "sub_quant_09_1"
+        ]
+      },
+      {
+        "code": "QDR-QNT-COL2627-P039-Q05",
+        "before": [
+          "skill_quant_08",
+          "sub_quant_08_1"
+        ],
+        "after": [
+          "skill_quant_09",
+          "sub_quant_09_1"
+        ]
+      },
+      {
+        "code": "QDR-QNT-COL2627-P039-Q06",
+        "before": [
+          "skill_quant_08",
+          "sub_quant_08_1"
+        ],
+        "after": [
+          "skill_quant_09",
+          "sub_quant_09_1"
+        ]
+      },
+      {
+        "code": "QDR-QNT-COL2627-P039-Q07",
+        "before": [
+          "skill_quant_08",
+          "sub_quant_08_1"
+        ],
+        "after": [
+          "skill_quant_09",
+          "sub_quant_09_1"
+        ]
+      },
+      {
+        "code": "QDR-QNT-COL2627-P039-Q08",
+        "before": [
+          "skill_quant_08",
+          "sub_quant_08_1"
+        ],
+        "after": [
+          "skill_quant_09",
+          "sub_quant_09_1"
+        ]
+      },
+      {
+        "code": "QDR-QNT-COL2627-P039-Q09",
+        "before": [
+          "skill_quant_08",
+          "sub_quant_08_1"
+        ],
+        "after": [
+          "skill_quant_09",
+          "sub_quant_09_1"
+        ]
+      },
+      {
+        "code": "QDR-QNT-COL2627-P039-Q10",
+        "before": [
+          "skill_quant_08",
+          "sub_quant_08_1"
+        ],
+        "after": [
+          "skill_quant_09",
+          "sub_quant_09_1"
+        ]
+      },
+      {
+        "code": "QDR-QNT-COL2627-P039-Q11",
+        "before": [
+          "skill_quant_08",
+          "sub_quant_08_1"
+        ],
+        "after": [
+          "skill_quant_09",
+          "sub_quant_09_1"
+        ]
+      },
+      {
+        "code": "QDR-QNT-COL2627-P039-Q12",
+        "before": [
+          "skill_quant_08",
+          "sub_quant_08_4"
+        ],
+        "after": [
+          "skill_quant_09",
+          "sub_quant_09_1"
+        ]
+      },
+      {
+        "code": "QDR-QNT-COL2627-P039-Q13",
+        "before": [
+          "skill_quant_08",
+          "sub_quant_08_4"
+        ],
+        "after": [
+          "skill_quant_09",
+          "sub_quant_09_1"
+        ]
+      },
+      {
+        "code": "QDR-QNT-COL2627-P040-Q15",
+        "before": [
+          "skill_quant_08",
+          "sub_quant_08_1"
+        ],
+        "after": [
+          "skill_quant_09",
+          "sub_quant_09_1"
+        ]
+      },
+      {
+        "code": "QDR-QNT-COL2627-P040-Q16",
+        "before": [
+          "skill_quant_08",
+          "sub_quant_08_3"
+        ],
+        "after": [
+          "skill_quant_09",
+          "sub_quant_09_1"
+        ]
+      },
+      {
+        "code": "QDR-QNT-COL2627-P040-Q17",
+        "before": [
+          "skill_quant_08",
+          "sub_quant_08_1"
+        ],
+        "after": [
+          "skill_quant_09",
+          "sub_quant_09_1"
+        ]
+      },
+      {
+        "code": "QDR-QNT-COL2627-P040-Q19",
+        "before": [
+          "skill_quant_08",
+          "sub_quant_08_4"
+        ],
+        "after": [
+          "skill_quant_09",
+          "sub_quant_09_1"
+        ]
+      },
+      {
+        "code": "QDR-QNT-COL2627-P040-Q20",
+        "before": [
+          "skill_quant_08",
+          "sub_quant_08_1"
+        ],
+        "after": [
+          "skill_quant_09",
+          "sub_quant_09_1"
+        ]
+      },
+      {
+        "code": "QDR-QNT-COL2627-P040-Q21",
+        "before": [
+          "skill_quant_08",
+          "sub_quant_08_4"
+        ],
+        "after": [
+          "skill_quant_09",
+          "sub_quant_09_1"
+        ]
+      },
+      {
+        "code": "QDR-QNT-COL2627-P040-Q22",
+        "before": [
+          "skill_quant_08",
+          "sub_quant_08_1"
+        ],
+        "after": [
+          "skill_quant_09",
+          "sub_quant_09_1"
+        ]
+      },
+      {
+        "code": "QDR-QNT-COL2627-P040-Q18",
+        "before": [
+          "skill_quant_08",
+          "sub_quant_08_4"
+        ],
+        "after": [
+          "skill_quant_04",
+          "sub_quant_04_4"
+        ]
+      },
+      {
+        "code": "QDR-QNT-COL2627-P040-Q24",
+        "before": [
+          "skill_quant_08",
+          "sub_quant_08_4"
+        ],
+        "after": [
+          "skill_quant_09",
+          "sub_quant_09_3"
+        ]
+      },
+      {
+        "code": "QDR-QNT-COL2627-P040-Q25",
+        "before": [
+          "skill_quant_08",
+          "sub_quant_08_4"
+        ],
+        "after": [
+          "skill_quant_09",
+          "sub_quant_09_3"
+        ]
+      },
+      {
+        "code": "QDR-QNT-COL2627-P040-Q26",
+        "before": [
+          "skill_quant_08",
+          "sub_quant_08_3"
+        ],
+        "after": [
+          "skill_quant_08",
+          "sub_quant_08_4"
+        ]
+      },
+      {
+        "code": "QDR-QNT-COL2627-P040-Q27",
+        "before": [
+          "skill_quant_08",
+          "sub_quant_08_1"
+        ],
+        "after": [
+          "skill_quant_09",
+          "sub_quant_09_2"
+        ]
+      },
+      {
+        "code": "QDR-QNT-COL2627-P040-Q28",
+        "before": [
+          "skill_quant_08",
+          "sub_quant_08_4"
+        ],
+        "after": [
+          "skill_quant_09",
+          "sub_quant_09_2"
+        ]
+      },
+      {
+        "code": "QDR-QNT-COL2627-P041-Q29",
+        "before": [
+          "skill_quant_08",
+          "sub_quant_08_2"
+        ],
+        "after": [
+          "skill_quant_09",
+          "sub_quant_09_2"
+        ]
+      },
+      {
+        "code": "QDR-QNT-COL2627-P041-Q30",
+        "before": [
+          "skill_quant_08",
+          "sub_quant_08_2"
+        ],
+        "after": [
+          "skill_quant_09",
+          "sub_quant_09_2"
+        ]
+      },
+      {
+        "code": "QDR-QNT-COL2627-P041-Q31",
+        "before": [
+          "skill_quant_08",
+          "sub_quant_08_3"
+        ],
+        "after": [
+          "skill_quant_09",
+          "sub_quant_09_2"
+        ]
+      },
+      {
+        "code": "QDR-QNT-COL2627-P041-Q32",
+        "before": [
+          "skill_quant_08",
+          "sub_quant_08_3"
+        ],
+        "after": [
+          "skill_quant_09",
+          "sub_quant_09_2"
+        ]
+      },
+      {
+        "code": "QDR-QNT-COL2627-P041-Q33",
+        "before": [
+          "skill_quant_08",
+          "sub_quant_08_2"
+        ],
+        "after": [
+          "skill_quant_09",
+          "sub_quant_09_2"
+        ]
+      },
+      {
+        "code": "QDR-QNT-COL2627-P041-Q34",
+        "before": [
+          "skill_quant_08",
+          "sub_quant_08_4"
+        ],
+        "after": [
+          "skill_quant_09",
+          "sub_quant_09_2"
+        ]
+      },
+      {
+        "code": "QDR-QNT-COL2627-P041-Q43",
+        "before": [
+          "skill_quant_08",
+          "sub_quant_08_2"
+        ],
+        "after": [
+          "skill_quant_09",
+          "sub_quant_09_2"
+        ]
+      },
+      {
+        "code": "QDR-QNT-COL2627-P041-Q44",
+        "before": [
+          "skill_quant_08",
+          "sub_quant_08_2"
+        ],
+        "after": [
+          "skill_quant_09",
+          "sub_quant_09_2"
+        ]
+      },
+      {
+        "code": "QDR-QNT-COL2627-P041-Q36",
+        "before": [
+          "skill_quant_08",
+          "sub_quant_08_1"
+        ],
+        "after": [
+          "skill_quant_09",
+          "sub_quant_09_1"
+        ]
+      },
+      {
+        "code": "QDR-QNT-COL2627-P041-Q37",
+        "before": [
+          "skill_quant_08",
+          "sub_quant_08_1"
+        ],
+        "after": [
+          "skill_quant_09",
+          "sub_quant_09_1"
+        ]
+      },
+      {
+        "code": "QDR-QNT-COL2627-P041-Q38",
+        "before": [
+          "skill_quant_08",
+          "sub_quant_08_1"
+        ],
+        "after": [
+          "skill_quant_09",
+          "sub_quant_09_1"
+        ]
+      },
+      {
+        "code": "QDR-QNT-COL2627-P041-Q40",
+        "before": [
+          "skill_quant_08",
+          "sub_quant_08_3"
+        ],
+        "after": [
+          "skill_quant_09",
+          "sub_quant_09_1"
+        ]
+      },
+      {
+        "code": "QDR-QNT-COL2627-P041-Q41",
+        "before": [
+          "skill_quant_08",
+          "sub_quant_08_4"
+        ],
+        "after": [
+          "skill_quant_09",
+          "sub_quant_09_1"
+        ]
+      },
+      {
+        "code": "QDR-QNT-COL2627-P041-Q39",
+        "before": [
+          "skill_quant_08",
+          "sub_quant_08_4"
+        ],
+        "after": [
+          "skill_quant_09",
+          "sub_quant_09_3"
+        ]
+      },
+      {
+        "code": "QDR-QNT-COL2627-P007-Q08",
+        "before": [
+          "skill_quant_02",
+          "sub_quant_02_3"
+        ],
+        "after": [
+          "skill_quant_02",
+          "sub_quant_02_1"
+        ]
+      }
+    ]
+  },
+  "drillAudit": {
+    "drillCount": 95,
+    "questionReferences": 1200,
+    "validReferences": 1200,
+    "questionRefsOutsideFND_COL": 129,
+    "primarySkillMatches": 1124,
+    "questionSkillVsDrillSkillMismatches": 76,
+    "affectedDrills": 32,
+    "mismatches": [
+      {
+        "drill": "drill_sub_quant_01_1",
+        "questionId": "q_qdr_qnt_col2627_p005_q03",
+        "drillSubSkillId": "sub_quant_01_1",
+        "questionSubSkillId": "sub_quant_01_3"
+      },
+      {
+        "drill": "drill_sub_quant_01_1",
+        "questionId": "q_qdr_qnt_col2627_p005_q06",
+        "drillSubSkillId": "sub_quant_01_1",
+        "questionSubSkillId": "sub_quant_01_3"
+      },
+      {
+        "drill": "drill_sub_quant_01_1",
+        "questionId": "q_qdr_qnt_col2627_p005_q07",
+        "drillSubSkillId": "sub_quant_01_1",
+        "questionSubSkillId": "sub_quant_01_3"
+      },
+      {
+        "drill": "drill_sub_quant_01_1",
+        "questionId": "q_qdr_qnt_col2627_p005_q08",
+        "drillSubSkillId": "sub_quant_01_1",
+        "questionSubSkillId": "sub_quant_01_3"
+      },
+      {
+        "drill": "drill_sub_quant_01_2",
+        "questionId": "q_qdr_qnt_col2627_p005_q13",
+        "drillSubSkillId": "sub_quant_01_2",
+        "questionSubSkillId": "sub_quant_01_1"
+      },
+      {
+        "drill": "drill_sub_quant_01_3",
+        "questionId": "q_qdr_qnt_col2627_p006_q15",
+        "drillSubSkillId": "sub_quant_01_3",
+        "questionSubSkillId": "sub_quant_01_1"
+      },
+      {
+        "drill": "drill_sub_quant_02_1",
+        "questionId": "q_qdr_qnt_col2627_p007_q03",
+        "drillSubSkillId": "sub_quant_02_1",
+        "questionSubSkillId": "sub_quant_02_2"
+      },
+      {
+        "drill": "drill_sub_quant_03_1",
+        "questionId": "q_qdr_qnt_col2627_p009_q06",
+        "drillSubSkillId": "sub_quant_03_1",
+        "questionSubSkillId": "sub_quant_03_2"
+      },
+      {
+        "drill": "drill_sub_quant_03_1",
+        "questionId": "q_qdr_qnt_col2627_p009_q07",
+        "drillSubSkillId": "sub_quant_03_1",
+        "questionSubSkillId": "sub_quant_03_2"
+      },
+      {
+        "drill": "drill_sub_quant_03_1",
+        "questionId": "q_qdr_qnt_col2627_p009_q09",
+        "drillSubSkillId": "sub_quant_03_1",
+        "questionSubSkillId": "sub_quant_03_3"
+      },
+      {
+        "drill": "drill_sub_quant_03_1",
+        "questionId": "q_qdr_qnt_col2627_p009_q10",
+        "drillSubSkillId": "sub_quant_03_1",
+        "questionSubSkillId": "sub_quant_03_3"
+      },
+      {
+        "drill": "drill_sub_quant_03_2",
+        "questionId": "q_qdr_qnt_col2627_p010_q19",
+        "drillSubSkillId": "sub_quant_03_2",
+        "questionSubSkillId": "sub_quant_03_3"
+      },
+      {
+        "drill": "drill_sub_quant_03_2",
+        "questionId": "q_qdr_qnt_col2627_p010_q20",
+        "drillSubSkillId": "sub_quant_03_2",
+        "questionSubSkillId": "sub_quant_03_3"
+      },
+      {
+        "drill": "drill_sub_quant_03_2",
+        "questionId": "q_qdr_qnt_col2627_p010_q24",
+        "drillSubSkillId": "sub_quant_03_2",
+        "questionSubSkillId": "sub_quant_03_3"
+      },
+      {
+        "drill": "drill_sub_quant_03_2",
+        "questionId": "q_qdr_qnt_col2627_p010_q25",
+        "drillSubSkillId": "sub_quant_03_2",
+        "questionSubSkillId": "sub_quant_03_3"
+      },
+      {
+        "drill": "drill_sub_quant_03_4",
+        "questionId": "q_qdr_qnt_col2627_p015_q73",
+        "drillSubSkillId": "sub_quant_03_4",
+        "questionSubSkillId": "sub_quant_03_1"
+      },
+      {
+        "drill": "drill_sub_quant_04_1",
+        "questionId": "q_qdr_qnt_col2627_p017_q02",
+        "drillSubSkillId": "sub_quant_04_1",
+        "questionSubSkillId": "sub_quant_04_3"
+      },
+      {
+        "drill": "drill_sub_quant_04_2",
+        "questionId": "q_qdr_qnt_col2627_p017_q01",
+        "drillSubSkillId": "sub_quant_04_2",
+        "questionSubSkillId": "sub_quant_04_1"
+      },
+      {
+        "drill": "drill_sub_quant_04_4",
+        "questionId": "q_qdr_qnt_col2627_p018_q17",
+        "drillSubSkillId": "sub_quant_04_4",
+        "questionSubSkillId": "sub_quant_04_2"
+      },
+      {
+        "drill": "drill_sub_quant_07_3",
+        "questionId": "q_qdr_qnt_col2627_p034_q53",
+        "drillSubSkillId": "sub_quant_07_3",
+        "questionSubSkillId": "sub_quant_07_2"
+      },
+      {
+        "drill": "drill_sub_quant_07_4",
+        "questionId": "q_qdr_qnt_col2627_p034_q65",
+        "drillSubSkillId": "sub_quant_07_4",
+        "questionSubSkillId": "sub_quant_07_2"
+      },
+      {
+        "drill": "drill_sub_quant_07_4",
+        "questionId": "q_qdr_qnt_col2627_p034_q66",
+        "drillSubSkillId": "sub_quant_07_4",
+        "questionSubSkillId": "sub_quant_07_2"
+      },
+      {
+        "drill": "drill_sub_quant_08_3",
+        "questionId": "q_qdr_qnt_col2627_p038_q38",
+        "drillSubSkillId": "sub_quant_08_3",
+        "questionSubSkillId": "sub_quant_08_2"
+      },
+      {
+        "drill": "drill_sub_quant_08_3",
+        "questionId": "q_qdr_qnt_col2627_p038_q39",
+        "drillSubSkillId": "sub_quant_08_3",
+        "questionSubSkillId": "sub_quant_08_2"
+      },
+      {
+        "drill": "drill_sub_quant_08_3",
+        "questionId": "q_qdr_qnt_col2627_p038_q41",
+        "drillSubSkillId": "sub_quant_08_3",
+        "questionSubSkillId": "sub_quant_08_2"
+      },
+      {
+        "drill": "drill_sub_quant_08_3",
+        "questionId": "q_qdr_qnt_col2627_p038_q42",
+        "drillSubSkillId": "sub_quant_08_3",
+        "questionSubSkillId": "sub_quant_08_2"
+      },
+      {
+        "drill": "drill_sub_quant_08_3",
+        "questionId": "q_qdr_qnt_col2627_p038_q43",
+        "drillSubSkillId": "sub_quant_08_3",
+        "questionSubSkillId": "sub_quant_08_2"
+      },
+      {
+        "drill": "drill_sub_quant_08_4",
+        "questionId": "q_qdr_qnt_col2627_p038_q44",
+        "drillSubSkillId": "sub_quant_08_4",
+        "questionSubSkillId": "sub_quant_08_2"
+      },
+      {
+        "drill": "drill_sub_quant_08_4",
+        "questionId": "q_qdr_qnt_col2627_p038_q45",
+        "drillSubSkillId": "sub_quant_08_4",
+        "questionSubSkillId": "sub_quant_08_2"
+      },
+      {
+        "drill": "drill_sub_quant_10_1",
+        "questionId": "q_qdr_qnt_col2627_p040_q23",
+        "drillSubSkillId": "sub_quant_10_1",
+        "questionSubSkillId": "sub_quant_09_3"
+      },
+      {
+        "drill": "drill_sub_quant_10_1",
+        "questionId": "q_qdr_qnt_col2627_p040_q24",
+        "drillSubSkillId": "sub_quant_10_1",
+        "questionSubSkillId": "sub_quant_09_3"
+      },
+      {
+        "drill": "drill_sub_quant_10_1",
+        "questionId": "q_qdr_qnt_col2627_p040_q25",
+        "drillSubSkillId": "sub_quant_10_1",
+        "questionSubSkillId": "sub_quant_09_3"
+      },
+      {
+        "drill": "drill_sub_quant_10_1",
+        "questionId": "q_qdr_qnt_col2627_p041_q39",
+        "drillSubSkillId": "sub_quant_10_1",
+        "questionSubSkillId": "sub_quant_09_3"
+      },
+      {
+        "drill": "drill_sub_quant_10_3",
+        "questionId": "q_qdr_qnt_col2627_p057_q08",
+        "drillSubSkillId": "sub_quant_10_3",
+        "questionSubSkillId": "sub_quant_17_1"
+      },
+      {
+        "drill": "drill_sub_quant_10_4",
+        "questionId": "q_qdr_qnt_col2627_p037_q18",
+        "drillSubSkillId": "sub_quant_10_4",
+        "questionSubSkillId": "sub_quant_08_3"
+      },
+      {
+        "drill": "drill_sub_quant_10_4",
+        "questionId": "q_qdr_qnt_col2627_p037_q19",
+        "drillSubSkillId": "sub_quant_10_4",
+        "questionSubSkillId": "sub_quant_08_3"
+      },
+      {
+        "drill": "drill_sub_quant_10_4",
+        "questionId": "q_qdr_qnt_col2627_p037_q20",
+        "drillSubSkillId": "sub_quant_10_4",
+        "questionSubSkillId": "sub_quant_08_3"
+      },
+      {
+        "drill": "drill_sub_quant_11_2",
+        "questionId": "q_qdr_qnt_col2627_p044_q01",
+        "drillSubSkillId": "sub_quant_11_2",
+        "questionSubSkillId": "sub_quant_11_1"
+      },
+      {
+        "drill": "drill_sub_quant_11_2",
+        "questionId": "q_qdr_qnt_col2627_p044_q02",
+        "drillSubSkillId": "sub_quant_11_2",
+        "questionSubSkillId": "sub_quant_11_1"
+      },
+      {
+        "drill": "drill_sub_quant_11_2",
+        "questionId": "q_qdr_qnt_col2627_p044_q03",
+        "drillSubSkillId": "sub_quant_11_2",
+        "questionSubSkillId": "sub_quant_11_1"
+      },
+      {
+        "drill": "drill_sub_quant_11_2",
+        "questionId": "q_qdr_qnt_col2627_p044_q04",
+        "drillSubSkillId": "sub_quant_11_2",
+        "questionSubSkillId": "sub_quant_11_1"
+      },
+      {
+        "drill": "drill_sub_quant_11_2",
+        "questionId": "q_qdr_qnt_col2627_p044_q05",
+        "drillSubSkillId": "sub_quant_11_2",
+        "questionSubSkillId": "sub_quant_11_1"
+      },
+      {
+        "drill": "drill_sub_quant_11_2",
+        "questionId": "q_qdr_qnt_col2627_p044_q06",
+        "drillSubSkillId": "sub_quant_11_2",
+        "questionSubSkillId": "sub_quant_11_1"
+      },
+      {
+        "drill": "drill_sub_quant_11_3",
+        "questionId": "q_qdr_qnt_col2627_p046_q40",
+        "drillSubSkillId": "sub_quant_11_3",
+        "questionSubSkillId": "sub_quant_11_2"
+      },
+      {
+        "drill": "drill_sub_quant_11_3",
+        "questionId": "q_qdr_qnt_col2627_p046_q42",
+        "drillSubSkillId": "sub_quant_11_3",
+        "questionSubSkillId": "sub_quant_11_2"
+      },
+      {
+        "drill": "drill_sub_quant_14_1",
+        "questionId": "q_qdr_qnt_col2627_p055_q32",
+        "drillSubSkillId": "sub_quant_14_1",
+        "questionSubSkillId": "sub_quant_14_4"
+      },
+      {
+        "drill": "drill_sub_quant_14_3",
+        "questionId": "q_qdr_qnt_col2627_p055_q31",
+        "drillSubSkillId": "sub_quant_14_3",
+        "questionSubSkillId": "sub_quant_01_5"
+      },
+      {
+        "drill": "drill_sub_quant_15_1",
+        "questionId": "q_qdr_qnt_col2627_p053_q05",
+        "drillSubSkillId": "sub_quant_15_1",
+        "questionSubSkillId": "sub_quant_14_2"
+      },
+      {
+        "drill": "drill_sub_quant_15_1",
+        "questionId": "q_qdr_qnt_col2627_p053_q06",
+        "drillSubSkillId": "sub_quant_15_1",
+        "questionSubSkillId": "sub_quant_14_2"
+      },
+      {
+        "drill": "drill_sub_quant_15_2",
+        "questionId": "q_qdr_qnt_col2627_p053_q01",
+        "drillSubSkillId": "sub_quant_15_2",
+        "questionSubSkillId": "sub_quant_14_2"
+      },
+      {
+        "drill": "drill_sub_quant_15_2",
+        "questionId": "q_qdr_qnt_col2627_p053_q02",
+        "drillSubSkillId": "sub_quant_15_2",
+        "questionSubSkillId": "sub_quant_14_2"
+      },
+      {
+        "drill": "drill_sub_quant_15_2",
+        "questionId": "q_qdr_qnt_col2627_p053_q03",
+        "drillSubSkillId": "sub_quant_15_2",
+        "questionSubSkillId": "sub_quant_14_2"
+      },
+      {
+        "drill": "drill_sub_quant_15_2",
+        "questionId": "q_qdr_qnt_col2627_p053_q04",
+        "drillSubSkillId": "sub_quant_15_2",
+        "questionSubSkillId": "sub_quant_14_2"
+      },
+      {
+        "drill": "drill_sub_quant_15_2",
+        "questionId": "q_qdr_qnt_col2627_p053_q08",
+        "drillSubSkillId": "sub_quant_15_2",
+        "questionSubSkillId": "sub_quant_14_2"
+      },
+      {
+        "drill": "drill_sub_quant_16_1",
+        "questionId": "q_qdr_qnt_col2627_p007_q09",
+        "drillSubSkillId": "sub_quant_16_1",
+        "questionSubSkillId": "sub_quant_02_1"
+      },
+      {
+        "drill": "drill_sub_quant_16_2",
+        "questionId": "q_qdr_qnt_col2627_p053_q09",
+        "drillSubSkillId": "sub_quant_16_2",
+        "questionSubSkillId": "sub_quant_16_1"
+      },
+      {
+        "drill": "drill_sub_quant_16_2",
+        "questionId": "q_qdr_qnt_col2627_p053_q10",
+        "drillSubSkillId": "sub_quant_16_2",
+        "questionSubSkillId": "sub_quant_16_1"
+      },
+      {
+        "drill": "drill_sub_quant_16_2",
+        "questionId": "q_qdr_qnt_col2627_p053_q11",
+        "drillSubSkillId": "sub_quant_16_2",
+        "questionSubSkillId": "sub_quant_16_1"
+      },
+      {
+        "drill": "drill_sub_quant_16_2",
+        "questionId": "q_qdr_qnt_col2627_p053_q14",
+        "drillSubSkillId": "sub_quant_16_2",
+        "questionSubSkillId": "sub_quant_16_1"
+      },
+      {
+        "drill": "drill_sub_quant_17_3",
+        "questionId": "q_qdr_qnt_col2627_p057_q06",
+        "drillSubSkillId": "sub_quant_17_3",
+        "questionSubSkillId": "sub_quant_17_1"
+      },
+      {
+        "drill": "drill_sub_quant_17_3",
+        "questionId": "q_qdr_qnt_col2627_p058_q18",
+        "drillSubSkillId": "sub_quant_17_3",
+        "questionSubSkillId": "sub_quant_17_1"
+      },
+      {
+        "drill": "drill_sub_quant_17_3",
+        "questionId": "q_qdr_qnt_col2627_p058_q19",
+        "drillSubSkillId": "sub_quant_17_3",
+        "questionSubSkillId": "sub_quant_17_1"
+      },
+      {
+        "drill": "drill_sub_quant_17_3",
+        "questionId": "q_qdr_qnt_col2627_p058_q21",
+        "drillSubSkillId": "sub_quant_17_3",
+        "questionSubSkillId": "sub_quant_17_1"
+      },
+      {
+        "drill": "drill_sub_quant_17_4",
+        "questionId": "q_qdr_qnt_col2627_p058_q22",
+        "drillSubSkillId": "sub_quant_17_4",
+        "questionSubSkillId": "sub_quant_17_2"
+      },
+      {
+        "drill": "drill_sub_quant_17_4",
+        "questionId": "q_qdr_qnt_col2627_p058_q23",
+        "drillSubSkillId": "sub_quant_17_4",
+        "questionSubSkillId": "sub_quant_17_3"
+      },
+      {
+        "drill": "drill_sub_quant_17_4",
+        "questionId": "q_qdr_qnt_col2627_p058_q24",
+        "drillSubSkillId": "sub_quant_17_4",
+        "questionSubSkillId": "sub_quant_17_3"
+      },
+      {
+        "drill": "drill_sub_quant_17_4",
+        "questionId": "q_qdr_qnt_col2627_p058_q25",
+        "drillSubSkillId": "sub_quant_17_4",
+        "questionSubSkillId": "sub_quant_17_3"
+      },
+      {
+        "drill": "drill_sub_quant_19_3",
+        "questionId": "q_qdr_qnt_col2627_p065_q50",
+        "drillSubSkillId": "sub_quant_19_3",
+        "questionSubSkillId": "sub_quant_19_2"
+      },
+      {
+        "drill": "drill_sub_quant_19_3",
+        "questionId": "q_qdr_qnt_col2627_p065_q51",
+        "drillSubSkillId": "sub_quant_19_3",
+        "questionSubSkillId": "sub_quant_19_2"
+      },
+      {
+        "drill": "drill_sub_quant_20_5",
+        "questionId": "q_qdr_qnt_col2627_p072_q58",
+        "drillSubSkillId": "sub_quant_20_5",
+        "questionSubSkillId": "sub_quant_20_4"
+      },
+      {
+        "drill": "drill_sub_quant_20_5",
+        "questionId": "q_qdr_qnt_col2627_p073_q63",
+        "drillSubSkillId": "sub_quant_20_5",
+        "questionSubSkillId": "sub_quant_20_4"
+      },
+      {
+        "drill": "drill_sub_quant_23_3",
+        "questionId": "q_qdr_qnt_col2627_p079_q11",
+        "drillSubSkillId": "sub_quant_23_3",
+        "questionSubSkillId": "sub_quant_23_1"
+      },
+      {
+        "drill": "drill_sub_quant_24_4",
+        "questionId": "q_qdr_qnt_col2627_p081_q21",
+        "drillSubSkillId": "sub_quant_24_4",
+        "questionSubSkillId": "sub_quant_24_3"
+      },
+      {
+        "drill": "drill_sub_quant_24_4",
+        "questionId": "q_qdr_qnt_col2627_p081_q22",
+        "drillSubSkillId": "sub_quant_24_4",
+        "questionSubSkillId": "sub_quant_24_3"
+      },
+      {
+        "drill": "drill_sub_quant_24_4",
+        "questionId": "q_qdr_qnt_col2627_p082_q23",
+        "drillSubSkillId": "sub_quant_24_4",
+        "questionSubSkillId": "sub_quant_24_3"
+      },
+      {
+        "drill": "drill_sub_quant_25_3",
+        "questionId": "q_qdr_qnt_col2627_p071_q44",
+        "drillSubSkillId": "sub_quant_25_3",
+        "questionSubSkillId": "sub_quant_20_2"
+      }
+    ],
+    "unresolvedRefs": []
+  },
+  "safety": {
+    "production_taxonomy_modified": false,
+    "foundation_topics_modified": false,
+    "blocked_writes": "Do not retry production writes through alternate tool after security block",
+    "needs": "Approved write route and scoped controlled change, then independent mathematical review of drill mismatches and E2E"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "date": "2026-10-14",
+  "fix": {
+    "questionCode": "QDR-QNT-COL2627-P007-Q08",
+    "source_page": 7,
+    "reason": "السؤال عن قابلية القسمة على 2 و3 و5 و7، وليس تحديد عدد أولي",
+    "before": {
+      "skillId": "skill_quant_02",
+      "subSkillId": "sub_quant_02_3"
+    },
+    "after": {
+      "skillId": "skill_quant_02",
+      "subSkillId": "sub_quant_02_1"
+    },
+    "verified_on_source": true
+  }
+}

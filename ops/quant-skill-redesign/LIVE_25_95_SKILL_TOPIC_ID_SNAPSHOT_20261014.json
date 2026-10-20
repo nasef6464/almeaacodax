@@ -1,0 +1,1867 @@
+{
+  "snapshot_date": "2026-10-14",
+  "database": "almeaa",
+  "subject_id": "sub_1777779748206",
+  "source": "read-only MongoDB Atlas connector; projection-only scoped find; no write",
+  "status": "CURRENT_LIVE_ID_SNAPSHOT_NOT_SOURCE_PROOF",
+  "main_skill_count": 25,
+  "subskill_count": 95,
+  "main_topic_count": 25,
+  "subtopic_count": 95,
+  "unknown_topic_skill_refs": [],
+  "orphan_subtopic_parents": [],
+  "skills": [
+    {
+      "id": "skill_quant_01",
+      "name": "أساسيات الأعداد والعمليات الحسابية",
+      "sectionId": "sec_sub_1777779748206_1",
+      "subSkills": [
+        {
+          "id": "sub_quant_01_1",
+          "name": "قواعد الإشارات والتجميع الذكي (مكملات 10 و 100 و 1000)",
+          "code": "1.1"
+        },
+        {
+          "id": "sub_quant_01_2",
+          "name": "جمع الأعداد المتكررة والعامل المشترك",
+          "code": "1.2"
+        },
+        {
+          "id": "sub_quant_01_3",
+          "name": "الأعداد الزوجية والفردية والمتتاليات الحسابية ومجاميعها",
+          "code": "1.3"
+        },
+        {
+          "id": "sub_quant_01_4",
+          "name": "ترتيب العمليات الحسابية وفك الأقواس",
+          "code": "1.4"
+        },
+        {
+          "id": "sub_quant_01_5",
+          "name": "تحديد خانة الآحاد للنواتج والعمليات الحسابية",
+          "code": "1.5"
+        }
+      ]
+    },
+    {
+      "id": "skill_quant_02",
+      "name": "قابلية القسمة وبواقي الأعداد",
+      "sectionId": "sec_sub_1777779748206_2",
+      "subSkills": [
+        {
+          "id": "sub_quant_02_1",
+          "name": "قواعد قابلية القسمة على الأعداد (2، 3، 4، 5، 6، 7، 8، 9، 11)",
+          "code": "2.1"
+        },
+        {
+          "id": "sub_quant_02_2",
+          "name": "باقي القسمة وبواقي الأعداد",
+          "code": "2.2"
+        },
+        {
+          "id": "sub_quant_02_3",
+          "name": "الأعداد الأولية والتحليل للعوامل الأولية والقاسم المشترك الأكبر والمضاعف المشترك الأصغر",
+          "code": "2.3"
+        }
+      ]
+    },
+    {
+      "id": "skill_quant_03",
+      "name": "الكسور الاعتيادية",
+      "sectionId": "sec_sub_1777779748206_3",
+      "subSkills": [
+        {
+          "id": "sub_quant_03_1",
+          "name": "جمع وطرح الكسور وتوحيد المقامات",
+          "code": "3.1"
+        },
+        {
+          "id": "sub_quant_03_2",
+          "name": "ضرب وقسمة الكسور وتبسيطها",
+          "code": "3.2"
+        },
+        {
+          "id": "sub_quant_03_3",
+          "name": "مقارنة الكسور وترتيبها (طريقة المقص)",
+          "code": "3.3"
+        },
+        {
+          "id": "sub_quant_03_4",
+          "name": "معادلات ومسائل الكسور وسعة الخزانات",
+          "code": "3.4"
+        }
+      ]
+    },
+    {
+      "id": "skill_quant_04",
+      "name": "الأعداد العشرية",
+      "sectionId": "sec_sub_1777779748206_4",
+      "subSkills": [
+        {
+          "id": "sub_quant_04_1",
+          "name": "جمع وطرح الأعداد العشرية",
+          "code": "4.1"
+        },
+        {
+          "id": "sub_quant_04_2",
+          "name": "ضرب وقسمة الأعداد العشرية وقوى 10",
+          "code": "4.2"
+        },
+        {
+          "id": "sub_quant_04_3",
+          "name": "التحويل بين الكسور الاعتيادية والعشرية والتقريب",
+          "code": "4.3"
+        },
+        {
+          "id": "sub_quant_04_4",
+          "name": "مقارنة وترتيب الأعداد العشرية",
+          "code": "4.4"
+        }
+      ]
+    },
+    {
+      "id": "skill_quant_05",
+      "name": "الأسس والقوى",
+      "sectionId": "sec_sub_1777779748206_5",
+      "subSkills": [
+        {
+          "id": "sub_quant_05_1",
+          "name": "ضرب وقسمة الأسس عند تشابه الأساس",
+          "code": "5.1"
+        },
+        {
+          "id": "sub_quant_05_2",
+          "name": "قوى القوى والأسس السالبة والكسرية والصفري",
+          "code": "5.2"
+        },
+        {
+          "id": "sub_quant_05_3",
+          "name": "المعادلات الأسية وتساوي الأساسات والأسس",
+          "code": "5.3"
+        },
+        {
+          "id": "sub_quant_05_4",
+          "name": "جمع وطرح الأساسات المتشابهة وإخراج العامل المشترك",
+          "code": "5.4"
+        },
+        {
+          "id": "sub_quant_05_5",
+          "name": "مقارنة الأسس الكبيرة ومضاعفات الأسس",
+          "code": "5.5"
+        }
+      ]
+    },
+    {
+      "id": "skill_quant_06",
+      "name": "الجذور",
+      "sectionId": "sec_sub_1777779748206_6",
+      "subSkills": [
+        {
+          "id": "sub_quant_06_1",
+          "name": "جمع وطرح الجذور وتبسيطها (المتشابهة والمختلفة)",
+          "code": "6.1"
+        },
+        {
+          "id": "sub_quant_06_2",
+          "name": "ضرب وقسمة الجذور",
+          "code": "6.2"
+        },
+        {
+          "id": "sub_quant_06_3",
+          "name": "إنطاق المقام والضرب في المرافق",
+          "code": "6.3"
+        },
+        {
+          "id": "sub_quant_06_4",
+          "name": "مقارنة الجذور وتقريب الجذور غير الشهيرة",
+          "code": "6.4"
+        },
+        {
+          "id": "sub_quant_06_5",
+          "name": "الجذور ذات الدليل الأعلى (التكعيبية والرباعية)",
+          "code": "6.5"
+        }
+      ]
+    },
+    {
+      "id": "skill_quant_07",
+      "name": "الجبر والمتطابقات",
+      "sectionId": "sec_sub_1777779748206_7",
+      "subSkills": [
+        {
+          "id": "sub_quant_07_1",
+          "name": "الفرق بين مربعين والمربع الكامل والمتطابقات الشهيرة",
+          "code": "7.1"
+        },
+        {
+          "id": "sub_quant_07_2",
+          "name": "حل المعادلات الخطية والمعادلات الآنية (س وص)",
+          "code": "7.2"
+        },
+        {
+          "id": "sub_quant_07_3",
+          "name": "تبسيط المقادير الجبرية وإخراج العامل المشترك",
+          "code": "7.3"
+        },
+        {
+          "id": "sub_quant_07_4",
+          "name": "المتباينات وإشارات التباين والقيمة المطلقة",
+          "code": "7.4"
+        }
+      ]
+    },
+    {
+      "id": "skill_quant_08",
+      "name": "النسبة والتناسب",
+      "sectionId": "sec_sub_1777779748206_8",
+      "subSkills": [
+        {
+          "id": "sub_quant_08_1",
+          "name": "مفهوم النسبة والتبسيط والتقسيم التناسبي",
+          "code": "8.1"
+        },
+        {
+          "id": "sub_quant_08_2",
+          "name": "التناسب الطردي وحاصل الضرب التبادلي (المقص)",
+          "code": "8.2"
+        },
+        {
+          "id": "sub_quant_08_3",
+          "name": "التناسب العكسي",
+          "code": "8.3"
+        },
+        {
+          "id": "sub_quant_08_4",
+          "name": "مسائل الخلط والسبائك والتقسيم التناسبي المركب",
+          "code": "8.4"
+        }
+      ]
+    },
+    {
+      "id": "skill_quant_09",
+      "name": "النسبة المئوية",
+      "sectionId": "sec_sub_1777779748206_9",
+      "subSkills": [
+        {
+          "id": "sub_quant_09_1",
+          "name": "حساب النسبة المئوية من عدد والنسب المشهورة",
+          "code": "9.1"
+        },
+        {
+          "id": "sub_quant_09_2",
+          "name": "إيجاد العدد الأصلي بمعلومية نسبته المئوية",
+          "code": "9.2"
+        },
+        {
+          "id": "sub_quant_09_3",
+          "name": "النسبة المئوية للزيادة والنقصان",
+          "code": "9.3"
+        },
+        {
+          "id": "sub_quant_09_4",
+          "name": "التغير المئوي المركب والخصومات المتتالية",
+          "code": "9.4"
+        }
+      ]
+    },
+    {
+      "id": "skill_quant_10",
+      "name": "الربح والخسارة والحسابات المالية",
+      "sectionId": "sec_sub_1777779748206_10",
+      "subSkills": [
+        {
+          "id": "sub_quant_10_1",
+          "name": "حساب سعر البيع والشراء ونسبة الربح والخسارة",
+          "code": "10.1"
+        },
+        {
+          "id": "sub_quant_10_2",
+          "name": "حساب السعر الأصلي قبل التخفيض أو الربح",
+          "code": "10.2"
+        },
+        {
+          "id": "sub_quant_10_3",
+          "name": "حساب الرواتب والادخار والمصاريف",
+          "code": "10.3"
+        },
+        {
+          "id": "sub_quant_10_4",
+          "name": "حساب مقدار الزكاة الشرعية (قسمة على 40 أو ضرب في 2.5%)",
+          "code": "10.4"
+        }
+      ]
+    },
+    {
+      "id": "skill_quant_11",
+      "name": "استراتيجيات الحل السريع",
+      "sectionId": "sec_sub_1777779748206_11",
+      "subSkills": [
+        {
+          "id": "sub_quant_11_1",
+          "name": "تجريب الخيارات والتعويض الذكي والاستبعاد المنطقي",
+          "code": "11.1"
+        },
+        {
+          "id": "sub_quant_11_2",
+          "name": "الحل العكسي (التراجع من النهاية للبداية)",
+          "code": "11.2"
+        },
+        {
+          "id": "sub_quant_11_3",
+          "name": "الرسم والتمثيل البصري للمسألة",
+          "code": "11.3"
+        },
+        {
+          "id": "sub_quant_11_4",
+          "name": "التدرج المنتظم والتقريب البديهي",
+          "code": "11.4"
+        }
+      ]
+    },
+    {
+      "id": "skill_quant_12",
+      "name": "مسائل الحركة والسرعات",
+      "sectionId": "sec_sub_1777779748206_12",
+      "subSkills": [
+        {
+          "id": "sub_quant_12_1",
+          "name": "قانون السرعة الأساسي والسرعة المتوسطة",
+          "code": "12.1"
+        },
+        {
+          "id": "sub_quant_12_2",
+          "name": "مسائل زمن اللحاق والالتقاء",
+          "code": "12.2"
+        },
+        {
+          "id": "sub_quant_12_3",
+          "name": "حركة جسمين (نفس الاتجاه أو اتجاهين متعاكسين)",
+          "code": "12.3"
+        },
+        {
+          "id": "sub_quant_12_4",
+          "name": "مسائل القطارات والأنفاق وعجلات السيارات",
+          "code": "12.4"
+        }
+      ]
+    },
+    {
+      "id": "skill_quant_13",
+      "name": "قوانين القدرات الخاصة",
+      "sectionId": "sec_sub_1777779748206_13",
+      "subSkills": [
+        {
+          "id": "sub_quant_13_1",
+          "name": "مسائل العمل المشترك وخزانات المياه والصنابير",
+          "code": "13.1"
+        },
+        {
+          "id": "sub_quant_13_2",
+          "name": "قانون عدد المصافحات والمباريات والهدايا",
+          "code": "13.2"
+        },
+        {
+          "id": "sub_quant_13_3",
+          "name": "قانون عدد الأعواد والأشجار والمسافات البينية",
+          "code": "13.3"
+        },
+        {
+          "id": "sub_quant_13_4",
+          "name": "قوانين العد والحصر الخاصة: الصفحات والمقاعد والترتيب والحيوانات والأشكال المشتركة",
+          "code": "13.4"
+        }
+      ]
+    },
+    {
+      "id": "skill_quant_14",
+      "name": "الدوريات والأنماط المتكررة",
+      "sectionId": "sec_sub_1777779748206_14",
+      "subSkills": [
+        {
+          "id": "sub_quant_14_1",
+          "name": "دوري الأيام والأسابيع (القسمة على 7 والباقي)",
+          "code": "14.1"
+        },
+        {
+          "id": "sub_quant_14_2",
+          "name": "دوري الساعات والشهور وباقي قسمة الوقت",
+          "code": "14.2"
+        },
+        {
+          "id": "sub_quant_14_3",
+          "name": "دوري الأسس وقوى الأعداد وبواقي التكرار",
+          "code": "14.3"
+        },
+        {
+          "id": "sub_quant_14_4",
+          "name": "الأنماط والمتتابعات العددية واكتشاف القاعدة والحد التالي",
+          "code": "14.4"
+        }
+      ]
+    },
+    {
+      "id": "skill_quant_15",
+      "name": "الساعات وحساب زوايا العقارب",
+      "sectionId": "sec_sub_1777779748206_15",
+      "subSkills": [
+        {
+          "id": "sub_quant_15_1",
+          "name": "حساب الزاوية الصغرى والكبرى بين عقرب الساعات وعقرب الدقائق",
+          "code": "15.1"
+        },
+        {
+          "id": "sub_quant_15_2",
+          "name": "دوران عقارب الساعة ومقدار تحرك العقرب بالدرجات",
+          "code": "15.2"
+        },
+        {
+          "id": "sub_quant_15_3",
+          "name": "زاوية الدقيقة الواحدة ومسائل الساعات المتقدمة",
+          "code": "15.3"
+        }
+      ]
+    },
+    {
+      "id": "skill_quant_16",
+      "name": "الأعمار",
+      "sectionId": "sec_sub_1777779748206_16",
+      "subSkills": [
+        {
+          "id": "sub_quant_16_1",
+          "name": "حساب العمر في الماضي وبعد سنوات",
+          "code": "16.1"
+        },
+        {
+          "id": "sub_quant_16_2",
+          "name": "العلاقات والنسب بين الأعمار (ضعف، ثلاثة أمثال...)",
+          "code": "16.2"
+        },
+        {
+          "id": "sub_quant_16_3",
+          "name": "مجموع وفروق الأعمار وثبات الفرق الزمني",
+          "code": "16.3"
+        }
+      ]
+    },
+    {
+      "id": "skill_quant_17",
+      "name": "المتوسط الحسابي والإحصاء",
+      "sectionId": "sec_sub_1777779748206_17",
+      "subSkills": [
+        {
+          "id": "sub_quant_17_1",
+          "name": "قانون المتوسط الحسابي ومجموع القيم وتطبيقاته",
+          "code": "17.1"
+        },
+        {
+          "id": "sub_quant_17_2",
+          "name": "إيجاد قيمة مجهولة بمعلومية المتوسط الحسابي",
+          "code": "17.2"
+        },
+        {
+          "id": "sub_quant_17_3",
+          "name": "المتوسط الحسابي لأعداد متتالية والمتوسط الموزون",
+          "code": "17.3"
+        },
+        {
+          "id": "sub_quant_17_4",
+          "name": "الوسيط والمنوال والمدى وتطبيقاتها",
+          "code": "17.4"
+        }
+      ]
+    },
+    {
+      "id": "skill_quant_18",
+      "name": "الاحتمالات وعد الطرق والبيانات",
+      "sectionId": "sec_sub_1777779748206_18",
+      "subSkills": [
+        {
+          "id": "sub_quant_18_1",
+          "name": "الاحتمال البسيط وفضاء العينة وحساب النواتج",
+          "code": "18.1"
+        },
+        {
+          "id": "sub_quant_18_2",
+          "name": "مبدأ العد الأساسي والتباديل والتوافيق المبسطة",
+          "code": "18.2"
+        },
+        {
+          "id": "sub_quant_18_3",
+          "name": "قراءة وتفسير الجداول والرسوم والقطاعات الدائرية",
+          "code": "18.3"
+        }
+      ]
+    },
+    {
+      "id": "skill_quant_19",
+      "name": "الزوايا والمستقيمات",
+      "sectionId": "sec_sub_1777779748206_19",
+      "subSkills": [
+        {
+          "id": "sub_quant_19_1",
+          "name": "الزوايا المتجاورة والمتقابلة بالرأس والمتجمعة حول نقطة",
+          "code": "19.1"
+        },
+        {
+          "id": "sub_quant_19_2",
+          "name": "الزوايا الناتجة عن توازي مستقيمين وقاطع (Z, F, U, M)",
+          "code": "19.2"
+        },
+        {
+          "id": "sub_quant_19_3",
+          "name": "مجموع الزوايا الداخلية والخارجية للمضلعات المنتظمة",
+          "code": "19.3"
+        }
+      ]
+    },
+    {
+      "id": "skill_quant_20",
+      "name": "المثلثات",
+      "sectionId": "sec_sub_1777779748206_20",
+      "subSkills": [
+        {
+          "id": "sub_quant_20_1",
+          "name": "زوايا المثلث الداخلية والخارجية والمثلث المتطابق الضلعين",
+          "code": "20.1"
+        },
+        {
+          "id": "sub_quant_20_2",
+          "name": "المثلثات الخاصة (30-60 والمثلث 45 المتطابق الضلعين)",
+          "code": "20.2"
+        },
+        {
+          "id": "sub_quant_20_3",
+          "name": "نظرية فيثاغورس والمثلثات الفيثاغورية المشهورة",
+          "code": "20.3"
+        },
+        {
+          "id": "sub_quant_20_4",
+          "name": "مساحة المثلث وارتفاعه وقاعدته",
+          "code": "20.4"
+        },
+        {
+          "id": "sub_quant_20_5",
+          "name": "تشابه وتطابق المثلثات ومتباينة أطوال الأضلاع",
+          "code": "20.5"
+        }
+      ]
+    },
+    {
+      "id": "skill_quant_21",
+      "name": "المستطيل",
+      "sectionId": "sec_sub_1777779748206_21",
+      "subSkills": [
+        {
+          "id": "sub_quant_21_1",
+          "name": "محيط ومساحة المستطيل وتطبيقاته",
+          "code": "21.1"
+        },
+        {
+          "id": "sub_quant_21_2",
+          "name": "علاقة أبعاد المستطيل وتقسيماته الهندسية",
+          "code": "21.2"
+        },
+        {
+          "id": "sub_quant_21_3",
+          "name": "مسائل السلالم والحدائق والممرات المقسمة",
+          "code": "21.3"
+        }
+      ]
+    },
+    {
+      "id": "skill_quant_22",
+      "name": "المربع",
+      "sectionId": "sec_sub_1777779748206_22",
+      "subSkills": [
+        {
+          "id": "sub_quant_22_1",
+          "name": "محيط ومساحة المربع بطول الضلع",
+          "code": "22.1"
+        },
+        {
+          "id": "sub_quant_22_2",
+          "name": "مساحة المربع بمعلومية طول قطره: (القطر)² / 2",
+          "code": "22.2"
+        },
+        {
+          "id": "sub_quant_22_3",
+          "name": "المربعات المتداخلة والمتقاطعة ومقارنة المساحات",
+          "code": "22.3"
+        }
+      ]
+    },
+    {
+      "id": "skill_quant_23",
+      "name": "المعين ومتوازي الأضلاع وشبه المنحرف",
+      "sectionId": "sec_sub_1777779748206_23",
+      "subSkills": [
+        {
+          "id": "sub_quant_23_1",
+          "name": "مساحة ومحيط متوازي الأضلاع",
+          "code": "23.1"
+        },
+        {
+          "id": "sub_quant_23_2",
+          "name": "مساحة ومحيط المعين بمعلومية قطريه",
+          "code": "23.2"
+        },
+        {
+          "id": "sub_quant_23_3",
+          "name": "مساحة شبه المنحرف والقاعدة المتوسطة",
+          "code": "23.3"
+        }
+      ]
+    },
+    {
+      "id": "skill_quant_24",
+      "name": "الدائرة والمساحات المظللة",
+      "sectionId": "sec_sub_1777779748206_24",
+      "subSkills": [
+        {
+          "id": "sub_quant_24_1",
+          "name": "محيط ومساحة الدائرة ونصف القطر",
+          "code": "24.1"
+        },
+        {
+          "id": "sub_quant_24_2",
+          "name": "الزوايا المركزية والمحيطية والقطاع الدائري",
+          "code": "24.2"
+        },
+        {
+          "id": "sub_quant_24_3",
+          "name": "استراتيجية حساب الأشكال والمساحات المظللة (طرح المساحات)",
+          "code": "24.3"
+        },
+        {
+          "id": "sub_quant_24_4",
+          "name": "مساحة الوردة المظللة وتداخل الدوائر والمربعات",
+          "code": "24.4"
+        }
+      ]
+    },
+    {
+      "id": "skill_quant_25",
+      "name": "المجسمات والحجوم وهندسة الإحداثيات",
+      "sectionId": "sec_sub_1777779748206_25",
+      "subSkills": [
+        {
+          "id": "sub_quant_25_1",
+          "name": "حجم والمساحة السطحية للمكعب ومتوازي المستطيلات",
+          "code": "25.1"
+        },
+        {
+          "id": "sub_quant_25_2",
+          "name": "حجم ومساحة سطح المجسمات الشائعة: الأسطوانة والهرم والكرة",
+          "code": "25.2"
+        },
+        {
+          "id": "sub_quant_25_3",
+          "name": "هندسة الإحداثيات: تحديد النقاط والمسافة ونقطة المنتصف والميل",
+          "code": "25.3"
+        }
+      ]
+    }
+  ],
+  "topic_skill_links": [
+    {
+      "id": "top_quant_main_quant_01",
+      "title": "أساسيات الأعداد والعمليات الحسابية",
+      "parentId": null,
+      "skillId": "skill_quant_01",
+      "skillIds": [
+        "skill_quant_01"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_main_quant_02",
+      "title": "قابلية القسمة وبواقي الأعداد",
+      "parentId": null,
+      "skillId": "skill_quant_02",
+      "skillIds": [
+        "skill_quant_02"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_main_quant_03",
+      "title": "الكسور الاعتيادية",
+      "parentId": null,
+      "skillId": "skill_quant_03",
+      "skillIds": [
+        "skill_quant_03"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_main_quant_04",
+      "title": "الأعداد العشرية",
+      "parentId": null,
+      "skillId": "skill_quant_04",
+      "skillIds": [
+        "skill_quant_04"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_main_quant_05",
+      "title": "الأسس والقوى",
+      "parentId": null,
+      "skillId": "skill_quant_05",
+      "skillIds": [
+        "skill_quant_05"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_main_quant_06",
+      "title": "الجذور",
+      "parentId": null,
+      "skillId": "skill_quant_06",
+      "skillIds": [
+        "skill_quant_06"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_main_quant_07",
+      "title": "الجبر والمتطابقات",
+      "parentId": null,
+      "skillId": "skill_quant_07",
+      "skillIds": [
+        "skill_quant_07"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_main_quant_08",
+      "title": "النسبة والتناسب",
+      "parentId": null,
+      "skillId": "skill_quant_08",
+      "skillIds": [
+        "skill_quant_08"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_main_quant_09",
+      "title": "النسبة المئوية",
+      "parentId": null,
+      "skillId": "skill_quant_09",
+      "skillIds": [
+        "skill_quant_09"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_main_quant_10",
+      "title": "الربح والخسارة والحسابات المالية",
+      "parentId": null,
+      "skillId": "skill_quant_10",
+      "skillIds": [
+        "skill_quant_10"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_main_quant_11",
+      "title": "استراتيجيات الحل السريع",
+      "parentId": null,
+      "skillId": "skill_quant_11",
+      "skillIds": [
+        "skill_quant_11"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_main_quant_12",
+      "title": "مسائل الحركة والسرعات",
+      "parentId": null,
+      "skillId": "skill_quant_12",
+      "skillIds": [
+        "skill_quant_12"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_main_quant_13",
+      "title": "قوانين القدرات الخاصة",
+      "parentId": null,
+      "skillId": "skill_quant_13",
+      "skillIds": [
+        "skill_quant_13"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_main_quant_14",
+      "title": "الدوريات والأنماط المتكررة",
+      "parentId": null,
+      "skillId": "skill_quant_14",
+      "skillIds": [
+        "skill_quant_14"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_main_quant_15",
+      "title": "الساعات وحساب زوايا العقارب",
+      "parentId": null,
+      "skillId": "skill_quant_15",
+      "skillIds": [
+        "skill_quant_15"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_main_quant_16",
+      "title": "الأعمار",
+      "parentId": null,
+      "skillId": "skill_quant_16",
+      "skillIds": [
+        "skill_quant_16"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_main_quant_17",
+      "title": "المتوسط الحسابي والإحصاء",
+      "parentId": null,
+      "skillId": "skill_quant_17",
+      "skillIds": [
+        "skill_quant_17"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_main_quant_18",
+      "title": "الاحتمالات وعد الطرق والبيانات",
+      "parentId": null,
+      "skillId": "skill_quant_18",
+      "skillIds": [
+        "skill_quant_18"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_main_quant_19",
+      "title": "الزوايا والمستقيمات",
+      "parentId": null,
+      "skillId": "skill_quant_19",
+      "skillIds": [
+        "skill_quant_19"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_main_quant_20",
+      "title": "المثلثات",
+      "parentId": null,
+      "skillId": "skill_quant_20",
+      "skillIds": [
+        "skill_quant_20"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_main_quant_21",
+      "title": "المستطيل",
+      "parentId": null,
+      "skillId": "skill_quant_21",
+      "skillIds": [
+        "skill_quant_21"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_main_quant_22",
+      "title": "المربع",
+      "parentId": null,
+      "skillId": "skill_quant_22",
+      "skillIds": [
+        "skill_quant_22"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_main_quant_23",
+      "title": "المعين ومتوازي الأضلاع وشبه المنحرف",
+      "parentId": null,
+      "skillId": "skill_quant_23",
+      "skillIds": [
+        "skill_quant_23"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_main_quant_24",
+      "title": "الدائرة والمساحات المظللة",
+      "parentId": null,
+      "skillId": "skill_quant_24",
+      "skillIds": [
+        "skill_quant_24"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_main_quant_25",
+      "title": "المجسمات والحجوم وهندسة الإحداثيات",
+      "parentId": null,
+      "skillId": "skill_quant_25",
+      "skillIds": [
+        "skill_quant_25"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_01_1",
+      "title": "قواعد الإشارات والتجميع الذكي (مكملات 10 و 100 و 1000)",
+      "parentId": "top_quant_main_quant_01",
+      "skillId": "sub_quant_01_1",
+      "skillIds": [
+        "sub_quant_01_1"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_01_2",
+      "title": "جمع الأعداد المتكررة والعامل المشترك",
+      "parentId": "top_quant_main_quant_01",
+      "skillId": "sub_quant_01_2",
+      "skillIds": [
+        "sub_quant_01_2"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_01_3",
+      "title": "الأعداد الزوجية والفردية والمتتاليات الحسابية ومجاميعها",
+      "parentId": "top_quant_main_quant_01",
+      "skillId": "sub_quant_01_3",
+      "skillIds": [
+        "sub_quant_01_3"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_01_4",
+      "title": "ترتيب العمليات الحسابية وفك الأقواس",
+      "parentId": "top_quant_main_quant_01",
+      "skillId": "sub_quant_01_4",
+      "skillIds": [
+        "sub_quant_01_4"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_01_5",
+      "title": "تحديد خانة الآحاد للنواتج والعمليات الحسابية",
+      "parentId": "top_quant_main_quant_01",
+      "skillId": "sub_quant_01_5",
+      "skillIds": [
+        "sub_quant_01_5"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_02_1",
+      "title": "قواعد قابلية القسمة على الأعداد (2، 3، 4، 5، 6، 7، 8، 9، 11)",
+      "parentId": "top_quant_main_quant_02",
+      "skillId": "sub_quant_02_1",
+      "skillIds": [
+        "sub_quant_02_1"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_02_2",
+      "title": "باقي القسمة وبواقي الأعداد",
+      "parentId": "top_quant_main_quant_02",
+      "skillId": "sub_quant_02_2",
+      "skillIds": [
+        "sub_quant_02_2"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_02_3",
+      "title": "الأعداد الأولية والتحليل للعوامل الأولية والقاسم المشترك الأكبر والمضاعف المشترك الأصغر",
+      "parentId": "top_quant_main_quant_02",
+      "skillId": "sub_quant_02_3",
+      "skillIds": [
+        "sub_quant_02_3"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_03_1",
+      "title": "جمع وطرح الكسور وتوحيد المقامات",
+      "parentId": "top_quant_main_quant_03",
+      "skillId": "sub_quant_03_1",
+      "skillIds": [
+        "sub_quant_03_1"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_03_2",
+      "title": "ضرب وقسمة الكسور وتبسيطها",
+      "parentId": "top_quant_main_quant_03",
+      "skillId": "sub_quant_03_2",
+      "skillIds": [
+        "sub_quant_03_2"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_03_3",
+      "title": "مقارنة الكسور وترتيبها (طريقة المقص)",
+      "parentId": "top_quant_main_quant_03",
+      "skillId": "sub_quant_03_3",
+      "skillIds": [
+        "sub_quant_03_3"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_03_4",
+      "title": "معادلات ومسائل الكسور وسعة الخزانات",
+      "parentId": "top_quant_main_quant_03",
+      "skillId": "sub_quant_03_4",
+      "skillIds": [
+        "sub_quant_03_4"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_04_1",
+      "title": "جمع وطرح الأعداد العشرية",
+      "parentId": "top_quant_main_quant_04",
+      "skillId": "sub_quant_04_1",
+      "skillIds": [
+        "sub_quant_04_1"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_04_2",
+      "title": "ضرب وقسمة الأعداد العشرية وقوى 10",
+      "parentId": "top_quant_main_quant_04",
+      "skillId": "sub_quant_04_2",
+      "skillIds": [
+        "sub_quant_04_2"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_04_3",
+      "title": "التحويل بين الكسور الاعتيادية والعشرية والتقريب",
+      "parentId": "top_quant_main_quant_04",
+      "skillId": "sub_quant_04_3",
+      "skillIds": [
+        "sub_quant_04_3"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_04_4",
+      "title": "مقارنة وترتيب الأعداد العشرية",
+      "parentId": "top_quant_main_quant_04",
+      "skillId": "sub_quant_04_4",
+      "skillIds": [
+        "sub_quant_04_4"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_05_1",
+      "title": "ضرب وقسمة الأسس عند تشابه الأساس",
+      "parentId": "top_quant_main_quant_05",
+      "skillId": "sub_quant_05_1",
+      "skillIds": [
+        "sub_quant_05_1"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_05_2",
+      "title": "قوى القوى والأسس السالبة والكسرية والصفري",
+      "parentId": "top_quant_main_quant_05",
+      "skillId": "sub_quant_05_2",
+      "skillIds": [
+        "sub_quant_05_2"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_05_3",
+      "title": "المعادلات الأسية وتساوي الأساسات والأسس",
+      "parentId": "top_quant_main_quant_05",
+      "skillId": "sub_quant_05_3",
+      "skillIds": [
+        "sub_quant_05_3"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_05_4",
+      "title": "جمع وطرح الأساسات المتشابهة وإخراج العامل المشترك",
+      "parentId": "top_quant_main_quant_05",
+      "skillId": "sub_quant_05_4",
+      "skillIds": [
+        "sub_quant_05_4"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_05_5",
+      "title": "مقارنة الأسس الكبيرة ومضاعفات الأسس",
+      "parentId": "top_quant_main_quant_05",
+      "skillId": "sub_quant_05_5",
+      "skillIds": [
+        "sub_quant_05_5"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_06_1",
+      "title": "جمع وطرح الجذور وتبسيطها (المتشابهة والمختلفة)",
+      "parentId": "top_quant_main_quant_06",
+      "skillId": "sub_quant_06_1",
+      "skillIds": [
+        "sub_quant_06_1"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_06_2",
+      "title": "ضرب وقسمة الجذور",
+      "parentId": "top_quant_main_quant_06",
+      "skillId": "sub_quant_06_2",
+      "skillIds": [
+        "sub_quant_06_2"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_06_3",
+      "title": "إنطاق المقام والضرب في المرافق",
+      "parentId": "top_quant_main_quant_06",
+      "skillId": "sub_quant_06_3",
+      "skillIds": [
+        "sub_quant_06_3"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_06_4",
+      "title": "مقارنة الجذور وتقريب الجذور غير الشهيرة",
+      "parentId": "top_quant_main_quant_06",
+      "skillId": "sub_quant_06_4",
+      "skillIds": [
+        "sub_quant_06_4"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_06_5",
+      "title": "الجذور ذات الدليل الأعلى (التكعيبية والرباعية)",
+      "parentId": "top_quant_main_quant_06",
+      "skillId": "sub_quant_06_5",
+      "skillIds": [
+        "sub_quant_06_5"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_07_1",
+      "title": "الفرق بين مربعين والمربع الكامل والمتطابقات الشهيرة",
+      "parentId": "top_quant_main_quant_07",
+      "skillId": "sub_quant_07_1",
+      "skillIds": [
+        "sub_quant_07_1"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_07_2",
+      "title": "حل المعادلات الخطية والمعادلات الآنية (س وص)",
+      "parentId": "top_quant_main_quant_07",
+      "skillId": "sub_quant_07_2",
+      "skillIds": [
+        "sub_quant_07_2"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_07_3",
+      "title": "تبسيط المقادير الجبرية وإخراج العامل المشترك",
+      "parentId": "top_quant_main_quant_07",
+      "skillId": "sub_quant_07_3",
+      "skillIds": [
+        "sub_quant_07_3"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_07_4",
+      "title": "المتباينات وإشارات التباين والقيمة المطلقة",
+      "parentId": "top_quant_main_quant_07",
+      "skillId": "sub_quant_07_4",
+      "skillIds": [
+        "sub_quant_07_4"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_08_1",
+      "title": "مفهوم النسبة والتبسيط والتقسيم التناسبي",
+      "parentId": "top_quant_main_quant_08",
+      "skillId": "sub_quant_08_1",
+      "skillIds": [
+        "sub_quant_08_1"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_08_2",
+      "title": "التناسب الطردي وحاصل الضرب التبادلي (المقص)",
+      "parentId": "top_quant_main_quant_08",
+      "skillId": "sub_quant_08_2",
+      "skillIds": [
+        "sub_quant_08_2"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_08_3",
+      "title": "التناسب العكسي",
+      "parentId": "top_quant_main_quant_08",
+      "skillId": "sub_quant_08_3",
+      "skillIds": [
+        "sub_quant_08_3"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_08_4",
+      "title": "مسائل الخلط والسبائك والتقسيم التناسبي المركب",
+      "parentId": "top_quant_main_quant_08",
+      "skillId": "sub_quant_08_4",
+      "skillIds": [
+        "sub_quant_08_4"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_09_1",
+      "title": "حساب النسبة المئوية من عدد والنسب المشهورة",
+      "parentId": "top_quant_main_quant_09",
+      "skillId": "sub_quant_09_1",
+      "skillIds": [
+        "sub_quant_09_1"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_09_2",
+      "title": "إيجاد العدد الأصلي بمعلومية نسبته المئوية",
+      "parentId": "top_quant_main_quant_09",
+      "skillId": "sub_quant_09_2",
+      "skillIds": [
+        "sub_quant_09_2"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_09_3",
+      "title": "النسبة المئوية للزيادة والنقصان",
+      "parentId": "top_quant_main_quant_09",
+      "skillId": "sub_quant_09_3",
+      "skillIds": [
+        "sub_quant_09_3"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_09_4",
+      "title": "التغير المئوي المركب والخصومات المتتالية",
+      "parentId": "top_quant_main_quant_09",
+      "skillId": "sub_quant_09_4",
+      "skillIds": [
+        "sub_quant_09_4"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_10_1",
+      "title": "حساب سعر البيع والشراء ونسبة الربح والخسارة",
+      "parentId": "top_quant_main_quant_10",
+      "skillId": "sub_quant_10_1",
+      "skillIds": [
+        "sub_quant_10_1"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_10_2",
+      "title": "حساب السعر الأصلي قبل التخفيض أو الربح",
+      "parentId": "top_quant_main_quant_10",
+      "skillId": "sub_quant_10_2",
+      "skillIds": [
+        "sub_quant_10_2"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_10_3",
+      "title": "حساب الرواتب والادخار والمصاريف",
+      "parentId": "top_quant_main_quant_10",
+      "skillId": "sub_quant_10_3",
+      "skillIds": [
+        "sub_quant_10_3"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_10_4",
+      "title": "حساب مقدار الزكاة الشرعية (قسمة على 40 أو ضرب في 2.5%)",
+      "parentId": "top_quant_main_quant_10",
+      "skillId": "sub_quant_10_4",
+      "skillIds": [
+        "sub_quant_10_4"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_11_1",
+      "title": "تجريب الخيارات والتعويض الذكي والاستبعاد المنطقي",
+      "parentId": "top_quant_main_quant_11",
+      "skillId": "sub_quant_11_1",
+      "skillIds": [
+        "sub_quant_11_1"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_11_2",
+      "title": "الحل العكسي (التراجع من النهاية للبداية)",
+      "parentId": "top_quant_main_quant_11",
+      "skillId": "sub_quant_11_2",
+      "skillIds": [
+        "sub_quant_11_2"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_11_3",
+      "title": "الرسم والتمثيل البصري للمسألة",
+      "parentId": "top_quant_main_quant_11",
+      "skillId": "sub_quant_11_3",
+      "skillIds": [
+        "sub_quant_11_3"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_11_4",
+      "title": "التدرج المنتظم والتقريب البديهي",
+      "parentId": "top_quant_main_quant_11",
+      "skillId": "sub_quant_11_4",
+      "skillIds": [
+        "sub_quant_11_4"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_12_1",
+      "title": "قانون السرعة الأساسي والسرعة المتوسطة",
+      "parentId": "top_quant_main_quant_12",
+      "skillId": "sub_quant_12_1",
+      "skillIds": [
+        "sub_quant_12_1"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_12_2",
+      "title": "مسائل زمن اللحاق والالتقاء",
+      "parentId": "top_quant_main_quant_12",
+      "skillId": "sub_quant_12_2",
+      "skillIds": [
+        "sub_quant_12_2"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_12_3",
+      "title": "حركة جسمين (نفس الاتجاه أو اتجاهين متعاكسين)",
+      "parentId": "top_quant_main_quant_12",
+      "skillId": "sub_quant_12_3",
+      "skillIds": [
+        "sub_quant_12_3"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_12_4",
+      "title": "مسائل القطارات والأنفاق وعجلات السيارات",
+      "parentId": "top_quant_main_quant_12",
+      "skillId": "sub_quant_12_4",
+      "skillIds": [
+        "sub_quant_12_4"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_13_1",
+      "title": "مسائل العمل المشترك وخزانات المياه والصنابير",
+      "parentId": "top_quant_main_quant_13",
+      "skillId": "sub_quant_13_1",
+      "skillIds": [
+        "sub_quant_13_1"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_13_2",
+      "title": "قانون عدد المصافحات والمباريات والهدايا",
+      "parentId": "top_quant_main_quant_13",
+      "skillId": "sub_quant_13_2",
+      "skillIds": [
+        "sub_quant_13_2"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_13_3",
+      "title": "قانون عدد الأعواد والأشجار والمسافات البينية",
+      "parentId": "top_quant_main_quant_13",
+      "skillId": "sub_quant_13_3",
+      "skillIds": [
+        "sub_quant_13_3"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_13_4",
+      "title": "قوانين العد والحصر الخاصة: الصفحات والمقاعد والترتيب والحيوانات والأشكال المشتركة",
+      "parentId": "top_quant_main_quant_13",
+      "skillId": "sub_quant_13_4",
+      "skillIds": [
+        "sub_quant_13_4"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_14_1",
+      "title": "دوري الأيام والأسابيع (القسمة على 7 والباقي)",
+      "parentId": "top_quant_main_quant_14",
+      "skillId": "sub_quant_14_1",
+      "skillIds": [
+        "sub_quant_14_1"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_14_2",
+      "title": "دوري الساعات والشهور وباقي قسمة الوقت",
+      "parentId": "top_quant_main_quant_14",
+      "skillId": "sub_quant_14_2",
+      "skillIds": [
+        "sub_quant_14_2"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_14_3",
+      "title": "دوري الأسس وقوى الأعداد وبواقي التكرار",
+      "parentId": "top_quant_main_quant_14",
+      "skillId": "sub_quant_14_3",
+      "skillIds": [
+        "sub_quant_14_3"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_14_4",
+      "title": "الأنماط والمتتابعات العددية واكتشاف القاعدة والحد التالي",
+      "parentId": "top_quant_main_quant_14",
+      "skillId": "sub_quant_14_4",
+      "skillIds": [
+        "sub_quant_14_4"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_15_1",
+      "title": "حساب الزاوية الصغرى والكبرى بين عقرب الساعات وعقرب الدقائق",
+      "parentId": "top_quant_main_quant_15",
+      "skillId": "sub_quant_15_1",
+      "skillIds": [
+        "sub_quant_15_1"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_15_2",
+      "title": "دوران عقارب الساعة ومقدار تحرك العقرب بالدرجات",
+      "parentId": "top_quant_main_quant_15",
+      "skillId": "sub_quant_15_2",
+      "skillIds": [
+        "sub_quant_15_2"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_15_3",
+      "title": "زاوية الدقيقة الواحدة ومسائل الساعات المتقدمة",
+      "parentId": "top_quant_main_quant_15",
+      "skillId": "sub_quant_15_3",
+      "skillIds": [
+        "sub_quant_15_3"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_16_1",
+      "title": "حساب العمر في الماضي وبعد سنوات",
+      "parentId": "top_quant_main_quant_16",
+      "skillId": "sub_quant_16_1",
+      "skillIds": [
+        "sub_quant_16_1"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_16_2",
+      "title": "العلاقات والنسب بين الأعمار (ضعف، ثلاثة أمثال...)",
+      "parentId": "top_quant_main_quant_16",
+      "skillId": "sub_quant_16_2",
+      "skillIds": [
+        "sub_quant_16_2"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_16_3",
+      "title": "مجموع وفروق الأعمار وثبات الفرق الزمني",
+      "parentId": "top_quant_main_quant_16",
+      "skillId": "sub_quant_16_3",
+      "skillIds": [
+        "sub_quant_16_3"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_17_1",
+      "title": "قانون المتوسط الحسابي ومجموع القيم وتطبيقاته",
+      "parentId": "top_quant_main_quant_17",
+      "skillId": "sub_quant_17_1",
+      "skillIds": [
+        "sub_quant_17_1"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_17_2",
+      "title": "إيجاد قيمة مجهولة بمعلومية المتوسط الحسابي",
+      "parentId": "top_quant_main_quant_17",
+      "skillId": "sub_quant_17_2",
+      "skillIds": [
+        "sub_quant_17_2"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_17_3",
+      "title": "المتوسط الحسابي لأعداد متتالية والمتوسط الموزون",
+      "parentId": "top_quant_main_quant_17",
+      "skillId": "sub_quant_17_3",
+      "skillIds": [
+        "sub_quant_17_3"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_17_4",
+      "title": "الوسيط والمنوال والمدى وتطبيقاتها",
+      "parentId": "top_quant_main_quant_17",
+      "skillId": "sub_quant_17_4",
+      "skillIds": [
+        "sub_quant_17_4"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_18_1",
+      "title": "الاحتمال البسيط وفضاء العينة وحساب النواتج",
+      "parentId": "top_quant_main_quant_18",
+      "skillId": "sub_quant_18_1",
+      "skillIds": [
+        "sub_quant_18_1"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_18_2",
+      "title": "مبدأ العد الأساسي والتباديل والتوافيق المبسطة",
+      "parentId": "top_quant_main_quant_18",
+      "skillId": "sub_quant_18_2",
+      "skillIds": [
+        "sub_quant_18_2"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_18_3",
+      "title": "قراءة وتفسير الجداول والرسوم والقطاعات الدائرية",
+      "parentId": "top_quant_main_quant_18",
+      "skillId": "sub_quant_18_3",
+      "skillIds": [
+        "sub_quant_18_3"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_19_1",
+      "title": "الزوايا المتجاورة والمتقابلة بالرأس والمتجمعة حول نقطة",
+      "parentId": "top_quant_main_quant_19",
+      "skillId": "sub_quant_19_1",
+      "skillIds": [
+        "sub_quant_19_1"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_19_2",
+      "title": "الزوايا الناتجة عن توازي مستقيمين وقاطع (Z, F, U, M)",
+      "parentId": "top_quant_main_quant_19",
+      "skillId": "sub_quant_19_2",
+      "skillIds": [
+        "sub_quant_19_2"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_19_3",
+      "title": "مجموع الزوايا الداخلية والخارجية للمضلعات المنتظمة",
+      "parentId": "top_quant_main_quant_19",
+      "skillId": "sub_quant_19_3",
+      "skillIds": [
+        "sub_quant_19_3"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_20_1",
+      "title": "زوايا المثلث الداخلية والخارجية والمثلث المتطابق الضلعين",
+      "parentId": "top_quant_main_quant_20",
+      "skillId": "sub_quant_20_1",
+      "skillIds": [
+        "sub_quant_20_1"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_20_2",
+      "title": "المثلثات الخاصة (30-60 والمثلث 45 المتطابق الضلعين)",
+      "parentId": "top_quant_main_quant_20",
+      "skillId": "sub_quant_20_2",
+      "skillIds": [
+        "sub_quant_20_2"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_20_3",
+      "title": "نظرية فيثاغورس والمثلثات الفيثاغورية المشهورة",
+      "parentId": "top_quant_main_quant_20",
+      "skillId": "sub_quant_20_3",
+      "skillIds": [
+        "sub_quant_20_3"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_20_4",
+      "title": "مساحة المثلث وارتفاعه وقاعدته",
+      "parentId": "top_quant_main_quant_20",
+      "skillId": "sub_quant_20_4",
+      "skillIds": [
+        "sub_quant_20_4"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_20_5",
+      "title": "تشابه وتطابق المثلثات ومتباينة أطوال الأضلاع",
+      "parentId": "top_quant_main_quant_20",
+      "skillId": "sub_quant_20_5",
+      "skillIds": [
+        "sub_quant_20_5"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_21_1",
+      "title": "محيط ومساحة المستطيل وتطبيقاته",
+      "parentId": "top_quant_main_quant_21",
+      "skillId": "sub_quant_21_1",
+      "skillIds": [
+        "sub_quant_21_1"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_21_2",
+      "title": "علاقة أبعاد المستطيل وتقسيماته الهندسية",
+      "parentId": "top_quant_main_quant_21",
+      "skillId": "sub_quant_21_2",
+      "skillIds": [
+        "sub_quant_21_2"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_21_3",
+      "title": "مسائل السلالم والحدائق والممرات المقسمة",
+      "parentId": "top_quant_main_quant_21",
+      "skillId": "sub_quant_21_3",
+      "skillIds": [
+        "sub_quant_21_3"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_22_1",
+      "title": "محيط ومساحة المربع بطول الضلع",
+      "parentId": "top_quant_main_quant_22",
+      "skillId": "sub_quant_22_1",
+      "skillIds": [
+        "sub_quant_22_1"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_22_2",
+      "title": "مساحة المربع بمعلومية طول قطره: (القطر)² / 2",
+      "parentId": "top_quant_main_quant_22",
+      "skillId": "sub_quant_22_2",
+      "skillIds": [
+        "sub_quant_22_2"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_22_3",
+      "title": "المربعات المتداخلة والمتقاطعة ومقارنة المساحات",
+      "parentId": "top_quant_main_quant_22",
+      "skillId": "sub_quant_22_3",
+      "skillIds": [
+        "sub_quant_22_3"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_23_1",
+      "title": "مساحة ومحيط متوازي الأضلاع",
+      "parentId": "top_quant_main_quant_23",
+      "skillId": "sub_quant_23_1",
+      "skillIds": [
+        "sub_quant_23_1"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_23_2",
+      "title": "مساحة ومحيط المعين بمعلومية قطريه",
+      "parentId": "top_quant_main_quant_23",
+      "skillId": "sub_quant_23_2",
+      "skillIds": [
+        "sub_quant_23_2"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_23_3",
+      "title": "مساحة شبه المنحرف والقاعدة المتوسطة",
+      "parentId": "top_quant_main_quant_23",
+      "skillId": "sub_quant_23_3",
+      "skillIds": [
+        "sub_quant_23_3"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_24_1",
+      "title": "محيط ومساحة الدائرة ونصف القطر",
+      "parentId": "top_quant_main_quant_24",
+      "skillId": "sub_quant_24_1",
+      "skillIds": [
+        "sub_quant_24_1"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_24_2",
+      "title": "الزوايا المركزية والمحيطية والقطاع الدائري",
+      "parentId": "top_quant_main_quant_24",
+      "skillId": "sub_quant_24_2",
+      "skillIds": [
+        "sub_quant_24_2"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_24_3",
+      "title": "استراتيجية حساب الأشكال والمساحات المظللة (طرح المساحات)",
+      "parentId": "top_quant_main_quant_24",
+      "skillId": "sub_quant_24_3",
+      "skillIds": [
+        "sub_quant_24_3"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_24_4",
+      "title": "مساحة الوردة المظللة وتداخل الدوائر والمربعات",
+      "parentId": "top_quant_main_quant_24",
+      "skillId": "sub_quant_24_4",
+      "skillIds": [
+        "sub_quant_24_4"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_25_1",
+      "title": "حجم والمساحة السطحية للمكعب ومتوازي المستطيلات",
+      "parentId": "top_quant_main_quant_25",
+      "skillId": "sub_quant_25_1",
+      "skillIds": [
+        "sub_quant_25_1"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_25_2",
+      "title": "حجم ومساحة سطح المجسمات الشائعة: الأسطوانة والهرم والكرة",
+      "parentId": "top_quant_main_quant_25",
+      "skillId": "sub_quant_25_2",
+      "skillIds": [
+        "sub_quant_25_2"
+      ],
+      "showOnPlatform": true
+    },
+    {
+      "id": "top_quant_sub_quant_25_3",
+      "title": "هندسة الإحداثيات: تحديد النقاط والمسافة ونقطة المنتصف والميل",
+      "parentId": "top_quant_main_quant_25",
+      "skillId": "sub_quant_25_3",
+      "skillIds": [
+        "sub_quant_25_3"
+      ],
+      "showOnPlatform": true
+    }
+  ]
+}
