@@ -81,7 +81,7 @@ export const SupervisorTestsManager: React.FC<{ resultEvidence?: QuizResult[]; s
 
   if(reopenQuiz)return <SchoolAssessmentReopenDialog title={reopenQuiz.title} opensAt={reopenQuiz.opensAt} closesAt={reopenQuiz.closesAt||reopenQuiz.dueDate} onClose={()=>setReopenQuiz(null)} onSave={async window=>{await runCommand(reopenQuiz.id,{operation:'reopen',payload:window});patchLocalQuiz(reopenQuiz.id,{...window,dueDate:window.closesAt});}}/>;
 
-  if(composedDraft)return <UnifiedQuizBuilder initialDefinition={composedDraft} initialMode="central" role={user.role==='admin'?'admin':user.role==='teacher'?'teacher':'supervisor'} allowedGroupIds={Array.from(scopedGroupIds)} onSave={()=>{setComposedDraft(null);setViewMode('list');}} onClose={()=>setComposedDraft(null)}/>;
+  if(composedDraft)return <UnifiedQuizBuilder initialStep={2} initialDefinition={composedDraft} initialMode="central" role={user.role==='admin'?'admin':user.role==='teacher'?'teacher':'supervisor'} allowedGroupIds={Array.from(scopedGroupIds)} onSave={()=>{setComposedDraft(null);setViewMode('list');}} onClose={()=>setComposedDraft(null)}/>;
   if(viewMode==='compose')return <SchoolAssessmentComposePanel paths={paths} subjects={subjects} skills={skills} onReview={setComposedDraft} onClose={()=>setViewMode('list')}/>;
   if(editingQuiz)return <UnifiedQuizBuilder key={editingQuiz.id} role={user.role==='admin'?'admin':user.role==='teacher'?'teacher':'supervisor'} editingQuiz={editingQuiz} allowedGroupIds={Array.from(scopedGroupIds)} onSave={()=>{setEditingQuiz(null);setViewMode('list');}} onClose={()=>setEditingQuiz(null)}/>;
 

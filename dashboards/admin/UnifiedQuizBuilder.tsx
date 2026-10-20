@@ -506,33 +506,33 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
             </p>
           </div>
           {onClose && (
-            <button onClick={onClose} className="p-2 rounded-full hover:bg-white/20 transition-all">
+            <button aria-label="إغلاق منشئ الاختبار" onClick={onClose} className="p-2 rounded-full hover:bg-white/20 transition-all">
               <X size={20} />
             </button>
           )}
         </div>
 
         {/* Step Indicator */}
-        <div className="flex border-b border-gray-100 px-6 bg-gray-50 shrink-0 overflow-x-auto">
+        <div className="grid grid-cols-4 gap-1 border-b border-gray-100 bg-gray-50 px-2 shrink-0 sm:px-6">
           {steps.map((s) => {
             const isActive = step === s.num;
             const isDone = step > s.num;
             return (
-              <button key={s.num} type="button"
+              <button key={s.num} type="button" aria-current={isActive ? "step" : undefined} aria-label={`${isDone ? "" : s.num + " "}${s.label}`}
                 onClick={() => isDone && setWizardStep(s.num)}
                 disabled={!isDone}
-                className={`flex items-center gap-2 px-4 py-3 text-xs font-bold border-b-2 shrink-0 transition-all ${
+                className={`flex min-w-0 flex-col items-center justify-center gap-1 px-1 py-2 text-[10px] font-bold border-b-2 transition-all sm:flex-row sm:gap-2 sm:px-2 sm:py-3 sm:text-xs ${
                   isActive ? "border-indigo-600 text-indigo-700"
                     : isDone ? "border-transparent text-emerald-600 cursor-pointer"
                       : "border-transparent text-gray-400 cursor-default"
                 }`}
               >
-                <span className={`w-5 h-5 rounded-full text-[10px] flex items-center justify-center font-black ${
+                <span className={`w-5 h-5 shrink-0 rounded-full text-[10px] flex items-center justify-center font-black ${
                   isActive ? "bg-indigo-600 text-white" : isDone ? "bg-emerald-500 text-white" : "bg-gray-200 text-gray-400"
                 }`}>
                   {isDone ? <Check size={10} /> : s.num}
                 </span>
-                {s.label}
+                <span className="min-w-0 text-center leading-snug"><span className="sm:hidden">{s.num === 1 ? "البيانات" : s.num === 4 ? "التوجيه" : s.label}</span><span className="hidden sm:inline">{s.label}</span></span>
               </button>
             );
           })}
@@ -1201,22 +1201,22 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between gap-3 px-6 py-4 border-t border-gray-100 bg-gray-50 shrink-0">
+        <div className="flex items-center justify-between gap-2 px-3 py-4 sm:gap-3 sm:px-6 border-t border-gray-100 bg-gray-50 shrink-0">
           <button onClick={onClose} type="button"
-            className="px-5 py-2.5 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-gray-100 transition-all">
+            className="px-3 py-2.5 sm:px-5 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-gray-100 transition-all">
             إلغاء
           </button>
-          <div className="flex items-center gap-2">
+          <div className="flex min-w-0 flex-wrap items-center justify-end gap-2">
             {step > 1 && (
               <button type="button" onClick={() => setWizardStep((s) => (s - 1) as WizardStep)}
-                className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-gray-100 transition-all">
+                className="flex items-center gap-1 px-2 py-2.5 sm:gap-1.5 sm:px-4 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:bg-gray-100 transition-all">
                 <ChevronRight size={16} />السابق
               </button>
             )}
             {step < 4 ? (
               <button type="button" data-testid="assessment-builder-next" onClick={() => setWizardStep((s) => (s + 1) as WizardStep)}
                 disabled={!stepValid[step - 1]}
-                className={`flex items-center gap-1.5 px-6 py-2.5 rounded-xl font-bold text-sm transition-all ${
+                className={`flex items-center gap-1 px-3 py-2.5 sm:gap-1.5 sm:px-6 rounded-xl font-bold text-sm transition-all ${
                   stepValid[step - 1] ? "bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm" : "bg-gray-100 text-gray-400 cursor-not-allowed"
                 }`}>
                 التالي <ChevronLeft size={16} />
@@ -1224,7 +1224,7 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
             ) : (
               <button type="button" data-testid="assessment-builder-save" onClick={handleSave}
                 disabled={saving || !stepValid[3]}
-                className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-emerald-600 text-white font-bold text-sm hover:bg-emerald-700 transition-all shadow-sm disabled:opacity-50">
+                className="flex items-center gap-1 px-2 py-2.5 sm:gap-2 sm:px-6 rounded-xl bg-emerald-600 text-white font-bold text-sm hover:bg-emerald-700 transition-all shadow-sm disabled:opacity-50">
                 {saving ? <Loader2 size={15} className="animate-spin" /> : <Check size={15} />}
                 {isDirector ? "حفظ الاختبار" : isAdmin ? "حفظ ونشر" : isSupervisor ? "حفظ وتوجيه" : "إرسال للمراجعة"}
               </button>

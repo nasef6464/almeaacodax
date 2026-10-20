@@ -1,4 +1,5 @@
 import React,{useRef,useState} from 'react';
+import {SchoolAssessmentSkillSelection} from './SchoolAssessmentSkillSelection';
 import {api} from '../../../services/api';
 import type {Quiz} from '../../../types';
 import type {SchoolAssessmentCompositionSpec,SchoolAssessmentCompositionPreview} from '../../../types/schoolAssessments';
@@ -29,19 +30,18 @@ export const SchoolAssessmentComposePanel:React.FC<{
   return <section dir="rtl" className="space-y-5 rounded-2xl border bg-white p-5">
     <div className="flex items-center justify-between gap-3"><h2 className="text-lg font-black">إنشاء اختبار بالمواصفات</h2><button onClick={onClose}>رجوع</button></div>
     <p className="text-sm text-gray-600">اختر المواد والمهارات والعدد. نعرض أسئلة معتمدة من البنك لتراجعها وتحدد الطلاب قبل الحفظ.</p>
-    <div className="flex flex-wrap gap-4">
-      <label>المسار<select aria-label="المسار" value={pathId} onChange={event=>{invalidate();setPathId(event.target.value);setRows([]);}} className="m-2 rounded border p-2"><option value="">اختر المسار</option>{paths.map(path=><option key={path.id} value={path.id}>{path.name}</option>)}</select></label>
-      <label>نوع الاختبار<select aria-label="نوع الاختبار" value={kind} onChange={event=>{invalidate();const next=event.target.value as typeof kind;setKind(next);if(next==='normal')setRows(current=>current.slice(0,1));}} className="m-2 rounded border p-2"><option value="normal">عادي — مادة واحدة</option><option value="mock">محاكي — مجموعة مواد</option></select></label>
+    <div className="grid min-w-0 gap-4 sm:grid-cols-2">
+      <label className="min-w-0 text-sm">المسار<select aria-label="المسار" value={pathId} onChange={event=>{invalidate();setPathId(event.target.value);setRows([]);}} className="mt-2 block w-full min-w-0 rounded border bg-white p-2"><option value="">اختر المسار</option>{paths.map(path=><option key={path.id} value={path.id}>{path.name}</option>)}</select></label>
+      <label className="min-w-0 text-sm">نوع الاختبار<select aria-label="نوع الاختبار" value={kind} onChange={event=>{invalidate();const next=event.target.value as typeof kind;setKind(next);if(next==='normal')setRows(current=>current.slice(0,1));}} className="mt-2 block w-full min-w-0 rounded border bg-white p-2"><option value="normal">عادي — مادة واحدة</option><option value="mock">محاكي — مجموعة مواد</option></select></label>
     </div>
     <div className="space-y-3">{subjects.filter(subject=>subject.pathId===pathId).map(subject=>{
       const row=rows.find(item=>item.subjectId===subject.id);
       const subjectSkills=skills.filter(skill=>skill.subjectId===subject.id&&skill.pathId===pathId).flatMap(skill=>[{id:skill.id,name:skill.name},...(skill.subSkills||[])]);
       return <fieldset key={subject.id} className="space-y-3 rounded-xl border p-3">
         <label className="flex items-center gap-2 font-bold"><input type="checkbox" checked={Boolean(row)} onChange={event=>{invalidate();setRows(current=>event.target.checked?[...(kind==='normal'?[]:current),{subjectId:subject.id,skillIds:[],count:10}]:current.filter(item=>item.subjectId!==subject.id));}}/>{subject.name}</label>
-        {row&&<><div className="flex flex-wrap gap-3"><label>عدد أسئلة {subject.name}<input aria-label={'عدد أسئلة '+subject.name} type="number" min={1} max={200} value={row.count} onChange={event=>changeRow(subject.id,{count:Number(event.target.value)})} className="m-2 w-24 rounded border p-2"/></label>
-          <label>الصعوبة<select aria-label={'صعوبة '+subject.name} value={row.difficulty||''} onChange={event=>changeRow(subject.id,{difficulty:event.target.value?(event.target.value as typeof row.difficulty):undefined})} className="m-2 rounded border p-2"><option value="">كل المستويات</option><option value="Easy">سهل</option><option value="Medium">متوسط</option><option value="Hard">صعب</option></select></label></div>
-          <p className="text-xs text-gray-500">اختيار المهارات اختياري؛ تركها فارغة يشمل مهارات المادة.</p>
-          <div className="flex max-h-48 flex-wrap gap-3 overflow-auto">{subjectSkills.map(skill=><label key={skill.id} className="flex items-center gap-1 text-sm"><input type="checkbox" checked={row.skillIds.includes(skill.id)} onChange={event=>changeRow(subject.id,{skillIds:event.target.checked?[...row.skillIds,skill.id]:row.skillIds.filter(id=>id!==skill.id)})}/>{skill.name}</label>)}</div></>}
+        {row&&<><div className="grid min-w-0 grid-cols-2 gap-3"><label className="min-w-0 text-sm">عدد أسئلة {subject.name}<input aria-label={'عدد أسئلة '+subject.name} type="number" min={1} max={200} value={row.count} onChange={event=>changeRow(subject.id,{count:Number(event.target.value)})} className="mt-2 block w-full min-w-0 rounded border p-2"/></label>
+          <label className="min-w-0 text-sm">الصعوبة<select aria-label={'صعوبة '+subject.name} value={row.difficulty||''} onChange={event=>changeRow(subject.id,{difficulty:event.target.value?(event.target.value as typeof row.difficulty):undefined})} className="mt-2 block w-full min-w-0 rounded border bg-white p-2"><option value="">كل المستويات</option><option value="Easy">سهل</option><option value="Medium">متوسط</option><option value="Hard">صعب</option></select></label></div>
+          <SchoolAssessmentSkillSelection key={pathId+'|'+subject.id} subjectName={subject.name} skills={subjectSkills} selected={row.skillIds} onChange={skillIds=>changeRow(subject.id,{skillIds})}/></>}
       </fieldset>;
     })}</div>
     <label className="block">وصف اختياري للاقتراح<textarea aria-label="وصف اختياري للاقتراح" value={prompt} maxLength={2000} onChange={event=>{invalidate();setPrompt(event.target.value);}} className="mt-2 block w-full rounded-xl border p-3" placeholder="مثال: ركّز على الكسور والأسئلة المتوسطة ضمن المواد والعدد المحددين"/></label>
