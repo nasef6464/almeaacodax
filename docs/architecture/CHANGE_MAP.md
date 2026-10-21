@@ -1,4 +1,4 @@
-## Selected classroom reports and teacher material — 2026-10-21 (verification in progress)
+## Selected classroom reports and teacher material — 2026-10-21 (PR589 published; scoped read-only verification PASS)
 
 Approved scope: director assigns one explicit material per teacher within each school; supervisors retain all materials within existing authorized school/class scope. teacherMaterialPolicy owns fail-closed missing/conflicting assignment resolution and canonical/qualified legacy question matching. teacherMaterialScope loads active indexed assignments and checks classroom snapshots. Existing questions, create/template/append, aggregate/history/insights/competition, socket room entry and assessment class scope consume that policy; non-teacher authorization remains independently required. Assignment writes reject blank active material or a second active material. Concurrent conflicting writes cannot broaden reads; they require director correction. No automatic assignment choice/backfill.
 

@@ -1,0 +1,85 @@
+{
+  "date": "2026-10-21",
+  "featurePullRequest": "https://github.com/nasef6464/almeaacodax/pull/589",
+  "testedHead": "f72090e20e4f47c358d69058064cec1423b8fca7",
+  "publishedCommit": "2648fd0f37366b8e5ccd82d8f80959056972f710",
+  "status": "VERIFIED_SCOPED_PUBLISHED",
+  "ci": {
+    "success": 20,
+    "conditionalSkip": 5,
+    "requiredChecks": [
+      "Auth + RBAC + assessments + courses + commerce on isolated Mongo",
+      "Cross-phase + handover regression",
+      "Full-stack roles + CRUD + school + quiz flows on isolated Mongo"
+    ]
+  },
+  "deployments": {
+    "render": {
+      "id": "dep-dbcfp18473hc73c71rq0",
+      "status": "live"
+    },
+    "vercel": {
+      "id": "dpl_eh41AJ1fhGSvy8guck6U3pJbzzRw",
+      "status": "READY"
+    }
+  },
+  "publishedReadOnly": {
+    "views": [
+      {
+        "role": "teacher",
+        "width": 390,
+        "status": "PASS"
+      },
+      {
+        "role": "teacher",
+        "width": 1440,
+        "status": "PASS"
+      },
+      {
+        "role": "supervisor",
+        "width": 390,
+        "status": "PASS"
+      },
+      {
+        "role": "supervisor",
+        "width": 1440,
+        "status": "PASS"
+      },
+      {
+        "role": "director",
+        "width": 390,
+        "status": "PASS"
+      },
+      {
+        "role": "director",
+        "width": 1440,
+        "status": "PASS"
+      }
+    ],
+    "apiReads": 64,
+    "errors": 0,
+    "productionDomainWrites": 0,
+    "providerCalls": 0,
+    "availableScopedSupervisorSessions": 59,
+    "selectedSessions": 2,
+    "csvExport": true,
+    "legacyTeacherMaterialSetup": "unconfigured; classroom disabled and question-bank request denied403; no automatic assignment choice"
+  },
+  "isolatedVerification": {
+    "syntheticLearners": 5,
+    "httpRequestsIncludingExpectedDenials": 60,
+    "sockets": 5,
+    "teacherMaterialAuthority": "PASS",
+    "teacherCatalogConflictAndCorrection": "PASS",
+    "accountMembershipAssignmentModuleRevocation": "PASS"
+  },
+  "limits": [
+    "Positive configured-teacher flow and assignment correction were verified on disposable Mongo, not by editing production assignments.",
+    "No physical-device, human classroom, production-scale or full-school certification.",
+    "Legacy Saher smoke failure is documented separately and is outside this classroom slice."
+  ],
+  "sourceHashes": {
+    "classroom-material-published-proof.json": "93c1915435799364a44ef6cd384dcbb70dbe822d1e1898499f8454b25d90d14d",
+    "classroom-material-ci-final-exact.json": "323ef7e28c74fc35efe7f2cb57ed121b6ceef0effa5d41ecc9b6f4543242f170"
+  }
+}
