@@ -137,7 +137,8 @@ export const createSchoolRosterAssignmentActions = ({
         }
     };
 
-    const handleAssignTeacherToClass = async (teacherId: string, classId: string) => {
+    const handleAssignTeacherToClass = async (teacherId: string, classId: string,subjectId:string) => {
+        if(!subjectId){setManagementError('اختر مادة المعلم أولًا.');return;}
         const targetTeacher = teachers.find((teacher) => teacher.id === teacherId);
         const targetClass = schoolClasses.find((classroom) => classroom.id === classId);
         setRosterActionPending(`teacher-assign-${classId}-${teacherId}`);
@@ -151,7 +152,7 @@ export const createSchoolRosterAssignmentActions = ({
                 schoolId: selectedSchool.id,
                 teacherId,
                 classId,
-                subjectId: '',
+                subjectId,
                 status: 'active',
             });
             await assignTeacherToGroupAsync(teacherId, classId);

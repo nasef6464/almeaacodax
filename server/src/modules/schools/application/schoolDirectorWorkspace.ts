@@ -9,6 +9,7 @@ import { StudyPlanModel } from "../../../models/StudyPlan.js";
 import { PathModel } from "../../../models/Path.js";
 import { SchoolMembershipModel } from "../../../models/SchoolMembership.js";
 import { TeachingAssignmentModel } from "../../../models/TeachingAssignment.js";
+import {teacherAssignmentMaterialError} from './teacherMaterialScope.js';
 import { UserModel } from "../../../models/User.js";
 import { buildClassroomSchoolIntelligence } from "./classroomSchoolIntelligence.js";
 import { buildClassroomSkillEvidence } from "./classroomSchoolIntelligence.js";
@@ -203,6 +204,8 @@ export const upsertSchoolDirectorTeachingAssignment = async (schoolId: string, p
   if (!classroom) throw new SchoolDirectorOperationError("Class does not belong to this school", 400);
   const teacherMembership = await SchoolMembershipModel.exists({ schoolId: scope.schoolId, userId: payload.teacherId, role: "teacher", status: "active" });
   if (!teacherMembership) throw new SchoolDirectorOperationError("Teacher is not active in this school", 400);
+  const materialError=await teacherAssignmentMaterialError({...payload,schoolId:scope.schoolId,classId:idOf(classroom)});
+  if(materialError)throw new SchoolDirectorOperationError(materialError,409);
   const assignment = await TeachingAssignmentModel.findOneAndUpdate(
     { schoolId: scope.schoolId, teacherId: payload.teacherId, classId: idOf(classroom), subjectId: payload.subjectId || "" },
     { $set: { status: payload.status } },

@@ -1,6 +1,7 @@
 import {TeachingAssignmentModel} from '../../../models/TeachingAssignment.js';
 import {resolveSchoolDirectoryScope} from '../../schools/application/schoolDirectoryScope.js';
 import {teacherAssessmentSubjectIds, type TeacherAssessmentDefinition} from './teacherAssessmentSubjects.js';
+import {resolveTeacherMaterial} from '../../schools/application/teacherMaterialPolicy.js';
 
 export type {TeacherAssessmentDefinition} from './teacherAssessmentSubjects.js';
 export async function resolveTeacherAssessmentClassIds(actor:any,definition:TeacherAssessmentDefinition,directoryScope?:Awaited<ReturnType<typeof resolveSchoolDirectoryScope>>){
@@ -12,6 +13,8 @@ export async function resolveTeacherAssessmentClassIds(actor:any,definition:Teac
   const assignments=candidates.filter(assignment=>directory.groups.some(group=>group.type==='CLASS'&&
     String(group._id)===assignment.classId&&String(group.parentId)===assignment.schoolId));
   const subjects=teacherAssessmentSubjectIds(definition);
-  return [...new Set(assignments.map(a=>a.classId))].filter(classId=>directory.groupIds.includes(classId)&&subjects.every(subject=>
-    assignments.some(a=>a.classId===classId&&(!a.subjectId||a.subjectId===subject))));
+  if(!subjects.length)return [];
+  const ready=assignments.filter(a=>resolveTeacherMaterial(assignments.filter(other=>other.schoolId===a.schoolId)).state==='ready');
+  return [...new Set(ready.map(a=>a.classId))].filter(classId=>directory.groupIds.includes(classId)&&subjects.every(subject=>
+    ready.some(a=>a.classId===classId&&a.subjectId===subject)));
 }

@@ -13,6 +13,7 @@ import {
 import { api } from '../../services/api';
 import { useClassroomTeacherReports } from '../../hooks/useClassroomTeacherReports';
 import { ClassroomStudentReportTable } from './ClassroomStudentReportTable';
+import {ClassroomComparisonPanel} from './ClassroomComparisonPanel';
 import {
   buildClassroomSkillDiagnostics,
   formatClassroomDuration,
@@ -43,6 +44,9 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
   const [selectedPathFilter, setSelectedPathFilter] = useState('all');
   const [selectedSubjectFilter, setSelectedSubjectFilter] = useState('all');
   const [detailRetry, setDetailRetry] = useState(0);
+  const [selectedSessionIds,setSelectedSessionIds]=useState<string[]>([]);
+  const [comparisonOpen,setComparisonOpen]=useState(false);
+  useEffect(()=>{setSelectedSessionIds([]);setComparisonOpen(false);},[schoolId,timeFilter,selectedClassFilter,selectedPathFilter,selectedSubjectFilter]);
   const [studentDetail, setStudentDetail] = useState<{ loading: boolean; error: string; students?: CanonicalClassroomReport['students']; complete?: boolean }>({ loading: false, error: '' });
 
   useEffect(() => { setSelectedReport(null); setStudentDetail({ loading: false, error: '' }); }, [schoolId]);
@@ -223,6 +227,8 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
         </div>
       )}
 
+      <div className="mt-5 flex flex-wrap items-center gap-2"><button type="button" disabled={!selectedSessionIds.length} onClick={()=>setComparisonOpen(true)} className="min-h-11 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-bold text-white disabled:opacity-40">تقرير الحصص المحددة ({selectedSessionIds.length})</button>{selectedSessionIds.length>0&&<button type="button" onClick={()=>{setSelectedSessionIds([]);setComparisonOpen(false);}} className="min-h-11 rounded-xl border px-3 py-2 text-sm">مسح الاختيار</button>}<span className="text-xs text-slate-500">اختر حتى 20 حصة. عند تصفية المادة، تُجمع الحصص الخاصة بها بالكامل.</span></div>
+      {comparisonOpen&&selectedSessionIds.length>0&&<ClassroomComparisonPanel schoolId={schoolId} reports={reports.filter(r=>selectedSessionIds.includes(r.sessionId)&&filteredReports.some(f=>f.sessionId===r.sessionId&&f.questions.length===r.questions.length))} onClose={()=>setComparisonOpen(false)}/>}
       <div className="mt-6 overflow-hidden rounded-2xl border border-slate-100 dark:border-slate-800">
         {loading && reports.length === 0 ? (
           <div className="p-8 text-center text-sm font-bold text-slate-500">جارٍ تحميل السجل من الخادم…</div>
@@ -231,10 +237,10 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
         ) : filteredReports.map((report) => {
           const accuracy = report.totals.responses ? Math.round((report.totals.correct / report.totals.responses) * 100) : null;
           return (
-            <button key={report.sessionId} type="button" onClick={() => setSelectedReport(report)} className="flex w-full items-center justify-between gap-4 border-b border-slate-100 p-4 text-right last:border-b-0 hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-800/50">
+            <div key={report.sessionId} className="flex items-center gap-2 border-b border-slate-100 px-3 dark:border-slate-800"><input type="checkbox" aria-label={`اختيار حصة ${report.subjectName||report.className} ${report.day}`} checked={selectedSessionIds.includes(report.sessionId)} disabled={(!selectedSessionIds.includes(report.sessionId)&&selectedSessionIds.length>=20)||reports.find(r=>r.sessionId===report.sessionId)?.questions.length!==report.questions.length} onChange={e=>{setComparisonOpen(false);setSelectedSessionIds(ids=>e.target.checked?[...ids,report.sessionId]:ids.filter(id=>id!==report.sessionId));}} className="h-5 w-5 shrink-0"/><button type="button" onClick={() => setSelectedReport(report)} className="flex min-w-0 flex-1 items-center justify-between gap-4 p-4 text-right hover:bg-slate-50 dark:hover:bg-slate-800/50">
               <div><div className="text-sm font-black text-slate-900 dark:text-white">{report.className || report.classId}</div><div className="mt-1 text-xs text-slate-500">{report.subjectName || '—'} · {report.day || '—'}{report.period ? ` · الحصة ${report.period}` : ''}{report.batches.length ? ` · ${report.batches.length} دفعات` : ''}</div></div>
               <div className="flex items-center gap-4 text-xs font-bold text-slate-600 dark:text-slate-300"><span className="inline-flex items-center gap-1"><Users size={14} /> {report.roster.joined}/{report.roster.expected}</span><span className="inline-flex items-center gap-1"><CheckCircle2 size={14} /> {accuracy === null ? '—' : `${accuracy}%`}</span></div>
-            </button>
+            </button></div>
           );
         })}
       </div>

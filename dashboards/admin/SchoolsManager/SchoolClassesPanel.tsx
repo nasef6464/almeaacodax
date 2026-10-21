@@ -33,7 +33,7 @@ interface SchoolClassesPanelProps {
     onAssignSupervisor: (userId: string, classId: string) => Promise<void>;
     onCreateSupervisor: (classroom: Group) => void;
     onRemoveSupervisor: (classroom: Group, user: User) => void;
-    onAssignTeacher: (userId: string, classId: string) => Promise<void>;
+    onAssignTeacher: (userId: string, classId: string,subjectId:string) => Promise<void>;
     onRemoveTeacher: (classroom: Group, user: User) => Promise<void>;
     onAssignCourse: (courseId: string, classId: string) => void;
     onRemoveCourse: (courseId: string, classId: string) => void;
@@ -172,7 +172,7 @@ export const SchoolClassesPanel: React.FC<SchoolClassesPanelProps> = (props) => 
                     onAssignStudents={(studentIds) => peopleActions.assignStudents(managedClass, studentIds)}
                     onCreateStudent={(draft) => peopleActions.createStudent(managedClass, draft)}
                     onRemoveStudent={(student) => peopleActions.removeStudent(managedClass, student)}
-                    onAssignTeacher={(teacherId) => peopleActions.assignTeacher(managedClass, teacherId)}
+                    onAssignTeacher={(teacherId,subjectId) => peopleActions.assignTeacher(managedClass, teacherId,subjectId)}
                     onCreateTeacher={(draft) => peopleActions.createTeacher(managedClass, draft)}
                     onRemoveTeacher={(teacher) => peopleActions.removeTeacher(managedClass, teacher)}
                     onAssignSupervisor={(supervisorId) => peopleActions.assignSupervisor(managedClass, supervisorId)}

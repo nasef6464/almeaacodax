@@ -1,3 +1,5 @@
+import {useStore} from '../store/useStore';
+import {classroomMaterialIdentity} from '../utils/classroomMaterialIdentity';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { AlertCircle, Bookmark, CheckCircle2, Filter, Presentation, Zap } from 'lucide-react';
@@ -30,6 +32,7 @@ export const ClassroomTeacherConsole: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const {subjects}=useStore();
   const [data, setData] = useState<any>(null);
   const [message, setMessage] = useState('');
   const [workspace, setWorkspace] = useState<TeacherWorkspaceData | null>(null);
@@ -117,11 +120,11 @@ export const ClassroomTeacherConsole: React.FC = () => {
 
   const filteredQuestions = useMemo(() => questions.filter((q: any) => {
     if (filters.track && q.examType !== filters.track && q.pathId !== filters.track) return false;
-    if (filters.subject && q.subject !== filters.subject) return false;
+    if (filters.subject && classroomMaterialIdentity(q,subjects) !== filters.subject) return false;
     if (filters.difficulty && q.difficulty !== filters.difficulty) return false;
     if (filters.search && !q.text?.toLowerCase().includes(filters.search.toLowerCase())) return false;
     return true;
-  }), [questions, filters]);
+  }), [questions, filters, subjects]);
 
   const handleApplyTemplate = (tpl: ClassroomPreparedTemplate) => {
     setSelectedIds(tpl.questionIds);
@@ -284,7 +287,7 @@ export const ClassroomTeacherConsole: React.FC = () => {
 
             {creationTab === 'bank' && (
               <div className="mt-4 space-y-4">
-                <ClassroomQuestionFilterBar filters={filters} onChange={setFilters} onReset={() => setFilters({ track: '', subject: '', difficulty: '', search: '' })} totalCount={questions.length} filteredCount={filteredQuestions.length} />
+                <ClassroomQuestionFilterBar allowedSubjectIds={user?.role==='teacher'?(workspace?.schools.find(s=>s.schoolId===schoolId)?.assignments||[]).map(a=>a.subjectId).filter(Boolean):undefined} filters={filters} onChange={setFilters} onReset={() => setFilters({ track: '', subject: '', difficulty: '', search: '' })} totalCount={questions.length} filteredCount={filteredQuestions.length} />
                 {questions.length === 0 ? (
                   <button type="button" onClick={() => void loadQuestions()} disabled={!schoolId || !classId || !selectedSchool?.smartClassroomEnabled} className="w-full rounded-xl bg-slate-800 py-3 text-xs font-black text-white hover:bg-slate-700 disabled:opacity-50">عرض وتحميل أسئلة بنك المنصة</button>
                 ) : (
@@ -358,6 +361,7 @@ export const ClassroomTeacherConsole: React.FC = () => {
 
   return (
     <ClassroomActiveSessionPanel
+      allowedSubjectIds={user?.role==='teacher'?(workspace?.schools.find(s=>s.schoolId===data?.schoolId)?.assignments||[]).map(a=>a.subjectId).filter(Boolean):undefined}
       sessionId={sessionId}
       data={data}
       storedPin={data?.pin || storedPin}

@@ -17,6 +17,8 @@ try{
   const actor={...teacher.toObject(),id:String(teacher._id)};
   await TeachingAssignmentModel.create([{schoolId:String(school._id),teacherId:actor.id,classId:String(a._id),subjectId:'math'},
     {schoolId:String(school._id),teacherId:actor.id,classId:String(b._id),subjectId:'chem'}]);
+  await assert.rejects(()=>assertTeacherDirectedQuizScope(actor,{subjectId:'math',targetGroupIds:[String(a._id)]}),{statusCode:403});
+  await TeachingAssignmentModel.updateOne({teacherId:actor.id,classId:String(b._id),subjectId:'chem'},{$set:{status:'inactive'}});
   await assertTeacherDirectedQuizScope(actor,{subjectId:'math',targetGroupIds:[String(a._id)]});
   await assertTeacherDirectedQuizScope(actor,{subjectId:'math',targetUserIds:[String(learners[0]._id)]});
   await assert.rejects(()=>assertTeacherDirectedQuizScope(actor,{subjectId:'math',targetUserIds:[String(learners[1]._id)]}),{statusCode:403});

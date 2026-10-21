@@ -8,6 +8,8 @@ import { buildClassroomSessionReport } from "../../modules/schools/application/c
 import { classroomQuestionVisibilityFilter, normalizeQuestionIds } from "../../modules/schools/application/classroomQuestionAccess.js";
 import { hasActiveSchoolRole } from "../../modules/schools/application/schoolContextResolver.js";
 import { emitClassroomEvent, emitClassroomEventToClass } from "../../sockets/classroomEvents.js";
+import {loadTeacherMaterial} from '../../modules/schools/application/teacherMaterialScope.js';
+import {questionMatchesTeacherMaterial} from '../../modules/schools/application/teacherMaterialPolicy.js';
 
 export const hashClassroomPin = (pin: string) => createHmac("sha256", env.JWT_SECRET).update(pin).digest("hex");
 export const classroomSessionId = (doc: any) => String(doc.id || doc._id);
@@ -35,10 +37,11 @@ const snapshotQuestion = (question: any) => ({
   sectionId: question.sectionId || "",
   pathId: question.pathId || "",
   subject: question.subject || "",
+  ...(question.subjectId ? {subjectId:question.subjectId}:{}),
   difficulty: question.difficulty || "Medium",
 });
 
-export async function loadApprovedVisibleQuestions(questionIds: string[], schoolId: string, actorId: string) {
+export async function loadApprovedVisibleQuestions(questionIds: string[], schoolId: string, actorId: string, actorRole='teacher') {
   const ids = normalizeQuestionIds(questionIds);
   const objectIds = ids.filter((id) => Types.ObjectId.isValid(id));
   const questions = await QuestionModel.find({
@@ -56,16 +59,21 @@ export async function loadApprovedVisibleQuestions(questionIds: string[], school
   }
   const resolved = ids.map((id) => byId.get(id)).filter(Boolean);
   if (resolved.length !== ids.length) return null;
+  if(actorRole==='teacher'){
+    const scope=await loadTeacherMaterial({id:actorId,role:actorRole},schoolId);
+    if(!scope||!resolved.every(q=>questionMatchesTeacherMaterial(scope,q)))return null;
+  }
   return resolved.map(snapshotQuestion);
 }
 
 export async function ensureTeacherSchoolAccess(actor: any, schoolId: string) {
   if (actor.role === "admin") return true;
-  const [hasTeacherContext, assigned] = await Promise.all([
+  const [hasTeacherContext, assigned,material] = await Promise.all([
     hasActiveSchoolRole(actor, schoolId, "teacher"),
     TeachingAssignmentModel.exists({ schoolId, teacherId: actor.id, status: "active" }),
+    loadTeacherMaterial(actor,schoolId),
   ]);
-  return Boolean(hasTeacherContext && assigned);
+  return Boolean(hasTeacherContext && assigned && material);
 }
 
 export async function finalizeClassroomSession(session: any) {

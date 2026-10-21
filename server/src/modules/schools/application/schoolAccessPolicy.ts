@@ -12,4 +12,4 @@ export const hasActiveSchoolMembership = (membership: SchoolMembershipRecord | n
   Boolean(membership && membership.status === "active" && membership.userId === userId && membership.schoolId === schoolId);
 
 export const canTeachAssignedClass = (assignment: TeachingAssignmentRecord | null | undefined, teacherId: string, schoolId: string, classId: string, subjectId?: string) =>
-  Boolean(assignment && assignment.status === "active" && assignment.teacherId === teacherId && assignment.schoolId === schoolId && assignment.classId === classId && (!subjectId || !assignment.subjectId || assignment.subjectId === subjectId));
+  Boolean(assignment && assignment.status === "active" && assignment.teacherId === teacherId && assignment.schoolId === schoolId && assignment.classId === classId && (!subjectId || assignment.subjectId === subjectId));

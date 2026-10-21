@@ -1,0 +1,32 @@
+import assert from 'node:assert/strict';
+import {QuestionModel} from '../models/Question.js';
+import {TeachingAssignmentModel} from '../models/TeachingAssignment.js';
+import {ClassroomSessionModel} from '../models/ClassroomSession.js';
+type Context={RUN_ID:string;schoolAId:string;classAId:string;teacherId:string;teacherToken:string;teacher2Token:string;supervisorAToken:string;supervisorBToken:string;q1:string;request:(endpoint:string,options?:{method?:string;token?:string;body?:unknown})=>Promise<{status:number;body:any}>;joinSocket:(token:string,room:string)=>Promise<{ok?:boolean}>};
+export async function verifyTeacherMaterialIsolation(context:Context){
+  const {RUN_ID,schoolAId,classAId,teacherId,teacherToken,teacher2Token,supervisorAToken,supervisorBToken,q1,request,joinSocket}=context;
+  const foreignMaterial=await QuestionModel.create({id:`other_material_${RUN_ID}`,text:'Other material',options:['A','B'],correctOptionIndex:0,subject:`subject2_${RUN_ID}`,type:'mcq',approvalStatus:'approved',ownerType:'platform'});
+  const foreignId=String(foreignMaterial.id);
+  const narrowed=await request(`/classroom/questions?schoolId=${schoolAId}&subject=${encodeURIComponent(`subject2_${RUN_ID}`)}`,{token:teacherToken});
+  assert.equal(narrowed.status,200);assert.equal(narrowed.body.questions.length,0,'Query parameter must not override teacher material');
+  const otherBank=await request(`/classroom/questions?schoolId=${schoolAId}`,{token:teacher2Token});
+  assert.equal(otherBank.status,200);assert.ok(otherBank.body.questions.some((q:any)=>q.questionId===foreignId));assert.ok(!otherBank.body.questions.some((q:any)=>q.questionId===q1));
+  assert.equal((await request('/classroom/sessions',{method:'POST',token:teacherToken,body:{schoolId:schoolAId,classId:classAId,questionIds:[foreignId]}})).status,400,'Raw IDs must not bypass material scope');
+  assert.equal((await request('/classroom/templates',{method:'POST',token:teacherToken,body:{schoolId:schoolAId,title:'Wrong material',questionIds:[foreignId]}})).status,400);
+  const {teacherAssignmentMaterialError}=await import('../modules/schools/application/teacherMaterialScope.js');
+  const assignmentWrite={schoolId:schoolAId,classId:classAId,teacherId:teacherId,status:'active'};
+  assert.ok(await teacherAssignmentMaterialError({...assignmentWrite,subjectId:''}));
+  assert.ok(await teacherAssignmentMaterialError({...assignmentWrite,subjectId:`subject2_${RUN_ID}`}));
+  assert.equal(await teacherAssignmentMaterialError({...assignmentWrite,subjectId:'general'}),null);
+  const conflict=await TeachingAssignmentModel.create({...assignmentWrite,subjectId:`subject2_${RUN_ID}`});
+  assert.equal((await request(`/classroom/questions?schoolId=${schoolAId}`,{token:teacherToken})).status,403,'Conflicting historical/concurrent assignments fail closed');
+  await TeachingAssignmentModel.deleteOne({_id:conflict._id});
+  const outsideMaterialSession=await ClassroomSessionModel.create({schoolId:schoolAId,classId:classAId,teacherId:teacherId,status:'ended',endedAt:new Date(),pinHash:`test_${RUN_ID}`,pinExpiresAt:new Date(),questionSnapshots:[{questionId:foreignId,text:'Other material',subject:`subject2_${RUN_ID}`,options:['A','B'],correctOptionIndex:0}]});
+  const outsideId=String(outsideMaterialSession._id);
+  assert.equal((await request(`/classroom/sessions/${outsideId}/aggregate`,{token:teacherToken})).status,403,'Even own historical report must respect current material');
+  assert.equal((await request(`/classroom/sessions/${outsideId}/aggregate`,{token:supervisorAToken})).status,200,'School supervisor retains all materials in own scope');
+  assert.equal((await request(`/classroom/sessions/${outsideId}/aggregate`,{token:supervisorBToken})).status,403,'Supervisor cannot cross school boundaries');
+  const ownHistory=await request(`/classroom/teacher/history?schoolId=${schoolAId}`,{token:teacherToken});assert.equal(ownHistory.status,200);assert.ok(!ownHistory.body.sessions.some((s:any)=>s.sessionId===outsideId));
+  assert.equal((await joinSocket(teacherToken,`classroom:${outsideId}`)).ok,false,'Material scope also protects realtime rooms');
+  await ClassroomSessionModel.deleteOne({_id:outsideMaterialSession._id});
+}

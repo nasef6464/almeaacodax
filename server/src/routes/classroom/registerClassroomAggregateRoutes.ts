@@ -13,6 +13,7 @@ import { resolveSchoolEntitlement } from "../../modules/schools/application/scho
 import { requireSchoolDirectorCapability } from "../../modules/schools/application/schoolDirectorAccess.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
 import { classroomSessionId, ensureTeacherSchoolAccess } from "./classroomRouteSupport.js";
+import {teacherCanReadClassroom} from '../../modules/schools/application/teacherMaterialScope.js';
 
 const submissionKeyForSession = (session: any) => {
   if (session.publishedMode === "batch" && session.activeBatchId) return `batch:${String(session.activeBatchId)}`;
@@ -130,7 +131,7 @@ export function registerClassroomAggregateRoutes(classroomRouter: Router) {
     }
 
     const isStaff = await resolveStaffAccessWithCache(req.authUser!, session);
-    if (!isStaff) return res.status(StatusCodes.FORBIDDEN).json({ message: "Classroom analytics are staff-only" });
+    if (!isStaff || !(await teacherCanReadClassroom(req.authUser!,session))) return res.status(StatusCodes.FORBIDDEN).json({ message: "Classroom analytics are staff-only and restricted to your teaching material" });
 
     const sessionId = classroomSessionId(session);
     if (req.query.view === "report") {

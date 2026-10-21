@@ -15,6 +15,8 @@ import { hasActiveSchoolRole } from "../../modules/schools/application/schoolCon
 import { buildClassroomSessionReport, buildClassroomTeacherReports, classroomScopeFilter, resolveClassroomSupervisorScope } from "../../modules/schools/application/classroomSupervisorReport.js";
 import { buildClassroomSchoolIntelligence, buildClassroomSkillEvidence } from "../../modules/schools/application/classroomSchoolIntelligence.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
+import {loadTeacherMaterial} from '../../modules/schools/application/teacherMaterialScope.js';
+import {questionMatchesTeacherMaterial} from '../../modules/schools/application/teacherMaterialPolicy.js';
 
 const interventionSchema = z.object({
   schoolId: z.string().min(1), classId: z.string().optional().default(""), skillId: z.string().min(1),
@@ -52,7 +54,10 @@ export function registerClassroomSupervisorRoutes(classroomRouter: Router) {
     const query = ClassroomSessionModel.find(filter).sort({ endedAt: -1, createdAt: -1 }).limit(limit);
     if (req.query.view === "summary") query.select("-reportSnapshot.students");
     const sessions = await query.lean();
-    res.json({ sessions: await Promise.all(sessions.map(buildClassroomSessionReport)) });
+    const material=req.authUser!.role==='teacher'?await loadTeacherMaterial(req.authUser!,requestedSchoolId):null;
+    if(req.authUser!.role==='teacher'&&!material)return res.status(StatusCodes.FORBIDDEN).json({message:'حدد مادة المعلم من تكليفات المدرسة أولًا.'});
+    const visible=req.authUser!.role==='teacher'?sessions.filter(s=>(s.questionSnapshots||[]).every(q=>questionMatchesTeacherMaterial(material!,q))):sessions;
+    res.json({ sessions: await Promise.all(visible.map(buildClassroomSessionReport)) });
   }));
 
   classroomRouter.get("/supervisor/today", requireAuth, requireRole(["admin", "supervisor"]), asyncHandler(async (req, res) => {

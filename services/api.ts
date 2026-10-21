@@ -819,6 +819,7 @@ export const api = {
         schoolName: string;
         source: "membership" | "legacy";
         smartClassroomEnabled: boolean;
+        teachingMaterialState?:'ready'|'unconfigured'|'conflict';
         assignments: Array<{
           assignmentId: string;
           classId: string;

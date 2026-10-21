@@ -1,4 +1,5 @@
 import { Router } from "express";
+import {teacherAssignmentMaterialError} from '../modules/schools/application/teacherMaterialScope.js';
 import { StatusCodes } from "http-status-codes";
 import { Types } from "mongoose";
 import { z } from "zod";
@@ -104,6 +105,8 @@ schoolAdminIntegrityRouter.put("/assignments", requireAuth, requireRole(["admin"
   }
   const membership = await SchoolMembershipModel.exists({ userId: teacherId, schoolId, role: "teacher", status: "active" });
   if (!membership) return res.status(StatusCodes.BAD_REQUEST).json({ message: "Teacher must have an active membership in this school" });
+  const materialError=await teacherAssignmentMaterialError({...payload,schoolId,teacherId,classId});
+  if(materialError)return res.status(StatusCodes.CONFLICT).json({message:materialError});
 
   const assignment = await TeachingAssignmentModel.findOneAndUpdate(
     { schoolId, teacherId, classId, subjectId: payload.subjectId },

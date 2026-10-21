@@ -20,6 +20,7 @@ interface ClassroomQuestionFilterBarProps {
   onReset: () => void;
   totalCount: number;
   filteredCount: number;
+  allowedSubjectIds?:string[];
 }
 
 const DIFFICULTY_OPTIONS = [
@@ -35,17 +36,18 @@ export const ClassroomQuestionFilterBar: React.FC<ClassroomQuestionFilterBarProp
   onReset,
   totalCount,
   filteredCount,
+  allowedSubjectIds,
 }) => {
   const { paths, subjects, sections, skills, nestedSkills=[] } = useStore();
 
   const activePathId = filters.pathId || filters.track || '';
-  const activeSubjectId = filters.subjectId || filters.subject || '';
+  const activeSubjectId = filters.subjectId || filters.subject || (allowedSubjectIds?.length===1?allowedSubjectIds[0]:'');
   const activeSectionId = filters.sectionId || '';
   const activeSkillId = filters.skillId || '';
 
-  const availableSubjects = activePathId
-    ? subjects.filter((s) => s.pathId === activePathId)
-    : subjects;
+  const scopedSubjects=allowedSubjectIds===undefined?subjects:subjects.filter(s=>allowedSubjectIds.includes(s.id));
+  const availableSubjects = activePathId?scopedSubjects.filter(s=>s.pathId===activePathId):scopedSubjects;
+  const availablePaths=allowedSubjectIds===undefined?paths:paths.filter(p=>scopedSubjects.some(s=>s.pathId===p.id));
 
   const availableSections = activeSubjectId
     ? sections.filter((sec) => sec.subjectId === activeSubjectId)
@@ -101,7 +103,7 @@ export const ClassroomQuestionFilterBar: React.FC<ClassroomQuestionFilterBarProp
             className="w-full rounded-xl border border-slate-200 bg-white p-2 text-xs font-bold text-slate-800 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
           >
             <option value="">جميع المسارات</option>
-            {paths.map((p) => (
+            {availablePaths.map((p) => (
               <option key={p.id} value={p.id}>
                 {p.name}
               </option>

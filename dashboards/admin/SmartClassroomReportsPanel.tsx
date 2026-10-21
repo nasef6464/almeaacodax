@@ -1,3 +1,4 @@
+import {SupervisorClassroomSessionList} from "../../components/classroom/SupervisorClassroomSessionList";
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   BarChart3,
@@ -320,21 +321,7 @@ export const SmartClassroomReportsPanel: React.FC = () => {
             {sessions.length === 0 ? (
               <div className="p-8 text-center text-sm font-bold text-slate-500">لا توجد حصص محفوظة مطابقة للفترة والنطاق.</div>
             ) : (
-              <div className="divide-y divide-slate-100">
-                {sessions.map((session) => (
-                  <button key={session.sessionId} type="button" onClick={() => void openReport(session.sessionId)} className="flex w-full flex-col gap-2 p-4 text-right transition hover:bg-indigo-50/50 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                      <div className="font-black text-slate-900">{session.className || 'فصل'}</div>
-                      <div className="mt-1 text-xs text-slate-500">{session.subjectName || 'بدون مادة'} · {session.endedAt ? new Date(session.endedAt).toLocaleString('ar-SA') : '—'}</div>
-                    </div>
-                    <div className="flex items-center gap-4 text-xs font-bold text-slate-600">
-                      <span className="inline-flex items-center gap-1"><Users size={14} /> {session.joined}/{session.expected}</span>
-                      <span>{percent(session.accuracy)}</span>
-                      <span>{session.responses} إجابة</span>
-                    </div>
-                  </button>
-                ))}
-              </div>
+              <SupervisorClassroomSessionList sessions={sessions} scopeKey={JSON.stringify([period,customFrom,customTo,schoolId,teacherId,classId])} schoolForSession={id=>schools.find(s=>s.teachers.some(t=>t.classes.some(c=>c.sessions.some(row=>row.sessionId===id))))?.schoolId||''} onOpen={id=>void openReport(id)}/>
             )}
           </div>
 

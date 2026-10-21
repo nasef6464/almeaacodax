@@ -45,7 +45,7 @@ export function registerClassroomTemplateRoutes(classroomRouter: Router) {
     }
     const questionIds = normalizeQuestionIds(payload.questionIds);
     const challengeIds = normalizeQuestionIds(payload.challengeIds).filter((id) => questionIds.includes(id));
-    const snapshots = await loadApprovedVisibleQuestions(questionIds, payload.schoolId, req.authUser!.id);
+    const snapshots = await loadApprovedVisibleQuestions(questionIds, payload.schoolId, req.authUser!.id, req.authUser!.role);
     if (!snapshots || snapshots.length !== questionIds.length) {
       return res.status(StatusCodes.BAD_REQUEST).json({ message: "Template contains unavailable or unauthorized questions" });
     }
