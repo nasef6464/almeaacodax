@@ -7,6 +7,8 @@ import { requireAuth, requireRole } from "../../middleware/auth.js";
 import { ClassroomSessionModel } from "../../models/ClassroomSession.js";
 import { GroupModel } from "../../models/Group.js";
 import { QuestionModel } from "../../models/Question.js";
+import {loadTeacherMaterial,teacherCanReadClassroom} from '../../modules/schools/application/teacherMaterialScope.js';
+import {teacherMaterialQuestionFilter} from '../../modules/schools/application/teacherMaterialPolicy.js';
 import { TeachingAssignmentModel } from "../../models/TeachingAssignment.js";
 import { resolveSchoolEntitlement } from "../../modules/schools/application/schoolEntitlementResolver.js";
 import { DB_GROWTH_BUDGETS } from "../../modules/database/dbGrowthBudgets.js";
@@ -59,7 +61,7 @@ const canTeacherControlSession = async (actor: any, session: any) => {
       status: "active",
     }),
   ]);
-  return Boolean(hasSchoolAccess && hasClassAssignment);
+  return Boolean(hasSchoolAccess && hasClassAssignment && await teacherCanReadClassroom(actor,session));
 };
 
 const canTeacherEndOwnSession = (actor: any, session: any) =>
@@ -119,7 +121,7 @@ export function registerClassroomTeacherRoutes(classroomRouter: Router) {
     }
 
     const snapshots = payload.questionIds.length > 0
-      ? await loadApprovedVisibleQuestions(payload.questionIds, payload.schoolId, req.authUser!.id)
+      ? await loadApprovedVisibleQuestions(payload.questionIds, payload.schoolId, req.authUser!.id, req.authUser!.role)
       : [];
     if (!snapshots || snapshots.length !== payload.questionIds.length) {
       return res.status(StatusCodes.BAD_REQUEST).json({ message: "Questions must be approved, visible to this school, and valid for Smart Classroom" });
@@ -192,6 +194,11 @@ export function registerClassroomTeacherRoutes(classroomRouter: Router) {
       { approvalStatus: "approved" },
       classroomQuestionVisibilityFilter(schoolId, req.authUser!.id),
     ] };
+    if(req.authUser!.role==='teacher'){
+      const scope=await loadTeacherMaterial(req.authUser!,schoolId);
+      if(!scope)return res.status(StatusCodes.FORBIDDEN).json({message:'حدد مادة المعلم من تكليفات المدرسة أولًا.'});
+      filter.$and.push(teacherMaterialQuestionFilter(scope));
+    }
     if (typeof req.query.pathId === "string" && req.query.pathId.trim()) filter.$and.push({ pathId: req.query.pathId.trim() });
     if (typeof req.query.subject === "string" && req.query.subject.trim()) filter.$and.push({ subject: req.query.subject.trim() });
     if (typeof req.query.sectionId === "string" && req.query.sectionId.trim()) filter.$and.push({ sectionId: req.query.sectionId.trim() });
@@ -200,13 +207,13 @@ export function registerClassroomTeacherRoutes(classroomRouter: Router) {
     if (typeof req.query.search === "string" && req.query.search.trim()) filter.$and.push({ text: { $regex: req.query.search.trim(), $options: "i" } });
 
     const questions = await QuestionModel.find(filter)
-      .select("id text imageUrl options type skillIds pathId subject sectionId difficulty examType")
+      .select("id text imageUrl options type skillIds pathId subject subjectId sectionId difficulty examType")
       .sort({ updatedAt: -1, _id: -1 }).skip((page - 1) * limit).limit(limit + 1).lean();
     const hasMore = questions.length > limit;
     res.json({ page, limit, hasMore, questions: questions.slice(0, limit).map((question: any) => ({
       questionId: String(question.id || question._id), text: question.text, imageUrl: question.imageUrl || "",
       options: question.options, type: question.type, skillIds: question.skillIds || [], pathId: question.pathId || "",
-      subject: question.subject || "", sectionId: question.sectionId || "", difficulty: question.difficulty || "Medium",
+      subject: question.subject || "", subjectId:question.subjectId||"", sectionId: question.sectionId || "", difficulty: question.difficulty || "Medium",
       examType: question.examType || "general",
     })) });
   }));
@@ -283,7 +290,7 @@ export function registerClassroomTeacherRoutes(classroomRouter: Router) {
     if (req.authUser!.role !== "admin" && !(await smartClassroomEnabled(String(session.schoolId)))) return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
 
     const requestedIds = normalizeQuestionIds(payload.questionIds);
-    const snapshots = await loadApprovedVisibleQuestions(requestedIds, session.schoolId, req.authUser!.id);
+    const snapshots = await loadApprovedVisibleQuestions(requestedIds, session.schoolId, req.authUser!.id, req.authUser!.role);
     if (!snapshots || snapshots.length !== requestedIds.length) return res.status(StatusCodes.BAD_REQUEST).json({ message: "بعض الأسئلة غير موجودة أو غير معتمدة أو خارج نطاق المدرسة" });
     const existingIds = new Set(session.questionSnapshots.map((question: any) => String(question.questionId)));
     const trulyNewSnapshots = snapshots.filter((question: any) => !existingIds.has(String(question.questionId)));

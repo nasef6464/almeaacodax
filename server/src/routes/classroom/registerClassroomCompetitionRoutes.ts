@@ -1,4 +1,5 @@
 import type { Router } from "express";
+import {teacherCanReadClassroom} from '../../modules/schools/application/teacherMaterialScope.js';
 import { StatusCodes } from "http-status-codes";
 import { Types } from "mongoose";
 import { z } from "zod";
@@ -36,7 +37,7 @@ const staffCanViewCompetition = async (actor: any, session: any) => {
         status: "active",
       }),
     ]);
-    return Boolean(hasSchoolAccess && assignment);
+    return Boolean(hasSchoolAccess && assignment && await teacherCanReadClassroom(actor,session));
   }
 
   if (actor.role === "supervisor") {
@@ -68,7 +69,7 @@ const teacherCanManageCompetition = async (actor: any, session: any) => {
       status: "active",
     }),
   ]);
-  return Boolean(hasSchoolAccess && assignment);
+  return Boolean(hasSchoolAccess && assignment && await teacherCanReadClassroom(actor,session));
 };
 
 const activeBatch = (session: any) => {

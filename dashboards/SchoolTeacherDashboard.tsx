@@ -1,3 +1,5 @@
+import {classroomMaterialIdentity} from '../utils/classroomMaterialIdentity';
+import {TeacherMaterialNotice} from "./school-teacher/TeacherMaterialNotice";
 import {SchoolLearningEvidencePanel} from './school-learning/SchoolLearningEvidencePanel';
 import { DashboardSectionBreadcrumb, DashboardSectionNav } from '../components/DashboardSectionNav';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
@@ -54,7 +56,7 @@ const SCHOOL_TEACHER_NAV_GROUPS = [
 export const SchoolTeacherDashboard: React.FC = () => {
   const navigate = useNavigate();
   const workspace = useTeacherWorkspaceOptional();
-  const { user } = useStore();
+  const { user,subjects } = useStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const requestedTab = (searchParams.get('tab') as SchoolTeacherTab) || 'overview';
   const [activeTab, setActiveTab] = useState<SchoolTeacherTab>(
@@ -92,7 +94,7 @@ export const SchoolTeacherDashboard: React.FC = () => {
   );
 
   const refreshActiveSession = useCallback(async () => {
-    if (!selectedSchool?.schoolId) return;
+    if (!selectedSchool?.schoolId || !selectedSchool.smartClassroomEnabled) {setActiveTeacherSession(null);return;}
     try {
       const res = await api.getTeacherActiveClassroomSession(selectedSchool.schoolId);
       if (res.hasActiveSession && res.session) setActiveTeacherSession(res.session);
@@ -100,13 +102,14 @@ export const SchoolTeacherDashboard: React.FC = () => {
     } catch {
       setActiveTeacherSession(null);
     }
-  }, [selectedSchool?.schoolId]);
+  }, [selectedSchool?.schoolId,selectedSchool?.smartClassroomEnabled]);
 
   useEffect(() => {
     void refreshActiveSession();
+    if(!selectedSchool?.smartClassroomEnabled)return;
     const interval = setInterval(() => void refreshActiveSession(), 7000);
     return () => clearInterval(interval);
-  }, [refreshActiveSession]);
+  }, [refreshActiveSession,selectedSchool?.smartClassroomEnabled]);
 
   const handleEndActiveSession = async () => {
     if (!activeTeacherSession) return;
@@ -156,13 +159,13 @@ export const SchoolTeacherDashboard: React.FC = () => {
     const activePathId = filters.pathId || filters.track;
     if (activePathId && question.pathId !== activePathId && question.examType !== activePathId) return false;
     const activeSubjectId = filters.subjectId || filters.subject;
-    if (activeSubjectId && question.subject !== activeSubjectId) return false;
+    if (activeSubjectId && classroomMaterialIdentity(question,subjects) !== activeSubjectId) return false;
     if (filters.sectionId && question.sectionId !== filters.sectionId) return false;
     if (filters.skillId && !question.skillIds?.includes(filters.skillId)) return false;
     if (filters.difficulty && question.difficulty !== filters.difficulty) return false;
     if (filters.search && !question.text?.toLowerCase().includes(filters.search.toLowerCase())) return false;
     return true;
-  }), [poolQuestions, filters]);
+  }), [poolQuestions, filters, subjects]);
 
   if (!workspace || !selectedSchool) return null;
 
@@ -221,7 +224,7 @@ export const SchoolTeacherDashboard: React.FC = () => {
     let tabNode: React.ReactNode = null;
     switch (activeTab) {
       case 'learning-evidence':
-        tabNode=<SchoolLearningEvidencePanel key={selectedSchool.schoolId} schoolId={selectedSchool.schoolId} classes={(selectedSchool.assignments||[]).map((a:any)=>({id:a.classId,name:a.className,subjectId:a.subjectId}))} allowedSubjectIds={(selectedSchool.assignments||[]).some((a:any)=>!a.subjectId)?undefined:(selectedSchool.assignments||[]).map((a:any)=>a.subjectId)} onOpenTests={()=>handleTabChange('assessments')} onOpenClassrooms={()=>handleTabChange('reports')}/>;
+        tabNode=<SchoolLearningEvidencePanel key={selectedSchool.schoolId} schoolId={selectedSchool.schoolId} classes={(selectedSchool.assignments||[]).map((a:any)=>({id:a.classId,name:a.className,subjectId:a.subjectId}))} allowedSubjectIds={[...new Set((selectedSchool.assignments||[]).map((a:any)=>a.subjectId).filter(Boolean))]} onOpenTests={()=>handleTabChange('assessments')} onOpenClassrooms={()=>handleTabChange('reports')}/>;
         break;
       case 'overview':
         tabNode = <SchoolTeacherOverview selectedSchool={selectedSchool} userName={user?.name} onOpenScheduler={() => openScheduler()} onOpenCertificate={() => setShowCertificateModal(true)} onOpenClass={openScheduler} onTabChange={handleTabChange} />;
@@ -251,6 +254,7 @@ export const SchoolTeacherDashboard: React.FC = () => {
     return (
       <div className="space-y-6">
         <DashboardSectionBreadcrumb items={SCHOOL_TEACHER_NAV_ITEMS} groups={SCHOOL_TEACHER_NAV_GROUPS} activeId={activeTab} homeLabel="لوحة معلم المدرسة" onHome={() => handleTabChange('overview')} />
+        <TeacherMaterialNotice assignments={selectedSchool.assignments}/>
         {activeTeacherSession && (
           <div className="flex flex-wrap items-center justify-between gap-4 rounded-3xl border-2 border-indigo-500 bg-gradient-to-r from-indigo-950 via-slate-900 to-indigo-900 p-5 text-white shadow-xl animate-fade-in" dir="rtl">
             <div className="flex items-center gap-3.5">

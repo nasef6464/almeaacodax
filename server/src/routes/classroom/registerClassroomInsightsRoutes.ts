@@ -1,4 +1,6 @@
 import type { Router } from "express";
+import {loadTeacherMaterial} from '../../modules/schools/application/teacherMaterialScope.js';
+import {questionMatchesTeacherMaterial} from '../../modules/schools/application/teacherMaterialPolicy.js';
 import { StatusCodes } from "http-status-codes";
 import { z } from "zod";
 import { requireAuth, requireRole } from "../../middleware/auth.js";
@@ -108,7 +110,10 @@ export function registerClassroomInsightsRoutes(classroomRouter: Router) {
         .limit(limit)
         .lean();
 
-      const reports = await Promise.all(sessions.map(buildClassroomSessionReport));
+      const material=req.authUser!.role==='teacher'?await loadTeacherMaterial(req.authUser!,schoolId,classId):null;
+      if(req.authUser!.role==='teacher'&&!material)return res.status(StatusCodes.FORBIDDEN).json({message:'حدد مادة المعلم من تكليفات المدرسة أولًا.'});
+      const visible=req.authUser!.role==='teacher'?sessions.filter(s=>(s.questionSnapshots||[]).every(q=>questionMatchesTeacherMaterial(material!,q))):sessions;
+      const reports = await Promise.all(visible.map(buildClassroomSessionReport));
       res.json({
         insights: buildClassroomReportInsights(reports, {
           period,

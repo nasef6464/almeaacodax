@@ -7,6 +7,7 @@ import { UserModel } from "../models/User.js";
 import { GroupModel } from "../models/Group.js";
 import { ClassroomSessionModel } from "../models/ClassroomSession.js";
 import { TeachingAssignmentModel } from "../models/TeachingAssignment.js";
+import {teacherCanReadClassroom,loadTeacherMaterial} from '../modules/schools/application/teacherMaterialScope.js';
 import { resolveClassroomSupervisorScope } from "../modules/schools/application/classroomSupervisorReport.js";
 import { requireSchoolDirectorCapability } from "../modules/schools/application/schoolDirectorAccess.js";
 import { resolveSchoolEntitlement } from "../modules/schools/application/schoolEntitlementResolver.js";
@@ -120,10 +121,12 @@ export function createSocketServer(server: HttpServer) {
           return groups.map((group: any) => String(group.id || group._id));
         },
         async findClassroomSessionScope(sessionId) {
-          const session = await ClassroomSessionModel.findById(sessionId).select("schoolId classId teacherId").lean() as any;
+          const session = await ClassroomSessionModel.findById(sessionId).select("schoolId classId teacherId questionSnapshots.subjectId questionSnapshots.subject questionSnapshots.pathId").lean() as any;
+          if(session&&!(await teacherCanReadClassroom(socket.data.authUser,session)))return null;
           return session ? { schoolId: String(session.schoolId), classId: String(session.classId), teacherId: String(session.teacherId) } : null;
         },
         async canTeacherOwnClassroom(userId, schoolId, classId) {
+          if(!(await loadTeacherMaterial({id:userId,role:'teacher'},schoolId,classId)))return false;
           return Boolean(await TeachingAssignmentModel.exists({
             teacherId: userId,
             schoolId,

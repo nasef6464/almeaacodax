@@ -4,6 +4,7 @@ import { chromium } from 'playwright';
 import assert from 'node:assert/strict';
 const fixtures = {
     '../services/api': `window.calls={workspace:0,active:0,create:0,activeSchools:[]};export const api={getTeacherActiveClassroomSession:async schoolId=>{window.calls.active++;window.calls.activeSchools.push(schoolId);return window.resumeExisting?{hasActiveSession:true,session:{sessionId:"existing"}}:{hasActiveSession:false}},getSchoolTeacherWorkspace:()=>{window.calls.workspace++;return new Promise((resolve,reject)=>{window.workspaceResolve=resolve;window.workspaceReject=reject})},createClassroomSession:body=>{window.calls.create++;window.createBody=body;return new Promise((resolve,reject)=>{window.createResolve=resolve;window.createReject=reject})}};`,
+    '../store/useStore': `export const useStore=()=>({subjects:[]});`,
     '../contexts/AuthContext': `export const useAuth=()=>({user:{role:'teacher'}});`,
     '../hooks/useClassroomRealtime': `export const useClassroomRealtime=()=>{};`,
     '../components/classroom/ClassroomPreparedTemplatesManager': `import React from'react';export const ClassroomPreparedTemplatesManager=({onApplyTemplate})=><button onClick={()=>onApplyTemplate({id:'saved',title:'Prepared',questionIds:['q1','q2','q3','q4','q5'],challengeIds:[]})}>Apply prepared</button>;`,
@@ -15,7 +16,7 @@ const bundle = await build({ stdin: { contents: `import React from'react';import
 const workspace = { schools: [{ schoolId: 's1', schoolName: 'School1', smartClassroomEnabled: true, assignments: [{ assignmentId: 'a1', classId: 'c1', className: 'Class1' }] }, { schoolId: 's2', schoolName: 'School2', smartClassroomEnabled: true, assignments: [{ assignmentId: 'a2', classId: 'c2', className: 'Class2' }, { assignmentId: 'a3', classId: 'c3', className: 'Class3' }] }] };
 const server = createServer((req, res) => { res.setHeader('Content-Type', 'text/html'); res.end('<div id="root"></div>'); });
 await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
-const browser = await chromium.launch({ headless: true });
+const browser = await chromium.launch({ headless: true,executablePath:process.argv.find(a=>a.startsWith('--browser='))?.slice(10) });
 try {
     const page = await browser.newPage();
     const errors = [];

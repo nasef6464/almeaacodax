@@ -71,6 +71,7 @@ export const SchoolTeacherPreparedQuestions: React.FC<PreparedQuestionsProps> = 
       <div className="mt-8 border-t border-slate-100 pt-6">
         <h3 className="text-sm font-black text-slate-900 mb-3">استعراض بنك أسئلة المدرسة المعتمد ({filteredQuestions.length} سؤال متاح)</h3>
         <ClassroomQuestionFilterBar
+          allowedSubjectIds={[...new Set<string>((selectedSchool.assignments||[]).map((a:any)=>String(a.subjectId||'')).filter(Boolean))]}
           filters={filters}
           onChange={setFilters}
           onReset={() => setFilters({ pathId: '', subjectId: '', sectionId: '', skillId: '', difficulty: '', search: '' })}

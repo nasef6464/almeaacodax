@@ -1,0 +1,14 @@
+import React from 'react';
+import {ClassroomComparisonPanel} from './ClassroomComparisonPanel';
+import {normalizeClassroomReport} from './classroomReportViewModel';
+import {useScopedClassroomState} from './useScopedClassroomState';
+type Session={sessionId:string;className:string;subjectName:string;endedAt:string|null;joined:number;expected:number;responses:number;accuracy:number|null;classId:string;teacherId:string};
+export function SupervisorClassroomSessionList({sessions,scopeKey,schoolForSession,onOpen}:{sessions:Session[];scopeKey:string;schoolForSession:(id:string)=>string;onOpen:(id:string)=>void}){
+ const [selected,setSelected]=useScopedClassroomState(scopeKey,[] as string[]),[open,setOpen]=useScopedClassroomState(scopeKey,false);
+ const rows=sessions.filter(s=>selected.includes(s.sessionId));const schoolId=rows[0]?schoolForSession(rows[0].sessionId):'';
+ const reports=rows.map(s=>normalizeClassroomReport({...s,schoolId:schoolForSession(s.sessionId)}));
+ return <div><div className="flex flex-wrap items-center gap-2 border-b p-3"><button type="button" disabled={!rows.length} onClick={()=>setOpen(true)} className="min-h-11 rounded-xl bg-indigo-600 px-3 py-2 text-sm font-bold text-white disabled:opacity-40">تقرير الحصص المحددة ({rows.length})</button>{rows.length>0&&<button type="button" onClick={()=>{setSelected([]);setOpen(false);}} className="min-h-11 rounded-xl border px-3 py-2 text-sm">مسح الاختيار</button>}<span className="text-xs text-slate-500">حتى 20 حصة من مدرسة واحدة · جميع المواد ضمن نطاق إشرافك</span></div>
+ {open&&rows.length>0&&<ClassroomComparisonPanel schoolId={schoolId} reports={reports} onClose={()=>setOpen(false)}/>}
+ <div className="divide-y divide-slate-100">{sessions.map(session=><div key={session.sessionId} className="flex items-center gap-2 px-3"><input type="checkbox" aria-label={`اختيار حصة ${session.subjectName} ${session.className}`} checked={selected.includes(session.sessionId)} disabled={!selected.includes(session.sessionId)&&(selected.length>=20||!!schoolId&&schoolForSession(session.sessionId)!==schoolId)} onChange={e=>{setOpen(false);setSelected(ids=>e.target.checked?[...ids,session.sessionId]:ids.filter(id=>id!==session.sessionId));}} className="h-5 w-5 shrink-0"/><button type="button" onClick={()=>onOpen(session.sessionId)} className="flex min-w-0 flex-1 flex-col gap-2 p-4 text-right transition hover:bg-indigo-50/50 sm:flex-row sm:items-center sm:justify-between"><div><div className="font-black text-slate-900">{session.className||'فصل'}</div><div className="mt-1 text-xs text-slate-500">{session.subjectName||'بدون مادة'} · {session.endedAt?new Date(session.endedAt).toLocaleString('ar-SA'):'—'}</div></div><div className="flex items-center gap-4 text-xs font-bold text-slate-600"><span>{session.joined}/{session.expected}</span><span>{session.accuracy===null?'—':`${session.accuracy}%`}</span><span>{session.responses} إجابة</span></div></button></div>)}</div>
+ </div>;
+}

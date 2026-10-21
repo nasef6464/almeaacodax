@@ -14,6 +14,7 @@ const questionSnapshotSchema = new Schema(
     skillIds: { type: [String], default: [] },
     explanation: { type: String, default: "" },
     subject: { type: String, default: "" },
+    subjectId: { type: String },
     sectionId: { type: String, default: "" },
     pathId: { type: String, default: "" },
     difficulty: { type: String, default: "Medium" },

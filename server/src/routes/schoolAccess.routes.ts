@@ -300,6 +300,10 @@ schoolAccessRouter.put("/directors/:schoolId/:userId", requireAuth, requireRole(
 schoolAccessRouter.put("/assignments", requireAuth, requireRole(["admin"]), asyncHandler(async (req, res) => {
   const payload = assignmentSchema.parse(req.body);
   const canonical = await assertTeachingAssignmentReference(payload);
+  // Removing a teacher from a class revokes every material assignment in that class.
+  if(canonical.status==='inactive'&&!canonical.subjectId){
+    await TeachingAssignmentModel.updateMany({schoolId:canonical.schoolId,teacherId:canonical.teacherId,classId:canonical.classId},{$set:{status:'inactive'}});
+  }
   const assignment = await TeachingAssignmentModel.findOneAndUpdate(
     { schoolId: canonical.schoolId, teacherId: canonical.teacherId, classId: canonical.classId, subjectId: canonical.subjectId },
     { $set: canonical },

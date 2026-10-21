@@ -2,6 +2,7 @@ import { Types } from "mongoose";
 import { GroupModel } from "../../../models/Group.js";
 import { SchoolMembershipModel } from "../../../models/SchoolMembership.js";
 import { UserModel } from "../../../models/User.js";
+import {teacherAssignmentMaterialError} from './teacherMaterialScope.js';
 
 export type SchoolMembershipRole = "student" | "teacher" | "supervisor" | "school_admin" | "parent";
 type MembershipWrite = {
@@ -102,6 +103,8 @@ export const assertTeachingAssignmentReference = async (payload: AssignmentWrite
       throw new SchoolReferenceIntegrityError(409, "teacher_membership_required", "Teacher must have an active membership in this school");
     }
   }
+  const materialError=await teacherAssignmentMaterialError({teacherId,schoolId,classId,subjectId:payload.subjectId,status});
+  if(materialError)throw new SchoolReferenceIntegrityError(409,'teacher_material_required',materialError);
   return {
     schoolId,
     teacherId,

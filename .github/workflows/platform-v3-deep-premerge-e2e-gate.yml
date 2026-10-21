@@ -238,6 +238,9 @@ jobs:
           node scripts/smoke-classroom-teacher-start-ui.mjs
           node scripts/smoke-classroom-saved-batches-ui.mjs
           node scripts/smoke-classroom-clear-presentation-ui.mjs
+          node scripts/smoke-classroom-comparison-ui.mjs
+          node --import ./server/node_modules/tsx/dist/loader.mjs scripts/test-classroom-comparison.ts
+          node --import ./server/node_modules/tsx/dist/loader.mjs scripts/test-teacher-material-scope.ts
           node scripts/smoke-classroom-clear-console-ui.mjs
           node scripts/smoke-classroom-clear-surfaces-ui.mjs
           node --import ./server/node_modules/tsx/dist/loader.mjs scripts/test-classroom-presentation.ts

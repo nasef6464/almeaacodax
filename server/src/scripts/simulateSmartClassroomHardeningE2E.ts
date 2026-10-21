@@ -1,3 +1,4 @@
+import {verifyTeacherMaterialIsolation} from './smartClassroomMaterialEvidence.js';
 import assert from "node:assert/strict";
 import { verifyActivitySubmission, verifySavedStudentEvidence } from "./smartClassroomStudentReportEvidence.js";
 import http from "node:http";
@@ -213,7 +214,7 @@ async function run() {
     SchoolMembershipModel.create({ userId: String(studentA._id), schoolId: schoolAId, role: "student", status: "active" }),
     SchoolMembershipModel.create({ userId: String(studentA2._id), schoolId: schoolAId, role: "student", status: "active" }),
     SchoolMembershipModel.create({ userId: String(studentB._id), schoolId: schoolBId, role: "student", status: "active" }),
-    TeachingAssignmentModel.create({ schoolId: schoolAId, teacherId: String(teacherA._id), classId: classAId, subjectId: `subject_${RUN_ID}`, status: "active" }),
+    TeachingAssignmentModel.create({ schoolId: schoolAId, teacherId: String(teacherA._id), classId: classAId, subjectId: "general", status: "active" }),
     TeachingAssignmentModel.create({ schoolId: schoolAId, teacherId: String(teacherA2._id), classId: classAId, subjectId: `subject2_${RUN_ID}`, status: "active" }),
   ]);
   await SchoolMembershipModel.insertMany(loadStudents.map((student) => ({
@@ -246,6 +247,7 @@ async function run() {
   assert.ok(visible.has(q1));
   assert.ok(visible.has(String(schoolAQ.id)));
   assert.equal(visible.has(String(schoolBQ.id)), false, "School B private question leaked into School A bank");
+  await verifyTeacherMaterialIsolation({RUN_ID,schoolAId,classAId,teacherId:String(teacherA._id),teacherToken,teacher2Token,supervisorAToken,supervisorBToken,q1,request,joinSocket});
 
   const draft = await request("/classroom/sessions", { method: "POST", token: teacherToken, body: { schoolId: schoolAId, classId: classAId, questionIds: [q3], className: `Draft ${RUN_ID}` } });
   assert.equal(draft.status, 201);

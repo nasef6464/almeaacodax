@@ -2,8 +2,10 @@ import React, { useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Search, Upload, UserPlus, Users, X } from 'lucide-react';
 import type { Group, User } from '../../../types';
+import {useStore} from '../../../store/useStore';
 
 export type ClassPersonDraft = {
+    subjectId?:string;
     name: string;
     email: string;
     password: string;
@@ -25,7 +27,7 @@ interface SchoolClassPeopleManagerProps {
     onAssignStudents: (studentIds: string[]) => Promise<void>;
     onCreateStudent: (draft: ClassPersonDraft) => Promise<void>;
     onRemoveStudent: (student: User) => Promise<void>;
-    onAssignTeacher: (teacherId: string) => Promise<void>;
+    onAssignTeacher: (teacherId: string,subjectId:string) => Promise<void>;
     onCreateTeacher: (draft: ClassPersonDraft) => Promise<void>;
     onRemoveTeacher: (teacher: User) => Promise<void>;
     onAssignSupervisor: (supervisorId: string) => Promise<void>;
@@ -70,6 +72,8 @@ export const SchoolClassPeopleManager: React.FC<SchoolClassPeopleManagerProps> =
     onOpenImport,
 }) => {
     const [section, setSection] = useState<ActiveSection>(initialSection);
+    const {subjects}=useStore();
+    const [teacherSubjectId,setTeacherSubjectId]=useState('');
     const [search, setSearch] = useState('');
     const [selectedStudentIds, setSelectedStudentIds] = useState<string[]>([]);
     const [studentDraft, setStudentDraft] = useState<ClassPersonDraft>(emptyDraft);
@@ -306,6 +310,7 @@ export const SchoolClassPeopleManager: React.FC<SchoolClassPeopleManagerProps> =
 
                     {section === 'teachers' && (
                         <div className="space-y-4">
+                            <label className="block text-sm font-bold">مادة المعلم<select aria-label="مادة معلم الفصل" value={teacherSubjectId} onChange={e=>setTeacherSubjectId(e.target.value)} className="mt-2 block w-full rounded-xl border p-3"><option value="">اختر المادة قبل ربط المعلم</option>{subjects.map(subject=><option key={subject.id} value={subject.id}>{subject.name}</option>)}</select></label>
                             {renderCurrentPeople('معلمو الفصل الحاليون', currentTeachers, onRemoveTeacher)}
                             <div className="rounded-2xl border border-blue-100 bg-blue-50/60 p-3">
                                 <div className="mb-2 text-xs font-black text-blue-800">إضافة معلم مسجل على المنصة</div>
@@ -317,7 +322,7 @@ export const SchoolClassPeopleManager: React.FC<SchoolClassPeopleManagerProps> =
                                             key={teacher.id}
                                             type="button"
                                             disabled={isBusy}
-                                            onClick={() => void onAssignTeacher(teacher.id)}
+                                            onClick={() => void onAssignTeacher(teacher.id,teacherSubjectId)}
                                             className="flex items-center justify-between rounded-xl border border-blue-100 bg-white px-3 py-2 text-right text-xs font-bold text-slate-700 hover:bg-blue-100 disabled:opacity-50"
                                         >
                                             <span>
@@ -329,7 +334,7 @@ export const SchoolClassPeopleManager: React.FC<SchoolClassPeopleManagerProps> =
                                     ))}
                                 </div>
                             </div>
-                            {renderNewPersonForm('إنشاء معلم جديد وربطه بهذا الفصل', teacherDraft, setTeacherDraft, onCreateTeacher)}
+                            {renderNewPersonForm('إنشاء معلم جديد وربطه بهذا الفصل', teacherDraft, setTeacherDraft, draft=>onCreateTeacher({...draft,subjectId:teacherSubjectId}))}
                         </div>
                     )}
 

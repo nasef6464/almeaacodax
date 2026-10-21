@@ -1,3 +1,6 @@
+## CLASSROOM-OPTIONAL-MATERIAL-ID — 2026-10-21
+ClassroomSession questionSnapshots gains optional String subjectId for newly captured canonical identity. Existing subject/pathId remain accepted via exact ID or path-qualified name resolution. Saved reports are not rewritten; old missing/conflicting teacher assignments require an explicit director decision. No migration, index/backfill/drop, historical grading or result mutation. Read authority changes explicitly approved by the owner for one teacher material per school.
+
 ## Classroom display metadata — 2026-10-21
 Additive optional ClassroomSession.questionSnapshots.examType/optionsEmbeddedInImage, no defaults/backfill or historical rewrite. New approved-question snapshots preserve display convention; old snapshots retain option-label fallback. Staff grade fields are derived response DTO values, not persisted grades. No index or production data migration.
 

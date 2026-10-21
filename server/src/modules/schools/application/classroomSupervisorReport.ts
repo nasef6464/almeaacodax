@@ -139,6 +139,7 @@ export const buildClassroomSessionReport = async (session: any) => {
       pathId: question.pathId || "",
       sectionId: question.sectionId || "",
       subject: question.subject || "",
+      ...(question.subjectId?{subjectId:question.subjectId}:{}),
       difficulty: question.difficulty || "Medium",
       answered: questionResponses.length,
       correct,

@@ -6,6 +6,7 @@ import { UserModel } from "../../../models/User.js";
 import { resolveSchoolContexts, type LegacySchoolUser } from "./schoolContextResolver.js";
 import { resolveSchoolEntitlement } from "./schoolEntitlementResolver.js";
 import { teacherAssessmentClassIds } from "./teacherAssessmentClassIds.js";
+import {resolveTeacherMaterial} from './teacherMaterialPolicy.js';
 
 const unique = (values: string[]) => [...new Set(values.filter(Boolean))];
 
@@ -29,6 +30,7 @@ type WorkspaceSchool = {
   schoolName: string;
   source: "membership" | "legacy";
   smartClassroomEnabled: boolean;
+  teachingMaterialState:'ready'|'unconfigured'|'conflict';
   assignments: WorkspaceAssignment[];
   assessments: WorkspaceAssessment[];
 };
@@ -144,7 +146,8 @@ export const buildSchoolTeacherWorkspace = async (actor: LegacySchoolUser): Prom
       schoolId,
       schoolName: String(school.name || ""),
       source: context.source,
-      smartClassroomEnabled: smartClassroom.allowed,
+      smartClassroomEnabled: smartClassroom.allowed && resolveTeacherMaterial(schoolAssignments).state==='ready',
+      teachingMaterialState:resolveTeacherMaterial(schoolAssignments).state,
       assignments: schoolAssignments,
       assessments: assessments
         .filter((assessment: any) => teacherAssessmentClassIds(assessment, schoolId, schoolAssignments).length > 0)

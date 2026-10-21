@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import {canTeachAssignedClass} from '../server/src/modules/schools/application/schoolAccessPolicy.js';
+const assignment={schoolId:'s',teacherId:'t',classId:'c',status:'active',subjectId:''};
+assert.equal(canTeachAssignedClass(assignment,'t','s','c','math'),false,'An unspecified material must not grant access to all materials');
+const {resolveTeacherMaterial,questionMatchesTeacherMaterial}=await import('../server/src/modules/schools/application/teacherMaterialPolicy.js');
+assert.equal(resolveTeacherMaterial([]).state,'unconfigured');
+assert.equal(resolveTeacherMaterial([{subjectId:''},{subjectId:'math'}]).state,'unconfigured');
+assert.equal(resolveTeacherMaterial([{subjectId:'math'},{subjectId:'bio'}]).state,'conflict');
+assert.deepEqual(resolveTeacherMaterial([{subjectId:'math'},{subjectId:'math'}]),{state:'ready',subjectId:'math'});
+const scope={ids:['math'],name:'الرياضيات',pathId:'p'};
+assert.equal(questionMatchesTeacherMaterial(scope,{subjectId:'math'}),true);
+assert.equal(questionMatchesTeacherMaterial(scope,{subject:'math'}),true);
+assert.equal(questionMatchesTeacherMaterial(scope,{subject:'الرياضيات',pathId:'p'}),true);
+assert.equal(questionMatchesTeacherMaterial(scope,{subject:'الرياضيات',pathId:'other'}),false);
+assert.equal(questionMatchesTeacherMaterial(scope,{subjectId:'bio',subject:'الرياضيات',pathId:'p'}),false);
+assert.equal(questionMatchesTeacherMaterial(scope,{}),false);
+console.log('PASS strict teacher material policy: missing/conflicting setup, canonical and legacy aliases, no subject spoofing');

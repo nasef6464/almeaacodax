@@ -15,7 +15,7 @@ type SchoolClassPeopleAction = {
     assignStudents: (classroom: Group, studentIds: string[]) => Promise<void>;
     createStudent: (classroom: Group, draft: ClassPersonDraft) => Promise<void>;
     removeStudent: (classroom: Group, student: User) => Promise<void>;
-    assignTeacher: (classroom: Group, teacherId: string) => Promise<void>;
+    assignTeacher: (classroom: Group, teacherId: string,subjectId:string) => Promise<void>;
     createTeacher: (classroom: Group, draft: ClassPersonDraft) => Promise<void>;
     removeTeacher: (classroom: Group, teacher: User) => Promise<void>;
     assignSupervisor: (classroom: Group, supervisorId: string) => Promise<void>;
@@ -135,7 +135,8 @@ export const useSchoolClassPeopleActions = (): SchoolClassPeopleAction => {
         return `تم إخراج ${student.name} من فصل ${classroom.name} مع بقائه في المدرسة.`;
     });
 
-    const assignTeacherInternal = async (classroom: Group, teacherId: string) => {
+    const assignTeacherInternal = async (classroom: Group, teacherId: string,subjectId:string) => {
+        if(!subjectId)throw new Error('اختر مادة المعلم قبل حفظ التكليف.');
         const schoolId = getSchoolId(classroom);
         await api.updateSchoolMembership({
             userId: teacherId,
@@ -147,18 +148,18 @@ export const useSchoolClassPeopleActions = (): SchoolClassPeopleAction => {
             schoolId,
             teacherId,
             classId: classroom.id,
-            subjectId: '',
+            subjectId,
             status: 'active',
         });
         await assignTeacherToGroupAsync(teacherId, classroom.id);
     };
 
-    const assignTeacher = async (classroom: Group, teacherId: string) => runAction(async () => {
+    const assignTeacher = async (classroom: Group, teacherId: string,subjectId:string) => runAction(async () => {
         const teacher = users.find((user) => user.id === teacherId);
         const schoolId = getSchoolId(classroom);
         if (!teacher || teacher.role !== Role.TEACHER) throw new Error('تعذر العثور على حساب المعلم.');
         if (teacher.schoolId && teacher.schoolId !== schoolId) throw new Error('هذا المعلم مرتبط بمدرسة أخرى.');
-        await assignTeacherInternal(classroom, teacherId);
+        await assignTeacherInternal(classroom, teacherId,subjectId);
         await refreshAuthoritativeState();
         return `تم إسناد ${teacher.name} إلى فصل ${classroom.name} والتحقق من الإسناد.`;
     });
@@ -191,9 +192,10 @@ export const useSchoolClassPeopleActions = (): SchoolClassPeopleAction => {
     };
 
     const createTeacher = async (classroom: Group, draft: ClassPersonDraft) => runAction(async () => {
+        if(!draft.subjectId)throw new Error('اختر مادة المعلم قبل إنشاء الحساب وربطه.');
         const { user: teacher, password } = await createStaff(classroom, draft, Role.TEACHER);
         await refreshAuthoritativeState();
-        await assignTeacherInternal(classroom, teacher.id);
+        await assignTeacherInternal(classroom, teacher.id,draft.subjectId);
         await refreshAuthoritativeState();
         return password
             ? `تم إنشاء المعلم وإسناده إلى ${classroom.name}. كلمة المرور المؤقتة: ${password}`

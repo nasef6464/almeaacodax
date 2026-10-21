@@ -1,3 +1,4 @@
+import {classroomMaterialIdentity} from '../../utils/classroomMaterialIdentity';
 import { ClassroomOptionalPulse } from './ClassroomOptionalPulse';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -37,6 +38,7 @@ type CompetitionResult = {
 type PushMode = 'normal' | 'challenge';
 
 interface ClassroomActiveSessionPanelProps {
+  allowedSubjectIds?:string[];
   sessionId: string;
   data: any;
   storedPin: string;
@@ -49,7 +51,7 @@ interface ClassroomActiveSessionPanelProps {
   isTeacher: boolean;
 }
 
-export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelProps> = ({ sessionId, data, storedPin, challengeIds, onToggleChallenge, onPublish, onEnd, onReload, message, isTeacher }) => {
+export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelProps> = ({ sessionId, data, storedPin, challengeIds, onToggleChallenge, onPublish, onEnd, onReload, message, isTeacher,allowedSubjectIds }) => {
   const { subjects, sections, skills } = useStore();
   const presentationScope=JSON.stringify([sessionId,data?.activeQuestionIndex,data?.activeBatchId]);
   const [showStudents,setShowStudents]=useScopedClassroomState(presentationScope,false),[showResponses,setShowResponses]=useScopedClassroomState(presentationScope,false),[showTools,setShowTools]=useState(false),[showSources,setShowSources]=useState(false),[showSaved,setShowSaved]=useState(false);
@@ -159,13 +161,13 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
       const qId = String(question.questionId || question.id);
       if (existingIds.has(qId)) return false;
       if (!question.text || !String(question.text).trim()) return false;
-      const qSubject = question.subject || question.subjectId;
+      const qSubject = classroomMaterialIdentity(question,subjects);
       if (pushFilterSubject && qSubject !== pushFilterSubject) return false;
       if (pushFilterSection && question.sectionId !== pushFilterSection) return false;
       if (pushFilterSkill && !(question.skillIds || []).includes(pushFilterSkill)) return false;
       return true;
     });
-  }, [data?.questions, pushFilterSubject, pushFilterSection, pushFilterSkill]);
+  }, [data?.questions, pushFilterSubject, pushFilterSection, pushFilterSkill, subjects]);
   const availablePushQuestions = useMemo(() => filterPushQuestions(bankQuestions), [bankQuestions, filterPushQuestions]);
 
   const openPushModal = (mode: PushMode) => { setPushMode(mode); setSelectedForPush([]); setShowPushModal(true); };
@@ -358,7 +360,7 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
         pushFilterSubject={pushFilterSubject}
         pushFilterSection={pushFilterSection}
         pushFilterSkill={pushFilterSkill}
-        subjects={subjects}
+        subjects={isTeacher?subjects.filter(s=>(allowedSubjectIds||[]).includes(s.id)):subjects}
         sections={sections}
         skills={skills}
         availableQuestions={pushFilterSubject ? availablePushQuestions : []}
