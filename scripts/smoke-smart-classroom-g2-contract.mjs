@@ -30,7 +30,7 @@ check("student projection excludes correctOptionIndex", !projection.includes("co
 check("teacher console creates a session from existing question bank", teacher.includes("createClassroomSession") && teacher.includes("getClassroomQuestions"));
 check("teacher console publishes a selected session question", teacher.includes("publishClassroomQuestion(sessionId, index)") && teacher.includes("onPublish={(index)"));
 check("student surface waits after joining until a question batch is published", student.includes("if (questions.length === 0) return <ClassroomStudentWaitingPanel") && waiting.includes("ستظهر دفعة الأسئلة هنا تلقائيًا عندما يرسلها المعلم") && waiting.includes("لا تحتاج إلى الانضمام مرة أخرى"));
-check("projector defaults to submission status and requires an explicit reveal", projector.includes("useState<RevealMode>('submissions')") && projector.includes("revealMode === 'responses'") && projector.includes("revealMode === 'solution'"));
+check("projector defaults to submission status and requires an explicit reveal", projector.includes("useScopedClassroomState<RevealMode>(presentationScope,'submissions')") && projector.includes("revealMode === 'responses'") && projector.includes("revealMode === 'solution'"));
 check("realtime joins only the current classroom workspace", realtime.includes('workspace:join') && realtime.includes('classroom:${sessionId}'));
 check("all three product surfaces have stable routes", app.includes('path="/classroom/teacher"') && app.includes('path="/classroom/:sessionId"') && app.includes('path="/classroom/:sessionId/projector"'));
 

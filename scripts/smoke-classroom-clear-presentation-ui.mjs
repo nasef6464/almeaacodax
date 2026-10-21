@@ -1,0 +1,20 @@
+import {build} from 'esbuild';
+import {chromium} from 'playwright';
+import {createServer} from 'node:http';
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+const bundle=await build({stdin:{contents:`import React from 'react';import{createRoot}from'react-dom/client';import{MemoryRouter}from'react-router-dom';import{ClassroomQuestionReviewPanel}from'./components/classroom/ClassroomQuestionReviewPanel';const root=createRoot(document.getElementById('root'));window.mount=(show=false,solution=false)=>root.render(<MemoryRouter><ClassroomQuestionReviewPanel sessionId='s' currentQuestion={{index:0,text:'أوجد قيمة س',imageUrl:'/diagram.svg',options:['أ','ب','ج','د'],correctOptionIndex:1,explanation:'الشرح محفوظ'}} currentQAnalytics={{percentages:{0:75,1:25},maxWrongOption:{index:0,letter:'أ',percent:75}}} distribution={{0:3,1:1}} showResponses={show} showInlineExplanation={solution} onToggleExplanation={()=>window.mount(show,!solution)}/></MemoryRouter>);window.mount();`,resolveDir:process.cwd(),loader:'tsx'},bundle:true,write:false});
+const assets=fs.readdirSync('dist/assets');const css=assets.filter(f=>f.endsWith('.css')).map(f=>fs.readFileSync('dist/assets/'+f,'utf8')).join('\n');
+const server=createServer((req,res)=>{if(req.url==='/diagram.svg'){res.setHeader('Content-Type','image/svg+xml');res.end('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="120"><rect width="100" height="100" fill="blue"/></svg>');return;}res.setHeader('Content-Type','text/html');res.end('<meta charset="utf-8"><style>'+css+'</style><div id="root"></div>');});
+await new Promise(r=>server.listen(0,'127.0.0.1',r));
+fs.mkdirSync('scratch/classroom-clear-ui',{recursive:true});const browser=await chromium.launch({headless:true,executablePath:process.argv.find(arg=>arg.startsWith('--browser='))?.slice('--browser='.length)});
+try{const page=await browser.newPage({viewport:{width:1440,height:900}});await page.goto('http://127.0.0.1:'+server.address().port);await page.addScriptTag({content:bundle.outputFiles[0].text});await page.getByText('أوجد قيمة س',{exact:true}).waitFor();
+ assert.equal(await page.getByText('75%',{exact:true}).count(),0,'No distribution before explicit reveal');
+ assert.equal(await page.getByText(/تنبيه المعلم لخطأ شائع/).count(),0,'No distractor hint before reveal');
+ await page.getByRole('img',{name:'توضيح السؤال'}).waitFor();
+ const options=page.getByTestId('classroom-option');assert.equal(await options.count(),4);const boxes=await options.evaluateAll(nodes=>nodes.map(n=>({top:n.getBoundingClientRect().top,text:n.textContent.trim()})));assert.equal(new Set(boxes.map(b=>b.top)).size,1,'Four options in one wide-screen row');assert.deepEqual(boxes.map(b=>b.text),['أ','ب','ج','د'],'No repeated label');
+ await page.evaluate(()=>window.mount(true,false));await page.getByText('75%',{exact:true}).waitFor();assert.equal(await page.getByText('الشرح محفوظ',{exact:true}).count(),0);assert.equal(await page.getByText(/تنبيه المعلم لخطأ شائع/).count(),0,'Distribution does not identify wrong answers');
+ await page.evaluate(()=>window.mount(false,true));await page.getByText('الشرح محفوظ',{exact:true}).waitFor();assert.equal(await page.getByText('75%',{exact:true}).count(),0,'Solution reveal independent of response distribution');
+ await page.setViewportSize({width:390,height:844});assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+ console.log('PASS classroom question: image, one-row desktop, no duplicate labels, independent response/solution reveal, mobile overflow');
+}finally{await browser.close();server.close();}

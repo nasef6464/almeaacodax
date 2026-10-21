@@ -8,6 +8,8 @@ const questionSnapshotSchema = new Schema(
     imageUrl: { type: String, default: "" },
     options: { type: [String], default: [] },
     type: { type: String, default: "mcq" },
+    examType: { type: String },
+    optionsEmbeddedInImage: { type: Boolean },
     correctOptionIndex: { type: Number, required: true },
     skillIds: { type: [String], default: [] },
     explanation: { type: String, default: "" },

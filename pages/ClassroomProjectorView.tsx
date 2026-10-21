@@ -1,3 +1,6 @@
+import {classroomOptionPresentation} from '../components/classroom/classroomOptionPresentation';
+import {ClassroomSubmittedStudents} from '../components/classroom/ClassroomSubmittedStudents';
+import {useScopedClassroomState} from '../components/classroom/useScopedClassroomState';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
@@ -57,10 +60,12 @@ export const ClassroomProjectorView: React.FC = () => {
   const [challengeState, setChallengeState] = useState<ChallengeState | null>(null);
   const [challengeSeconds, setChallengeSeconds] = useState<number | null>(null);
   const [selectedQuestionIdx, setSelectedQuestionIdx] = useState(0);
-  const [revealMode, setRevealMode] = useState<RevealMode>('submissions');
+  const presentationScope=JSON.stringify([sessionId,selectedQuestionIdx,data?.activeBatchId]);
+  const [revealMode, setRevealMode] = useScopedClassroomState<RevealMode>(presentationScope,'submissions');
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [publishing, setPublishing] = useState(false);
-  const [showStudentList, setShowStudentList] = useState(false);
+  const [showStudentList, setShowStudentList] = useScopedClassroomState(presentationScope,false);
+  const [questionOnly,setQuestionOnly]=useState(false);
 
   useEffect(() => {
     const isPresenter = user?.role && ['teacher', 'school_admin', 'supervisor', 'admin'].includes(user.role);
@@ -217,69 +222,37 @@ export const ClassroomProjectorView: React.FC = () => {
               </div>
 
               <div className="flex flex-wrap items-center gap-2">
+                <button type="button" onClick={()=>setQuestionOnly(!questionOnly)} className="rounded-xl border border-slate-700 px-3 py-2 text-xs font-black">{questionOnly?'إظهار أدوات العرض':'تكبير السؤال'}</button>
                 <button type="button" onClick={() => setRevealMode('submissions')} className={`rounded-xl px-3.5 py-2 text-xs font-black transition-all ${revealMode === 'submissions' ? 'bg-emerald-600 text-white' : 'border border-slate-700 bg-slate-900 text-slate-300'}`}><EyeOff size={14} className="inline ml-1" />إخفاء النتائج</button>
                 <button type="button" onClick={() => setRevealMode('responses')} className={`rounded-xl px-3.5 py-2 text-xs font-black transition-all ${revealMode === 'responses' ? 'bg-indigo-600 text-white' : 'border border-slate-700 bg-slate-900 text-slate-300'}`}><Eye size={14} className="inline ml-1" />عرض الاستجابات</button>
                 <button type="button" onClick={() => setRevealMode('solution')} className={`rounded-xl px-3.5 py-2 text-xs font-black transition-all ${revealMode === 'solution' ? 'bg-amber-500 text-slate-950' : 'border border-amber-500/40 bg-slate-900 text-amber-300'}`}><Sparkles size={14} className="inline ml-1" />عرض الإجابة والحل</button>
               </div>
             </div>
 
-            {revealMode === 'submissions' && (
-              <section className="rounded-3xl border border-emerald-500/30 bg-emerald-950/20 p-4 sm:p-5">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-500/20 text-emerald-400 font-black text-sm">
-                      <Users size={20} />
-                    </span>
-                    <div>
-                      <h2 className="text-base sm:text-lg font-black text-emerald-300">
-                        الطلاب الذين سلّموا: {submittedCount} من {joinedCount || 1} طالب
-                      </h2>
-                      <p className="text-xs text-slate-400">
-                        السبورة تحافظ على سرية المشاركة وتعرض حالة التسليم فقط بدون كشف الإجابة الصحيحة.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setShowStudentList((prev) => !prev)}
-                      className="rounded-xl border border-slate-700 bg-slate-800/80 px-3 py-1.5 text-xs font-bold text-slate-300 hover:bg-slate-700"
-                    >
-                      {showStudentList ? 'إخفاء الأسماء' : 'عرض قائمة التسليم (اختياري)'}
-                    </button>
-                    <span className="rounded-full bg-emerald-500/15 px-3 py-1 font-mono text-sm font-black text-emerald-300">
-                      {joinedCount > 0 ? `${Math.round((submittedCount / joinedCount) * 100)}%` : '0%'}
-                    </span>
-                  </div>
-                </div>
+            {!questionOnly && revealMode === 'submissions' && (
+              <section className="rounded-xl border border-slate-800 p-3">
+                <div className="flex flex-wrap items-center justify-between gap-2"><h2 className="text-sm font-bold text-slate-300">الطلاب الذين سلّموا: {submittedCount} من {joinedCount} طالب</h2><button type="button" aria-expanded={showStudentList} onClick={()=>setShowStudentList(!showStudentList)} className="rounded-xl border border-slate-700 px-3 py-2 text-xs font-bold">{showStudentList?'إخفاء الأسماء':'عرض قائمة التسليم (اختياري)'}</button></div>
 
-                {showStudentList && submittedStudents.length > 0 && (
-                  <div className="mt-4 pt-4 border-t border-emerald-500/20 grid gap-2 sm:grid-cols-3 lg:grid-cols-4">
-                    {submittedStudents.map((student) => (
-                      <div key={student.studentId} className="flex items-center justify-between gap-2 rounded-xl border border-slate-800 bg-slate-900/90 px-3 py-2 text-xs">
-                        <span className="truncate font-bold text-slate-200">{student.name}</span>
-                        <CheckCircle2 size={14} className="text-emerald-400 shrink-0" />
-                      </div>
-                    ))}
-                  </div>
-                )}
+                {showStudentList&&<ClassroomSubmittedStudents sessionId={sessionId} submissionSummary={data?.submissionSummary}/>}
+
               </section>
             )}
 
-            <div className="rounded-3xl border border-slate-800 bg-slate-900/90 p-8 sm:p-12 shadow-2xl backdrop-blur-md">
-              <div className="text-2xl sm:text-4xl font-black leading-relaxed sm:leading-loose text-white tracking-wide"><QuestionContentRenderer content={currentQ.text} asHeading className="text-2xl sm:text-4xl font-black leading-relaxed sm:leading-loose text-white tracking-wide" /></div>
+            <div className="rounded-3xl border border-slate-800 bg-slate-900/90 p-4 sm:p-6 shadow-2xl backdrop-blur-md">
+              <div className="text-2xl sm:text-4xl font-black leading-relaxed text-white tracking-wide"><QuestionContentRenderer content={currentQ.text} asHeading className="text-2xl sm:text-4xl font-black leading-relaxed text-white tracking-wide" /></div>
               {currentQ.imageUrl && <div className="mt-6 overflow-hidden rounded-2xl border border-slate-800 max-h-80 flex items-center justify-center bg-black/40"><img src={currentQ.imageUrl} alt="توضيح السؤال" className="max-h-80 object-contain" /></div>}
-              <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="mt-6 grid grid-cols-2 lg:grid-cols-4 gap-3">
                 {(currentQ.options || []).map((option: string, index: number) => {
-                  const showResponses = revealMode === 'responses' || revealMode === 'solution';
-                  const isCorrect = revealMode === 'solution' && currentQ.correctOptionIndex === index;
+                  const presentation=classroomOptionPresentation(currentQ,option,index);
+                  const showResponses = !questionOnly && revealMode === 'responses';
+                  const isCorrect = !questionOnly && revealMode === 'solution' && currentQ.correctOptionIndex === index;
                   const percent = percentages[index] || 0;
                   const count = Number(distribution[String(index)] || 0);
                   return (
                     <div key={index} className={`relative overflow-hidden rounded-2xl border p-5 transition-all ${isCorrect ? 'border-emerald-500 bg-emerald-950/40' : 'border-slate-800 bg-slate-850/70'}`}>
                       {showResponses && <div className={`absolute inset-y-0 right-0 opacity-15 ${isCorrect ? 'bg-emerald-500' : 'bg-indigo-500'}`} style={{ width: `${percent}%` }} />}
                       <div className="relative z-10 flex items-center justify-between gap-3">
-                        <div className="flex items-center gap-3.5"><span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border text-base font-black ${isCorrect ? 'border-emerald-400 bg-emerald-500 text-slate-950' : 'border-slate-700 bg-slate-800 text-slate-200'}`}>{OPTION_LETTERS[index] || index + 1}</span><span className="text-lg sm:text-xl font-bold text-white leading-normal">{option}</span></div>
+                        <div className="flex items-center gap-3.5"><span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border text-base font-black ${isCorrect ? 'border-emerald-400 bg-emerald-500 text-slate-950' : 'border-slate-700 bg-slate-800 text-slate-200'}`}>{presentation.label}</span><span className="text-lg sm:text-xl font-bold text-white leading-normal">{presentation.text}</span></div>
                         {showResponses && <div className="shrink-0 text-left"><span className="font-mono text-lg font-black text-slate-200">{percent}%</span><span className="mr-2 text-xs text-slate-500">({count})</span>{isCorrect && <span className="mr-2 rounded-lg bg-emerald-500/20 px-2 py-1 text-xs font-black text-emerald-300">الإجابة الصحيحة</span>}</div>}
                       </div>
                     </div>
@@ -288,11 +261,11 @@ export const ClassroomProjectorView: React.FC = () => {
               </div>
             </div>
 
-            {revealMode === 'responses' && (
+            {!questionOnly && revealMode === 'responses' && (
               <p className="rounded-2xl border border-indigo-500/30 bg-indigo-950/20 px-4 py-3 text-center text-sm font-bold text-indigo-200">تم عرض توزيع الاستجابات فقط، بدون كشف الإجابة الصحيحة.</p>
             )}
 
-            {revealMode === 'solution' && (
+            {!questionOnly && revealMode === 'solution' && (
               <section className="rounded-3xl border border-amber-500/40 bg-slate-900 p-6 sm:p-8 shadow-2xl">
                 <div className="flex items-center gap-2 text-amber-400 font-black text-base"><Sparkles size={20} /><span>الإجابة والشرح النموذجي</span></div>
                 <div className="mt-5 text-base sm:text-lg text-slate-200 leading-relaxed">{currentQ.explanation ? <div className="whitespace-pre-line font-medium">{currentQ.explanation}</div> : <p className="text-slate-400 italic">لا يوجد شرح مسجل لهذا السؤال.</p>}</div>

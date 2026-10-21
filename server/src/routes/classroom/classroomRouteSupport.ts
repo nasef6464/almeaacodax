@@ -27,6 +27,8 @@ const snapshotQuestion = (question: any) => ({
   imageUrl: question.imageUrl || "",
   options: question.options || [],
   type: question.type,
+  ...(question.examType ? {examType:question.examType}:{}),
+  ...(typeof question.optionsEmbeddedInImage==='boolean'?{optionsEmbeddedInImage:question.optionsEmbeddedInImage}:{}),
   correctOptionIndex: question.correctOptionIndex,
   skillIds: question.skillIds || [],
   explanation: question.explanation || "",

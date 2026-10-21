@@ -1,6 +1,12 @@
 type Question = { questionId: string; skillIds?: string[] };
 type Response = { studentId: string; questionId: string; isCorrect: boolean };
 
+/** Display-only grade of the submitted batch; never use all-session counts. */
+export function classroomSubmittedGrade(responses:Response[],questionIds:Set<string>){
+  const unique=new Map(responses.filter(row=>questionIds.has(String(row.questionId))).map(row=>[String(row.questionId),row]));
+  return {correctAnswers:[...unique.values()].filter(row=>row.isCorrect===true).length,totalQuestions:questionIds.size};
+}
+
 /** Derive staff-only evidence from questions actually sent, without querying per student. */
 export function buildClassroomStudentReports(input: {
   studentIds: string[]; joinedStudentIds: Set<string>; names: Map<string, string>;

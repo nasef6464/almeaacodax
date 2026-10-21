@@ -5,7 +5,9 @@ import { AlertTriangle, CheckCircle2, Clock, Copy, Crown, ExternalLink, Flame, P
 import { ClassroomTeacherLiveRadar } from './ClassroomTeacherLiveRadar';
 import { ClassroomQuestionReviewPanel } from './ClassroomQuestionReviewPanel';
 import { ClassroomPushQuestionsModal } from './ClassroomPushQuestionsModal';
-import { ClassroomTeacherMobileRemote } from './ClassroomTeacherMobileRemote';
+import {ClassroomLessonToolbar} from './ClassroomLessonToolbar';
+import {ClassroomSubmittedStudents} from './ClassroomSubmittedStudents';
+import {useScopedClassroomState} from './useScopedClassroomState';
 import { ClassroomBatchSummaryCard, type BatchMiniReport } from './ClassroomBatchSummaryCard';
 import { ClassroomEndSessionModal } from './ClassroomEndSessionModal';
 import { ClassroomStudentReportTable } from './ClassroomStudentReportTable';
@@ -49,6 +51,8 @@ interface ClassroomActiveSessionPanelProps {
 
 export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelProps> = ({ sessionId, data, storedPin, challengeIds, onToggleChallenge, onPublish, onEnd, onReload, message, isTeacher }) => {
   const { subjects, sections, skills } = useStore();
+  const presentationScope=JSON.stringify([sessionId,data?.activeQuestionIndex,data?.activeBatchId]);
+  const [showStudents,setShowStudents]=useScopedClassroomState(presentationScope,false),[showResponses,setShowResponses]=useScopedClassroomState(presentationScope,false),[showTools,setShowTools]=useState(false),[showSources,setShowSources]=useState(false),[showSaved,setShowSaved]=useState(false);
   const [copied, setCopied] = useState(false);
   const [challengeState, setChallengeState] = useState<ChallengeState | null>(null);
   const [timerSeconds, setTimerSeconds] = useState<number | null>(null);
@@ -64,7 +68,7 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
   const [pushFilterSection, setPushFilterSection] = useState('');
   const [pushFilterSkill, setPushFilterSkill] = useState('');
   const [selectedForPush, setSelectedForPush] = useState<string[]>([]);
-  const [showInlineExplanation, setShowInlineExplanation] = useState(false);
+  const [showInlineExplanation, setShowInlineExplanation] = useScopedClassroomState(presentationScope,false);
   const [sessionStorageMeta, setSessionStorageMeta] = useState<{ day?: string; period?: string; className?: string; subject?: string } | null>(null);
   const [showEndConfirmModal, setShowEndConfirmModal] = useState(false);
 
@@ -237,8 +241,8 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
             {meta?.period && <span className="rounded-md bg-amber-400/20 px-2.5 py-1 text-xs font-bold text-amber-300">الحصة {meta.period}</span>}
             {meta?.className && <span className="rounded-md bg-indigo-500/20 px-2.5 py-1 text-xs font-bold text-indigo-300">{meta.className}</span>}
           </div>
-          <h1 className="mt-2 text-3xl font-black">لوحة تحكم المعلم للحصة الذكية</h1>
-          <p className="mt-1 text-xs text-slate-400">رابط انضمام الطلاب: /classroom/{sessionId} · كود الدخول التفاعلي</p>
+          <h1 className="mt-2 text-xl sm:text-2xl font-black">الحصة المباشرة</h1>
+          <p className="mt-1 break-all text-xs text-slate-400">رابط انضمام الطلاب: /classroom/{sessionId} · كود الدخول التفاعلي</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           {storedPin && <div className="flex items-center gap-2 rounded-2xl bg-white/10 px-4 py-2 text-white"><span className="text-xs text-slate-300">رمز الانضمام:</span><span className="font-mono text-xl font-black tracking-wider text-amber-400">{storedPin}</span><button type="button" onClick={() => copyPin(storedPin)} className="rounded-lg p-1 hover:bg-white/20 text-xs transition-colors">{copied ? 'تم النسخ!' : <Copy size={16} />}</button></div>}
@@ -246,8 +250,13 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
         </div>
       </div>
 
+      <ClassroomLessonToolbar onSend={()=>setShowSources(!showSources)} onStudents={()=>setShowStudents(!showStudents)} onResponses={()=>setShowResponses(!showResponses)} onSolution={()=>setShowInlineExplanation(!showInlineExplanation)} onNext={currentQIndex!==undefined&&currentQIndex<(data?.questions||[]).length-1?()=>onPublish(currentQIndex+1):undefined} onEndBatch={()=>void handleEndBatch()} onMore={()=>setShowTools(!showTools)} busy={pushingQuestions||endingBatch} ended={data?.status==='ended'} hasBatch={hasActiveBatch} studentsVisible={showStudents} responsesVisible={showResponses} solutionVisible={showInlineExplanation}/>
+      <p className="mt-3 text-sm font-bold">سلّم {data?.submissionSummary?.submittedCount||0} من {data?.submissionSummary?.joinedCount||0} طالب</p>
+      {showSources&&<section aria-label="مصدر أسئلة الحصة" className="mt-3 flex flex-wrap gap-3 rounded-2xl border p-4"><button type="button" onClick={()=>setShowSaved(!showSaved)} className="rounded-xl bg-indigo-50 px-4 py-3 font-bold text-indigo-800">حزمي المحضرة</button><button type="button" onClick={()=>{setShowSources(false);openPushModal('normal');}} className="rounded-xl bg-indigo-50 px-4 py-3 font-bold text-indigo-800">من المادة</button></section>}
+      {currentQuestion&&<ClassroomQuestionReviewPanel sessionId={sessionId} currentQuestion={currentQuestion} currentQAnalytics={currentQAnalytics} distribution={distribution} showResponses={showResponses} showInlineExplanation={showInlineExplanation} onToggleExplanation={()=>setShowInlineExplanation(!showInlineExplanation)}/>}
+      {showStudents&&<ClassroomSubmittedStudents sessionId={sessionId} submissionSummary={data?.submissionSummary}/>}
       {data?.status === 'live' && !data?.activeBatchId && <p role="status" className="mt-4 rounded-xl bg-indigo-50 p-4 font-bold text-indigo-800">الحصة مفتوحة والطلاب في الانتظار. تابع شرحك على السبورة، ثم أرسل دفعة لتقويم المهارة.</p>}
-      {data?.status === 'live' && <ClassroomSavedBatchesPanel sessionId={sessionId} schoolId={schoolId} questions={data?.questions || []} activeBatch={Boolean(data?.activeBatchId)} busy={pushingQuestions || endingBatch} onBusyChange={setPushingQuestions} onReload={onReload} />}
+      {showSources && showSaved && data?.status === 'live' && <ClassroomSavedBatchesPanel initiallyOpen sessionId={sessionId} schoolId={schoolId} questions={data?.questions || []} activeBatch={Boolean(data?.activeBatchId)} busy={pushingQuestions || endingBatch} onBusyChange={setPushingQuestions} onReload={onReload} />}
 
       {challengeState?.competitionEnabled && timerSeconds !== null && (
         <div className={`mt-4 flex flex-col gap-3 rounded-2xl p-4 text-white shadow-lg sm:flex-row sm:items-center sm:justify-between ${challengeEnded ? 'bg-slate-800' : 'bg-gradient-to-r from-amber-500 to-orange-600'}`}>
@@ -256,9 +265,9 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
         </div>
       )}
 
-      {podium.length > 0 && <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-900/60 dark:bg-amber-950/20"><div className="flex items-center gap-2"><Trophy size={20} className="text-amber-600" /><h3 className="text-sm font-black text-amber-950 dark:text-amber-200">نتيجة التحدي — أفضل 3</h3></div><div className="mt-3 grid gap-2 sm:grid-cols-3">{podium.map((entry) => <div key={entry.studentId} className="rounded-xl border border-amber-200 bg-white p-3 dark:border-amber-900/50 dark:bg-slate-900"><div className="flex items-center justify-between gap-2"><span className="text-xs font-black text-slate-900 dark:text-white">{entry.name}</span><span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-black text-amber-800"><Crown size={11} /> #{entry.rank}</span></div><div className="mt-2 text-[11px] text-slate-500">{entry.score} نقطة · {entry.correct} صحيحة · دقة {entry.accuracy}%</div></div>)}</div></div>}
+      {showTools && podium.length > 0 && <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-900/60 dark:bg-amber-950/20"><div className="flex items-center gap-2"><Trophy size={20} className="text-amber-600" /><h3 className="text-sm font-black text-amber-950 dark:text-amber-200">نتيجة التحدي — أفضل 3</h3></div><div className="mt-3 grid gap-2 sm:grid-cols-3">{podium.map((entry) => <div key={entry.studentId} className="rounded-xl border border-amber-200 bg-white p-3 dark:border-amber-900/50 dark:bg-slate-900"><div className="flex items-center justify-between gap-2"><span className="text-xs font-black text-slate-900 dark:text-white">{entry.name}</span><span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-black text-amber-800"><Crown size={11} /> #{entry.rank}</span></div><div className="mt-2 text-[11px] text-slate-500">{entry.score} نقطة · {entry.correct} صحيحة · دقة {entry.accuracy}%</div></div>)}</div></div>}
 
-      {isTeacher && <ClassroomOptionalPulse canPrepareSupport={data?.status === 'live'} sessionId={sessionId} questions={data?.questions || []} batches={data?.batches || []} skillNames={Object.fromEntries(skills.map(skill => [skill.id, skill.name]))} onPrepareSupport={skillId => { setPushFilterSkill(skillId); const skill = skills.find(item => item.id === skillId); setPushFilterSubject(skill?.subjectId || ''); setPushFilterSection(skill?.sectionId || ''); openPushModal('normal'); }} />}
+      {showTools && isTeacher && <ClassroomOptionalPulse canPrepareSupport={data?.status === 'live'} sessionId={sessionId} questions={data?.questions || []} batches={data?.batches || []} skillNames={Object.fromEntries(skills.map(skill => [skill.id, skill.name]))} onPrepareSupport={skillId => { setPushFilterSkill(skillId); const skill = skills.find(item => item.id === skillId); setPushFilterSubject(skill?.subjectId || ''); setPushFilterSection(skill?.sectionId || ''); openPushModal('normal'); }} />}
       {batchMiniReport && (
         <ClassroomBatchSummaryCard
           report={batchMiniReport}
@@ -269,7 +278,7 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
         />
       )}
 
-      <div className="mt-6">
+      {showTools && showResponses && <div className="mt-6">
         <ClassroomTeacherLiveRadar
           responseCount={data?.responseCount ?? 0}
           expectedCount={data?.submissionSummary?.joinedCount || data?.joinedCount || 0}
@@ -280,10 +289,9 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
           solutionRevealed={showInlineExplanation}
           onToggleReveal={() => setShowInlineExplanation((prev) => !prev)}
         />
-      </div>
-      {currentQuestion && <ClassroomQuestionReviewPanel sessionId={sessionId} currentQuestion={currentQuestion} currentQAnalytics={currentQAnalytics} distribution={distribution} showInlineExplanation={showInlineExplanation} onToggleExplanation={() => setShowInlineExplanation((value) => !value)} />}
+      </div>}
 
-      <ClassroomSessionQuestionsList
+      {showTools && <ClassroomSessionQuestionsList
         data={data}
         hasActiveBatch={hasActiveBatch}
         endingBatch={endingBatch}
@@ -303,15 +311,10 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
         challengeIds={challengeIds}
         showPushModal={showPushModal}
         pushMode={pushMode}
-      />
+      />}
 
-      {data?.status === 'live' && data?.activeBatchId && data?.submissionSummary && <section className="mt-4 rounded-2xl border border-indigo-200 p-4 dark:border-indigo-900" aria-live="polite">
-        <p className="text-sm font-black">تسليم أسئلة النشاط: {data.submissionSummary.submittedCount}/{data.submissionSummary.joinedCount} طالب</p>
-        <p className="mt-1 text-xs text-slate-500">بانتظار تسليم {Math.max(0, data.submissionSummary.joinedCount - data.submissionSummary.submittedCount)} طالب دخل الحصة.</p>
-        <details className="mt-2 text-xs"><summary className="cursor-pointer font-bold">من سلّم النشاط؟</summary><p className="mt-2">{data.submissionSummary.submitted?.map((student: any) => student.name).join('، ') || 'لم يصل تسليم بعد.'}</p></details>
-      </section>}
       {data?.status === 'ended' && data?.report && <ClassroomStudentReportTable students={data.report.students} complete={data.report.studentEvidenceComplete} />}
-      <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
+      {showTools && <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
         <button
           type="button"
           onClick={() => setShowEndConfirmModal(true)}
@@ -321,7 +324,7 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
           {data?.status === 'ended' ? 'الجلسة منتهية ومحفوظة بالأرشيف' : 'إنهاء الجلسة وحفظ التقرير بالأرشيف'}
         </button>
         {isTeacher && <Link to="/school-teacher-dashboard?tab=smart-classroom" className="text-xs font-bold text-slate-500 hover:text-slate-700">العودة للوحة معلم المدرسة →</Link>}
-      </div>
+      </div>}
       {message && (
         <div
           role="status"
@@ -358,7 +361,7 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
         subjects={subjects}
         sections={sections}
         skills={skills}
-        availableQuestions={availablePushQuestions}
+        availableQuestions={pushFilterSubject ? availablePushQuestions : []}
         selectedIds={selectedForPush}
         onClose={() => setShowPushModal(false)}
         onSubjectChange={(value) => { setPushFilterSubject(value); setPushFilterSection(''); setPushFilterSkill(''); }}
@@ -371,20 +374,6 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
         onSubmit={() => void handlePushQuestionsSubmit()}
       />
 
-      <ClassroomTeacherMobileRemote
-        currentQIndex={currentQIndex}
-        totalQuestions={(data?.questions || []).length}
-        responseCount={data?.responseCount ?? 0}
-        expectedCount={data?.submissionSummary?.joinedCount || data?.joinedCount || 0}
-        showInlineExplanation={showInlineExplanation}
-        onToggleExplanation={() => setShowInlineExplanation((prev) => !prev)}
-        onPublishNext={currentQIndex !== undefined && currentQIndex < (data?.questions || []).length - 1 ? () => onPublish(currentQIndex + 1) : undefined}
-        hasActiveBatch={hasActiveBatch}
-        endingBatch={endingBatch}
-        onEndBatch={() => void handleEndBatch()}
-        onOpenPushModal={() => openPushModal('normal')}
-        isEnded={data?.status === 'ended'}
-      />
     </main>
   );
 };

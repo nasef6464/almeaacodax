@@ -16,6 +16,12 @@ export async function verifyActivitySubmission(request: AuditRequest, input: Cla
   assert.equal(liveSubmission.body.submissionSummary.joinedCount, studentCount);
   assert.equal(liveSubmission.body.submissionSummary.submitted[0].studentId, studentId);
   assert.equal((await request(`/classroom/sessions/${sessionId}/aggregate?view=live`, { token: studentToken })).status, 403);
+  const staffGrades = await request(`/classroom/sessions/${sessionId}/aggregate`, { token: teacherToken });
+  assert.equal(staffGrades.status,200);
+  const submittedGrade = staffGrades.body.submissionSummary.submitted.find((row:any)=>row.studentId===studentId);
+  assert.equal(submittedGrade.correctAnswers,2);
+  assert.equal(submittedGrade.totalQuestions,2,"Grade denominator is the current batch, excluding the earlier ended batch");
+  assert.equal((await request(`/classroom/sessions/${sessionId}/aggregate`, { token: studentToken })).status,403);
 
 }
 

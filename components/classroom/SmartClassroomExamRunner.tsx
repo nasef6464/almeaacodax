@@ -1,3 +1,4 @@
+import {classroomOptionPresentation} from './classroomOptionPresentation';
 import React, { useEffect, useState } from 'react';
 import { AlertTriangle, ArrowLeft, ArrowRight, Check, CheckCircle2, Clock, Flag, Lock, Send, Sparkles, Zap } from 'lucide-react';
 import { QuestionContentRenderer } from './QuestionContentRenderer';
@@ -10,6 +11,8 @@ export interface ClassroomExamQuestion {
   imageUrl?: string;
   options: string[];
   type: string;
+  examType?:string;
+  optionsEmbeddedInImage?:boolean;
 }
 
 interface SmartClassroomExamRunnerProps {
@@ -182,13 +185,14 @@ export const SmartClassroomExamRunner: React.FC<SmartClassroomExamRunnerProps> =
                 </div>
                 <div className="mt-6"><QuestionContentRenderer content={currentQ.text} asHeading className="text-xl sm:text-2xl lg:text-3xl font-black leading-relaxed" /></div>
                 {currentQ.imageUrl && <div className="mt-4 overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-2"><img src={currentQ.imageUrl} alt="توضيح السؤال" className="mx-auto max-h-56 object-contain" /></div>}
-                <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5">
+                <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
                   {currentQ.options.map((opt: string, optIdx: number) => {
+                    const presentation=classroomOptionPresentation(currentQ,opt,optIdx);
                     const isSelected = answers[currentIndex] === optIdx;
                     return (
-                      <button key={optIdx} type="button" disabled={timerExpired} onClick={() => onSelectAnswer(currentIndex, optIdx)} className={`group flex min-h-[76px] sm:min-h-[88px] items-center justify-between rounded-2xl border-2 p-4 sm:p-5 text-right transition-all cursor-pointer disabled:cursor-not-allowed disabled:opacity-60 ${isSelected ? 'border-indigo-600 bg-indigo-50/90 text-indigo-950 shadow-md ring-2 ring-indigo-500/20 dark:bg-indigo-950/60 dark:text-indigo-100' : 'border-slate-200 bg-slate-50/70 hover:border-indigo-300 hover:bg-slate-100 text-slate-800 dark:border-slate-800 dark:bg-slate-800/40 dark:text-slate-200'}`}>
-                        <div className="flex items-center gap-3.5 flex-1 min-w-0"><span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-base font-black transition-all ${isSelected ? 'bg-indigo-600 text-white shadow-sm scale-105' : 'bg-slate-200 text-slate-700 group-hover:bg-slate-300 dark:bg-slate-700 dark:text-slate-300'}`}>{OPTION_LETTERS[optIdx] || optIdx + 1}</span><span className="text-base sm:text-lg font-bold leading-snug">{opt}</span></div>
-                        <div className={`h-6 w-6 shrink-0 rounded-full border-2 flex items-center justify-center transition-all ${isSelected ? 'border-indigo-600 bg-indigo-600' : 'border-slate-300 dark:border-slate-600'}`}>{isSelected && <div className="h-2.5 w-2.5 rounded-full bg-white" />}</div>
+                      <button data-testid="classroom-student-option" aria-pressed={isSelected} key={optIdx} type="button" disabled={timerExpired} onClick={() => onSelectAnswer(currentIndex, optIdx)} className={`group flex min-h-[76px] items-center justify-between gap-2 rounded-2xl border-2 p-3 text-right transition-all cursor-pointer disabled:cursor-not-allowed disabled:opacity-60 ${isSelected ? 'border-indigo-600 bg-indigo-50/90 text-indigo-950 shadow-md ring-2 ring-indigo-500/20 dark:bg-indigo-950/60 dark:text-indigo-100' : 'border-slate-200 bg-slate-50/70 hover:border-indigo-300 hover:bg-slate-100 text-slate-800 dark:border-slate-800 dark:bg-slate-800/40 dark:text-slate-200'}`}>
+                        <div className="flex items-center gap-2 flex-1 min-w-0"><span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-base font-black transition-all ${isSelected ? 'bg-indigo-600 text-white' : 'bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300'}`}>{presentation.label}</span><span className="min-w-0 break-words text-sm sm:text-base font-bold leading-snug">{presentation.text}</span></div>
+                        <div className={`h-4 w-4 shrink-0 rounded-full border-2 flex items-center justify-center transition-all ${isSelected ? 'border-indigo-600 bg-indigo-600' : 'border-slate-300 dark:border-slate-600'}`}>{isSelected && <div className="h-1.5 w-1.5 rounded-full bg-white" />}</div>
                       </button>
                     );
                   })}
