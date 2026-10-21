@@ -1,4 +1,5 @@
 import type { Router } from "express";
+import {classroomSubmittedGrade} from '../../modules/schools/application/classroomStudentReport.js';
 import { StatusCodes } from "http-status-codes";
 import { Types } from "mongoose";
 import { requireAuth } from "../../middleware/auth.js";
@@ -205,6 +206,8 @@ export function registerClassroomAggregateRoutes(classroomRouter: Router) {
         imageUrl: question.imageUrl || "",
         options: question.options,
         type: question.type,
+        ...(question.examType ? {examType:question.examType}:{}),
+        ...(typeof question.optionsEmbeddedInImage==='boolean'?{optionsEmbeddedInImage:question.optionsEmbeddedInImage}:{}),
         correctOptionIndex: question.correctOptionIndex,
         explanation: question.explanation || "",
         skillIds: question.skillIds || [],
@@ -264,6 +267,7 @@ export function registerClassroomAggregateRoutes(classroomRouter: Router) {
       return {
         studentId,
         name: nameByStudentId.get(studentId) || "طالب",
+        ...classroomSubmittedGrade(studentResponses,activeBatchQuestionIds as Set<string>),
         submittedAt: latestResponseAt,
         onTime: timerEndsAt && latestResponseAt ? latestResponseAt.getTime() <= timerEndsAt.getTime() : null,
       };

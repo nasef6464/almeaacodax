@@ -1,3 +1,6 @@
+## Classroom display metadata — 2026-10-21
+Additive optional ClassroomSession.questionSnapshots.examType/optionsEmbeddedInImage, no defaults/backfill or historical rewrite. New approved-question snapshots preserve display convention; old snapshots retain option-label fallback. Staff grade fields are derived response DTO values, not persisted grades. No index or production data migration.
+
 ## Approved image regions — 2026-10-18
 Additive optional Question.aiContext.teachingRegions (default undefined), <=4 normalized staff-approved boxes with exact source key. No migration/backfill/production content write. Old questions retain baseline behavior; source replacement invalidates approval. Existing stored review image identity remains historical guard.
 Evidence: docs/audits/VERIFIED_TEACHING_REGIONS_2026-10-18.md (release pending).

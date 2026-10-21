@@ -10,7 +10,7 @@ assert.ok(aggregate.includes('Classroom analytics are staff-only'));
 assert.ok(aggregate.includes('submissionSummary'));
 assert.ok(aggregate.includes('finalizedSubmissionKeys'));
 assert.ok(projector.includes("type RevealMode = 'submissions' | 'responses' | 'solution'"));
-assert.ok(projector.includes("useState<RevealMode>('submissions')"));
+assert.ok(projector.includes("useScopedClassroomState<RevealMode>(presentationScope,'submissions')"));
 assert.ok(projector.includes('عرض الاستجابات'));
 assert.ok(projector.includes('عرض الإجابة والحل'));
 assert.ok(projector.includes('إخفاء النتائج'));

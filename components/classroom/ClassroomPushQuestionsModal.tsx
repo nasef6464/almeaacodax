@@ -76,6 +76,7 @@ export const ClassroomPushQuestionsModal: React.FC<ClassroomPushQuestionsModalPr
         <div className="border-b border-slate-100 bg-slate-50/50 p-4 dark:border-slate-800 dark:bg-slate-850/50 space-y-3">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
             <select
+              aria-label="مادة الأسئلة"
               value={pushFilterSubject}
               onChange={(event) => onSubjectChange(event.target.value)}
               className="rounded-xl border border-slate-200 bg-white p-2 text-xs font-bold text-slate-800 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
@@ -84,6 +85,8 @@ export const ClassroomPushQuestionsModal: React.FC<ClassroomPushQuestionsModalPr
               {subjects.map((subject) => <option key={subject.id} value={subject.id}>{subject.name}</option>)}
             </select>
             <select
+              aria-label="المهارة الرئيسية"
+              disabled={!pushFilterSubject}
               value={pushFilterSection}
               onChange={(event) => onSectionChange(event.target.value)}
               className="rounded-xl border border-slate-200 bg-white p-2 text-xs font-bold text-slate-800 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
@@ -94,6 +97,8 @@ export const ClassroomPushQuestionsModal: React.FC<ClassroomPushQuestionsModalPr
               ))}
             </select>
             <select
+              aria-label="المهارة الفرعية"
+              disabled={!pushFilterSubject || !pushFilterSection}
               value={pushFilterSkill}
               onChange={(event) => onSkillChange(event.target.value)}
               className="rounded-xl border border-slate-200 bg-white p-2 text-xs font-bold text-slate-800 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"

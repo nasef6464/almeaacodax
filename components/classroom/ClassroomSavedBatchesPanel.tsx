@@ -10,10 +10,11 @@ interface Props {
   busy: boolean;
   onBusyChange: (busy: boolean) => void;
   onReload?: () => void | Promise<void>;
+  initiallyOpen?: boolean;
 }
 
-export function ClassroomSavedBatchesPanel({ sessionId, schoolId, questions, activeBatch, busy, onBusyChange, onReload }: Props) {
-  const [open, setOpen] = useState(false);
+export function ClassroomSavedBatchesPanel({ sessionId, schoolId, questions, activeBatch, busy, onBusyChange, onReload, initiallyOpen=false }: Props) {
+  const [open, setOpen] = useState(initiallyOpen);
   const [templates, setTemplates] = useState<ClassroomPreparedTemplate[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');

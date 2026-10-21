@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import {projectClassroomQuestionForStudent} from '../server/src/modules/schools/application/classroomQuestionProjection.js';
+import {classroomSubmittedGrade} from '../server/src/modules/schools/application/classroomStudentReport.js';
+const question={questionId:'q',text:'سؤال',options:['one','two'],type:'mcq',examType:'tahsili',optionsEmbeddedInImage:true,correctOptionIndex:1,explanation:'secret'};
+const projected:any=projectClassroomQuestionForStudent(question,true);
+assert.equal(projected.examType,'tahsili');assert.equal(projected.optionsEmbeddedInImage,true);
+assert.equal(projected.correctOptionIndex,undefined);assert.equal(projected.explanation,undefined);
+assert.equal(projectClassroomQuestionForStudent(question,false),null);
+assert.deepEqual(classroomSubmittedGrade([{studentId:'s',questionId:'q',isCorrect:false},{studentId:'s',questionId:'q',isCorrect:true},{studentId:'s',questionId:'other-batch',isCorrect:true}],new Set(['q','unanswered'])),{correctAnswers:1,totalQuestions:2});
+assert.deepEqual(classroomSubmittedGrade([],new Set(['q'])),{correctAnswers:0,totalQuestions:1});
+console.log('PASS classroom presentation metadata without answer leakage');
