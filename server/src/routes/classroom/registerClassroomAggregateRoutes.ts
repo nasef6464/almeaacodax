@@ -131,7 +131,7 @@ export function registerClassroomAggregateRoutes(classroomRouter: Router) {
     }
 
     const isStaff = await resolveStaffAccessWithCache(req.authUser!, session);
-    if (!isStaff || !(await teacherCanReadClassroom(req.authUser!,session))) return res.status(StatusCodes.FORBIDDEN).json({ message: "Classroom analytics are outside your teaching material or staff scope" });
+    if (!isStaff || !(await teacherCanReadClassroom(req.authUser!,session))) return res.status(StatusCodes.FORBIDDEN).json({ message: "Classroom analytics are staff-only and restricted to your teaching material" });
 
     const sessionId = classroomSessionId(session);
     if (req.query.view === "report") {
