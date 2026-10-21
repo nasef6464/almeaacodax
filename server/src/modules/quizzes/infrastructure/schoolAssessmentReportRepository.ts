@@ -1,6 +1,7 @@
 import type { PipelineStage } from 'mongoose';
 import { UserModel } from '../../../models/User.js';
-import {schoolAssessmentAudienceEvidence} from './schoolAssessmentAudienceEvidence.js';
+import {QuizResultModel} from '../../../models/QuizResult.js';
+import {schoolAssessmentAudienceStages,schoolAssessmentResultEvidenceStages} from './schoolAssessmentAudienceEvidence.js';
 
 export async function readSchoolAssessmentReport(targetPredicate: Record<string,unknown>, quizId: string) {
   const dimension = (field:string, id:string, label:string, questions:string, correct:string,counts=false): PipelineStage.FacetPipelineStage[] => [
@@ -14,8 +15,9 @@ export async function readSchoolAssessmentReport(targetPredicate: Record<string,
       average:{$cond:[{$gt:['$questions',0]},{$round:[{$multiply:[{$divide:['$correct','$questions']},100]},2]},null]}}},
     {$sort:{id:1}},
   ];
+  const audience=await UserModel.aggregate(schoolAssessmentAudienceStages(targetPredicate)).allowDiskUse(true);
   const pipeline:PipelineStage[] = [
-    ...schoolAssessmentAudienceEvidence(targetPredicate,quizId,{score:1,passed:1,totalQuestions:1,skillsAnalysis:1,sectionResults:1,subjectResults:1,'quizSnapshot.subjectId':1}),
+    ...schoolAssessmentResultEvidenceStages(quizId,audience.map(row=>String(row._id)),{score:1,passed:1,totalQuestions:1,skillsAnalysis:1,sectionResults:1,subjectResults:1,'quizSnapshot.subjectId':1}),
     {$facet:{
       totals:[{$group:{_id:null,targeted:{$sum:1},completed:{$sum:{$cond:[{$ifNull:['$evidence',false]},1,0]}},
         average:{$avg:'$evidence.score'},highest:{$max:'$evidence.score'},lowest:{$min:'$evidence.score'},passed:{$sum:{$cond:['$evidence.passed',1,0]}}}}],
@@ -31,5 +33,8 @@ export async function readSchoolAssessmentReport(targetPredicate: Record<string,
         {$project:{_id:0,id:'$_id',label:'$_id',learners:1,questions:{$literal:null},correct:{$literal:null},average:{$round:['$average',2]}}}],
     }},
   ];
-  return (await UserModel.aggregate(pipeline).allowDiskUse(true))[0];
+  const data=(await QuizResultModel.aggregate(pipeline).allowDiskUse(true))[0];
+  const totals=data.totals[0]||{completed:0,average:null,highest:null,lowest:null,passed:0};
+  data.totals=[{...totals,targeted:audience.length}];
+  return data;
 }

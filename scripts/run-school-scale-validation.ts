@@ -12,24 +12,41 @@ validateScaleMongoService(process.env.ASSESSMENT_TEST_MONGODB_URI);
 const full = args.includes('--full'), file = 'scratch/school-scale-' + (full ? 'full' : 'quick') + '.json';
 fs.mkdirSync('scratch', { recursive: true });
 const receipt: any = { status: 'RUNNING', kind: 'isolated-school-scale', startedAt: new Date().toISOString(), baseline: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(), productionRequests: 0, providerCalls: 0, hardware: { cpuCount: os.cpus().length, totalMemoryBytes: os.totalmem(), freeMemoryBytes: os.freemem() }, limits: 'Loopback synthetic data on this workstation; not Render capacity,10k concurrent students,login load,CDN/media bandwidth or a real school pilot.', profiles: [], thresholds: { readP95Ms: 2000, submitP95Ms: 3000, maxErrorRate: 0.02 }, configuration: { apiHeapMB: 384, mongoCacheGB: 0.25, apiMongoPool: 30, globalRateLimitPerMinute: 600, redis: false } };
-const digest = (directory: string): string => { const hash = createHash('sha256'); const walk = (dir: string) => { for (const item of fs.readdirSync(dir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
-    const name = path.join(dir, item.name);
-    if (item.isDirectory())
-        walk(name);
-    else {
-        hash.update(path.relative(directory, name));
-        hash.update(fs.readFileSync(name));
-    }
-} }; walk(directory); return hash.digest('hex'); };
+const digest = (directory: string): string => {
+    const hash = createHash('sha256');
+    const walk = (dir: string) => {
+        for (const item of fs.readdirSync(dir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
+            const name = path.join(dir, item.name);
+            if (item.isDirectory())
+                walk(name);
+            else {
+                hash.update(path.relative(directory, name));
+                hash.update(fs.readFileSync(name));
+            }
+        }
+    };
+    walk(directory);
+    return hash.digest('hex');
+};
 const save = () => fs.writeFileSync(file, JSON.stringify(receipt, null, 2) + '\n');
 save();
 let fixture: any, child: any;
-async function wait(type: string) { return new Promise<any>((resolve, reject) => { const timer = setTimeout(() => { child.off('message', on); reject(Error('Child timeout ' + type)); }, 180000); const on = (m: any) => { if (m.type === type) {
-    clearTimeout(timer);
-    child.off('message', on);
-    child.off('exit', exit);
-    resolve(m);
-} }; const exit = (code: any) => { clearTimeout(timer); child.off('message', on); reject(Error('Child exited ' + code)); }; child.on('message', on); child.once('exit', exit); }); }
+async function wait(type: string) {
+    return new Promise<any>((resolve, reject) => {
+        const timer = setTimeout(() => { child.off('message', on); reject(Error('Child timeout ' + type)); }, 180000);
+        const on = (m: any) => {
+            if (m.type === type) {
+                clearTimeout(timer);
+                child.off('message', on);
+                child.off('exit', exit);
+                resolve(m);
+            }
+        };
+        const exit = (code: any) => { clearTimeout(timer); child.off('message', on); reject(Error('Child exited ' + code)); };
+        child.on('message', on);
+        child.once('exit', exit);
+    });
+}
 try {
     const harnessHash = () => Object.fromEntries(['run-school-scale-validation.ts', 'school-scale-fixture.ts', 'school-scale-server.mjs'].map(name => [name, createHash('sha256').update(fs.readFileSync('scripts/' + name)).digest('hex')]));
     const loadedHarness = harnessHash();
@@ -67,21 +84,24 @@ try {
     receipt.startupIndexFailures = ready.indexFailures;
     assert.match(ready.base, /^http:\/\/127\.0\.0\.1:\d+$/);
     const base = ready.base;
-    const request = async (route: string, actor: any, body?: any) => { const started = performance.now(); try {
-        const r = await fetch(base + '/api' + route, { method: body ? 'POST' : 'GET', headers: { authorization: 'Bearer ' + token(actor), ...(body ? { 'content-type': 'application/json', cookie: 'almeaa_csrf_token=scale-only', 'x-csrf-token': 'scale-only' } : {}) }, ...(body ? { body: JSON.stringify(body) } : {}), signal: AbortSignal.timeout(30000) });
-        const text = await r.text();
-        let data: any;
+    const request = async (route: string, actor: any, body?: any) => {
+        const started = performance.now();
         try {
-            data = JSON.parse(text);
+            const r = await fetch(base + '/api' + route, { method: body ? 'POST' : 'GET', headers: { authorization: 'Bearer ' + token(actor), ...(body ? { 'content-type': 'application/json', cookie: 'almeaa_csrf_token=scale-only', 'x-csrf-token': 'scale-only' } : {}) }, ...(body ? { body: JSON.stringify(body) } : {}), signal: AbortSignal.timeout(30000) });
+            const text = await r.text();
+            let data: any;
+            try {
+                data = JSON.parse(text);
+            }
+            catch {
+                data = { error: 'non-json' };
+            }
+            return { status: r.status, ms: performance.now() - started, bytes: Buffer.byteLength(text), data };
         }
-        catch {
-            data = { error: 'non-json' };
+        catch (e: any) {
+            return { status: 0, ms: performance.now() - started, bytes: 0, data: { error: e.name } };
         }
-        return { status: r.status, ms: performance.now() - started, bytes: Buffer.byteLength(text), data };
-    }
-    catch (e: any) {
-        return { status: 0, ms: performance.now() - started, bytes: 0, data: { error: e.name } };
-    } };
+    };
     const routes = (school: any) => [
         { kind: 'report', route: `/school-assessments/${school.quizId}/report`, actor: school.supervisor, check: (b: any) => { assert.equal(b.audience.targeted, school.size); assert.equal(b.participation.completed, school.size); assert.equal(b.scores.average, 56); assert.equal(b.subjectBreakdowns.length, 2); } },
         { kind: 'learners', route: `/school-assessments/${school.quizId}/learners?limit=12`, actor: school.supervisor, check: (b: any) => { assert.equal(b.pagination.total, school.size); assert.equal(b.learners.length, 12); assert.equal(b.learners[0].result.attemptNumber, 2); } },
@@ -107,30 +127,32 @@ try {
         const started = wait('measure-started');
         child.send({ type: 'measure-start' });
         await started;
-        await Promise.all(Array.from({ length: concurrency }, async () => { while (next < jobs.length) {
-            const job: any = jobs[next++];
-            if (job.kind === 'submit') {
-                activeWrites++;
-                if (activeReads)
-                    overlappingWrites++;
+        await Promise.all(Array.from({ length: concurrency }, async () => {
+            while (next < jobs.length) {
+                const job: any = jobs[next++];
+                if (job.kind === 'submit') {
+                    activeWrites++;
+                    if (activeReads)
+                        overlappingWrites++;
+                }
+                else
+                    activeReads++;
+                const r = await request(job.route, job.actor, job.body);
+                if (job.kind === 'submit')
+                    activeWrites--;
+                else
+                    activeReads--;
+                let error;
+                try {
+                    assert.equal(r.status, job.kind === 'submit' ? 201 : 200, JSON.stringify(r.data));
+                    job.check(r.data);
+                }
+                catch (e: any) {
+                    error = e.message.slice(0, 240);
+                }
+                samples.push({ kind: job.kind, status: r.status, ms: Math.round(r.ms), bytes: r.bytes, ...(error ? { error } : {}) });
             }
-            else
-                activeReads++;
-            const r = await request(job.route, job.actor, job.body);
-            if (job.kind === 'submit')
-                activeWrites--;
-            else
-                activeReads--;
-            let error;
-            try {
-                assert.equal(r.status, job.kind === 'submit' ? 201 : 200, JSON.stringify(r.data));
-                job.check(r.data);
-            }
-            catch (e: any) {
-                error = e.message.slice(0, 240);
-            }
-            samples.push({ kind: job.kind, status: r.status, ms: Math.round(r.ms), bytes: r.bytes, ...(error ? { error } : {}) });
-        } }));
+        }));
         const ended = wait('metrics');
         child.send({ type: 'measure-end' });
         const metrics = await ended;
@@ -165,20 +187,25 @@ try {
     finally {
         await mongoose.connection.db.command({ profile: 0 });
     }
-    const traced = await mongoose.connection.db.collection('system.profile').find({ 'command.aggregate': fixture.models.UserModel.collection.name }).sort({ ts: -1 }).limit(1).next();
-    if (traced) {
-        const explanation = await mongoose.connection.db.command({ explain: { aggregate: traced.command.aggregate, pipeline: traced.command.pipeline, cursor: {}, allowDiskUse: true }, verbosity: 'executionStats' });
+    const diagnostics: any[] = [];
+    for (const collection of [fixture.models.UserModel.collection.name, fixture.models.QuizResultModel.collection.name]) {
+        const filter = { 'command.aggregate': collection };
+        const traced = await mongoose.connection.db.collection('system.profile').find(filter).sort({ ts: -1 }).limit(1).next();
+        if (!traced)
+            continue;
+        const explanation = await mongoose.connection.db.command({ explain: { aggregate: traced.command.aggregate, pipeline: traced.command.pipeline, cursor: {}, allowDiskUse: true, maxTimeMS: 20000 }, verbosity: 'executionStats' });
         const stages: any[] = [];
         const collect = (v: any) => { if (!v || typeof v !== 'object')
             return; if (v.executionStats)
-            stages.push({ type: 'cursor', ...Object.fromEntries(['nReturned', 'executionTimeMillis', 'totalDocsExamined', 'totalKeysExamined'].map(k => [k, v.executionStats[k]])) }); if (v.$lookup)
+            stages.push({ type: 'cursor', ...Object.fromEntries(['nReturned', 'executionTimeMillis', 'totalDocsExamined', 'totalKeysExamined'].map(k => [k, v.executionStats[k]])) }); if (v.$lookup && v.indexesUsed)
             stages.push({ type: 'lookup', from: v.$lookup.from, totalDocsExamined: v.totalDocsExamined, totalKeysExamined: v.totalKeysExamined, collectionScans: v.collectionScans, indexesUsed: v.indexesUsed }); for (const [k, child] of Object.entries(v))
             if (k !== 'executionStats')
                 collect(child); };
         collect(explanation);
-        receipt.readinessDiagnostic = { profileMillis: traced.millis, stages };
-        save();
+        diagnostics.push({ collection, aggregateCommands: await mongoose.connection.db.collection('system.profile').countDocuments(filter), profileMillis: traced.millis, stages });
     }
+    receipt.readinessDiagnostic = { queries: diagnostics };
+    save();
     const expected = full ? 50 : 10, stored = await fixture.models.QuizResultModel.find({ quizId: 'scale-live' }).select('userId score learningContext').lean();
     assert.equal(stored.length, expected);
     assert.equal(new Set(stored.map((r: any) => r.userId)).size, expected);

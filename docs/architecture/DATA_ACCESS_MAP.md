@@ -1,3 +1,7 @@
+## School aggregation performance — 2026-10-21, functional PASS / performance PARTIAL
+
+quizzes/infrastructure/learningEvidencePopulation streams the existing authorized canonical User audience in250identity batches, aggregates latest entire QuizResult attempts by(userId,quizId) before skill filtering, and classifies the complete population before status paging. The existing20s readiness budget spans all batches. schoolAssessmentResultEvidenceStages supplies whitelisted, date/_id-ordered latest evidence for full report and status-filtered pages; schoolAssessmentFilteredLearners consumes sorted roster batches and facets full counts plus selected page rows in Mongo; absence uses bounded completed-ID sets. Ordinary unfiltered pages retain their bounded per-page lookup. Application authorization, policy thresholds, API shapes, grading, persisted records and indexes remain unchanged. No background refresh, polling, cache or provider call.
+
 ## Teacher catalog and mastered-result guidance — 2026-10-20
 SchoolTeacherWorkspace adds only mockExam.enabled and mockExam.sections.subjectId to the existing bounded quiz projection, then intersects catalog audience with same-class assignments for all required materials. No extra DB query, serialized field, collection, index or authority grant.
 

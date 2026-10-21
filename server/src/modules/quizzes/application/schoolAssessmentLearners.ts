@@ -1,3 +1,4 @@
+import {readSchoolAssessmentFilteredLearners} from '../infrastructure/schoolAssessmentFilteredLearners.js';
 import {z} from 'zod';
 import type {PipelineStage} from 'mongoose';
 import {UserModel} from '../../../models/User.js';
@@ -40,6 +41,7 @@ export function buildSchoolAssessmentLearnerPipeline(context:SchoolAssessmentCon
 }
 export async function readSchoolAssessmentLearners(context:SchoolAssessmentContext,query:z.infer<typeof schoolAssessmentLearnersQuery>){
  await assertLearnerEvidenceAccess(context);
+ if(query.status!=='all')return readSchoolAssessmentFilteredLearners(context.targetPredicate,String(context.quiz.id||context.quiz._id),query);
  const pipeline=buildSchoolAssessmentLearnerPipeline(context,query);
  const data=(await UserModel.aggregate(pipeline).allowDiskUse(true))[0];const total=data?.count?.[0]?.total||0;
  return {learners:data?.learners||[],pagination:{page:query.page,limit:query.limit,total,totalPages:Math.ceil(total/query.limit)}};

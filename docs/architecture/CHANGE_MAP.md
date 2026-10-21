@@ -1,3 +1,7 @@
+## School aggregation performance — 2026-10-21, functional PASS / performance PARTIAL
+
+quizzes/infrastructure/learningEvidencePopulation streams the existing authorized canonical User audience in250identity batches, aggregates latest entire QuizResult attempts by(userId,quizId) before skill filtering, and classifies the complete population before status paging. The existing20s readiness budget spans all batches. schoolAssessmentResultEvidenceStages supplies whitelisted, date/_id-ordered latest evidence for full report and status-filtered pages; schoolAssessmentFilteredLearners consumes sorted roster batches and facets full counts plus selected page rows in Mongo; absence uses bounded completed-ID sets. Ordinary unfiltered pages retain their bounded per-page lookup. Application authorization, policy thresholds, API shapes, grading, persisted records and indexes remain unchanged. No background refresh, polling, cache or provider call.
+
 ## Teacher catalog and mastered-result guidance — 2026-10-20
 Existing teacher report subject-ID derivation → pure teacherAssessmentSubjects, reused by the school teacher catalog. Results focuses non-strong measured skills and uses positive continuation for all-strong evidence; no grade/status recomputation or historical writes.
 

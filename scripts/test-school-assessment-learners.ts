@@ -32,7 +32,7 @@ try{
  const result=(i:number,score:number,date:string,extra={})=>({_id:new mongoose.Types.ObjectId(),userId:studentId(i),quizId:quiz._id,quizTitle:'test',learningContext:'school_assessment',score,passed:score>=60,date,createdAt:new Date(date),totalQuestions:2,correctAnswers:score===100?2:0,questionReview:review,...extra});
  const first=result(0,100,'2026-10-01'),latest=result(0,0,'2026-10-02');
  const legacy=result(1004,100,'2026-10-02');
- await QuizResultModel.collection.insertMany([first,latest,legacy,result(1,100,'2026-10-03',{learningContext:'platform_self_study'}),result(2,100,'2026-10-03',{quizId:'different-test'}),result(3,100,'2026-10-03',{userId:String(other._id)})]);
+ await QuizResultModel.collection.insertMany([first,latest,legacy,result(750,0,'2026-10-02'),result(1,100,'2026-10-03',{learningContext:'platform_self_study'}),result(2,100,'2026-10-03',{quizId:'different-test'}),result(3,100,'2026-10-03',{userId:String(other._id)})]);
  const {createApp}=await import('../server/src/app.js');const {signAccessToken}=await import('../server/src/utils/jwt.js');
  server=createApp().listen(0,'127.0.0.1');await new Promise<void>(r=>server.once('listening',r));
  const base='http://127.0.0.1:'+server.address().port+'/api/school-assessments/'+quiz._id;
@@ -54,9 +54,10 @@ try{
  const pages=[body];for(let page=2;page<=11;page++)pages.push(await request(supervisor,'/learners?limit=100&page='+page));
  assert.equal(new Set(pages.flatMap(p=>p.learners.map((r:any)=>r.studentId))).size,1005);
  assert.equal(pages[10].learners.length,5);assert.equal(pages[10].learners[4].studentId,'legacy-learner');
- body=await request(supervisor,'/learners?status=not_completed');assert.equal(body.pagination.total,1003);assert.ok(body.learners.every((r:any)=>r.result===null));
- body=await request(supervisor,'/learners?status=needs_support');assert.equal(body.pagination.total,1);assert.equal(body.learners[0].result.id,String(latest._id));
- body=await request(supervisor,'/learners?status=completed');assert.equal(body.pagination.total,2);
+ body=await request(supervisor,'/learners?status=not_completed');assert.equal(body.pagination.total,1002);assert.ok(body.learners.every((r:any)=>r.result===null));
+ body=await request(supervisor,'/learners?status=needs_support');assert.equal(body.pagination.total,2);assert.equal(body.learners[0].result.id,String(latest._id));
+ const laterSupport=await request(supervisor,'/learners?status=needs_support&limit=1&page=2');assert.equal(laterSupport.pagination.total,2);assert.equal(laterSupport.learners[0].studentId,studentId(750),'Status pagination spans the complete roster');
+ body=await request(supervisor,'/learners?status=completed');assert.equal(body.pagination.total,3);
  body=await request(supervisor,'/learners?search=learner1004');assert.equal(body.pagination.total,1);assert.equal(body.learners[0].studentId,'legacy-learner');
  assert.equal((await request(supervisor,'/learners?search=learner.*')).pagination.total,0,'search is literal');
  assert.equal((await request(supervisor,'/learners?page=99')).learners.length,0);
