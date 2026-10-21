@@ -1,0 +1,444 @@
+{
+  "status": "THRESHOLD_FAIL",
+  "kind": "isolated-school-scale",
+  "startedAt": "2026-10-21T04:53:57.836Z",
+  "baseline": "e30b214e435d9f60f8b8d2833ba7a2ea81949162",
+  "productionRequests": 0,
+  "providerCalls": 0,
+  "hardware": {
+    "cpuCount": 4,
+    "totalMemoryBytes": 12751806464,
+    "freeMemoryBytes": 3068248064
+  },
+  "limits": "Loopback synthetic data on this workstation; not Render capacity,10k concurrent students,login load,CDN/media bandwidth or a real school pilot.",
+  "profiles": [
+    {
+      "learners": 1000,
+      "historicalResults": 10000,
+      "schools": 1,
+      "schoolSkillEvidence": 40000,
+      "schoolSkillAggregates": 4000,
+      "concurrency": 5,
+      "overlappingWrites": 0,
+      "requests": 100,
+      "kinds": [
+        {
+          "kind": "history",
+          "requests": 20,
+          "failures": 0,
+          "p50Ms": 29,
+          "p95Ms": 80,
+          "p99Ms": 92,
+          "responseBytes": 373460
+        },
+        {
+          "kind": "learners",
+          "requests": 20,
+          "failures": 0,
+          "p50Ms": 138,
+          "p95Ms": 300,
+          "p99Ms": 398,
+          "responseBytes": 45820
+        },
+        {
+          "kind": "support",
+          "requests": 20,
+          "failures": 0,
+          "p50Ms": 1813,
+          "p95Ms": 2346,
+          "p99Ms": 2379,
+          "responseBytes": 45820
+        },
+        {
+          "kind": "report",
+          "requests": 20,
+          "failures": 0,
+          "p50Ms": 2438,
+          "p95Ms": 3118,
+          "p99Ms": 3214,
+          "responseBytes": 57600
+        },
+        {
+          "kind": "readiness",
+          "requests": 20,
+          "failures": 0,
+          "p50Ms": 4477,
+          "p95Ms": 5090,
+          "p99Ms": 5124,
+          "responseBytes": 121000
+        }
+      ],
+      "metrics": {
+        "type": "metrics",
+        "wallMs": 37072.883599999994,
+        "meanCpuCores": 0.141208330500625,
+        "peakRssBytes": 161583104,
+        "peakHeapBytes": 80016424,
+        "eventLoopP95Ms": 36.438015
+      },
+      "failures": []
+    },
+    {
+      "learners": 10000,
+      "historicalResults": 100000,
+      "schools": 10,
+      "schoolSkillEvidence": 400000,
+      "schoolSkillAggregates": 40000,
+      "concurrency": 5,
+      "overlappingWrites": 0,
+      "requests": 100,
+      "kinds": [
+        {
+          "kind": "history",
+          "requests": 20,
+          "failures": 0,
+          "p50Ms": 31,
+          "p95Ms": 123,
+          "p99Ms": 125,
+          "responseBytes": 373460
+        },
+        {
+          "kind": "learners",
+          "requests": 20,
+          "failures": 0,
+          "p50Ms": 464,
+          "p95Ms": 578,
+          "p99Ms": 834,
+          "responseBytes": 45820
+        },
+        {
+          "kind": "support",
+          "requests": 20,
+          "failures": 0,
+          "p50Ms": 2101,
+          "p95Ms": 2303,
+          "p99Ms": 2926,
+          "responseBytes": 45820
+        },
+        {
+          "kind": "report",
+          "requests": 20,
+          "failures": 0,
+          "p50Ms": 2808,
+          "p95Ms": 2991,
+          "p99Ms": 3570,
+          "responseBytes": 57600
+        },
+        {
+          "kind": "readiness",
+          "requests": 20,
+          "failures": 0,
+          "p50Ms": 4463,
+          "p95Ms": 5189,
+          "p99Ms": 5263,
+          "responseBytes": 121000
+        }
+      ],
+      "metrics": {
+        "type": "metrics",
+        "wallMs": 41614.07899999997,
+        "meanCpuCores": 0.1077519942229168,
+        "peakRssBytes": 189132800,
+        "peakHeapBytes": 87174656,
+        "eventLoopP95Ms": 36.634623
+      },
+      "failures": []
+    },
+    {
+      "learners": 10000,
+      "historicalResults": 100000,
+      "schools": 10,
+      "schoolSkillEvidence": 400100,
+      "schoolSkillAggregates": 40000,
+      "concurrency": 20,
+      "overlappingWrites": 50,
+      "requests": 150,
+      "kinds": [
+        {
+          "kind": "history",
+          "requests": 20,
+          "failures": 0,
+          "p50Ms": 138,
+          "p95Ms": 731,
+          "p99Ms": 1185,
+          "responseBytes": 373460
+        },
+        {
+          "kind": "learners",
+          "requests": 20,
+          "failures": 0,
+          "p50Ms": 1686,
+          "p95Ms": 2627,
+          "p99Ms": 2817,
+          "responseBytes": 45820
+        },
+        {
+          "kind": "submit",
+          "requests": 50,
+          "failures": 0,
+          "p50Ms": 1075,
+          "p95Ms": 2900,
+          "p99Ms": 3001,
+          "responseBytes": 280400
+        },
+        {
+          "kind": "support",
+          "requests": 20,
+          "failures": 0,
+          "p50Ms": 9311,
+          "p95Ms": 10967,
+          "p99Ms": 11001,
+          "responseBytes": 45820
+        },
+        {
+          "kind": "report",
+          "requests": 20,
+          "failures": 0,
+          "p50Ms": 11198,
+          "p95Ms": 12638,
+          "p99Ms": 12735,
+          "responseBytes": 57600
+        },
+        {
+          "kind": "readiness",
+          "requests": 20,
+          "failures": 4,
+          "p50Ms": 19850,
+          "p95Ms": 20423,
+          "p99Ms": 21046,
+          "responseBytes": 97420
+        }
+      ],
+      "metrics": {
+        "type": "metrics",
+        "wallMs": 46656.77590000001,
+        "meanCpuCores": 0.2297415497156116,
+        "peakRssBytes": 264749056,
+        "peakHeapBytes": 132817264,
+        "eventLoopP95Ms": 94.633983
+      },
+      "failures": [
+        {
+          "kind": "readiness",
+          "status": 500,
+          "ms": 21046,
+          "bytes": 148,
+          "error": "{\"message\":\"PlanExecutor error during aggregation :: caused by :: operation exceeded time limit\",\"requestId\":\"cab60e36-9cb3-45a5-8d14-6ff395742aca\"}\n\n500 !== 200\n"
+        },
+        {
+          "kind": "readiness",
+          "status": 500,
+          "ms": 20423,
+          "bytes": 148,
+          "error": "{\"message\":\"PlanExecutor error during aggregation :: caused by :: operation exceeded time limit\",\"requestId\":\"acdd9c1a-dd6c-4041-a465-38e8548eae17\"}\n\n500 !== 200\n"
+        },
+        {
+          "kind": "readiness",
+          "status": 500,
+          "ms": 20247,
+          "bytes": 148,
+          "error": "{\"message\":\"PlanExecutor error during aggregation :: caused by :: operation exceeded time limit\",\"requestId\":\"13c9d838-7753-4a2e-839e-d09de68d28f0\"}\n\n500 !== 200\n"
+        },
+        {
+          "kind": "readiness",
+          "status": 500,
+          "ms": 20263,
+          "bytes": 148,
+          "error": "{\"message\":\"PlanExecutor error during aggregation :: caused by :: operation exceeded time limit\",\"requestId\":\"13e386bc-8fc9-4518-8282-7ce87f696593\"}\n\n500 !== 200\n"
+        }
+      ]
+    }
+  ],
+  "thresholds": {
+    "readP95Ms": 2000,
+    "submitP95Ms": 3000,
+    "maxErrorRate": 0.02
+  },
+  "configuration": {
+    "apiHeapMB": 384,
+    "mongoCacheGB": 0.25,
+    "apiMongoPool": 30,
+    "globalRateLimitPerMinute": 600,
+    "redis": false
+  },
+  "build": {
+    "command": "tsc -p server/tsconfig.json",
+    "exitCode": 0,
+    "durationMs": 89082,
+    "sourceSha256": "7e77448a37575bde7e0b4d1109c36f0b660f95e9fc9d9aa666e634154de20861",
+    "compiledSha256": "c44055a507b781601d87042a3989738ed300db45437e13b1b11b2164c8273928",
+    "reusedVerifiedBuild": true,
+    "harness": {
+      "run-school-scale-validation.ts": "9935272bbc9534da1c7eb8c8f07e0d91096f7ac93197130b09960aa141258419",
+      "school-scale-fixture.ts": "85004a1387bdcec3e9e095e07510f62bf33a60560fdc5b7bf6e9e685911cf90a",
+      "school-scale-server.mjs": "67408ebc3e8350b4d1f486f1e2f5f7e4d358d66e26362ec0808c34fc2a45248a"
+    }
+  },
+  "startupIndexFailures": [],
+  "verifiedWarmReads": 5,
+  "readinessDiagnostic": {
+    "profileMillis": 2367,
+    "stages": [
+      {
+        "type": "cursor",
+        "nReturned": 1000,
+        "executionTimeMillis": 1800,
+        "totalDocsExamined": 1000,
+        "totalKeysExamined": 3003
+      },
+      {
+        "type": "lookup",
+        "from": "quizresults",
+        "totalDocsExamined": 10050,
+        "totalKeysExamined": 10050,
+        "collectionScans": 0,
+        "indexesUsed": [
+          "userId_1"
+        ]
+      },
+      {
+        "type": "lookup",
+        "from": "quizresults"
+      }
+    ]
+  },
+  "integrity": {
+    "verifiedAggregateAndProgressRows": 200,
+    "schoolSkillEvidence": 400100,
+    "newGradedResults": 50,
+    "uniqueSubmittingStudents": 50,
+    "allNewScores": 100,
+    "schoolReportCompleted": 50,
+    "teacherAudience": 25,
+    "directorAudience": 1000,
+    "foreignSchoolDenied": true
+  },
+  "database": {
+    "objects": 790797,
+    "dataSize": 1005767165,
+    "storageSize": 90513408,
+    "indexes": 567,
+    "indexSize": 194764800,
+    "totalSize": 285278208
+  },
+  "thresholdFailures": [
+    {
+      "learners": 1000,
+      "concurrency": 5,
+      "kind": "support",
+      "requests": 20,
+      "failures": 0,
+      "p50Ms": 1813,
+      "p95Ms": 2346,
+      "p99Ms": 2379,
+      "responseBytes": 45820
+    },
+    {
+      "learners": 1000,
+      "concurrency": 5,
+      "kind": "report",
+      "requests": 20,
+      "failures": 0,
+      "p50Ms": 2438,
+      "p95Ms": 3118,
+      "p99Ms": 3214,
+      "responseBytes": 57600
+    },
+    {
+      "learners": 1000,
+      "concurrency": 5,
+      "kind": "readiness",
+      "requests": 20,
+      "failures": 0,
+      "p50Ms": 4477,
+      "p95Ms": 5090,
+      "p99Ms": 5124,
+      "responseBytes": 121000
+    },
+    {
+      "learners": 10000,
+      "concurrency": 5,
+      "kind": "support",
+      "requests": 20,
+      "failures": 0,
+      "p50Ms": 2101,
+      "p95Ms": 2303,
+      "p99Ms": 2926,
+      "responseBytes": 45820
+    },
+    {
+      "learners": 10000,
+      "concurrency": 5,
+      "kind": "report",
+      "requests": 20,
+      "failures": 0,
+      "p50Ms": 2808,
+      "p95Ms": 2991,
+      "p99Ms": 3570,
+      "responseBytes": 57600
+    },
+    {
+      "learners": 10000,
+      "concurrency": 5,
+      "kind": "readiness",
+      "requests": 20,
+      "failures": 0,
+      "p50Ms": 4463,
+      "p95Ms": 5189,
+      "p99Ms": 5263,
+      "responseBytes": 121000
+    },
+    {
+      "learners": 10000,
+      "concurrency": 20,
+      "kind": "learners",
+      "requests": 20,
+      "failures": 0,
+      "p50Ms": 1686,
+      "p95Ms": 2627,
+      "p99Ms": 2817,
+      "responseBytes": 45820
+    },
+    {
+      "learners": 10000,
+      "concurrency": 20,
+      "kind": "support",
+      "requests": 20,
+      "failures": 0,
+      "p50Ms": 9311,
+      "p95Ms": 10967,
+      "p99Ms": 11001,
+      "responseBytes": 45820
+    },
+    {
+      "learners": 10000,
+      "concurrency": 20,
+      "kind": "report",
+      "requests": 20,
+      "failures": 0,
+      "p50Ms": 11198,
+      "p95Ms": 12638,
+      "p99Ms": 12735,
+      "responseBytes": 57600
+    },
+    {
+      "learners": 10000,
+      "concurrency": 20,
+      "kind": "readiness",
+      "requests": 20,
+      "failures": 4,
+      "p50Ms": 19850,
+      "p95Ms": 20423,
+      "p99Ms": 21046,
+      "responseBytes": 97420
+    }
+  ],
+  "finishedAt": "2026-10-21T05:00:32.376Z",
+  "runtime": {
+    "node": "24.11.1",
+    "mongo": "7.0.14",
+    "os": "Windows",
+    "metricsScope": "API child process only; Mongo/driver CPU and RSS are not included",
+    "responseBytesScope": "Decoded JSON response bodies only; not network/CDN/media consumption"
+  }
+}
