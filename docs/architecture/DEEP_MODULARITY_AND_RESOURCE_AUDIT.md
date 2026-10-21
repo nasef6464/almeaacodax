@@ -1,3 +1,7 @@
+## School aggregation performance — 2026-10-21, functional PASS / performance PARTIAL
+
+quizzes/infrastructure/learningEvidencePopulation streams the existing authorized canonical User audience in250identity batches, aggregates latest entire QuizResult attempts by(userId,quizId) before skill filtering, and classifies the complete population before status paging. The existing20s readiness budget spans all batches. schoolAssessmentResultEvidenceStages supplies whitelisted, date/_id-ordered latest evidence for full report and status-filtered pages; schoolAssessmentFilteredLearners consumes sorted roster batches and facets full counts plus selected page rows in Mongo; absence uses bounded completed-ID sets. Ordinary unfiltered pages retain their bounded per-page lookup. Application authorization, policy thresholds, API shapes, grading, persisted records and indexes remain unchanged. No background refresh, polling, cache or provider call.
+
 ## Live sessions — 2026-10-13 (first delivery pending)
 Content liveSessions application/http owns canonical Activity/Lesson/Course references, audience/source access, host policy and Mongo resource reservations. Shared React liveSessions components own calendar/booking/hosting presentation. Models remain in the existing monolith; source access batches bounded reads and all media stays external. See docs/audits/LIVE_SESSIONS_MANUAL_DELIVERY_2026-10-13.md; no automatic provider certification or historical backfill.
 

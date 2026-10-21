@@ -1,0 +1,378 @@
+{
+  "status": "THRESHOLD_FAIL",
+  "kind": "isolated-school-scale",
+  "startedAt": "2026-10-21T06:17:23.549Z",
+  "baseline": "eaa212294a6d3e7b3d173ce473bf914930f825e4",
+  "productionRequests": 0,
+  "providerCalls": 0,
+  "hardware": {
+    "cpuCount": 4,
+    "totalMemoryBytes": 12751806464,
+    "freeMemoryBytes": 2978881536
+  },
+  "limits": "Loopback synthetic data on this workstation; not Render capacity,10k concurrent students,login load,CDN/media bandwidth or a real school pilot.",
+  "profiles": [
+    {
+      "learners": 1000,
+      "historicalResults": 10000,
+      "schools": 1,
+      "schoolSkillEvidence": 40000,
+      "schoolSkillAggregates": 4000,
+      "concurrency": 5,
+      "overlappingWrites": 0,
+      "requests": 100,
+      "kinds": [
+        {
+          "kind": "history",
+          "requests": 20,
+          "failures": 0,
+          "p50Ms": 36,
+          "p95Ms": 82,
+          "p99Ms": 87,
+          "responseBytes": 373460
+        },
+        {
+          "kind": "learners",
+          "requests": 20,
+          "failures": 0,
+          "p50Ms": 165,
+          "p95Ms": 291,
+          "p99Ms": 294,
+          "responseBytes": 45820
+        },
+        {
+          "kind": "support",
+          "requests": 20,
+          "failures": 0,
+          "p50Ms": 309,
+          "p95Ms": 528,
+          "p99Ms": 542,
+          "responseBytes": 45820
+        },
+        {
+          "kind": "report",
+          "requests": 20,
+          "failures": 0,
+          "p50Ms": 680,
+          "p95Ms": 1054,
+          "p99Ms": 1095,
+          "responseBytes": 57600
+        },
+        {
+          "kind": "readiness",
+          "requests": 20,
+          "failures": 0,
+          "p50Ms": 1150,
+          "p95Ms": 1456,
+          "p99Ms": 1461,
+          "responseBytes": 121000
+        }
+      ],
+      "metrics": {
+        "type": "metrics",
+        "wallMs": 10178.108,
+        "meanCpuCores": 0.604827537691681,
+        "peakRssBytes": 260886528,
+        "peakHeapBytes": 123402208,
+        "eventLoopP95Ms": 36.438015
+      },
+      "failures": []
+    },
+    {
+      "learners": 10000,
+      "historicalResults": 100000,
+      "schools": 10,
+      "schoolSkillEvidence": 400000,
+      "schoolSkillAggregates": 40000,
+      "concurrency": 5,
+      "overlappingWrites": 0,
+      "requests": 100,
+      "kinds": [
+        {
+          "kind": "history",
+          "requests": 20,
+          "failures": 0,
+          "p50Ms": 39,
+          "p95Ms": 136,
+          "p99Ms": 137,
+          "responseBytes": 373460
+        },
+        {
+          "kind": "learners",
+          "requests": 20,
+          "failures": 0,
+          "p50Ms": 563,
+          "p95Ms": 851,
+          "p99Ms": 872,
+          "responseBytes": 45820
+        },
+        {
+          "kind": "support",
+          "requests": 20,
+          "failures": 0,
+          "p50Ms": 771,
+          "p95Ms": 1014,
+          "p99Ms": 1026,
+          "responseBytes": 45820
+        },
+        {
+          "kind": "report",
+          "requests": 20,
+          "failures": 0,
+          "p50Ms": 1305,
+          "p95Ms": 1620,
+          "p99Ms": 1627,
+          "responseBytes": 57600
+        },
+        {
+          "kind": "readiness",
+          "requests": 20,
+          "failures": 0,
+          "p50Ms": 1465,
+          "p95Ms": 1616,
+          "p99Ms": 1858,
+          "responseBytes": 121000
+        }
+      ],
+      "metrics": {
+        "type": "metrics",
+        "wallMs": 17157.945200000016,
+        "meanCpuCores": 0.35330570935731825,
+        "peakRssBytes": 257462272,
+        "peakHeapBytes": 122598360,
+        "eventLoopP95Ms": 41.877503
+      },
+      "failures": []
+    },
+    {
+      "learners": 10000,
+      "historicalResults": 100000,
+      "schools": 10,
+      "schoolSkillEvidence": 400100,
+      "schoolSkillAggregates": 40000,
+      "concurrency": 20,
+      "overlappingWrites": 50,
+      "requests": 150,
+      "kinds": [
+        {
+          "kind": "history",
+          "requests": 20,
+          "failures": 0,
+          "p50Ms": 678,
+          "p95Ms": 898,
+          "p99Ms": 1267,
+          "responseBytes": 373460
+        },
+        {
+          "kind": "learners",
+          "requests": 20,
+          "failures": 0,
+          "p50Ms": 2095,
+          "p95Ms": 2551,
+          "p99Ms": 2803,
+          "responseBytes": 45820
+        },
+        {
+          "kind": "report",
+          "requests": 20,
+          "failures": 0,
+          "p50Ms": 3119,
+          "p95Ms": 3628,
+          "p99Ms": 4010,
+          "responseBytes": 57600
+        },
+        {
+          "kind": "support",
+          "requests": 20,
+          "failures": 0,
+          "p50Ms": 2916,
+          "p95Ms": 3286,
+          "p99Ms": 3452,
+          "responseBytes": 45820
+        },
+        {
+          "kind": "submit",
+          "requests": 50,
+          "failures": 0,
+          "p50Ms": 2432,
+          "p95Ms": 3173,
+          "p99Ms": 4184,
+          "responseBytes": 280400
+        },
+        {
+          "kind": "readiness",
+          "requests": 20,
+          "failures": 0,
+          "p50Ms": 3361,
+          "p95Ms": 3622,
+          "p99Ms": 4163,
+          "responseBytes": 121034
+        }
+      ],
+      "metrics": {
+        "type": "metrics",
+        "wallMs": 19250.773199999996,
+        "meanCpuCores": 0.6095859048404353,
+        "peakRssBytes": 292720640,
+        "peakHeapBytes": 137311752,
+        "eventLoopP95Ms": 200.409087
+      },
+      "failures": []
+    }
+  ],
+  "thresholds": {
+    "readP95Ms": 2000,
+    "submitP95Ms": 3000,
+    "maxErrorRate": 0.02
+  },
+  "configuration": {
+    "apiHeapMB": 384,
+    "mongoCacheGB": 0.25,
+    "apiMongoPool": 30,
+    "globalRateLimitPerMinute": 600,
+    "redis": false
+  },
+  "build": {
+    "command": "tsc -p server/tsconfig.json",
+    "exitCode": 0,
+    "durationMs": 70959,
+    "sourceSha256": "dfc34e9def5f91a439f9ac854003023770e3e8639e347cccf0e39ba4993675ec",
+    "compiledSha256": "336f4e6632c3679db746a0c30fc1ff9380086f472dbbd47e66a0d249999e8cfd",
+    "harness": {
+      "run-school-scale-validation.ts": "d3dbc616e7a630d810e9f528936577724ec188cc83c8189d74513eaa7570230f",
+      "school-scale-fixture.ts": "85004a1387bdcec3e9e095e07510f62bf33a60560fdc5b7bf6e9e685911cf90a",
+      "school-scale-server.mjs": "67408ebc3e8350b4d1f486f1e2f5f7e4d358d66e26362ec0808c34fc2a45248a"
+    }
+  },
+  "startupIndexFailures": [],
+  "verifiedWarmReads": 5,
+  "readinessDiagnostic": {
+    "queries": [
+      {
+        "collection": "users",
+        "aggregateCommands": 1,
+        "profileMillis": 23,
+        "stages": [
+          {
+            "type": "cursor",
+            "nReturned": 1000,
+            "executionTimeMillis": 29,
+            "totalDocsExamined": 1000,
+            "totalKeysExamined": 3003
+          }
+        ]
+      },
+      {
+        "collection": "quizresults",
+        "aggregateCommands": 4,
+        "profileMillis": 120,
+        "stages": [
+          {
+            "type": "cursor",
+            "nReturned": 2500,
+            "executionTimeMillis": 131,
+            "totalDocsExamined": 2500,
+            "totalKeysExamined": 2501
+          }
+        ]
+      }
+    ]
+  },
+  "integrity": {
+    "verifiedAggregateAndProgressRows": 200,
+    "schoolSkillEvidence": 400100,
+    "newGradedResults": 50,
+    "uniqueSubmittingStudents": 50,
+    "allNewScores": 100,
+    "schoolReportCompleted": 50,
+    "teacherAudience": 25,
+    "directorAudience": 1000,
+    "foreignSchoolDenied": true
+  },
+  "database": {
+    "collections": 79,
+    "views": 0,
+    "objects": 790802,
+    "avgObjSize": 1271.9192591824503,
+    "dataSize": 1005836294,
+    "storageSize": 90267648,
+    "indexes": 567,
+    "indexSize": 194752512,
+    "totalSize": 285020160,
+    "scaleFactor": 1,
+    "fsUsedSize": 226932019200,
+    "fsTotalSize": 238988292096,
+    "ok": 1,
+    "$clusterTime": {
+      "clusterTime": {
+        "$timestamp": "7699002832568975453"
+      },
+      "signature": {
+        "hash": "AAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "keyId": 0
+      }
+    },
+    "operationTime": {
+      "$timestamp": "7699002832568975453"
+    }
+  },
+  "thresholdFailures": [
+    {
+      "learners": 10000,
+      "concurrency": 20,
+      "kind": "learners",
+      "requests": 20,
+      "failures": 0,
+      "p50Ms": 2095,
+      "p95Ms": 2551,
+      "p99Ms": 2803,
+      "responseBytes": 45820
+    },
+    {
+      "learners": 10000,
+      "concurrency": 20,
+      "kind": "report",
+      "requests": 20,
+      "failures": 0,
+      "p50Ms": 3119,
+      "p95Ms": 3628,
+      "p99Ms": 4010,
+      "responseBytes": 57600
+    },
+    {
+      "learners": 10000,
+      "concurrency": 20,
+      "kind": "support",
+      "requests": 20,
+      "failures": 0,
+      "p50Ms": 2916,
+      "p95Ms": 3286,
+      "p99Ms": 3452,
+      "responseBytes": 45820
+    },
+    {
+      "learners": 10000,
+      "concurrency": 20,
+      "kind": "submit",
+      "requests": 50,
+      "failures": 0,
+      "p50Ms": 2432,
+      "p95Ms": 3173,
+      "p99Ms": 4184,
+      "responseBytes": 280400
+    },
+    {
+      "learners": 10000,
+      "concurrency": 20,
+      "kind": "readiness",
+      "requests": 20,
+      "failures": 0,
+      "p50Ms": 3361,
+      "p95Ms": 3622,
+      "p99Ms": 4163,
+      "responseBytes": 121034
+    }
+  ],
+  "finishedAt": "2026-10-21T06:23:13.164Z",
+  "error": "See preserved per-kind latency/error evidence in scratch/school-scale-full.json\n\n5 !== 0\n"
+}
