@@ -309,9 +309,11 @@ async function run() {
   );
   assert.equal(
     (await get(scopedTeacherHistoryEndpoint, teacherToken)).status,
-    200,
-    "assignment revocation must not erase the teacher's historical school reports while school membership remains active",
+    403,
+    "a teacher with no active material cannot read historical school reports; records remain stored",
   );
+  assert.equal((await get(teacherEndpoint, supervisorToken)).status,200,"School supervisor retains the saved session after teacher assignment revocation");
+  assert.ok(await ClassroomSessionModel.exists({_id:sessionId}),"Revocation must preserve the original saved record");
   const assignmentRevokedTeacherSocket = await connectAuthorized(baseUrl, teacherToken);
   assert.equal(
     (await joinWorkspace(assignmentRevokedTeacherSocket, `classroom:${sessionId}`)).ok,
@@ -325,6 +327,7 @@ async function run() {
     { $set: { status: "active" } },
   );
   assert.equal((await get(teacherEndpoint, teacherToken)).status, 200, "restoring the teaching assignment should restore eligible runtime access");
+  assert.equal((await get(scopedTeacherHistoryEndpoint, teacherToken)).status,200,"Explicit material restoration restores eligible history reads");
   const restoredTeacherSocket = await connectAuthorized(baseUrl, teacherToken);
   assert.equal((await joinWorkspace(restoredTeacherSocket, `classroom:${sessionId}`)).ok, true, "restoring the teaching assignment should restore realtime ownership access");
   restoredTeacherSocket.disconnect();

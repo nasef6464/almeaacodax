@@ -62,7 +62,7 @@ try{
  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'No viewport overflow');assert.deepEqual(errors,[]);
  await page.evaluate(()=>scrollTo(0,0));
  await page.screenshot({path:artifacts+'/'+width+'.png',fullPage:true});
- await select('المعلمون والتكليفات');await page.getByLabel('مسار التكليف',{exact:true}).selectOption('p');await page.getByLabel('مادة التكليف (اختياري)',{exact:true}).selectOption('math');
+ await select('المعلمون والتكليفات');await page.getByLabel('مسار التكليف',{exact:true}).selectOption('p');await page.getByLabel('مادة المعلم',{exact:true}).selectOption('math');
  await page.evaluate(()=>window.delaySchool2=true);
  const schoolSelector=page.getByRole('combobox').filter({has:page.locator('option[value="school2"]')});
  const changeSchool=async id=>{await schoolSelector.selectOption(id);await page.getByRole('navigation',{name:'مسار الصفحة',exact:true}).getByText('الملخص العام',{exact:true}).waitFor();};
