@@ -1,0 +1,30 @@
+import assert from 'node:assert/strict';
+import {isolatedMongo} from './school-assessment-test-fixture.js';
+const close=await isolatedMongo();let server:any;
+try{
+ Object.assign(process.env,{AI_PROVIDER:'none',REDIS_URL:'',NOTIFICATION_QUEUE_ENABLED:'false',RATE_LIMIT_REDIS_ENABLED:'false',SENTRY_DSN:''});
+ const {UserModel}=await import('../server/src/models/User.js');const {GroupModel}=await import('../server/src/models/Group.js');
+ const {TeachingAssignmentModel}=await import('../server/src/models/TeachingAssignment.js');const {SchoolMembershipModel}=await import('../server/src/models/SchoolMembership.js');const {SchoolContractModel}=await import('../server/src/models/SchoolContract.js');
+ const school=await GroupModel.create({name:'owned',type:'SCHOOL',ownerId:'admin'}),other=await GroupModel.create({name:'other',type:'SCHOOL',ownerId:'admin'});
+ const director=await UserModel.create({name:'director',role:'school_admin',email:'legacy-director@isolated.test',passwordHash:'test',isActive:true});
+ const teacher=await UserModel.create({name:'teacher',role:'teacher',email:'legacy-teacher@isolated.test',passwordHash:'test',isActive:true});
+ const membership=await SchoolMembershipModel.create({userId:String(director._id),schoolId:String(school._id),role:'school_admin',status:'active',permissions:['SCHOOL_TEACHERS_ASSIGN']});
+ await SchoolMembershipModel.create({userId:String(teacher._id),schoolId:String(school._id),role:'teacher',status:'active'});await SchoolContractModel.create({schoolId:String(school._id),status:'active',modules:['SCHOOL_CORE']});
+ const oldClass=await GroupModel.create({name:'removed',type:'CLASS',parentId:String(school._id),ownerId:'admin'});
+ const row=await TeachingAssignmentModel.create({schoolId:String(school._id),teacherId:String(teacher._id),classId:String(oldClass._id),subjectId:'',status:'active'});
+ const foreign=await TeachingAssignmentModel.create({schoolId:String(other._id),teacherId:String(teacher._id),classId:String(oldClass._id),subjectId:'foreign',status:'active'});await GroupModel.deleteOne({_id:oldClass._id});
+ const {createApp}=await import('../server/src/app.js');const {signAccessToken}=await import('../server/src/utils/jwt.js');server=createApp().listen(0,'127.0.0.1');await new Promise<void>(r=>server.once('listening',r));const base='http://127.0.0.1:'+server.address().port+'/api';
+ const csrfResponse=await fetch(base+'/auth/csrf-token');const csrf:any=await csrfResponse.json();const cookie=csrfResponse.headers.getSetCookie().map(v=>v.split(';')[0]).join('; ');const token=signAccessToken({id:String(director._id),role:'school_admin'});
+ const payload={teacherId:String(teacher._id),classId:String(oldClass._id),subjectId:'',status:'inactive'};
+ const request=(body:any,schoolId=String(school._id))=>fetch(base+'/school-access/director/schools/'+schoolId+'/assignments',{method:'PUT',headers:{authorization:'Bearer '+token,'content-type':'application/json','x-csrf-token':csrf.csrfToken,cookie},body:JSON.stringify(body)});
+ assert.equal((await request({...payload,status:'active',subjectId:'math'})).status,400,'Missing class must never grant active access');
+ const stopped=await request(payload);assert.equal(stopped.status,200,'A director must be able to stop an existing orphan assignment in their school');
+ const body:any=await stopped.json();assert.equal(body.assignment.assignmentId,String(row._id));assert.equal(body.assignment.status,'inactive');assert.equal(await TeachingAssignmentModel.countDocuments(),2,'No record deletion or synthetic inactive upsert');assert.equal((await TeachingAssignmentModel.findById(foreign._id))!.status,'active');
+ assert.equal((await request(payload)).status,200,'Stopping the same existing assignment is retry-safe');
+ assert.equal((await request({...payload,subjectId:'not-existing'})).status,400,'Do not invent missing assignment records');
+ assert.equal((await request({...payload,subjectId:'foreign'})).status,400,'Foreign-school matching tuple cannot be stopped through owned scope');
+ assert.equal((await request({...payload,subjectId:'foreign'},String(other._id))).status,403);
+ await TeachingAssignmentModel.updateOne({_id:row._id},{$set:{status:'active'}});await SchoolMembershipModel.updateOne({_id:membership._id},{$set:{status:'inactive'}});
+ assert.equal((await request(payload)).status,403);assert.equal((await TeachingAssignmentModel.findById(row._id))!.status,'active','Revoked director cannot stop assignments');
+ console.log('PASS legacy director assignment stop: existing-only,missing-class activation denied,retry-safe,no deletion,no foreign-school write,revoked capability denied');
+}finally{if(server){server.closeAllConnections?.();await new Promise<void>(r=>server.close(()=>r()));}await close();}

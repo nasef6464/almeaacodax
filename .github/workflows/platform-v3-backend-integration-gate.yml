@@ -131,6 +131,7 @@ jobs:
           server/node_modules/.bin/tsx scripts/test-school-assessment-commands.ts
           server/node_modules/.bin/tsx scripts/test-school-assessment-commands-http.ts
           server/node_modules/.bin/tsx scripts/test-director-assessment-management.ts
+          server/node_modules/.bin/tsx scripts/test-school-director-legacy-assignment.ts
           server/node_modules/.bin/tsx scripts/test-school-assessment-subjects.ts
           server/node_modules/.bin/tsx scripts/test-school-assessment-subject-persistence.ts
           server/node_modules/.bin/tsx scripts/test-school-assessment-section-evidence.ts

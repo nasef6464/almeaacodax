@@ -201,6 +201,16 @@ export const listSchoolDirectorTeachers = async (schoolId: string) => {
 export const upsertSchoolDirectorTeachingAssignment = async (schoolId: string, payload: { teacherId: string; classId: string; subjectId?: string; status: "active" | "inactive" }) => {
   const scope = await loadSchoolScope(schoolId);
   const classroom = scope.classes.find((candidate) => idOf(candidate) === payload.classId || String(candidate.id || "") === payload.classId);
+  // Revocation of an existing scoped record must remain possible after its class disappears.
+  if (!classroom && payload.status === "inactive") {
+    const stopped = await TeachingAssignmentModel.findOneAndUpdate(
+      { schoolId: scope.schoolId, teacherId: payload.teacherId, classId: payload.classId, subjectId: payload.subjectId || "" },
+      { $set: { status: "inactive" } },
+      { new: true, runValidators: true },
+    ).lean();
+    if (!stopped) throw new SchoolDirectorOperationError("Existing assignment not found in this school", 400);
+    return { assignment: { assignmentId: idOf(stopped), teacherId: String(stopped.teacherId), classId: String(stopped.classId), subjectId: String(stopped.subjectId || ""), status: String(stopped.status) } };
+  }
   if (!classroom) throw new SchoolDirectorOperationError("Class does not belong to this school", 400);
   const teacherMembership = await SchoolMembershipModel.exists({ schoolId: scope.schoolId, userId: payload.teacherId, role: "teacher", status: "active" });
   if (!teacherMembership) throw new SchoolDirectorOperationError("Teacher is not active in this school", 400);
