@@ -1,0 +1,27 @@
+{
+  "project": "PHYS26",
+  "run": "RUN019",
+  "status": "UNRESOLVED_NOT_IMPORTABLE",
+  "source": "PHYS26_RUN012_SOURCE_HOLDS_PLUS_RUN013_TO_RUN017_PRIVATE_TRIAGE",
+  "rightsToRedistribute": "UNVERIFIED",
+  "importAllowed": false,
+  "baselineProtectedIds": [
+    "PHYS26-COL26-L14-Q039",
+    "PHYS26-COL26-L15-Q013",
+    "PHYS26-COL26-L27-Q024",
+    "PHYS26-COL26-L22-Q057",
+    "PHYS26-COL26-L07-Q011",
+    "PHYS26-COL26-L19-Q005",
+    "PHYS26-COL26-L16-Q009",
+    "PHYS26-COL26-L02-Q074",
+    "PHYS26-COL26-L06-Q004",
+    "PHYS26-COL26-L28-Q072",
+    "PHYS26-COL26-L02-Q068",
+    "PHYS26-COL26-L05-Q040",
+    "PHYS26-COL26-L02-Q069",
+    "PHYS26-COL26-L02-Q033",
+    "PHYS26-COL26-L05-Q017",
+    "PHYS26-COL26-L24-Q005"
+  ],
+  "notes": "Metadata-only IDs. 4 original PDF source holds + 12 provisional crop-based editorial holds. No source text or images. Never treat these as certified corrections."
+}
