@@ -26,7 +26,7 @@ import { isTrueMockExam } from "../../utils/quizPlacement";
 import { useAssessmentCatalog } from "./hooks/useAssessmentCatalog";
 import { AssessmentOrderControl } from "./components/AssessmentOrderControl";
 import { matchesSubjectCatalog, visibleInSubjectCatalog, compareAssessmentPresentation } from "../../utils/assessmentCatalogPresentation";
-import { resolveQuizLearningAccessType, setQuizLearningSlotVisibility, setQuizLearningSlotAccess } from "../../utils/quizLearningPlacement";
+import { getQuizLearningPlacement, resolveQuizLearningAccessType, setQuizLearningSlotVisibility, setQuizLearningSlotAccess } from "../../utils/quizLearningPlacement";
 
 type PanelKind = "drill" | "test";
 
@@ -218,7 +218,17 @@ export const SubjectQuizzesPanel: React.FC<SubjectQuizzesPanelProps> = ({ subjec
           if (visFilter === "hidden" && visibleInSubjectCatalog(q,kind)) return false;
           return true;
         })
-        .sort(compareAssessmentPresentation),
+        // Match the learning-tab order: explicit admin ranks first, then the
+        // subject placement order (main-topic drills 1..61), not creation time.
+        .sort((a, b) => {
+          const explicitPriority = (b.displayPriority ?? -1) - (a.displayPriority ?? -1);
+          if (explicitPriority) return explicitPriority;
+          const slot = kind === "drill" ? "training" : "tests";
+          const aPlacementOrder = getQuizLearningPlacement(a, { pathId: a.pathId, subjectId, slot })?.order;
+          const bPlacementOrder = getQuizLearningPlacement(b, { pathId: b.pathId, subjectId, slot })?.order;
+          const orderDelta = (aPlacementOrder ?? Number.MAX_SAFE_INTEGER) - (bPlacementOrder ?? Number.MAX_SAFE_INTEGER);
+          return orderDelta || compareAssessmentPresentation(a, b);
+        }),
     [subjectQuizzes, search, visFilter]
   );
 
@@ -304,9 +314,15 @@ export const SubjectQuizzesPanel: React.FC<SubjectQuizzesPanelProps> = ({ subjec
         </div>
         <div className="rounded-2xl border border-gray-100 bg-gray-50 p-3 text-center">
           <div className="text-2xl font-black text-gray-500">{hiddenCount}</div>
-          <div className="text-[10px] font-bold text-gray-500 mt-0.5">مخفي / مسودة</div>
+          <div className="text-[10px] font-bold text-gray-500 mt-0.5">غير ظاهر في هذا التبويب</div>
         </div>
       </div>
+
+      {kind === "drill" && (
+        <p className="text-[11px] font-medium text-gray-500">
+          العدادات تخص السجلات المحمّلة فقط. تدريبات التأسيس مرتبطة بصفحات الموضوعات، وقد تكون معتمدة ومنشورة هناك دون الظهور في تبويب التدريبات. اضغط «تحميل المزيد» لاستكمال القائمة.
+        </p>
+      )}
 
       <div className="flex flex-wrap items-center gap-2">
         <label className="relative flex-1 min-w-[200px]">
