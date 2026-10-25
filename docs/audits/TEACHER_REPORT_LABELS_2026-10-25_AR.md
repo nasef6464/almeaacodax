@@ -1,5 +1,9 @@
 # تسميات تقارير المعلم واستعادة الإتاحة — 2026-10-25
 
+## إثبات الإغلاق بعد النشر
+
+PR593/source9c455bcc4a42a32384cc58d198d0b44beef488fe:17SUCCESS/5conditionalSKIP/3requiredPASS؛merge b4e46e71f64f6c543c557c6caf57a97a3890a37b. Vercel dpl_BrJrt59RkmPrZryFhHrgLikyPGUM READY وRender dep-dbeshndg1s2s739mqnv0 LIVE؛هويةreadinessمطابقة. اختبارمنشور390/1440يفحصtop-hitلمركززرالإغلاقثمينقرهويؤكداختفاءdialog؛نجحبعكسالعينةالقديمةعلى390.30قراءةGET/0أخطاءواجهةأوقراءة/0overflow/0كتاباتمجال/0مزود. لقطة390فُحصتبصريًا:العنوانوالإغلاقوExcelأمامالرأسوالتمريرداخلللمحتوى. دليلخاصمحلي output/playwright/teacher-report-modal-final-2026-10-25/proof.json. ScopeVERIFIED_SCOPED_PUBLISHED؛لااعتمادلكلاللوحاتأولسعةإنتاج،ولاتأكيدلسبباستضافة429الأساسي.الخطةالمجانيةباقيةولانعيدضبطالتكليفاتأوالنتائج.
+
 ## نتيجة نشر التسميات وملاحظة نافذة الجوال
 
 PR592/source d9c74a93 اجتاز17SUCCESS و5تخطياتمشروطة وجميع3البواباتالمطلوبةPASS؛دُمج5d947e0fbd7c4122774588c207bd6e3f835f4d8f. Vercel dpl_GDqGSUtbsNSjkQeMmZvMWYHTtwft READY وRender dep-dbes5llg1s2s739mhg3g LIVE. هويةreadiness مطابقة. فحصمنشوربعدالنشر3تبويبات×390/1440:6PASS/89GET/0أخطاءواجهةأوقراءة/0overflow/0كتاباتمجال/0مزود،واختفتIDsمننصالتقرير. دليلخاصمحلي output/playwright/configured-teacher-tabs-final-2026-10-25/proof.json.
