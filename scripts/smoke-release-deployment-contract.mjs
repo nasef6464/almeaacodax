@@ -28,6 +28,7 @@ assert(
 );
 
 const roleGate = read('.github/workflows/platform-v3-live-role-gate.yml');
+assert(roleGate.includes('UI_AUDIT_API_BASE_URL: https://almeaacodax.vercel.app/api'), 'live role checks must use the canonical site API like post-deploy smoke');
 const roleWait = roleGate.indexOf('- name: Wait for published release before role authentication');
 const roleAuth = roleGate.indexOf('- name: Production role auth smoke');
 assert(roleWait >= 0 && roleAuth > roleWait, 'live role auth must wait for the published revision first');
