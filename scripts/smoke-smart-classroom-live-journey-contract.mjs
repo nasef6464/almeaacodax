@@ -52,7 +52,7 @@ check('switching batches closes the previous active batch', classroomLifecycle.i
 check('ending the session closes the active batch', routeSupport.includes('activeBatch.endedAt = endedAt') && routeSupport.includes('session.activeBatchId = ""'));
 check('canonical report includes per-batch totals', reportBuilder.includes('durationSeconds') && reportBuilder.includes('accuracy: answered > 0 ? Math.round((correct / answered) * 100) : null'));
 check('canonical batch report carries skill ids', reportBuilder.includes('skillIds = Array.from(new Set(batchQuestions.flatMap'));
-check('teacher report UI surfaces batch accuracy duration and skills', reportsUi.includes('batch.totals.accuracy') && reportsUi.includes('formatClassroomDuration(batch.durationSeconds)') && reportsUi.includes('batch.skillIds.join') && reportViewModel.includes('durationSeconds'));
+check('teacher report UI surfaces batch accuracy duration and skills', reportsUi.includes('batch.totals.accuracy') && reportsUi.includes('formatClassroomDuration(batch.durationSeconds)') && reportsUi.includes('batch.skillIds.map(skillLabel).join') && reportsUi.includes('schoolSkillLabel(id, skills, nestedSkills, subjects)') && reportViewModel.includes('durationSeconds'));
 check('live push UI previews standalone question images', pushModal.includes('question.imageUrl'));
 check('student current-question read requires explicit participant', studentRoutes.includes('Join the session before viewing questions'));
 check('student answer requires explicit participant', studentRoutes.includes('Join the session before answering'));
