@@ -1,3 +1,7 @@
+## تسميات التقارير منشورة / إغلاق نافذة الجوال — IMPLEMENTED_LOCAL — 2026-10-25
+
+PR592 دُمج5d947e0f؛source d9c74a93:17SUCCESS/5conditionalSKIP/3requiredPASS،VercelREADYوRenderLIVEوهويةreadinessمطابقة. تحققالتسميات6حالات/89GET/0أخطاءأوoverflowأوكتاباتمجالأومزود. فحصبصريلاحقكشفزرإغلاقتفاصيلالحصةخلفرأسالجوال،وأثبتelementFromPoint اعتراضمركزالزر؛لايعنيPASSالتسمياتسلامةكلعناصرالنافذة. إصلاحصغيريعيدDashboardDialogالموجودمععنوانثابتومحتوىقابلللتمريروزرإغلاقمسمى. اختبارالمتصفحRED0dialog!=1ثمGREENللهروبمنroottransformوالرأسfixed،إغلاق390/1280واستعادةbodyoverflow؛عقد58/58PASSومراجعةبلاP1/P2. الفرعcodex/classroom-report-mobile-dialog ينتظرCIوالنشر. لاترقيةللمجانيولاتغييربياناتأوصلاحيات. المرجع docs/audits/TEACHER_REPORT_LABELS_2026-10-25_AR.md.
+
 ## استعادة الإتاحة وتصحيح تسميات التقارير — IMPLEMENTED_LOCAL — 2026-10-25
 
 بعدتفويض«اعمل المناسب»،إعادةنشرواحدةلنفسmain e09ebd318da9 دونتغييرخطةRenderالمجانية أعادتالخدمة200/ready=true؛deploy dep-dberl1favr4c73btbt8g live. لايثبتذلكسببقيدhibernate-rate-limited. دخولالمعلموفحص3تبويبات×390/1440:6PASS/86GET/0أخطاءقراءةأوواجهةأوoverflow/0كتاباتمجال/0مزود. الصوركشفتتسمياتتقاريرتعرضIDs؛إصلاحعرضمحدوديعيداستعمالمحلالتصنيفوالتكليفاتفيالقائمةوالتفاصيلوالفلاتروالتصدير،دونتغييرنتائجأوصلاحيات. اختبارالمتصفحREDفصل0!=2ثمGREEN؛مراجعةمستقلةبلاP1/P2. Typecheck/build وCIوالنشرالنهائيقيدالإكمال؛التحققعلىe09 لايثبتنشرالتصحيح. المرجع docs/audits/TEACHER_REPORT_LABELS_2026-10-25_AR.md. لاترقيةمدفوعةولااستدعاءاتمزود.

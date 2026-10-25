@@ -13,6 +13,7 @@ import {
 import { api } from '../../services/api';
 import { useStore } from '../../store/useStore';
 import { schoolCatalogLabel, schoolSkillLabel } from '../../utils/schoolSkillsDisplay';
+import { DashboardDialog } from '../DashboardDialog';
 import { useClassroomTeacherReports } from '../../hooks/useClassroomTeacherReports';
 import { ClassroomStudentReportTable } from './ClassroomStudentReportTable';
 import {ClassroomComparisonPanel} from './ClassroomComparisonPanel';
@@ -255,12 +256,12 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
       </div>
 
       {selectedReport && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm">
-          <div className="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-3xl bg-white p-6 shadow-2xl dark:bg-slate-900">
-            <div className="flex items-start justify-between gap-4">
+        <DashboardDialog label="تقرير الحصة" onClose={() => setSelectedReport(null)} className="max-w-4xl rounded-3xl bg-white shadow-2xl dark:bg-slate-900">
+            <div className="flex shrink-0 items-start justify-between gap-4 border-b border-slate-100 p-4 dark:border-slate-800">
               <div><h3 className="text-xl font-black text-slate-900 dark:text-white">{classLabel(selectedReport)}</h3><p className="mt-1 text-xs text-slate-500">{schoolCatalogLabel(subjects, selectedReport.subjectName, 'مادة غير مصنفة')} · {selectedReport.questions.length} سؤال</p></div>
-              <div className="flex items-center gap-2"><button type="button" onClick={() => exportExcel(selectedReport)} className="inline-flex items-center gap-1 rounded-xl bg-emerald-600 px-3 py-2 text-xs font-black text-white"><Download size={14} /> Excel</button><button type="button" onClick={() => setSelectedReport(null)} className="rounded-xl p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"><X size={18} /></button></div>
+              <div className="flex items-center gap-2"><button type="button" onClick={() => exportExcel(selectedReport)} className="inline-flex items-center gap-1 rounded-xl bg-emerald-600 px-3 py-2 text-xs font-black text-white"><Download size={14} /> Excel</button><button type="button" aria-label="إغلاق تقرير الحصة" onClick={() => setSelectedReport(null)} className="rounded-xl p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"><X size={18} /></button></div>
             </div>
+            <div className="overflow-y-auto p-4">
             <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4"><Kpi label="الحضور" value={`${selectedReport.roster.joined}/${selectedReport.roster.expected}`} /><Kpi label="الإجابات" value={selectedReport.totals.responses} /><Kpi label="الصحيح" value={selectedReport.totals.correct} /><Kpi label="مدة الحصة" value={selectedReport.durationMinutes === null ? '—' : `${selectedReport.durationMinutes} د`} /></div>
             {studentDetail.loading ? <p className="mt-4 text-xs" role="status">جارٍ تحميل تقييم الطلاب…</p> : studentDetail.error ? <div className="mt-4 flex flex-wrap items-center gap-3"><p className="text-xs text-rose-600" role="alert">{studentDetail.error}</p><button type="button" onClick={() => setDetailRetry((value) => value + 1)} className="rounded-xl border border-slate-200 px-3 py-2 text-xs font-bold">إعادة تحميل تفاصيل الطلاب</button></div> : <ClassroomStudentReportTable students={studentDetail.students} complete={studentDetail.complete} />}
             {selectedReport.batches.length > 0 && (
@@ -285,7 +286,7 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
               {selectedReport.questions.map((question) => <div key={question.questionId} className="rounded-2xl border border-slate-100 p-4 dark:border-slate-800"><p className="text-sm font-black text-slate-900 dark:text-white">{question.index + 1}. {question.text}</p><div className="mt-2 flex flex-wrap gap-2 text-[11px] font-bold text-slate-500"><span>{question.answered} إجابة</span><span>{question.correct} صحيحة</span><span>{question.wrong} خاطئة</span>{question.skillIds.length > 0 && <span>المهارات: {question.skillIds.map(skillLabel).join('، ')}</span>}</div></div>)}
             </div>
           </div>
-        </div>
+        </DashboardDialog>
       )}
     </section>
   );

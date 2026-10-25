@@ -1,3 +1,6 @@
+## Classroom mobile report dialog — IMPLEMENTED_LOCAL — 2026-10-25
+PR592/source d9c74a93 merged5d947e0f with17SUCCESS/5conditionalSKIP/3requiredPASS; productionlabels6cases/89GET/0errors/0writes PASS. Subsequent published hit-test proves old reportclose blocked by mobileheader at40,74. Bounded reuse of existing DashboardDialog with stableheader/scrollbody/namedclose; no sharedhelper/data/API/permission change. BrowserRED0dialog!=1→GREEN desktop/mobileclose,transformedroot/fixedheader/bodyoverflow; contract58/58PASS, independentreview noP1/P2. Newbranch codex/classroom-report-mobile-dialog requires exact-headCI and publishedclosehitproof. Keepfreeplan and4unownedgeneratedchanges.
+
 ## Teacher report labels — IMPLEMENTED_LOCAL — 2026-10-25
 Same-main recovery redeploy e09ebd318da9/dep-dberl1favr4c73btbt8g restored200ready on existingfree plan. Configured teacher3tabs×390/1440:6PASS/86GET/0pageerrors/0failedreads/0overflow/0domainwrites/0providers. Screenshot review found rawclass/skillIDs; SmartClassroomReportsSection now reuses existing taxonomyhelpers/assignments for display only. RED missingclass0!=2 thenGREEN browserregression; independentreview noP1/P2. Finaltypecheck/build/CI/publishedlabelproofpending. Preserve4unownedgeneratedfiles. No newprovider orpaidplan authorized. Reference docs/audits/TEACHER_REPORT_LABELS_2026-10-25_AR.md.
 
