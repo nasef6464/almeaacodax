@@ -11,6 +11,8 @@ import {
   Zap,
 } from 'lucide-react';
 import { api } from '../../services/api';
+import { useStore } from '../../store/useStore';
+import { schoolCatalogLabel, schoolSkillLabel } from '../../utils/schoolSkillsDisplay';
 import { useClassroomTeacherReports } from '../../hooks/useClassroomTeacherReports';
 import { ClassroomStudentReportTable } from './ClassroomStudentReportTable';
 import {ClassroomComparisonPanel} from './ClassroomComparisonPanel';
@@ -37,6 +39,13 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
   smartClassroomEnabled,
   onPrepareIntervention,
 }) => {
+  const { paths, subjects, skills, nestedSkills = [] } = useStore();
+  const skillLabel = (id: string) => schoolSkillLabel(id, skills, nestedSkills, subjects);
+  const classLabel = (report: CanonicalClassroomReport) => schoolCatalogLabel(
+    assignments.map(({ classId, className }) => ({ id: classId, name: className })),
+    report.classId,
+    schoolCatalogLabel([], report.className, 'فصل غير مصنف'),
+  );
   const { reports, loading, error, reload: loadReports } = useClassroomTeacherReports(schoolId, smartClassroomEnabled);
   const [selectedReport, setSelectedReport] = useState<CanonicalClassroomReport | null>(null);
   const [timeFilter, setTimeFilter] = useState<ClassroomReportTimeFilter>('all');
@@ -133,7 +142,7 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
       <tr>
         <td>${index + 1}</td>
         <td>${question.text}</td>
-        <td>${question.skillIds.join('، ') || question.subject || '—'}</td>
+        <td>${question.skillIds.map(skillLabel).join('، ') || schoolCatalogLabel(subjects, question.subjectId || question.subject, 'مادة غير مصنفة')}</td>
         <td>${question.answered}</td>
         <td>${question.correct}</td>
         <td>${question.wrong}</td>
@@ -142,7 +151,7 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
     const html = `
       <table border="1">
         <thead>
-          <tr><th colspan="6">تقرير الحصة الذكية - ${report.className || report.classId}</th></tr>
+          <tr><th colspan="6">تقرير الحصة الذكية - ${classLabel(report)}</th></tr>
           <tr><th>الدفعة</th><th>الأسئلة</th><th>الإجابات</th><th>الصحيح</th><th>الخطأ</th><th>الدقة</th></tr>
         </thead>
         <tbody>${batchRows}</tbody>
@@ -187,11 +196,11 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
             setSelectedSubjectFilter('all');
           }} className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold dark:border-slate-700 dark:bg-slate-800">
             <option value="all">كل المسارات</option>
-            {pathOptions.map((pathId) => <option key={pathId} value={pathId}>{pathId}</option>)}
+            {pathOptions.map((pathId) => <option key={pathId} value={pathId}>{schoolCatalogLabel(paths, pathId, 'مسار غير مصنف')}</option>)}
           </select>
           <select value={selectedSubjectFilter} onChange={(event) => setSelectedSubjectFilter(event.target.value)} className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold dark:border-slate-700 dark:bg-slate-800">
             <option value="all">كل المواد</option>
-            {subjectOptions.map((subject) => <option key={subject} value={subject}>{subject}</option>)}
+            {subjectOptions.map((subject) => <option key={subject} value={subject}>{schoolCatalogLabel(subjects, subject, 'مادة غير مصنفة')}</option>)}
           </select>
                     <select value={timeFilter} onChange={(event) => setTimeFilter(event.target.value as ClassroomReportTimeFilter)} className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold dark:border-slate-700 dark:bg-slate-800">
             <option value="all">كامل الفترة</option><option value="month">آخر شهر</option><option value="week">آخر أسبوع</option><option value="today">اليوم</option>
@@ -218,7 +227,7 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
           <div className="mt-4 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
             {skillDiagnostics.slice(0, 9).map((skill) => (
               <div key={skill.scopeKey} className="rounded-xl border border-slate-100 p-4 dark:border-slate-800">
-                <div className="flex items-start justify-between gap-2"><span className="text-xs font-black text-slate-900 dark:text-white">{skill.skillName}</span><span className={`rounded-full px-2 py-0.5 text-[10px] font-black ${skill.isWeak ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-700'}`}>{skill.accuracy}%</span></div>
+                <div className="flex items-start justify-between gap-2"><span className="text-xs font-black text-slate-900 dark:text-white">{skillLabel(skill.skillId)}</span><span className={`rounded-full px-2 py-0.5 text-[10px] font-black ${skill.isWeak ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-700'}`}>{skill.accuracy}%</span></div>
                 <p className="mt-2 text-[11px] text-slate-500">{skill.correct}/{skill.totalAnswered} صحيحة · {skill.sessions.size} حصة</p>
                 {skill.isWeak && onPrepareIntervention && !skill.skillId.startsWith('subject:') && <button type="button" onClick={() => onPrepareIntervention(skill.skillId)} className="mt-3 inline-flex items-center gap-1 text-[11px] font-black text-rose-600"><Zap size={12} /> إعداد تدخل علاجي</button>}
               </div>
@@ -237,8 +246,8 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
         ) : filteredReports.map((report) => {
           const accuracy = report.totals.responses ? Math.round((report.totals.correct / report.totals.responses) * 100) : null;
           return (
-            <div key={report.sessionId} className="flex items-center gap-2 border-b border-slate-100 px-3 dark:border-slate-800"><input type="checkbox" aria-label={`اختيار حصة ${report.subjectName||report.className} ${report.day}`} checked={selectedSessionIds.includes(report.sessionId)} disabled={(!selectedSessionIds.includes(report.sessionId)&&selectedSessionIds.length>=20)||reports.find(r=>r.sessionId===report.sessionId)?.questions.length!==report.questions.length} onChange={e=>{setComparisonOpen(false);setSelectedSessionIds(ids=>e.target.checked?[...ids,report.sessionId]:ids.filter(id=>id!==report.sessionId));}} className="h-5 w-5 shrink-0"/><button type="button" onClick={() => setSelectedReport(report)} className="flex min-w-0 flex-1 items-center justify-between gap-4 p-4 text-right hover:bg-slate-50 dark:hover:bg-slate-800/50">
-              <div><div className="text-sm font-black text-slate-900 dark:text-white">{report.className || report.classId}</div><div className="mt-1 text-xs text-slate-500">{report.subjectName || '—'} · {report.day || '—'}{report.period ? ` · الحصة ${report.period}` : ''}{report.batches.length ? ` · ${report.batches.length} دفعات` : ''}</div></div>
+            <div key={report.sessionId} className="flex items-center gap-2 border-b border-slate-100 px-3 dark:border-slate-800"><input type="checkbox" aria-label={`اختيار حصة ${schoolCatalogLabel(subjects, report.subjectName, classLabel(report))} ${report.day}`} checked={selectedSessionIds.includes(report.sessionId)} disabled={(!selectedSessionIds.includes(report.sessionId)&&selectedSessionIds.length>=20)||reports.find(r=>r.sessionId===report.sessionId)?.questions.length!==report.questions.length} onChange={e=>{setComparisonOpen(false);setSelectedSessionIds(ids=>e.target.checked?[...ids,report.sessionId]:ids.filter(id=>id!==report.sessionId));}} className="h-5 w-5 shrink-0"/><button type="button" onClick={() => setSelectedReport(report)} className="flex min-w-0 flex-1 items-center justify-between gap-4 p-4 text-right hover:bg-slate-50 dark:hover:bg-slate-800/50">
+              <div><div className="text-sm font-black text-slate-900 dark:text-white">{classLabel(report)}</div><div className="mt-1 text-xs text-slate-500">{schoolCatalogLabel(subjects, report.subjectName, 'مادة غير مصنفة')} · {report.day || '—'}{report.period ? ` · الحصة ${report.period}` : ''}{report.batches.length ? ` · ${report.batches.length} دفعات` : ''}</div></div>
               <div className="flex items-center gap-4 text-xs font-bold text-slate-600 dark:text-slate-300"><span className="inline-flex items-center gap-1"><Users size={14} /> {report.roster.joined}/{report.roster.expected}</span><span className="inline-flex items-center gap-1"><CheckCircle2 size={14} /> {accuracy === null ? '—' : `${accuracy}%`}</span></div>
             </button></div>
           );
@@ -249,7 +258,7 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm">
           <div className="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-3xl bg-white p-6 shadow-2xl dark:bg-slate-900">
             <div className="flex items-start justify-between gap-4">
-              <div><h3 className="text-xl font-black text-slate-900 dark:text-white">{selectedReport.className || selectedReport.classId}</h3><p className="mt-1 text-xs text-slate-500">{selectedReport.subjectName || '—'} · {selectedReport.questions.length} سؤال</p></div>
+              <div><h3 className="text-xl font-black text-slate-900 dark:text-white">{classLabel(selectedReport)}</h3><p className="mt-1 text-xs text-slate-500">{schoolCatalogLabel(subjects, selectedReport.subjectName, 'مادة غير مصنفة')} · {selectedReport.questions.length} سؤال</p></div>
               <div className="flex items-center gap-2"><button type="button" onClick={() => exportExcel(selectedReport)} className="inline-flex items-center gap-1 rounded-xl bg-emerald-600 px-3 py-2 text-xs font-black text-white"><Download size={14} /> Excel</button><button type="button" onClick={() => setSelectedReport(null)} className="rounded-xl p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"><X size={18} /></button></div>
             </div>
             <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4"><Kpi label="الحضور" value={`${selectedReport.roster.joined}/${selectedReport.roster.expected}`} /><Kpi label="الإجابات" value={selectedReport.totals.responses} /><Kpi label="الصحيح" value={selectedReport.totals.correct} /><Kpi label="مدة الحصة" value={selectedReport.durationMinutes === null ? '—' : `${selectedReport.durationMinutes} د`} /></div>
@@ -266,14 +275,14 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
                       </div>
                       <div className="mt-2 text-[11px] text-slate-500">{batch.totals.questions} سؤال · {batch.totals.answered} إجابة · {batch.totals.correct} صحيحة</div>
                       <div className="mt-1 text-[11px] text-slate-500">المدة: {formatClassroomDuration(batch.durationSeconds)}{batch.startedAt ? ` · بدأت ${new Date(batch.startedAt).toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' })}` : ''}</div>
-                      {batch.skillIds.length > 0 && <div className="mt-2 text-[10px] font-bold text-indigo-700 dark:text-indigo-300">المهارات: {batch.skillIds.join('، ')}</div>}
+                      {batch.skillIds.length > 0 && <div className="mt-2 text-[10px] font-bold text-indigo-700 dark:text-indigo-300">المهارات: {batch.skillIds.map(skillLabel).join('، ')}</div>}
                     </div>
                   ))}
                 </div>
               </div>
             )}
             <div className="mt-5 space-y-3">
-              {selectedReport.questions.map((question) => <div key={question.questionId} className="rounded-2xl border border-slate-100 p-4 dark:border-slate-800"><p className="text-sm font-black text-slate-900 dark:text-white">{question.index + 1}. {question.text}</p><div className="mt-2 flex flex-wrap gap-2 text-[11px] font-bold text-slate-500"><span>{question.answered} إجابة</span><span>{question.correct} صحيحة</span><span>{question.wrong} خاطئة</span>{question.skillIds.length > 0 && <span>المهارات: {question.skillIds.join('، ')}</span>}</div></div>)}
+              {selectedReport.questions.map((question) => <div key={question.questionId} className="rounded-2xl border border-slate-100 p-4 dark:border-slate-800"><p className="text-sm font-black text-slate-900 dark:text-white">{question.index + 1}. {question.text}</p><div className="mt-2 flex flex-wrap gap-2 text-[11px] font-bold text-slate-500"><span>{question.answered} إجابة</span><span>{question.correct} صحيحة</span><span>{question.wrong} خاطئة</span>{question.skillIds.length > 0 && <span>المهارات: {question.skillIds.map(skillLabel).join('، ')}</span>}</div></div>)}
             </div>
           </div>
         </div>

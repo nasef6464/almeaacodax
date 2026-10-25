@@ -1,3 +1,16 @@
+## Teacher report labels — IMPLEMENTED_LOCAL — 2026-10-25
+Same-main recovery redeploy e09ebd318da9/dep-dberl1favr4c73btbt8g restored200ready on existingfree plan. Configured teacher3tabs×390/1440:6PASS/86GET/0pageerrors/0failedreads/0overflow/0domainwrites/0providers. Screenshot review found rawclass/skillIDs; SmartClassroomReportsSection now reuses existing taxonomyhelpers/assignments for display only. RED missingclass0!=2 thenGREEN browserregression; independentreview noP1/P2. Finaltypecheck/build/CI/publishedlabelproofpending. Preserve4unownedgeneratedfiles. No newprovider orpaidplan authorized. Reference docs/audits/TEACHER_REPORT_LABELS_2026-10-25_AR.md.
+
+## ضبط مواد الحسابات الخمسة — COMPLETED_SCOPED_PRODUCTION — 2026-10-22
+
+فوّض المالك الاختيار صراحة «اختار اي شي». اختيرت الأحياء الموجودة في التصنيف الحي مع إبقاء المادة المسجلة سابقًا. أُكمل ضبط5حسابات معلم في المدرسة المفوضة،9تكليفات فعالة على4فصول حالية مميزة؛ استُخدم فصل التجربة الموجود لحسابَيG6Pilot، وبقيت الفصول الصالحة للحسابات الأخرى كما هي.17طلبPUT ناجحًا:8إضافات تكليف مادة و9إيقافات؛18سجل تكليف بعد العملية منها9غيرفعالة، ولم يُحذف أي سجل سابق. نسخ قبل العملية وسجل كل كتابة محفوظة محليًا بملفاتprivate خارج Git. لا تعديل طلاب أو درجات أو نتائج أو دفع أو استدعاء مزود.
+
+كشف التحضير3روابط فصول قديمة، وأصلح PR591 إيقاف السجل الموجود فقط ضمن tupleالمدرسة/المعلم/الفصل/المادة عندما يغيب الفصل؛ لاupsertولا تفعيل لفصل مفقود. المصدر4f269652d49e58c7cec4d7ef2423481bbadf9bc8 اجتاز16SUCCESSو5تخطيات مشروطة، وجميع3بوابات مطلوبةPASS؛ دُمجe09ebd318da94177ee8410e308b3b8b46d0aad6f ونشر الخادم وتحقق readiness بهويته قبل بقية الكتابات. HTTPمعزولRED→GREEN،server:check وRBACوإدارةالمدرسة والمعماريةPASS؛ المراجعة المستقلة لاP1/P2. تعثر فحص المعمارية الأول بقفل Windows مؤقت، وحُفظ الفشل ثم نجحت الإعادة مع حفظ generated غير المملوك.
+
+قراءة الإنتاج بعد الكتابات تثبت مادة واحدة وفصولًا حالية لكل حساب، مع ثبات سجلات المعلمين خارج النطاق. تحقق دخول AUDIT_TEACHER وworkspace:ready وsmartClassroomEnabled=true، وبنك الأسئلة200 مع100سؤال كلها من الأحياء. واجهة المعلم390/1440PASS:ظهر«مادتك:الأحياء» واختفى تنبيه نقص المادة،0أخطاء و0overflow و0كتابات مجال من المتصفح. النطاق التشغيلي المعتمد مكتمل، ولا حاجة لاختيار مواد إضافي لهذه الحسابات. ليست شهادة سعة أو جميع المدارس أو أجهزة بشرية.
+
+الأدلة المحلية: scratch/director-legacy-release-ci.json،director-legacy-release-merge.json،teacher-material-valid-apply-2026-10-22-private.json،teacher-material-remainder-2026-10-22-private.json،teacher-material-configured-ui-proof.json. تقرير المالك: output/reports/teacher-material-setup-completed-2026-10-22.md. هذا تحديث إثبات بعد النشر؛ لا تُضم ملفاتprivate أو بيانات المستخدمين إلى Git.
+
 ## إيقاف تكليف فصل قديم — تنفيذ مقيد — 2026-10-22
 
 فوّض المالك اختيار مواد الحسابات الخمسة. كشف التحضير أن3تكليفات تشير إلى فصول لا تظهر ضمن نطاق المدرسة الحالي، فتفشل محاولة إيقافها قبل الوصول إلى السجل. تعديل upsertSchoolDirectorTeachingAssignment يسمح فقط بإيقاف سجل موجود يطابق المدرسة/المعلم/الفصل/المادة عندما لا يوجد الفصل في النطاق؛ لا upsert في هذا المسار، ولا تفعيل لفصل مفقود. صلاحية المدير ووحدة العقد والتسجيل التدقيقي تبقى في المسار الحالي. اختيرت الأحياء من التصنيف الحي مع الحفاظ على المادة المعينة سابقًا. حسابا التجربة سيستخدمان فصل التجربة الموجود داخل المدرسة، والمعلمون الآخرون يحتفظون بفصولهم الحالية الصالحة. أُوقفت التكليفات القديمة بدل حذفها؛ لا تعديل درجات أو نتائج أو طلاب.
