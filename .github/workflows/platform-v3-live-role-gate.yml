@@ -79,6 +79,7 @@ jobs:
         if: github.event_name == 'pull_request'
         run: |
           set -euo pipefail
+          npm run smoke:release-deployment
           node --test scripts/classroom-distributed/guards.test.mjs
           npm run smoke:auth-frontend
           npm run smoke:rbac-school-scope
@@ -105,6 +106,15 @@ jobs:
             echo "::error::All five ROLE_* credential pairs are required for the paced production smoke."
             exit 1
           fi
+
+      - name: Wait for published release before role authentication
+        if: github.event_name != 'pull_request'
+        env:
+          RELEASE_API_BASE: ${{ env.UI_AUDIT_API_BASE_URL }}
+          EXPECTED_RELEASE_SHA: ${{ github.sha }}
+          RELEASE_IDENTITY_MAX_ATTEMPTS: "40"
+          RELEASE_IDENTITY_INTERVAL_MS: "15000"
+        run: npm run smoke:release-identity
 
       - name: Production role auth smoke — paced and low-load
         if: github.event_name != 'pull_request'
