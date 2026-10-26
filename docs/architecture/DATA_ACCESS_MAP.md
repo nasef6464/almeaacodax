@@ -1,3 +1,6 @@
+## Student-specific classroom evidence projection — 2026-10-26
+The authorized supervisor intelligence reader retains existing session200/response5000/student1000/result2000 query bounds and guards. New pure projection groups the already-loaded responses by student/school/class; weakStudents remains20, while additive studentSkillEvidence exposes all contexts within that same response read so client material filtering does not falsely omit rank21. No additional DB query, collection, index, authorization grant, stored-result change or background refresh. This remains bounded recent evidence, not full-school-period coverage. Intervention writes reuse existing endpoint and checks unchanged.
+
 ## Director legacy assignment revocation — 2026-10-22
 schoolDirectorWorkspace owns an inactive-only existing-record update when the selected class is absent from the current school scope. The exact school/teacher/class/material tuple is matched atomically without upsert. Existing active-assignment class/membership/material validation, route capability/module checks and admin audit remain authoritative. No collections, indexes, raw database bypass, scoring or result mutation.
 
