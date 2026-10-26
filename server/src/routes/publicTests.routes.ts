@@ -60,7 +60,7 @@ const publicBarcodeTestSchema = z.object({
       optionLayout: z.enum(["auto", "horizontal", "two_columns"]).optional().default("auto"),
     })
     .optional()
-    .default({}),
+    .prefault({}),
   startsAt: z.number().nullable().optional().default(null),
   endsAt: z.number().nullable().optional().default(null),
   maxSubmissions: z.number().int().min(1).nullable().optional().default(null),

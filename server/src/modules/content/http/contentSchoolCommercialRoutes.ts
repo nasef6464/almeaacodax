@@ -1,3 +1,4 @@
+import {partialRequestSchema} from '../../../utils/partialRequestSchema.js';
 import { Router } from "express";
 import mongoose from "mongoose";
 import { StatusCodes } from "http-status-codes";
@@ -63,7 +64,7 @@ contentSchoolCommercialRouter.patch(
   requireAuth,
   requireRole(["admin", "supervisor"]),
   asyncHandler(async (req, res) => {
-    const payload = b2bPackageSchema.partial().parse(req.body);
+    const payload = partialRequestSchema(b2bPackageSchema).parse(req.body);
     const existing = await B2BPackageModel.findOne(buildDocumentQuery(req.params.id));
     if (!existing) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Package not found" });
@@ -138,7 +139,7 @@ contentSchoolCommercialRouter.patch(
   requireAuth,
   requireRole(["admin", "supervisor"]),
   asyncHandler(async (req, res) => {
-    const payload = accessCodeSchema.partial().parse(req.body);
+    const payload = partialRequestSchema(accessCodeSchema).parse(req.body);
     const existing = await AccessCodeModel.findOne(buildDocumentQuery(req.params.id));
     if (!existing) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Access code not found" });

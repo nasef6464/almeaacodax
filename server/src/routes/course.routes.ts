@@ -1,3 +1,4 @@
+import {partialRequestSchema} from '../utils/partialRequestSchema.js';
 import { projectCourseLiveLinks } from '../modules/content/liveSessions/sessionPolicy.js';
 import { Router } from "express";
 import { StatusCodes } from "http-status-codes";
@@ -721,7 +722,7 @@ courseRouter.post(
 );
 
 const handleCourseUpdate = asyncHandler(async (req, res) => {
-  const payload = courseSchema.partial().parse(req.body);
+  const payload = partialRequestSchema(courseSchema).parse(req.body);
   const normalizedPayload = {
     ...payload,
     ...(Object.prototype.hasOwnProperty.call(payload, "modules")

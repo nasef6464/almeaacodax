@@ -1,3 +1,7 @@
+## فك عائق أمان الاعتماديات قبل استكمال المدارس — IMPLEMENTED_LOCAL — 2026-10-26
+
+وافق المالك صراحة على إصلاح مستقل واختبار التوافق. PR595 اجتاز البوابات الثلاث المطلوبة علىa36ba613 لكن بوابة المعمارية رفضت PLAYWRIGHT_CHANNEL وبوابة الأمان كشفتbody-parser/ZodHigh2؛ لم يدمج. متغير الاختبار استبدل بوسيط--chrome في21bb45b9، ورفعcheckpoint595علىf640b772. فرعcodex/validation-dependency-security منmain bf51dbf يحدّثbody-parser1.20.9 وZod4.6.7 مع الحفاظ علىغياب حقولPATCH/defaults وشروطGUID والتنبيهات. baselineسجل قبلالتحديث في6edbf551:75×26حالة،964مخرجًا مقبولًا مطابقًا. اختباراتالتوافق/الأمان والعقود62نجحت؛ serverauditHigh0/Critical0/Moderate21، دونإضعافالبوابة أوAIأوكتاباتإنتاج أوتغييرخطةRender. CIالنهائي والنشر لم يغلقا. المرجع docs/audits/VALIDATION_DEPENDENCY_SECURITY_2026-10-26_AR.md. التالي دمجالإصلاحالأمني بعدالفحوص ثم تحديث595واستكمالالمدارس؛ لا إعادةبناءالنظام.
+
 ## انتظار النشر قبل فحص الأدوار — IMPLEMENTED_LOCAL — 2026-10-25
 
 استكمالالمالك«كمل»كشففشلmainLiveRoleGate40179945839 رغمPostDeploySmokePASS؛مهلة12ثانيةعندhealth/liveقبلأيlogin. أولفشلأثناءنشرالخادم،والإعادةفشلتأيضًاعندالصحة؛لااختزالكلالأسبابفيالنشر. workflowيفتقدانتظارالنسخة،بخلافPostDeploySmoke. أضيفتإعادةاستعمالsmoke:release-identityبنفسAPIoriginوgithub.shaقبلproductionauthفقط؛PRيبقىدونحركةإنتاج،ومهلةوشروطالدخوللمتتغير. عقدRED→GREENوحواجز6/6PASS،مراجعةمستقلةبلاP1/P2. الفرعcodex/live-role-release-readiness يحتاجexact-headCIوتحققmainفعلي؛لااعتمادبصريجديدللأدوارالخمسولاترقيةاستضافة. المرجع docs/audits/LIVE_ROLE_RELEASE_READINESS_2026-10-25_AR.md.

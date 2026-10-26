@@ -40,17 +40,17 @@ check('platform integration transport schemas preserve provider secrets and defa
 
 check('provider matrix and integration modes remain unchanged', () => {
   for (const fragment of [
-    'google: providerSettingsSchema.default({ enabled: false, mode: "oauth" })',
-    'facebook: providerSettingsSchema.default({ enabled: false, mode: "oauth" })',
-    'whatsapp: providerSettingsSchema.default({ enabled: false, mode: "otp" })',
-    'telegram: providerSettingsSchema.default({ enabled: false, mode: "bot" })',
-    'email: providerSettingsSchema.default({ enabled: false, mode: "smtp" })',
-    'sentry: providerSettingsSchema.default({ enabled: false, mode: "dsn" })',
-    'redis: providerSettingsSchema.default({ enabled: false, mode: "managed" })',
-    'zoom: providerSettingsSchema.default({ enabled: false, mode: "oauth" })',
-    'googleMeet: providerSettingsSchema.default({ enabled: false, mode: "oauth" })',
-    'teams: providerSettingsSchema.default({ enabled: false, mode: "oauth" })',
-    'youtubeLive: providerSettingsSchema.default({ enabled: false, mode: "api" })',
+    'google: providerSettingsSchema.prefault({ enabled: false, mode: "oauth" })',
+    'facebook: providerSettingsSchema.prefault({ enabled: false, mode: "oauth" })',
+    'whatsapp: providerSettingsSchema.prefault({ enabled: false, mode: "otp" })',
+    'telegram: providerSettingsSchema.prefault({ enabled: false, mode: "bot" })',
+    'email: providerSettingsSchema.prefault({ enabled: false, mode: "smtp" })',
+    'sentry: providerSettingsSchema.prefault({ enabled: false, mode: "dsn" })',
+    'redis: providerSettingsSchema.prefault({ enabled: false, mode: "managed" })',
+    'zoom: providerSettingsSchema.prefault({ enabled: false, mode: "oauth" })',
+    'googleMeet: providerSettingsSchema.prefault({ enabled: false, mode: "oauth" })',
+    'teams: providerSettingsSchema.prefault({ enabled: false, mode: "oauth" })',
+    'youtubeLive: providerSettingsSchema.prefault({ enabled: false, mode: "api" })',
   ]) assert.ok(schemaSource.includes(fragment), `provider matrix missing ${fragment}`);
 });
 
@@ -71,13 +71,13 @@ check('auth, seo, contact, external platform and registration semantics are pres
 
 check('patch schema keeps nested partial update behavior', () => {
   for (const fragment of [
-    'const providerSettingsPatchSchema = providerSettingsSchema.partial();',
-    'auth: platformIntegrationSettingsSchema.shape.auth.partial().optional()',
-    '}).partial().optional()',
-    'seo: seoSettingsSchema.partial().optional()',
-    'contactWidget: contactWidgetSchema.partial().optional()',
+    'const providerSettingsPatchSchema = partialRequestSchema(providerSettingsSchema);',
+    'auth: partialRequestSchema(platformIntegrationSettingsSchema.shape.auth).optional()',
+    '})).optional()',
+    'seo: partialRequestSchema(seoSettingsSchema).optional()',
+    'contactWidget: partialRequestSchema(contactWidgetSchema).optional()',
     'externalPlatforms: z.array(externalPlatformSchema).optional()',
-    'registrationFields: platformIntegrationSettingsSchema.shape.registrationFields.optional()',
+    'registrationFields: optionalRequestField(platformIntegrationSettingsSchema.shape.registrationFields)',
   ]) assert.ok(schemaSource.includes(fragment), `patch contract missing ${fragment}`);
 });
 
@@ -96,7 +96,7 @@ check('schema ownership is exclusive after delegation while staging remains base
     'const seoSettingsSchema = z.object({',
     'const contactWidgetSchema = z.object({',
     'const platformIntegrationSettingsSchema = z.object({',
-    'const providerSettingsPatchSchema = providerSettingsSchema.partial();',
+    'const providerSettingsPatchSchema = partialRequestSchema(providerSettingsSchema);',
     'const platformIntegrationSettingsPatchSchema = z.object({',
   ];
   if (delegated) {

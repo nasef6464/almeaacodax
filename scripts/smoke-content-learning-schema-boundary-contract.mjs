@@ -77,7 +77,7 @@ check('learning route parser call sites remain unchanged after extraction', () =
     'topicSchema.parse(req.body)',
     'topicUpdateSchema.parse(req.body)',
     'sanitizeLessonPayload(lessonSchema.parse(req.body))',
-    'sanitizeLessonPayload(lessonSchema.partial().parse(req.body))',
+    'sanitizeLessonPayload(partialRequestSchema(lessonSchema).parse(req.body))',
     'librarySchema.parse(req.body)',
     'libraryUpdateSchema.parse(req.body)',
   ]) assert.ok(learningRouteSource.includes(fragment), `learning route parser call missing ${fragment}`);

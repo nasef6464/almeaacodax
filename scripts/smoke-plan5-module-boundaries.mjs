@@ -1,6 +1,6 @@
 import { readFile } from "node:fs/promises";
 
-const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
+const read = async (path) => (await readFile(new URL(`../${path}`, import.meta.url), "utf8")).replace(/\r\n/g, "\n");
 const [app, routeTree, seo, seoResolver, seoData, store, storeState, auth, authSchemas, trainerPortfolio, quiz, quizPolicy] = await Promise.all([
   read("App.tsx"),
   read("app/AppRouteTree.tsx"),

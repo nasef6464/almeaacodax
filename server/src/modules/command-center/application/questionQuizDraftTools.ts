@@ -19,7 +19,7 @@ export const questionDraftItemSchema = z.object({
   type: z.enum(["mcq", "true_false", "essay"]).default("mcq"),
   imageUrl: z.string().optional().default(""),
   videoUrl: z.string().optional().default(""),
-  sourceMeta: z.record(z.any()).optional().default({}),
+  sourceMeta: z.record(z.string(), z.any()).optional().default({}),
 }).superRefine((value, ctx) => {
   if (value.correctOptionIndex >= value.options.length) {
     ctx.addIssue({
@@ -44,7 +44,7 @@ export const quizDraftSchema = z.object({
   subjectId: z.string().trim().min(1),
   questionIds: z.array(z.string().trim().min(1)).min(1).max(500),
   skillIds: z.array(z.string().trim().min(1)).max(100).optional().default([]),
-  settings: z.record(z.any()).optional().default({}),
+  settings: z.record(z.string(), z.any()).optional().default({}),
   requestId: z.string().trim().max(160).optional().default(""),
   idempotencyKey: z.string().trim().min(8).max(240).optional(),
 });

@@ -35,7 +35,7 @@ const clientEventSchema = z.object({
   path: z.string().max(500).optional().default(""),
   appVersion: z.string().max(120).optional().default(""),
   userAgent: z.string().max(500).optional().default(""),
-  metadata: z.record(z.any()).optional().default({}),
+  metadata: z.record(z.string(), z.any()).optional().default({}),
 });
 
 const resolveClientEventsSchema = z.object({

@@ -1,3 +1,4 @@
+import {partialRequestSchema} from '../../../utils/partialRequestSchema.js';
 import { Router } from "express";
 import mongoose from "mongoose";
 import { StatusCodes } from "http-status-codes";
@@ -109,7 +110,7 @@ contentStudyPlanRouter.patch(
   "/study-plans/:id",
   requireAuth,
   asyncHandler(async (req, res) => {
-    const payload = studyPlanSchema.partial().parse(req.body);
+    const payload = partialRequestSchema(studyPlanSchema).parse(req.body);
     const updated = await StudyPlanModel.findOneAndUpdate(
       { id: req.params.id, userId: req.authUser!.id },
       {

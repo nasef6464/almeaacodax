@@ -1,3 +1,4 @@
+import {partialRequestSchema} from '../utils/partialRequestSchema.js';
 import { Router } from "express";
 import { StatusCodes } from "http-status-codes";
 import { z } from "zod";
@@ -47,7 +48,7 @@ const subjectSchema = z.object({
   icon: z.string().optional(),
   iconUrl: z.string().optional(),
   iconStyle: z.enum(["default", "modern", "minimal", "playful"]).optional(),
-  settings: z.record(z.any()).optional(),
+  settings: z.record(z.string(), z.any()).optional(),
 });
 
 const sectionSchema = z.object({
@@ -324,7 +325,7 @@ taxonomyRouter.patch(
   requireAuth,
   requireRole(["admin"]),
   asyncHandler(async (req, res) => {
-    const payload = pathSchema.partial().parse(req.body);
+    const payload = partialRequestSchema(pathSchema).parse(req.body);
     const updated = await PathModel.findByIdAndUpdate(req.params.id, payload, { new: true });
     if (!updated) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Path not found" });
@@ -409,7 +410,7 @@ taxonomyRouter.patch(
   requireAuth,
   requireRole(["admin"]),
   asyncHandler(async (req, res) => {
-    const payload = levelSchema.partial().parse(req.body);
+    const payload = partialRequestSchema(levelSchema).parse(req.body);
     const updated = await LevelModel.findByIdAndUpdate(req.params.id, payload, { new: true });
     if (!updated) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Level not found" });
@@ -489,7 +490,7 @@ taxonomyRouter.patch(
   requireAuth,
   requireRole(["admin"]),
   asyncHandler(async (req, res) => {
-    const payload = subjectSchema.partial().parse(req.body);
+    const payload = partialRequestSchema(subjectSchema).parse(req.body);
     const updated = await SubjectModel.findByIdAndUpdate(req.params.id, payload, { new: true });
     if (!updated) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Subject not found" });
@@ -580,7 +581,7 @@ taxonomyRouter.patch(
   requireAuth,
   requireRole(["admin"]),
   asyncHandler(async (req, res) => {
-    const payload = sectionSchema.partial().parse(req.body);
+    const payload = partialRequestSchema(sectionSchema).parse(req.body);
     if (payload.subjectId) {
       const subject = await SubjectModel.findById(payload.subjectId).select("_id").lean();
       if (!subject) {
@@ -683,7 +684,7 @@ taxonomyRouter.patch(
   requireAuth,
   requireRole(["admin"]),
   asyncHandler(async (req, res) => {
-    const payload = skillSchema.partial().parse(req.body);
+    const payload = partialRequestSchema(skillSchema).parse(req.body);
     const existing = await SkillModel.findById(req.params.id).lean();
     if (!existing) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Skill not found" });

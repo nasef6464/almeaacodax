@@ -3,7 +3,7 @@ import {z} from 'zod';
 const ids=(max:number,min=0)=>z.array(z.string().trim().min(1).max(200)).min(min).max(max).transform(values=>[...new Set(values)].sort());
 const date=z.string().datetime({offset:true}).transform(value=>new Date(value).toISOString());
 const window={opensAt:date,closesAt:date};
-const commandId=z.string().uuid().transform(value=>value.toLowerCase());
+const commandId=z.guid().transform(value=>value.toLowerCase());
 const schema=z.discriminatedUnion('operation',[
   z.object({commandId,operation:z.literal('retarget'),payload:z.object({targetGroupIds:ids(500).default([]),targetUserIds:ids(500).default([])}).strict()
     .refine(value=>value.targetGroupIds.length+value.targetUserIds.length>0,'اختر الطلاب أو الفصول المستهدفة.')} ).strict(),

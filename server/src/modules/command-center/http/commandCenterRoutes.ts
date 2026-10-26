@@ -25,7 +25,7 @@ import { developerDraftRouter } from "./developerDraftRoutes.js";
 const draftSchema = z.object({
   kind: z.enum(COMMAND_DRAFT_KINDS),
   title: z.string().trim().min(1).max(240),
-  payload: z.record(z.any()),
+  payload: z.record(z.string(), z.any()),
   toolId: z.string().trim().min(1).max(120).optional(),
   requiredScopes: z.array(z.string().trim().min(1)).max(20).optional().default([]),
   source: z.enum(["admin_ui", "mcp", "external_agent"]).optional(),
