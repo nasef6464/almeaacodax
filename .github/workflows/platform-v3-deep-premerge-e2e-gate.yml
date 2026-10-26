@@ -364,6 +364,7 @@ jobs:
           REPORT_ACTIONS_AUDIT_RUN_ID: deep-premerge-report-actions-${{ github.run_id }}
         run: |
           npm run smoke:reports-staff-panels
+          npm run smoke:student-intervention-evidence
           npm run smoke:student-source-reports
           npm run smoke:student-plan-completion
           node scripts/live-report-actions-audit.mjs

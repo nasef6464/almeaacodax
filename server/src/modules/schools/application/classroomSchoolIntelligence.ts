@@ -6,6 +6,7 @@ import { SchoolMembershipModel } from "../../../models/SchoolMembership.js";
 import { UserModel } from "../../../models/User.js";
 import { Types } from "mongoose";
 import { classroomScopeFilter, type resolveClassroomSupervisorScope } from "./classroomSupervisorReport.js";
+import { classroomStudentSkillEvidence } from "./classroomStudentSkillEvidence.js";
 
 type ClassroomSupervisorScope = Awaited<ReturnType<typeof resolveClassroomSupervisorScope>>;
 
@@ -92,15 +93,7 @@ export const buildClassroomSchoolIntelligence = async (scope: ClassroomSuperviso
   }));
   const studentNames = new Map(students.map((student: any) => [idOf(student.id || student._id), String(student.name || "طالب")])) ;
   const formativeSkillRecords = responses.map((response: any) => ({ skillIds: questionSkills.get(`${idOf(response.sessionId)}:${idOf(response.questionId)}`) || [], correct: Boolean(response.isCorrect) }));
-  const weakStudents = new Map<string, { studentId: string; name: string; schoolId: string; classId: string; evidenceCount: number; correct: number }>();
-  responses.forEach((response: any) => {
-    const studentId = idOf(response.studentId);
-    const context = sessionContexts.get(idOf(response.sessionId)) || { schoolId: "", classId: "" };
-    const current = weakStudents.get(studentId) || { studentId, name: studentNames.get(studentId) || "طالب", ...context, evidenceCount: 0, correct: 0 };
-    current.evidenceCount += 1;
-    if (response.isCorrect) current.correct += 1;
-    weakStudents.set(studentId, current);
-  });
+  const weakStudents = classroomStudentSkillEvidence(responses, sessionContexts, questionSkills, studentNames);
   const dailyTrend = new Map<string, { day: string; sessions: number; responses: number; correct: number }>();
   const cutoff = new Date(); cutoff.setUTCDate(cutoff.getUTCDate() - (TREND_DAYS - 1)); cutoff.setUTCHours(0, 0, 0, 0);
   sessions.filter((session: any) => new Date(session.createdAt) >= cutoff).forEach((session: any) => {
@@ -124,7 +117,8 @@ export const buildClassroomSchoolIntelligence = async (scope: ClassroomSuperviso
         responses: responses.length,
         accuracy: percentage(responses.filter((response: any) => response.isCorrect).length, responses.length),
         skillHeatmap: skillSummary(formativeSkillRecords),
-        weakStudents: Array.from(weakStudents.values()).map((student) => ({ ...student, accuracy: percentage(student.correct, student.evidenceCount) })).sort((left, right) => (left.accuracy ?? 101) - (right.accuracy ?? 101) || right.evidenceCount - left.evidenceCount).slice(0, 20),
+        weakStudents: weakStudents.slice(0, 20),
+        studentSkillEvidence: weakStudents,
         trend: Array.from(dailyTrend.values()).map((day) => ({ ...day, accuracy: percentage(day.correct, day.responses) })).sort((left, right) => left.day.localeCompare(right.day)),
       },
       officialAssessments: officialSummary(schoolAssessmentResults),

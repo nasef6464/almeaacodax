@@ -4,6 +4,7 @@
     "version": "0.0.0",
     "type": "module",
     "scripts": {
+        "smoke:student-intervention-evidence": "node scripts/smoke-classroom-student-evidence.mjs && node scripts/smoke-classroom-intervention-ui.mjs",
         "smoke:smart-classroom-g2-contract": "node scripts/smoke-smart-classroom-g2-contract.mjs",
         "smoke:account-workspaces-g7": "node scripts/smoke-account-workspaces-g7-contract.mjs",
         "smoke:account-workspaces-g8": "node scripts/smoke-account-workspaces-g8-contract.mjs",
