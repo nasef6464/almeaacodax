@@ -42,7 +42,7 @@ check('quiz definition transport semantics are preserved', () => {
 check('quiz definition parser call sites remain route-owned', () => {
   for (const fragment of [
     'normalizeQuizPlacementPayload(quizSchema.parse(req.body))',
-    'quizSchema.partial().parse(req.body)',
+    'partialRequestSchema(quizSchema).parse(req.body)',
   ]) assert.ok(routeSource.includes(fragment), `quiz route parser call missing ${fragment}`);
 });
 

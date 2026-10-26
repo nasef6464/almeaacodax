@@ -35,7 +35,7 @@ const checks = [
       source.learningSchemas.includes("timestamp: z.number().min(0)") &&
       source.learningSchemas.includes("correctOptionIndex: z.number().min(0)") &&
       source.learningRoutes.includes("sanitizeLessonPayload(lessonSchema.parse(req.body))") &&
-      source.learningRoutes.includes("sanitizeLessonPayload(lessonSchema.partial().parse(req.body))"),
+      source.learningRoutes.includes("sanitizeLessonPayload(partialRequestSchema(lessonSchema).parse(req.body))"),
   ],
   [
     "lesson builder can author timed video questions",

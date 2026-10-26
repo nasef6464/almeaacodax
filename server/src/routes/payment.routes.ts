@@ -1,3 +1,4 @@
+import {partialRequestSchema} from '../utils/partialRequestSchema.js';
 import { Router } from "express";
 import crypto from "node:crypto";
 import { StatusCodes } from "http-status-codes";
@@ -1231,7 +1232,7 @@ paymentRouter.patch(
   requireAuth,
   requireRole(["admin"]),
   asyncHandler(async (req, res) => {
-    const payload = discountCodePayloadSchema.partial().parse(req.body);
+    const payload = partialRequestSchema(discountCodePayloadSchema).parse(req.body);
     const code = normalizeDiscountCode(req.params.code);
     const updated = await DiscountCodeModel.findOneAndUpdate(
       { code },

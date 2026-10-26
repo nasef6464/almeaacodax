@@ -11,7 +11,7 @@ export const groupSchema = z.object({
   totalStudents: z.number().optional(),
   totalSupervisors: z.number().optional(),
   totalCourses: z.number().optional(),
-  metadata: z.record(z.any()).optional(),
+  metadata: z.record(z.string(), z.any()).optional(),
 });
 
 export const b2bPackageSchema = z.object({

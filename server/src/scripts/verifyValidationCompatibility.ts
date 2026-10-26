@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync, writeFileSync, mkdirSync} from 'node:fs';
+import {createRequire} from 'node:module';
+import {partialRequestSchema} from '../utils/partialRequestSchema.js';
 import * as auth from '../modules/auth/http/authSchemas.js';
 import * as studyPlans from '../modules/content/http/studyPlanSchemas.js';
 import * as school from '../modules/content/http/schoolOperationsSchemas.js';
@@ -30,12 +32,16 @@ const inputs: unknown[] = [undefined,null,{},[],true,0,'',
   {nationalId:'١٢٣٤٥٦٧٨٩٠',password:'TestPassword123'},
 ];
 const snapshot: Record<string, unknown[]> = {};
+const baseline = new URL('../../../scripts/fixtures/validation-compatibility-baseline.json',import.meta.url);
+const recording = process.argv.includes('--record');
+const expected = recording ? null : JSON.parse(readFileSync(baseline,'utf8'));
+if (recording) assert.equal(createRequire(import.meta.url)('zod/package.json').version,'3.25.76','Never overwrite the legacy contract baseline using the upgraded validator');
 let successfulCases = 0;
 for (const [group, schemas] of Object.entries({auth,studyPlans,school,learning,integrations,submissions,quizzes})) {
   for (const [name, candidate] of Object.entries(schemas)) {
     if (typeof (candidate as any)?.safeParse !== 'function') continue;
     const variants: Array<[string, any]> = [[name,candidate]];
-    if (typeof (candidate as any).partial === 'function') variants.push([`${name}.partial`,(candidate as any).partial()]);
+    if (typeof (candidate as any).partial === 'function' && (recording || expected[`${group}.${name}.partial`])) variants.push([`${name}.partial`,recording ? (candidate as any).partial() : partialRequestSchema(candidate as any)]);
     for (const [variant,schema] of variants) snapshot[`${group}.${variant}`] = inputs.map(input => {
       const result = schema.safeParse(input);
       if (result.success) successfulCases++;
@@ -44,13 +50,11 @@ for (const [group, schemas] of Object.entries({auth,studyPlans,school,learning,i
     });
   }
 }
-const baseline = new URL('../../../scripts/fixtures/validation-compatibility-baseline.json',import.meta.url);
-if (process.argv.includes('--record')) {
+if (recording) {
   mkdirSync(new URL('./',baseline),{recursive:true});
   writeFileSync(baseline,JSON.stringify(snapshot,null,2)+'\n');
   console.log(`RECORDED validation baseline: ${Object.keys(snapshot).length} schema variants, ${successfulCases} accepted fixtures.`);
 } else {
-  const expected = JSON.parse(readFileSync(baseline,'utf8'));
   for (const [name, cases] of Object.entries(expected)) assert.deepEqual(snapshot[name],cases,`validation compatibility changed: ${name}`);
   assert.deepEqual(Object.keys(snapshot),Object.keys(expected));
   console.log(`PASS validation compatibility: ${Object.keys(snapshot).length} schema variants × ${inputs.length} inputs; ${successfulCases} accepted fixtures retain exact parsed values.`);

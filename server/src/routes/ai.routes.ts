@@ -128,11 +128,11 @@ const studyPlanSchema = z.object({
 });
 
 const learningPathSchema = z.object({
-  skills: z.array(z.record(z.any())).default([]),
+  skills: z.array(z.record(z.string(), z.any())).default([]),
 });
 
 const remediationPlanSchema = z.object({
-  skills: z.array(z.record(z.any())).default([]),
+  skills: z.array(z.record(z.string(), z.any())).default([]),
   ageBand: z.enum(["primary", "middle", "secondary", "general"]).default("general"),
 });
 

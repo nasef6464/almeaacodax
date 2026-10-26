@@ -1,3 +1,6 @@
+## Validation upgrade / unchanged persistence authority — 2026-10-26
+Existing request owners parse with Zod4.6.7 using partialRequestSchema/optionalRequestField to keep omitted PATCH fields absent, including nested settings/secrets/registration fields. Create-time nested defaults use prefault, not validation-bypassing object fallback. No Mongo reads/writes, authorization scope, result/scoring semantics, migrations, collections or indexes added. The dependency upgrade and its tests do not write any production data.
+
 ## Director legacy assignment revocation — 2026-10-22
 schoolDirectorWorkspace owns an inactive-only existing-record update when the selected class is absent from the current school scope. The exact school/teacher/class/material tuple is matched atomically without upsert. Existing active-assignment class/membership/material validation, route capability/module checks and admin audit remain authoritative. No collections, indexes, raw database bypass, scoring or result mutation.
 

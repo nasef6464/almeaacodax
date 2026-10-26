@@ -12,7 +12,7 @@ export const workflowStepPlanSchema = z.object({
   id: z.string().trim().min(1).max(80),
   toolId: z.enum(SAFE_WORKFLOW_TOOL_IDS),
   title: z.string().trim().max(240).optional().default(""),
-  input: z.record(z.any()).default({}),
+  input: z.record(z.string(), z.any()).default({}),
 });
 
 export const workflowPlanSchema = z.object({
