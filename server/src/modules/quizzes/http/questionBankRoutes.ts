@@ -1,3 +1,4 @@
+import {partialRequestSchema} from '../../../utils/partialRequestSchema.js';
 import { assertSchoolQuestionBankWrite } from '../application/schoolAssessmentQuestionEvidence.js';
 import {invalidateStaleTeachingRegions} from '../../ai/contracts/verifiedTeachingRegions.js';
 import { Router } from "express";
@@ -305,7 +306,7 @@ questionBankRouter.patch(
   requireAuth,
   requireRole(["admin", "teacher"]),
   asyncHandler(async (req, res) => {
-    const payload = questionBaseSchema.partial().parse(req.body);
+    const payload = partialRequestSchema(questionBaseSchema).parse(req.body);
     const documentQuery = buildOwnedDocumentQuery(req.params.id, req.authUser!);
     const existing = await QuestionModel.findOne(documentQuery);
 

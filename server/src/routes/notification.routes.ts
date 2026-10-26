@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { StatusCodes } from "http-status-codes";
 import { z } from "zod";
+import {integrationTestSchema} from '../modules/notifications/application/notificationAlertSchemas.js';
 import mongoose from "mongoose";
 import { roles } from "../constants/roles.js";
 import { requireAuth, requireRole } from "../middleware/auth.js";
@@ -55,20 +56,11 @@ const sendNotificationSchema = z.object({
   channels: z.array(channelSchema).min(1).max(3),
   userIds: z.array(z.string().min(1).max(120)).optional().default([]),
   roles: z.array(z.enum(roles)).optional().default([]),
-  variables: z.record(z.union([z.string(), z.number(), z.boolean(), z.null()])).optional().default({}),
+  variables: z.record(z.string(), z.union([z.string(), z.number(), z.boolean(), z.null()])).optional().default({}),
 });
 
 const processPendingSchema = z.object({
   limit: z.number().int().min(1).max(50).optional().default(25),
-});
-
-const integrationTestSchema = z.object({
-  channel: z.enum(["email", "whatsapp"]),
-  recipientEmail: z.string().email().optional().default(""),
-  recipientPhone: z.string().min(8).max(30).optional().default(""),
-  subject: z.string().max(220).optional().default("اختبار التكامل"),
-  title: z.string().min(2).max(220).optional().default("اختبار التكامل"),
-  body: z.string().min(2).max(1000).optional().default("هذه رسالة اختبار من منصة المئة."),
 });
 
 const adminListSchema = z.object({

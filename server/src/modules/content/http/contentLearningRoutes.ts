@@ -1,3 +1,4 @@
+import {partialRequestSchema} from '../../../utils/partialRequestSchema.js';
 import { Router } from "express";
 import { StatusCodes } from "http-status-codes";
 import { requireAuth, requireRole } from "../../../middleware/auth.js";
@@ -147,7 +148,7 @@ contentLearningRouter.patch(
   requireAuth,
   requireRole(["admin", "teacher"]),
   asyncHandler(async (req, res) => {
-    const payload = sanitizeLessonPayload(lessonSchema.partial().parse(req.body));
+    const payload = sanitizeLessonPayload(partialRequestSchema(lessonSchema).parse(req.body));
     const existing = await LessonModel.findOne(buildOwnedDocumentQuery(req.params.id, req.authUser!));
     if (!existing) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Lesson not found" });

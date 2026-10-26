@@ -1,3 +1,4 @@
+import {partialRequestSchema,optionalRequestField} from '../../../utils/partialRequestSchema.js';
 import { hostingPolicySchema } from '../liveSessions/hostingPolicy.js';
 import { z } from "zod";
 
@@ -72,7 +73,7 @@ const contactWidgetSchema = z.object({
 });
 
 export const platformIntegrationSettingsSchema = z.object({
-  liveSessionPolicy: hostingPolicySchema.default({}),
+  liveSessionPolicy: hostingPolicySchema.prefault({}),
   auth: z.object({
     allowSelfRegistration: z.boolean().default(true),
     allowEmailPassword: z.boolean().default(true),
@@ -87,20 +88,20 @@ export const platformIntegrationSettingsSchema = z.object({
     allowedEmailDomains: z.array(z.string()).default([]),
   }),
   providers: z.object({
-    google: providerSettingsSchema.default({ enabled: false, mode: "oauth" }),
-    facebook: providerSettingsSchema.default({ enabled: false, mode: "oauth" }),
-    whatsapp: providerSettingsSchema.default({ enabled: false, mode: "otp" }),
-    telegram: providerSettingsSchema.default({ enabled: false, mode: "bot" }),
-    email: providerSettingsSchema.default({ enabled: false, mode: "smtp" }),
-    sentry: providerSettingsSchema.default({ enabled: false, mode: "dsn" }),
-    redis: providerSettingsSchema.default({ enabled: false, mode: "managed" }),
-    zoom: providerSettingsSchema.default({ enabled: false, mode: "oauth" }),
-    googleMeet: providerSettingsSchema.default({ enabled: false, mode: "oauth" }),
-    teams: providerSettingsSchema.default({ enabled: false, mode: "oauth" }),
-    youtubeLive: providerSettingsSchema.default({ enabled: false, mode: "api" }),
+    google: providerSettingsSchema.prefault({ enabled: false, mode: "oauth" }),
+    facebook: providerSettingsSchema.prefault({ enabled: false, mode: "oauth" }),
+    whatsapp: providerSettingsSchema.prefault({ enabled: false, mode: "otp" }),
+    telegram: providerSettingsSchema.prefault({ enabled: false, mode: "bot" }),
+    email: providerSettingsSchema.prefault({ enabled: false, mode: "smtp" }),
+    sentry: providerSettingsSchema.prefault({ enabled: false, mode: "dsn" }),
+    redis: providerSettingsSchema.prefault({ enabled: false, mode: "managed" }),
+    zoom: providerSettingsSchema.prefault({ enabled: false, mode: "oauth" }),
+    googleMeet: providerSettingsSchema.prefault({ enabled: false, mode: "oauth" }),
+    teams: providerSettingsSchema.prefault({ enabled: false, mode: "oauth" }),
+    youtubeLive: providerSettingsSchema.prefault({ enabled: false, mode: "api" }),
   }),
-  seo: seoSettingsSchema.default({}),
-  contactWidget: contactWidgetSchema.default({}),
+  seo: seoSettingsSchema.prefault({}),
+  contactWidget: contactWidgetSchema.prefault({}),
   externalPlatforms: z.array(externalPlatformSchema).default([]),
   registrationFields: z
     .array(
@@ -120,12 +121,12 @@ export const platformIntegrationSettingsSchema = z.object({
     .default([]),
 });
 
-const providerSettingsPatchSchema = providerSettingsSchema.partial();
+const providerSettingsPatchSchema = partialRequestSchema(providerSettingsSchema);
 
 export const platformIntegrationSettingsPatchSchema = z.object({
   liveSessionPolicy: hostingPolicySchema.optional(),
-  auth: platformIntegrationSettingsSchema.shape.auth.partial().optional(),
-  providers: z.object({
+  auth: partialRequestSchema(platformIntegrationSettingsSchema.shape.auth).optional(),
+  providers: partialRequestSchema(z.object({
     google: providerSettingsPatchSchema.optional(),
     facebook: providerSettingsPatchSchema.optional(),
     whatsapp: providerSettingsPatchSchema.optional(),
@@ -137,9 +138,9 @@ export const platformIntegrationSettingsPatchSchema = z.object({
     googleMeet: providerSettingsPatchSchema.optional(),
     teams: providerSettingsPatchSchema.optional(),
     youtubeLive: providerSettingsPatchSchema.optional(),
-  }).partial().optional(),
-  seo: seoSettingsSchema.partial().optional(),
-  contactWidget: contactWidgetSchema.partial().optional(),
+  })).optional(),
+  seo: partialRequestSchema(seoSettingsSchema).optional(),
+  contactWidget: partialRequestSchema(contactWidgetSchema).optional(),
   externalPlatforms: z.array(externalPlatformSchema).optional(),
-  registrationFields: platformIntegrationSettingsSchema.shape.registrationFields.optional(),
+  registrationFields: optionalRequestField(platformIntegrationSettingsSchema.shape.registrationFields),
 });

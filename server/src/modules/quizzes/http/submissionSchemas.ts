@@ -13,7 +13,7 @@ export const questionAttemptSchema = z.object({
   { message: 'Quiz activity requires a quizId; standalone activity must not carry one' });
 
 export const quizSubmitSchema = z.object({
-  answers: z.record(z.coerce.number()).default({}),
+  answers: z.record(z.string(), z.coerce.number()).default({}),
   timeSpentSeconds: z.number().min(0).default(0),
   source: z.string().optional(),
   sectionResults: z

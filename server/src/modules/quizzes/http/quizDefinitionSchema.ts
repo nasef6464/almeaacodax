@@ -1,4 +1,5 @@
 import { z } from "zod";
+import {partialRequestSchema} from '../../../utils/partialRequestSchema.js';
 import { quizWindowFields } from "../application/quizAvailability.js";
 
 export const quizSchema = z.object({
@@ -36,8 +37,8 @@ export const quizSchema = z.object({
     // reversible per-assessment cutover; legacy is the model default.
     resultReaderMode: z.enum(["legacy", "compatibility"]).optional(),
   }).optional(),
-  settings: z.record(z.any()).optional().default({}),
-  access: z.record(z.any()).optional().default({}),
+  settings: z.record(z.string(), z.any()).optional().default({}),
+  access: z.record(z.string(), z.any()).optional().default({}),
   questionIds: z.array(z.string()).default([]),
   questions: z.array(z.any()).optional(),
   mockExam: z.object({
@@ -76,3 +77,5 @@ export const quizSchema = z.object({
   reviewerNotes: z.string().optional(),
   revenueSharePercentage: z.number().nullable().optional(),
 });
+
+export const quizUpdateSchema = partialRequestSchema(quizSchema);

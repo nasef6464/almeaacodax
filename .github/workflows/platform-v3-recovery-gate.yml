@@ -44,6 +44,10 @@ jobs:
         run: npm run typecheck
       - name: API typecheck
         run: npm run server:check
+      - name: Validation compatibility and security regressions
+        run: |
+          npm --prefix server run verify:validation-compatibility
+          npm --prefix server run verify:validation-security
       - name: Frontend production build
         run: npm run build
       - name: API production build

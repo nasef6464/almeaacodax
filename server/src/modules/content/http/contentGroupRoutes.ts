@@ -1,3 +1,4 @@
+import {partialRequestSchema} from '../../../utils/partialRequestSchema.js';
 import { Router } from "express";
 import { StatusCodes } from "http-status-codes";
 import { z } from "zod";
@@ -117,7 +118,7 @@ contentGroupRouter.patch(
   requireAuth,
   requireRole(["admin", "supervisor"]),
   asyncHandler(async (req, res) => {
-    const payload = groupSchema.partial().parse(req.body);
+    const payload = partialRequestSchema(groupSchema).parse(req.body);
     const existing = await GroupModel.findOne(buildDocumentQuery(req.params.id));
     if (!existing) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Group not found" });

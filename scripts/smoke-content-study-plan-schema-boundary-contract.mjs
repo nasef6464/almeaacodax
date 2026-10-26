@@ -59,7 +59,7 @@ check('intervention study plan transport semantics are preserved', () => {
 check('study plan parser call sites remain unchanged at the extracted HTTP boundary', () => {
   for (const fragment of [
     'const payload = studyPlanSchema.parse(req.body);',
-    'const payload = studyPlanSchema.partial().parse(req.body);',
+    'const payload = partialRequestSchema(studyPlanSchema).parse(req.body);',
     'const payload = interventionStudyPlanSchema.parse(req.body);',
   ]) assert.ok(studyRouteSource.includes(fragment), `study-plan route parser call missing ${fragment}`);
 });

@@ -120,8 +120,8 @@ check('sellable registration and organization fields have an explicit admin path
   assertIncludes(sellablePanel, 'data-testid="product-config-sellable-settings-panel"');
   assertIncludes(sellablePanel, 'api.getPlatformIntegrations()');
   assertIncludes(sellablePanel, 'api.updatePlatformIntegrations(patch)');
-  assertIncludes(integrationSchemas, 'auth: platformIntegrationSettingsSchema.shape.auth.partial().optional()');
-  assertIncludes(integrationSchemas, 'seo: seoSettingsSchema.partial().optional()');
+  assertIncludes(integrationSchemas, 'auth: partialRequestSchema(platformIntegrationSettingsSchema.shape.auth).optional()');
+  assertIncludes(integrationSchemas, 'seo: partialRequestSchema(seoSettingsSchema).optional()');
 
   for (const testId of [
     'product-config-default-role',
