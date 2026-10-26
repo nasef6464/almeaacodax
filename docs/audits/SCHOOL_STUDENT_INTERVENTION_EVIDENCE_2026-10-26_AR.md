@@ -1,6 +1,7 @@
 # متابعة مهارات الطالب في الحصص — 2026-10-26
 
 الحالة: IMPLEMENTED_LOCAL؛ CI والتحقق المنشور لم يكتملَا بعد. ليست شهادة إغلاق المدارس.
+رُفع PR595: https://github.com/nasef6464/almeaacodax/pull/595، المصدر a36ba61373aecea279eff1f4092493a51a6e5b14. فحوص GitHub جارية؛ لم يحدث دمج أو نشر. هذا سطر استمرارية محلي بعد الرفع، ولا يستلزم تشغيل CI توثيقي مكرر.
 الفرع: codex/school-student-intervention-evidence. الأساس: main bf51dbf1a43da63f6ee6adb475fa6077238f5877.
 
 ## المشكلة والتغيير
