@@ -66,7 +66,7 @@ check('schema parser call sites remain route-owned', () => {
   for (const fragment of [
     'questionListQuerySchema.parse(req.query)',
     'questionSchema.parse(req.body)',
-    'partialRequestSchema(questionBaseSchema).parse(req.body)',
+    'questionBaseSchema.partial().parse(req.body)',
     'dashboardAnalyticsQuerySchema.parse(req.query)',
     'quizResultsListQuerySchema.parse(req.query)',
   ]) assert.ok(routeSource.includes(fragment), `quiz route parser call missing ${fragment}`);
@@ -108,7 +108,7 @@ check('quiz definition ownership handoff is explicit when delegated by a later p
   if (quizDefinitionDelegated) {
     assert.equal(routeSource.split(quizDefinitionImport).length - 1, 1, 'quiz definition import must be singular');
     assert.ok(routeSource.includes('normalizeQuizPlacementPayload(quizSchema.parse(req.body))'), 'delegated quiz definition must keep create parser call route-owned');
-    assert.ok(routeSource.includes('partialRequestSchema(quizSchema).parse(req.body)'), 'delegated quiz definition must keep update parser call route-owned');
+    assert.ok(routeSource.includes('quizSchema.partial().parse(req.body)'), 'delegated quiz definition must keep update parser call route-owned');
   }
 });
 

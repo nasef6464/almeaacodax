@@ -1,4 +1,3 @@
-import {partialRequestSchema} from '../utils/partialRequestSchema.js';
 import {schoolAssessmentRequestScope} from '../modules/quizzes/http/schoolAssessmentRequestScope.js';
 import {resolveSchoolAssessmentContext} from '../modules/quizzes/application/schoolAssessmentManagementPolicy.js';
 import { buildAdminAssessmentCatalogScope } from '../modules/quizzes/application/adminAssessmentCatalogScope.js';
@@ -23,7 +22,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.js";
 import { serializeQuizResultForLearner } from "../utils/quizResultSerialization.js";
 import { getActivePathIds, isStaffRole, withLearnerVisiblePaths } from "../services/visibility.js";
-import { quizSchema } from "../modules/quizzes/http/quizDefinitionSchema.js";
+import { quizSchema, quizUpdateSchema } from "../modules/quizzes/http/quizDefinitionSchema.js";
 import {buildQuizSubmissionSubjectResults} from '../modules/quizzes/application/quizSubmissionSubjectResults.js';
 import { validateQuizWindow, getQuizAvailability } from "../modules/quizzes/application/quizAvailability.js";
 import { applyQuizViewerPolicy } from "../modules/quizzes/application/quizViewerPolicy.js";
@@ -382,7 +381,7 @@ quizRouter.post(
 );
 
 const handleQuizUpdate = asyncHandler(async (req, res) => {
-  let payload = partialRequestSchema(quizSchema).parse(req.body);
+  let payload = quizUpdateSchema.parse(req.body);
   const requestedScope=schoolAssessmentRequestScope(req.query);
   if(requestedScope.schoolId&&req.authUser!.role!=='school_admin')throw Object.assign(new Error('Explicit school context requires a school director'),{statusCode:403});
   if(req.authUser!.role==='school_admin')await resolveSchoolAssessmentContext(req.authUser!,String(req.params.id),requestedScope);

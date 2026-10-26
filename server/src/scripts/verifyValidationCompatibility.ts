@@ -36,8 +36,9 @@ const baseline = new URL('../../../scripts/fixtures/validation-compatibility-bas
 const recording = process.argv.includes('--record');
 const expected = recording ? null : JSON.parse(readFileSync(baseline,'utf8'));
 if (recording) assert.equal(createRequire(import.meta.url)('zod/package.json').version,'3.25.76','Never overwrite the legacy contract baseline using the upgraded validator');
+const {quizUpdateSchema,...quizCreateSchemas} = quizzes;
 let successfulCases = 0;
-for (const [group, schemas] of Object.entries({auth,studyPlans,school,learning,integrations,submissions,quizzes})) {
+for (const [group, schemas] of Object.entries({auth,studyPlans,school,learning,integrations,submissions,quizzes:quizCreateSchemas})) {
   for (const [name, candidate] of Object.entries(schemas)) {
     if (typeof (candidate as any)?.safeParse !== 'function') continue;
     const variants: Array<[string, any]> = [[name,candidate]];
@@ -57,5 +58,7 @@ if (recording) {
 } else {
   for (const [name, cases] of Object.entries(expected)) assert.deepEqual(snapshot[name],cases,`validation compatibility changed: ${name}`);
   assert.deepEqual(Object.keys(snapshot),Object.keys(expected));
+  const namedUpdate = inputs.map(input => {const result=quizUpdateSchema.safeParse(input);return result.success?{success:true,data:result.data}:{success:false};});
+  assert.deepEqual(namedUpdate,expected['quizzes.quizSchema.partial'],'the route-owned update parser must use the same omission-preserving schema');
   console.log(`PASS validation compatibility: ${Object.keys(snapshot).length} schema variants × ${inputs.length} inputs; ${successfulCases} accepted fixtures retain exact parsed values.`);
 }

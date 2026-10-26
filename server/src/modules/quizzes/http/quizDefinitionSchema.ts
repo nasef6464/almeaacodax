@@ -1,4 +1,5 @@
 import { z } from "zod";
+import {partialRequestSchema} from '../../../utils/partialRequestSchema.js';
 import { quizWindowFields } from "../application/quizAvailability.js";
 
 export const quizSchema = z.object({
@@ -76,3 +77,5 @@ export const quizSchema = z.object({
   reviewerNotes: z.string().optional(),
   revenueSharePercentage: z.number().nullable().optional(),
 });
+
+export const quizUpdateSchema = partialRequestSchema(quizSchema);
