@@ -1,0 +1,31 @@
+{
+  "source": "تجميع انشيتن معدل(2).pdf",
+  "page": 8,
+  "reviewed_source_image": true,
+  "changes": [
+    {
+      "questionCode": "QDR-QNT-COL2627-P008-Q28",
+      "before": {
+        "skillId": "skill_quant_02",
+        "subSkillId": "sub_quant_02_2"
+      },
+      "after": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_5"
+      },
+      "evidence": "Source page 8 printed rule 15 asks أوجد آحاد الناتج, not division remainders."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P008-Q29",
+      "before": {
+        "skillId": "skill_quant_02",
+        "subSkillId": "sub_quant_02_2"
+      },
+      "after": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_5"
+      },
+      "evidence": "Source page 8 printed rule 15 asks أوجد آحاد الناتج, not division remainders."
+    }
+  ]
+}

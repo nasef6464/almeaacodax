@@ -1,0 +1,1543 @@
+{
+  "schema_version": 1,
+  "generated_on": "2026-10-15",
+  "db_read_only": true,
+  "scope": "95 QUANT drills and FND26/COL2627 plus native training question refs",
+  "scan": {
+    "drills": 95,
+    "total_refs": 1200,
+    "resolved_refs": 1200,
+    "actual_mismatches": 76,
+    "drills_affected": 32,
+    "sameMain": 58,
+    "crossMain": 18,
+    "foundation": 0,
+    "collection": 76,
+    "training": 0,
+    "mixedTags": 0,
+    "otherSkillIds": 0
+  },
+  "policy": "DO NOT automatically remove questions or redefine skill based on mismatch; verify book/page/image and verify quiz membership vs primary and auxiliary skills. Preserve free/paid access, placement, historical result IDs and reserve.",
+  "review_queue": [
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_01_1",
+      "drillName": "تدريب: قواعد الإشارات والتجميع الذكي (مكملات 10 و 100 و 1000)",
+      "drillSubSkillId": "sub_quant_01_1",
+      "drillSubSkillName": "قواعد الإشارات والتجميع الذكي (مكملات 10 و 100 و 1000)",
+      "questionId": "q_qdr_qnt_col2627_p005_q03",
+      "questionCode": "QDR-QNT-COL2627-P005-Q03",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_01_3",
+      "primarySkillName": "الأعداد الزوجية والفردية والمتتاليات الحسابية ومجاميعها",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_01",
+        "sub_quant_01_3"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_01_1",
+      "drillName": "تدريب: قواعد الإشارات والتجميع الذكي (مكملات 10 و 100 و 1000)",
+      "drillSubSkillId": "sub_quant_01_1",
+      "drillSubSkillName": "قواعد الإشارات والتجميع الذكي (مكملات 10 و 100 و 1000)",
+      "questionId": "q_qdr_qnt_col2627_p005_q06",
+      "questionCode": "QDR-QNT-COL2627-P005-Q06",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_01_3",
+      "primarySkillName": "الأعداد الزوجية والفردية والمتتاليات الحسابية ومجاميعها",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_01",
+        "sub_quant_01_3"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_01_1",
+      "drillName": "تدريب: قواعد الإشارات والتجميع الذكي (مكملات 10 و 100 و 1000)",
+      "drillSubSkillId": "sub_quant_01_1",
+      "drillSubSkillName": "قواعد الإشارات والتجميع الذكي (مكملات 10 و 100 و 1000)",
+      "questionId": "q_qdr_qnt_col2627_p005_q07",
+      "questionCode": "QDR-QNT-COL2627-P005-Q07",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_01_3",
+      "primarySkillName": "الأعداد الزوجية والفردية والمتتاليات الحسابية ومجاميعها",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_01",
+        "sub_quant_01_3"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_01_1",
+      "drillName": "تدريب: قواعد الإشارات والتجميع الذكي (مكملات 10 و 100 و 1000)",
+      "drillSubSkillId": "sub_quant_01_1",
+      "drillSubSkillName": "قواعد الإشارات والتجميع الذكي (مكملات 10 و 100 و 1000)",
+      "questionId": "q_qdr_qnt_col2627_p005_q08",
+      "questionCode": "QDR-QNT-COL2627-P005-Q08",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_01_3",
+      "primarySkillName": "الأعداد الزوجية والفردية والمتتاليات الحسابية ومجاميعها",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_01",
+        "sub_quant_01_3"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_01_2",
+      "drillName": "تدريب: جمع الأعداد المتكررة والعامل المشترك",
+      "drillSubSkillId": "sub_quant_01_2",
+      "drillSubSkillName": "جمع الأعداد المتكررة والعامل المشترك",
+      "questionId": "q_qdr_qnt_col2627_p005_q13",
+      "questionCode": "QDR-QNT-COL2627-P005-Q13",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_01_1",
+      "primarySkillName": "قواعد الإشارات والتجميع الذكي (مكملات 10 و 100 و 1000)",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_01",
+        "sub_quant_01_1"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_01_3",
+      "drillName": "تدريب: الأعداد الزوجية والفردية والمتتاليات الحسابية ومجاميعها",
+      "drillSubSkillId": "sub_quant_01_3",
+      "drillSubSkillName": "الأعداد الزوجية والفردية والمتتاليات الحسابية ومجاميعها",
+      "questionId": "q_qdr_qnt_col2627_p006_q15",
+      "questionCode": "QDR-QNT-COL2627-P006-Q15",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_01_1",
+      "primarySkillName": "قواعد الإشارات والتجميع الذكي (مكملات 10 و 100 و 1000)",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_01",
+        "sub_quant_01_1"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_02_1",
+      "drillName": "تدريب: قواعد قابلية القسمة على الأعداد (2، 3، 4، 5، 6، 7، 8، 9، 11)",
+      "drillSubSkillId": "sub_quant_02_1",
+      "drillSubSkillName": "قواعد قابلية القسمة على الأعداد (2، 3، 4، 5، 6، 7، 8، 9، 11)",
+      "questionId": "q_qdr_qnt_col2627_p007_q03",
+      "questionCode": "QDR-QNT-COL2627-P007-Q03",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_02_2",
+      "primarySkillName": "باقي القسمة وبواقي الأعداد",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_02",
+        "sub_quant_02_2"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_03_1",
+      "drillName": "تدريب: جمع وطرح الكسور وتوحيد المقامات",
+      "drillSubSkillId": "sub_quant_03_1",
+      "drillSubSkillName": "جمع وطرح الكسور وتوحيد المقامات",
+      "questionId": "q_qdr_qnt_col2627_p009_q06",
+      "questionCode": "QDR-QNT-COL2627-P009-Q06",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_03_2",
+      "primarySkillName": "ضرب وقسمة الكسور وتبسيطها",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_03",
+        "sub_quant_03_2"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_03_1",
+      "drillName": "تدريب: جمع وطرح الكسور وتوحيد المقامات",
+      "drillSubSkillId": "sub_quant_03_1",
+      "drillSubSkillName": "جمع وطرح الكسور وتوحيد المقامات",
+      "questionId": "q_qdr_qnt_col2627_p009_q07",
+      "questionCode": "QDR-QNT-COL2627-P009-Q07",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_03_2",
+      "primarySkillName": "ضرب وقسمة الكسور وتبسيطها",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_03",
+        "sub_quant_03_2"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_03_1",
+      "drillName": "تدريب: جمع وطرح الكسور وتوحيد المقامات",
+      "drillSubSkillId": "sub_quant_03_1",
+      "drillSubSkillName": "جمع وطرح الكسور وتوحيد المقامات",
+      "questionId": "q_qdr_qnt_col2627_p009_q09",
+      "questionCode": "QDR-QNT-COL2627-P009-Q09",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_03_3",
+      "primarySkillName": "مقارنة الكسور وترتيبها (طريقة المقص)",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_03",
+        "sub_quant_03_3"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_03_1",
+      "drillName": "تدريب: جمع وطرح الكسور وتوحيد المقامات",
+      "drillSubSkillId": "sub_quant_03_1",
+      "drillSubSkillName": "جمع وطرح الكسور وتوحيد المقامات",
+      "questionId": "q_qdr_qnt_col2627_p009_q10",
+      "questionCode": "QDR-QNT-COL2627-P009-Q10",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_03_3",
+      "primarySkillName": "مقارنة الكسور وترتيبها (طريقة المقص)",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_03",
+        "sub_quant_03_3"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_03_2",
+      "drillName": "تدريب: ضرب وقسمة الكسور وتبسيطها",
+      "drillSubSkillId": "sub_quant_03_2",
+      "drillSubSkillName": "ضرب وقسمة الكسور وتبسيطها",
+      "questionId": "q_qdr_qnt_col2627_p010_q19",
+      "questionCode": "QDR-QNT-COL2627-P010-Q19",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_03_3",
+      "primarySkillName": "مقارنة الكسور وترتيبها (طريقة المقص)",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_03",
+        "sub_quant_03_3"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_03_2",
+      "drillName": "تدريب: ضرب وقسمة الكسور وتبسيطها",
+      "drillSubSkillId": "sub_quant_03_2",
+      "drillSubSkillName": "ضرب وقسمة الكسور وتبسيطها",
+      "questionId": "q_qdr_qnt_col2627_p010_q20",
+      "questionCode": "QDR-QNT-COL2627-P010-Q20",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_03_3",
+      "primarySkillName": "مقارنة الكسور وترتيبها (طريقة المقص)",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_03",
+        "sub_quant_03_3"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_03_2",
+      "drillName": "تدريب: ضرب وقسمة الكسور وتبسيطها",
+      "drillSubSkillId": "sub_quant_03_2",
+      "drillSubSkillName": "ضرب وقسمة الكسور وتبسيطها",
+      "questionId": "q_qdr_qnt_col2627_p010_q24",
+      "questionCode": "QDR-QNT-COL2627-P010-Q24",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_03_3",
+      "primarySkillName": "مقارنة الكسور وترتيبها (طريقة المقص)",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_03",
+        "sub_quant_03_3"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_03_2",
+      "drillName": "تدريب: ضرب وقسمة الكسور وتبسيطها",
+      "drillSubSkillId": "sub_quant_03_2",
+      "drillSubSkillName": "ضرب وقسمة الكسور وتبسيطها",
+      "questionId": "q_qdr_qnt_col2627_p010_q25",
+      "questionCode": "QDR-QNT-COL2627-P010-Q25",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_03_3",
+      "primarySkillName": "مقارنة الكسور وترتيبها (طريقة المقص)",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_03",
+        "sub_quant_03_3"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_03_4",
+      "drillName": "تدريب: معادلات ومسائل الكسور وسعة الخزانات",
+      "drillSubSkillId": "sub_quant_03_4",
+      "drillSubSkillName": "معادلات ومسائل الكسور وسعة الخزانات",
+      "questionId": "q_qdr_qnt_col2627_p015_q73",
+      "questionCode": "QDR-QNT-COL2627-P015-Q73",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_03_1",
+      "primarySkillName": "جمع وطرح الكسور وتوحيد المقامات",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_03",
+        "sub_quant_03_1"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_04_1",
+      "drillName": "تدريب: جمع وطرح الأعداد العشرية",
+      "drillSubSkillId": "sub_quant_04_1",
+      "drillSubSkillName": "جمع وطرح الأعداد العشرية",
+      "questionId": "q_qdr_qnt_col2627_p017_q02",
+      "questionCode": "QDR-QNT-COL2627-P017-Q02",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_04_3",
+      "primarySkillName": "التحويل بين الكسور الاعتيادية والعشرية والتقريب",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_04",
+        "sub_quant_04_3"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_04_2",
+      "drillName": "تدريب: ضرب وقسمة الأعداد العشرية وقوى 10",
+      "drillSubSkillId": "sub_quant_04_2",
+      "drillSubSkillName": "ضرب وقسمة الأعداد العشرية وقوى 10",
+      "questionId": "q_qdr_qnt_col2627_p017_q01",
+      "questionCode": "QDR-QNT-COL2627-P017-Q01",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_04_1",
+      "primarySkillName": "جمع وطرح الأعداد العشرية",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_04",
+        "sub_quant_04_1"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_04_4",
+      "drillName": "تدريب: مقارنة وترتيب الأعداد العشرية",
+      "drillSubSkillId": "sub_quant_04_4",
+      "drillSubSkillName": "مقارنة وترتيب الأعداد العشرية",
+      "questionId": "q_qdr_qnt_col2627_p018_q17",
+      "questionCode": "QDR-QNT-COL2627-P018-Q17",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_04_2",
+      "primarySkillName": "ضرب وقسمة الأعداد العشرية وقوى 10",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_04",
+        "sub_quant_04_2"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_07_3",
+      "drillName": "تدريب: تبسيط المقادير الجبرية وإخراج العامل المشترك",
+      "drillSubSkillId": "sub_quant_07_3",
+      "drillSubSkillName": "تبسيط المقادير الجبرية وإخراج العامل المشترك",
+      "questionId": "q_qdr_qnt_col2627_p034_q53",
+      "questionCode": "QDR-QNT-COL2627-P034-Q53",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_07_2",
+      "primarySkillName": "حل المعادلات الخطية والمعادلات الآنية (س وص)",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_07_4",
+      "drillName": "تدريب: المتباينات وإشارات التباين والقيمة المطلقة",
+      "drillSubSkillId": "sub_quant_07_4",
+      "drillSubSkillName": "المتباينات وإشارات التباين والقيمة المطلقة",
+      "questionId": "q_qdr_qnt_col2627_p034_q65",
+      "questionCode": "QDR-QNT-COL2627-P034-Q65",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_07_2",
+      "primarySkillName": "حل المعادلات الخطية والمعادلات الآنية (س وص)",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_07_4",
+      "drillName": "تدريب: المتباينات وإشارات التباين والقيمة المطلقة",
+      "drillSubSkillId": "sub_quant_07_4",
+      "drillSubSkillName": "المتباينات وإشارات التباين والقيمة المطلقة",
+      "questionId": "q_qdr_qnt_col2627_p034_q66",
+      "questionCode": "QDR-QNT-COL2627-P034-Q66",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_07_2",
+      "primarySkillName": "حل المعادلات الخطية والمعادلات الآنية (س وص)",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_08_3",
+      "drillName": "تدريب: التناسب العكسي",
+      "drillSubSkillId": "sub_quant_08_3",
+      "drillSubSkillName": "التناسب العكسي",
+      "questionId": "q_qdr_qnt_col2627_p038_q38",
+      "questionCode": "QDR-QNT-COL2627-P038-Q38",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_08_2",
+      "primarySkillName": "التناسب الطردي وحاصل الضرب التبادلي (المقص)",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_08",
+        "sub_quant_08_2"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_08_3",
+      "drillName": "تدريب: التناسب العكسي",
+      "drillSubSkillId": "sub_quant_08_3",
+      "drillSubSkillName": "التناسب العكسي",
+      "questionId": "q_qdr_qnt_col2627_p038_q39",
+      "questionCode": "QDR-QNT-COL2627-P038-Q39",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_08_2",
+      "primarySkillName": "التناسب الطردي وحاصل الضرب التبادلي (المقص)",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_08",
+        "sub_quant_08_2"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_08_3",
+      "drillName": "تدريب: التناسب العكسي",
+      "drillSubSkillId": "sub_quant_08_3",
+      "drillSubSkillName": "التناسب العكسي",
+      "questionId": "q_qdr_qnt_col2627_p038_q41",
+      "questionCode": "QDR-QNT-COL2627-P038-Q41",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_08_2",
+      "primarySkillName": "التناسب الطردي وحاصل الضرب التبادلي (المقص)",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_08",
+        "sub_quant_08_2"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_08_3",
+      "drillName": "تدريب: التناسب العكسي",
+      "drillSubSkillId": "sub_quant_08_3",
+      "drillSubSkillName": "التناسب العكسي",
+      "questionId": "q_qdr_qnt_col2627_p038_q42",
+      "questionCode": "QDR-QNT-COL2627-P038-Q42",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_08_2",
+      "primarySkillName": "التناسب الطردي وحاصل الضرب التبادلي (المقص)",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_08",
+        "sub_quant_08_2"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_08_3",
+      "drillName": "تدريب: التناسب العكسي",
+      "drillSubSkillId": "sub_quant_08_3",
+      "drillSubSkillName": "التناسب العكسي",
+      "questionId": "q_qdr_qnt_col2627_p038_q43",
+      "questionCode": "QDR-QNT-COL2627-P038-Q43",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_08_2",
+      "primarySkillName": "التناسب الطردي وحاصل الضرب التبادلي (المقص)",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_08",
+        "sub_quant_08_2"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_08_4",
+      "drillName": "تدريب: مسائل الخلط والسبائك والتقسيم التناسبي المركب",
+      "drillSubSkillId": "sub_quant_08_4",
+      "drillSubSkillName": "مسائل الخلط والسبائك والتقسيم التناسبي المركب",
+      "questionId": "q_qdr_qnt_col2627_p038_q44",
+      "questionCode": "QDR-QNT-COL2627-P038-Q44",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_08_2",
+      "primarySkillName": "التناسب الطردي وحاصل الضرب التبادلي (المقص)",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_08",
+        "sub_quant_08_2"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_08_4",
+      "drillName": "تدريب: مسائل الخلط والسبائك والتقسيم التناسبي المركب",
+      "drillSubSkillId": "sub_quant_08_4",
+      "drillSubSkillName": "مسائل الخلط والسبائك والتقسيم التناسبي المركب",
+      "questionId": "q_qdr_qnt_col2627_p038_q45",
+      "questionCode": "QDR-QNT-COL2627-P038-Q45",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_08_2",
+      "primarySkillName": "التناسب الطردي وحاصل الضرب التبادلي (المقص)",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_08",
+        "sub_quant_08_2"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_10_1",
+      "drillName": "تدريب: حساب سعر البيع والشراء ونسبة الربح والخسارة",
+      "drillSubSkillId": "sub_quant_10_1",
+      "drillSubSkillName": "حساب سعر البيع والشراء ونسبة الربح والخسارة",
+      "questionId": "q_qdr_qnt_col2627_p040_q23",
+      "questionCode": "QDR-QNT-COL2627-P040-Q23",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_09_3",
+      "primarySkillName": "النسبة المئوية للزيادة والنقصان",
+      "sameMain": false,
+      "questionSkillIds": [
+        "skill_quant_09",
+        "sub_quant_09_3"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_10_1",
+      "drillName": "تدريب: حساب سعر البيع والشراء ونسبة الربح والخسارة",
+      "drillSubSkillId": "sub_quant_10_1",
+      "drillSubSkillName": "حساب سعر البيع والشراء ونسبة الربح والخسارة",
+      "questionId": "q_qdr_qnt_col2627_p040_q24",
+      "questionCode": "QDR-QNT-COL2627-P040-Q24",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_09_3",
+      "primarySkillName": "النسبة المئوية للزيادة والنقصان",
+      "sameMain": false,
+      "questionSkillIds": [
+        "skill_quant_08",
+        "sub_quant_08_4"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_10_1",
+      "drillName": "تدريب: حساب سعر البيع والشراء ونسبة الربح والخسارة",
+      "drillSubSkillId": "sub_quant_10_1",
+      "drillSubSkillName": "حساب سعر البيع والشراء ونسبة الربح والخسارة",
+      "questionId": "q_qdr_qnt_col2627_p040_q25",
+      "questionCode": "QDR-QNT-COL2627-P040-Q25",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_09_3",
+      "primarySkillName": "النسبة المئوية للزيادة والنقصان",
+      "sameMain": false,
+      "questionSkillIds": [
+        "skill_quant_08",
+        "sub_quant_08_4"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_10_1",
+      "drillName": "تدريب: حساب سعر البيع والشراء ونسبة الربح والخسارة",
+      "drillSubSkillId": "sub_quant_10_1",
+      "drillSubSkillName": "حساب سعر البيع والشراء ونسبة الربح والخسارة",
+      "questionId": "q_qdr_qnt_col2627_p041_q39",
+      "questionCode": "QDR-QNT-COL2627-P041-Q39",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_09_3",
+      "primarySkillName": "النسبة المئوية للزيادة والنقصان",
+      "sameMain": false,
+      "questionSkillIds": [
+        "skill_quant_08",
+        "sub_quant_08_4"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_10_3",
+      "drillName": "تدريب: حساب الرواتب والادخار والمصاريف",
+      "drillSubSkillId": "sub_quant_10_3",
+      "drillSubSkillName": "حساب الرواتب والادخار والمصاريف",
+      "questionId": "q_qdr_qnt_col2627_p057_q08",
+      "questionCode": "QDR-QNT-COL2627-P057-Q08",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_17_1",
+      "primarySkillName": "قانون المتوسط الحسابي ومجموع القيم وتطبيقاته",
+      "sameMain": false,
+      "questionSkillIds": [
+        "skill_quant_17",
+        "sub_quant_17_1"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_10_4",
+      "drillName": "تدريب: حساب مقدار الزكاة الشرعية (قسمة على 40 أو ضرب في 2.5%)",
+      "drillSubSkillId": "sub_quant_10_4",
+      "drillSubSkillName": "حساب مقدار الزكاة الشرعية (قسمة على 40 أو ضرب في 2.5%)",
+      "questionId": "q_qdr_qnt_col2627_p037_q18",
+      "questionCode": "QDR-QNT-COL2627-P037-Q18",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_08_3",
+      "primarySkillName": "التناسب العكسي",
+      "sameMain": false,
+      "questionSkillIds": [
+        "skill_quant_08",
+        "sub_quant_08_3"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_10_4",
+      "drillName": "تدريب: حساب مقدار الزكاة الشرعية (قسمة على 40 أو ضرب في 2.5%)",
+      "drillSubSkillId": "sub_quant_10_4",
+      "drillSubSkillName": "حساب مقدار الزكاة الشرعية (قسمة على 40 أو ضرب في 2.5%)",
+      "questionId": "q_qdr_qnt_col2627_p037_q19",
+      "questionCode": "QDR-QNT-COL2627-P037-Q19",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_08_3",
+      "primarySkillName": "التناسب العكسي",
+      "sameMain": false,
+      "questionSkillIds": [
+        "skill_quant_08",
+        "sub_quant_08_3"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_10_4",
+      "drillName": "تدريب: حساب مقدار الزكاة الشرعية (قسمة على 40 أو ضرب في 2.5%)",
+      "drillSubSkillId": "sub_quant_10_4",
+      "drillSubSkillName": "حساب مقدار الزكاة الشرعية (قسمة على 40 أو ضرب في 2.5%)",
+      "questionId": "q_qdr_qnt_col2627_p037_q20",
+      "questionCode": "QDR-QNT-COL2627-P037-Q20",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_08_3",
+      "primarySkillName": "التناسب العكسي",
+      "sameMain": false,
+      "questionSkillIds": [
+        "skill_quant_08",
+        "sub_quant_08_3"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_11_2",
+      "drillName": "تدريب: الحل العكسي (التراجع من النهاية للبداية)",
+      "drillSubSkillId": "sub_quant_11_2",
+      "drillSubSkillName": "الحل العكسي (التراجع من النهاية للبداية)",
+      "questionId": "q_qdr_qnt_col2627_p044_q01",
+      "questionCode": "QDR-QNT-COL2627-P044-Q01",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_11_1",
+      "primarySkillName": "تجريب الخيارات والتعويض الذكي والاستبعاد المنطقي",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_11",
+        "sub_quant_11_1"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_11_2",
+      "drillName": "تدريب: الحل العكسي (التراجع من النهاية للبداية)",
+      "drillSubSkillId": "sub_quant_11_2",
+      "drillSubSkillName": "الحل العكسي (التراجع من النهاية للبداية)",
+      "questionId": "q_qdr_qnt_col2627_p044_q02",
+      "questionCode": "QDR-QNT-COL2627-P044-Q02",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_11_1",
+      "primarySkillName": "تجريب الخيارات والتعويض الذكي والاستبعاد المنطقي",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_11",
+        "sub_quant_11_1"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_11_2",
+      "drillName": "تدريب: الحل العكسي (التراجع من النهاية للبداية)",
+      "drillSubSkillId": "sub_quant_11_2",
+      "drillSubSkillName": "الحل العكسي (التراجع من النهاية للبداية)",
+      "questionId": "q_qdr_qnt_col2627_p044_q03",
+      "questionCode": "QDR-QNT-COL2627-P044-Q03",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_11_1",
+      "primarySkillName": "تجريب الخيارات والتعويض الذكي والاستبعاد المنطقي",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_11",
+        "sub_quant_11_1"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_11_2",
+      "drillName": "تدريب: الحل العكسي (التراجع من النهاية للبداية)",
+      "drillSubSkillId": "sub_quant_11_2",
+      "drillSubSkillName": "الحل العكسي (التراجع من النهاية للبداية)",
+      "questionId": "q_qdr_qnt_col2627_p044_q04",
+      "questionCode": "QDR-QNT-COL2627-P044-Q04",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_11_1",
+      "primarySkillName": "تجريب الخيارات والتعويض الذكي والاستبعاد المنطقي",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_11",
+        "sub_quant_11_1"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_11_2",
+      "drillName": "تدريب: الحل العكسي (التراجع من النهاية للبداية)",
+      "drillSubSkillId": "sub_quant_11_2",
+      "drillSubSkillName": "الحل العكسي (التراجع من النهاية للبداية)",
+      "questionId": "q_qdr_qnt_col2627_p044_q05",
+      "questionCode": "QDR-QNT-COL2627-P044-Q05",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_11_1",
+      "primarySkillName": "تجريب الخيارات والتعويض الذكي والاستبعاد المنطقي",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_11",
+        "sub_quant_11_1"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_11_2",
+      "drillName": "تدريب: الحل العكسي (التراجع من النهاية للبداية)",
+      "drillSubSkillId": "sub_quant_11_2",
+      "drillSubSkillName": "الحل العكسي (التراجع من النهاية للبداية)",
+      "questionId": "q_qdr_qnt_col2627_p044_q06",
+      "questionCode": "QDR-QNT-COL2627-P044-Q06",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_11_1",
+      "primarySkillName": "تجريب الخيارات والتعويض الذكي والاستبعاد المنطقي",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_11",
+        "sub_quant_11_1"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_11_3",
+      "drillName": "تدريب: الرسم والتمثيل البصري للمسألة",
+      "drillSubSkillId": "sub_quant_11_3",
+      "drillSubSkillName": "الرسم والتمثيل البصري للمسألة",
+      "questionId": "q_qdr_qnt_col2627_p046_q40",
+      "questionCode": "QDR-QNT-COL2627-P046-Q40",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_11_2",
+      "primarySkillName": "الحل العكسي (التراجع من النهاية للبداية)",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_11",
+        "sub_quant_11_2"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_11_3",
+      "drillName": "تدريب: الرسم والتمثيل البصري للمسألة",
+      "drillSubSkillId": "sub_quant_11_3",
+      "drillSubSkillName": "الرسم والتمثيل البصري للمسألة",
+      "questionId": "q_qdr_qnt_col2627_p046_q42",
+      "questionCode": "QDR-QNT-COL2627-P046-Q42",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_11_2",
+      "primarySkillName": "الحل العكسي (التراجع من النهاية للبداية)",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_11",
+        "sub_quant_11_2"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_14_1",
+      "drillName": "تدريب: دوري الأيام والأسابيع (القسمة على 7 والباقي)",
+      "drillSubSkillId": "sub_quant_14_1",
+      "drillSubSkillName": "دوري الأيام والأسابيع (القسمة على 7 والباقي)",
+      "questionId": "q_qdr_qnt_col2627_p055_q32",
+      "questionCode": "QDR-QNT-COL2627-P055-Q32",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_14_4",
+      "primarySkillName": "الأنماط والمتتابعات العددية واكتشاف القاعدة والحد التالي",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_14",
+        "sub_quant_14_4"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_14_3",
+      "drillName": "تدريب: دوري الأسس وقوى الأعداد وبواقي التكرار",
+      "drillSubSkillId": "sub_quant_14_3",
+      "drillSubSkillName": "دوري الأسس وقوى الأعداد وبواقي التكرار",
+      "questionId": "q_qdr_qnt_col2627_p055_q31",
+      "questionCode": "QDR-QNT-COL2627-P055-Q31",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_01_5",
+      "primarySkillName": "تحديد خانة الآحاد للنواتج والعمليات الحسابية",
+      "sameMain": false,
+      "questionSkillIds": [
+        "skill_quant_01",
+        "sub_quant_01_5"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_15_1",
+      "drillName": "تدريب: حساب الزاوية الصغرى والكبرى بين عقرب الساعات وعقرب الدقائق",
+      "drillSubSkillId": "sub_quant_15_1",
+      "drillSubSkillName": "حساب الزاوية الصغرى والكبرى بين عقرب الساعات وعقرب الدقائق",
+      "questionId": "q_qdr_qnt_col2627_p053_q05",
+      "questionCode": "QDR-QNT-COL2627-P053-Q05",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_14_2",
+      "primarySkillName": "دوري الساعات والشهور وباقي قسمة الوقت",
+      "sameMain": false,
+      "questionSkillIds": [
+        "skill_quant_14",
+        "sub_quant_14_2"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_15_1",
+      "drillName": "تدريب: حساب الزاوية الصغرى والكبرى بين عقرب الساعات وعقرب الدقائق",
+      "drillSubSkillId": "sub_quant_15_1",
+      "drillSubSkillName": "حساب الزاوية الصغرى والكبرى بين عقرب الساعات وعقرب الدقائق",
+      "questionId": "q_qdr_qnt_col2627_p053_q06",
+      "questionCode": "QDR-QNT-COL2627-P053-Q06",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_14_2",
+      "primarySkillName": "دوري الساعات والشهور وباقي قسمة الوقت",
+      "sameMain": false,
+      "questionSkillIds": [
+        "skill_quant_14",
+        "sub_quant_14_2"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_15_2",
+      "drillName": "تدريب: دوران عقارب الساعة ومقدار تحرك العقرب بالدرجات",
+      "drillSubSkillId": "sub_quant_15_2",
+      "drillSubSkillName": "دوران عقارب الساعة ومقدار تحرك العقرب بالدرجات",
+      "questionId": "q_qdr_qnt_col2627_p053_q01",
+      "questionCode": "QDR-QNT-COL2627-P053-Q01",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_14_2",
+      "primarySkillName": "دوري الساعات والشهور وباقي قسمة الوقت",
+      "sameMain": false,
+      "questionSkillIds": [
+        "skill_quant_14",
+        "sub_quant_14_2"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_15_2",
+      "drillName": "تدريب: دوران عقارب الساعة ومقدار تحرك العقرب بالدرجات",
+      "drillSubSkillId": "sub_quant_15_2",
+      "drillSubSkillName": "دوران عقارب الساعة ومقدار تحرك العقرب بالدرجات",
+      "questionId": "q_qdr_qnt_col2627_p053_q02",
+      "questionCode": "QDR-QNT-COL2627-P053-Q02",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_14_2",
+      "primarySkillName": "دوري الساعات والشهور وباقي قسمة الوقت",
+      "sameMain": false,
+      "questionSkillIds": [
+        "skill_quant_14",
+        "sub_quant_14_2"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_15_2",
+      "drillName": "تدريب: دوران عقارب الساعة ومقدار تحرك العقرب بالدرجات",
+      "drillSubSkillId": "sub_quant_15_2",
+      "drillSubSkillName": "دوران عقارب الساعة ومقدار تحرك العقرب بالدرجات",
+      "questionId": "q_qdr_qnt_col2627_p053_q03",
+      "questionCode": "QDR-QNT-COL2627-P053-Q03",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_14_2",
+      "primarySkillName": "دوري الساعات والشهور وباقي قسمة الوقت",
+      "sameMain": false,
+      "questionSkillIds": [
+        "skill_quant_14",
+        "sub_quant_14_2"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_15_2",
+      "drillName": "تدريب: دوران عقارب الساعة ومقدار تحرك العقرب بالدرجات",
+      "drillSubSkillId": "sub_quant_15_2",
+      "drillSubSkillName": "دوران عقارب الساعة ومقدار تحرك العقرب بالدرجات",
+      "questionId": "q_qdr_qnt_col2627_p053_q04",
+      "questionCode": "QDR-QNT-COL2627-P053-Q04",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_14_2",
+      "primarySkillName": "دوري الساعات والشهور وباقي قسمة الوقت",
+      "sameMain": false,
+      "questionSkillIds": [
+        "skill_quant_14",
+        "sub_quant_14_2"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_15_2",
+      "drillName": "تدريب: دوران عقارب الساعة ومقدار تحرك العقرب بالدرجات",
+      "drillSubSkillId": "sub_quant_15_2",
+      "drillSubSkillName": "دوران عقارب الساعة ومقدار تحرك العقرب بالدرجات",
+      "questionId": "q_qdr_qnt_col2627_p053_q08",
+      "questionCode": "QDR-QNT-COL2627-P053-Q08",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_14_2",
+      "primarySkillName": "دوري الساعات والشهور وباقي قسمة الوقت",
+      "sameMain": false,
+      "questionSkillIds": [
+        "skill_quant_14",
+        "sub_quant_14_2"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_16_1",
+      "drillName": "تدريب: حساب العمر في الماضي وبعد سنوات",
+      "drillSubSkillId": "sub_quant_16_1",
+      "drillSubSkillName": "حساب العمر في الماضي وبعد سنوات",
+      "questionId": "q_qdr_qnt_col2627_p007_q09",
+      "questionCode": "QDR-QNT-COL2627-P007-Q09",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_02_1",
+      "primarySkillName": "قواعد قابلية القسمة على الأعداد (2، 3، 4، 5، 6، 7، 8، 9، 11)",
+      "sameMain": false,
+      "questionSkillIds": [
+        "skill_quant_02",
+        "sub_quant_02_1"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_16_2",
+      "drillName": "تدريب: العلاقات والنسب بين الأعمار (ضعف، ثلاثة أمثال...)",
+      "drillSubSkillId": "sub_quant_16_2",
+      "drillSubSkillName": "العلاقات والنسب بين الأعمار (ضعف، ثلاثة أمثال...)",
+      "questionId": "q_qdr_qnt_col2627_p053_q09",
+      "questionCode": "QDR-QNT-COL2627-P053-Q09",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_16_1",
+      "primarySkillName": "حساب العمر في الماضي وبعد سنوات",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_16",
+        "sub_quant_16_1"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_16_2",
+      "drillName": "تدريب: العلاقات والنسب بين الأعمار (ضعف، ثلاثة أمثال...)",
+      "drillSubSkillId": "sub_quant_16_2",
+      "drillSubSkillName": "العلاقات والنسب بين الأعمار (ضعف، ثلاثة أمثال...)",
+      "questionId": "q_qdr_qnt_col2627_p053_q10",
+      "questionCode": "QDR-QNT-COL2627-P053-Q10",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_16_1",
+      "primarySkillName": "حساب العمر في الماضي وبعد سنوات",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_16",
+        "sub_quant_16_1"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_16_2",
+      "drillName": "تدريب: العلاقات والنسب بين الأعمار (ضعف، ثلاثة أمثال...)",
+      "drillSubSkillId": "sub_quant_16_2",
+      "drillSubSkillName": "العلاقات والنسب بين الأعمار (ضعف، ثلاثة أمثال...)",
+      "questionId": "q_qdr_qnt_col2627_p053_q11",
+      "questionCode": "QDR-QNT-COL2627-P053-Q11",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_16_1",
+      "primarySkillName": "حساب العمر في الماضي وبعد سنوات",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_16",
+        "sub_quant_16_1"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_16_2",
+      "drillName": "تدريب: العلاقات والنسب بين الأعمار (ضعف، ثلاثة أمثال...)",
+      "drillSubSkillId": "sub_quant_16_2",
+      "drillSubSkillName": "العلاقات والنسب بين الأعمار (ضعف، ثلاثة أمثال...)",
+      "questionId": "q_qdr_qnt_col2627_p053_q14",
+      "questionCode": "QDR-QNT-COL2627-P053-Q14",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_16_1",
+      "primarySkillName": "حساب العمر في الماضي وبعد سنوات",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_16",
+        "sub_quant_16_1"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_17_3",
+      "drillName": "تدريب: المتوسط الحسابي لأعداد متتالية والمتوسط الموزون",
+      "drillSubSkillId": "sub_quant_17_3",
+      "drillSubSkillName": "المتوسط الحسابي لأعداد متتالية والمتوسط الموزون",
+      "questionId": "q_qdr_qnt_col2627_p057_q06",
+      "questionCode": "QDR-QNT-COL2627-P057-Q06",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_17_1",
+      "primarySkillName": "قانون المتوسط الحسابي ومجموع القيم وتطبيقاته",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_17",
+        "sub_quant_17_1"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_17_3",
+      "drillName": "تدريب: المتوسط الحسابي لأعداد متتالية والمتوسط الموزون",
+      "drillSubSkillId": "sub_quant_17_3",
+      "drillSubSkillName": "المتوسط الحسابي لأعداد متتالية والمتوسط الموزون",
+      "questionId": "q_qdr_qnt_col2627_p058_q18",
+      "questionCode": "QDR-QNT-COL2627-P058-Q18",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_17_1",
+      "primarySkillName": "قانون المتوسط الحسابي ومجموع القيم وتطبيقاته",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_17",
+        "sub_quant_17_1"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_17_3",
+      "drillName": "تدريب: المتوسط الحسابي لأعداد متتالية والمتوسط الموزون",
+      "drillSubSkillId": "sub_quant_17_3",
+      "drillSubSkillName": "المتوسط الحسابي لأعداد متتالية والمتوسط الموزون",
+      "questionId": "q_qdr_qnt_col2627_p058_q19",
+      "questionCode": "QDR-QNT-COL2627-P058-Q19",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_17_1",
+      "primarySkillName": "قانون المتوسط الحسابي ومجموع القيم وتطبيقاته",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_17",
+        "sub_quant_17_1"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_17_3",
+      "drillName": "تدريب: المتوسط الحسابي لأعداد متتالية والمتوسط الموزون",
+      "drillSubSkillId": "sub_quant_17_3",
+      "drillSubSkillName": "المتوسط الحسابي لأعداد متتالية والمتوسط الموزون",
+      "questionId": "q_qdr_qnt_col2627_p058_q21",
+      "questionCode": "QDR-QNT-COL2627-P058-Q21",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_17_1",
+      "primarySkillName": "قانون المتوسط الحسابي ومجموع القيم وتطبيقاته",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_17",
+        "sub_quant_17_1"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_17_4",
+      "drillName": "تدريب: الوسيط والمنوال والمدى وتطبيقاتها",
+      "drillSubSkillId": "sub_quant_17_4",
+      "drillSubSkillName": "الوسيط والمنوال والمدى وتطبيقاتها",
+      "questionId": "q_qdr_qnt_col2627_p058_q22",
+      "questionCode": "QDR-QNT-COL2627-P058-Q22",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_17_2",
+      "primarySkillName": "إيجاد قيمة مجهولة بمعلومية المتوسط الحسابي",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_17",
+        "sub_quant_17_2"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_17_4",
+      "drillName": "تدريب: الوسيط والمنوال والمدى وتطبيقاتها",
+      "drillSubSkillId": "sub_quant_17_4",
+      "drillSubSkillName": "الوسيط والمنوال والمدى وتطبيقاتها",
+      "questionId": "q_qdr_qnt_col2627_p058_q23",
+      "questionCode": "QDR-QNT-COL2627-P058-Q23",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_17_3",
+      "primarySkillName": "المتوسط الحسابي لأعداد متتالية والمتوسط الموزون",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_17",
+        "sub_quant_17_3"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_17_4",
+      "drillName": "تدريب: الوسيط والمنوال والمدى وتطبيقاتها",
+      "drillSubSkillId": "sub_quant_17_4",
+      "drillSubSkillName": "الوسيط والمنوال والمدى وتطبيقاتها",
+      "questionId": "q_qdr_qnt_col2627_p058_q24",
+      "questionCode": "QDR-QNT-COL2627-P058-Q24",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_17_3",
+      "primarySkillName": "المتوسط الحسابي لأعداد متتالية والمتوسط الموزون",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_17",
+        "sub_quant_17_3"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_17_4",
+      "drillName": "تدريب: الوسيط والمنوال والمدى وتطبيقاتها",
+      "drillSubSkillId": "sub_quant_17_4",
+      "drillSubSkillName": "الوسيط والمنوال والمدى وتطبيقاتها",
+      "questionId": "q_qdr_qnt_col2627_p058_q25",
+      "questionCode": "QDR-QNT-COL2627-P058-Q25",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_17_3",
+      "primarySkillName": "المتوسط الحسابي لأعداد متتالية والمتوسط الموزون",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_17",
+        "sub_quant_17_3"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_19_3",
+      "drillName": "تدريب: مجموع الزوايا الداخلية والخارجية للمضلعات المنتظمة",
+      "drillSubSkillId": "sub_quant_19_3",
+      "drillSubSkillName": "مجموع الزوايا الداخلية والخارجية للمضلعات المنتظمة",
+      "questionId": "q_qdr_qnt_col2627_p065_q50",
+      "questionCode": "QDR-QNT-COL2627-P065-Q50",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_19_2",
+      "primarySkillName": "الزوايا الناتجة عن توازي مستقيمين وقاطع (Z, F, U, M)",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_19",
+        "sub_quant_19_2"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_19_3",
+      "drillName": "تدريب: مجموع الزوايا الداخلية والخارجية للمضلعات المنتظمة",
+      "drillSubSkillId": "sub_quant_19_3",
+      "drillSubSkillName": "مجموع الزوايا الداخلية والخارجية للمضلعات المنتظمة",
+      "questionId": "q_qdr_qnt_col2627_p065_q51",
+      "questionCode": "QDR-QNT-COL2627-P065-Q51",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_19_2",
+      "primarySkillName": "الزوايا الناتجة عن توازي مستقيمين وقاطع (Z, F, U, M)",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_19",
+        "sub_quant_19_2"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_20_5",
+      "drillName": "تدريب: تشابه وتطابق المثلثات ومتباينة أطوال الأضلاع",
+      "drillSubSkillId": "sub_quant_20_5",
+      "drillSubSkillName": "تشابه وتطابق المثلثات ومتباينة أطوال الأضلاع",
+      "questionId": "q_qdr_qnt_col2627_p072_q58",
+      "questionCode": "QDR-QNT-COL2627-P072-Q58",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_20_4",
+      "primarySkillName": "مساحة المثلث وارتفاعه وقاعدته",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_4"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_20_5",
+      "drillName": "تدريب: تشابه وتطابق المثلثات ومتباينة أطوال الأضلاع",
+      "drillSubSkillId": "sub_quant_20_5",
+      "drillSubSkillName": "تشابه وتطابق المثلثات ومتباينة أطوال الأضلاع",
+      "questionId": "q_qdr_qnt_col2627_p073_q63",
+      "questionCode": "QDR-QNT-COL2627-P073-Q63",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_20_4",
+      "primarySkillName": "مساحة المثلث وارتفاعه وقاعدته",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_4"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_23_3",
+      "drillName": "تدريب: مساحة شبه المنحرف والقاعدة المتوسطة",
+      "drillSubSkillId": "sub_quant_23_3",
+      "drillSubSkillName": "مساحة شبه المنحرف والقاعدة المتوسطة",
+      "questionId": "q_qdr_qnt_col2627_p079_q11",
+      "questionCode": "QDR-QNT-COL2627-P079-Q11",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_23_1",
+      "primarySkillName": "مساحة ومحيط متوازي الأضلاع",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_23",
+        "sub_quant_23_1"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_24_4",
+      "drillName": "تدريب: مساحة الوردة المظللة وتداخل الدوائر والمربعات",
+      "drillSubSkillId": "sub_quant_24_4",
+      "drillSubSkillName": "مساحة الوردة المظللة وتداخل الدوائر والمربعات",
+      "questionId": "q_qdr_qnt_col2627_p081_q21",
+      "questionCode": "QDR-QNT-COL2627-P081-Q21",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_24_3",
+      "primarySkillName": "استراتيجية حساب الأشكال والمساحات المظللة (طرح المساحات)",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_24",
+        "sub_quant_24_3"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_24_4",
+      "drillName": "تدريب: مساحة الوردة المظللة وتداخل الدوائر والمربعات",
+      "drillSubSkillId": "sub_quant_24_4",
+      "drillSubSkillName": "مساحة الوردة المظللة وتداخل الدوائر والمربعات",
+      "questionId": "q_qdr_qnt_col2627_p081_q22",
+      "questionCode": "QDR-QNT-COL2627-P081-Q22",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_24_3",
+      "primarySkillName": "استراتيجية حساب الأشكال والمساحات المظللة (طرح المساحات)",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_24",
+        "sub_quant_24_3"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_24_4",
+      "drillName": "تدريب: مساحة الوردة المظللة وتداخل الدوائر والمربعات",
+      "drillSubSkillId": "sub_quant_24_4",
+      "drillSubSkillName": "مساحة الوردة المظللة وتداخل الدوائر والمربعات",
+      "questionId": "q_qdr_qnt_col2627_p082_q23",
+      "questionCode": "QDR-QNT-COL2627-P082-Q23",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_24_3",
+      "primarySkillName": "استراتيجية حساب الأشكال والمساحات المظللة (طرح المساحات)",
+      "sameMain": true,
+      "questionSkillIds": [
+        "skill_quant_24",
+        "sub_quant_24_3"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    },
+    {
+      "status": "MISMATCH",
+      "drillId": "drill_sub_quant_25_3",
+      "drillName": "تدريب: هندسة الإحداثيات: تحديد النقاط والمسافة ونقطة المنتصف والميل",
+      "drillSubSkillId": "sub_quant_25_3",
+      "drillSubSkillName": "هندسة الإحداثيات: تحديد النقاط والمسافة ونقطة المنتصف والميل",
+      "questionId": "q_qdr_qnt_col2627_p071_q44",
+      "questionCode": "QDR-QNT-COL2627-P071-Q44",
+      "sourceBank": "COL2627",
+      "primarySkillId": "sub_quant_20_2",
+      "primarySkillName": "المثلثات الخاصة (30-60 والمثلث 45 المتطابق الضلعين)",
+      "sameMain": false,
+      "questionSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_2"
+      ],
+      "review_status": "PENDING_SOURCE_IMAGE_PROOF",
+      "proposed_action": "REVIEW_QUESTION_PRIMARY_SKILL_AND_QUIZ_MEMBERSHIP",
+      "modified": false
+    }
+  ]
+}
