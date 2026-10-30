@@ -23,9 +23,11 @@ After excluding the 16 skill IDs deepened or clarified in R523 and R524, remaini
 - Eight expanded skill pages, each with a teaching idea, causal chain, concept map, comparison, exam traps and two original explained editorial MCQs.
 - Eight updated main-map skill nodes across five maps.
 - Eight original editable HTML diagrams, eight PNGs and eight individual PDFs.
-- Updated 127-chapter unified editable HTML, EPUB and PDF.
-- 29-map atlas (37 PDF pages because eight image-bearing maps require continuation pages), plus a six-page addendum covering the five updated maps.
-- 18-page eight-skill supplement, source register, change set, QA, checkpoint and SHA-256 manifest.
+- Updated 127-chapter unified editable HTML, EPUB and **239-page PDF**.
+- **29-map atlas:** 37 PDF pages because eight image-bearing maps use continuation pages.
+- **Five-map update addendum:** 6 pages.
+- **Eight-skill supplement:** 16 pages.
+- Source register, change set, QA, checkpoint and SHA-256 manifest.
 
 ## Frozen invariants
 29 main axes; 98 subskills; 2,832 canonical questions; 2,835 source occurrences; 147 approved learning quizzes; 71 approved standard tests. No protected content was modified.
