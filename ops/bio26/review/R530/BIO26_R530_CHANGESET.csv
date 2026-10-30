@@ -1,0 +1,50 @@
+change_id,object_type,object_id,action,scope,status
+R530-SKILL-BIO26-S20-03,subskill,BIO26-S20-03,NEW_DEEP_DIVE,156 canonical source occurrences across 8 skills,REVIEW_ONLY
+R530-MAP-BIO26-S20-03,main_map_node,BIO26-M20,UPDATE_NODE_SUMMARY,node BIO26-S20-03; eight node updates across seven unique maps,REVIEW_ONLY
+R530-Q-BIO26-S20-03-1,editorial_question,BIO26-S20-03-R530-Q01,CREATE_ORIGINAL,original explained question; not imported to canonical bank,REVIEW_ONLY
+R530-Q-BIO26-S20-03-2,editorial_question,BIO26-S20-03-R530-Q02,CREATE_ORIGINAL,original explained question; not imported to canonical bank,REVIEW_ONLY
+R530-D-BIO26-S20-03,diagram,BIO26-R530-BIO26-S20-03,CREATE_ORIGINAL,editable HTML + PNG + PDF,REVIEW_ONLY
+R530-SKILL-BIO26-S25-01,subskill,BIO26-S25-01,NEW_DEEP_DIVE,156 canonical source occurrences across 8 skills,REVIEW_ONLY
+R530-MAP-BIO26-S25-01,main_map_node,BIO26-M25,UPDATE_NODE_SUMMARY,node BIO26-S25-01; eight node updates across seven unique maps,REVIEW_ONLY
+R530-Q-BIO26-S25-01-1,editorial_question,BIO26-S25-01-R530-Q01,CREATE_ORIGINAL,original explained question; not imported to canonical bank,REVIEW_ONLY
+R530-Q-BIO26-S25-01-2,editorial_question,BIO26-S25-01-R530-Q02,CREATE_ORIGINAL,original explained question; not imported to canonical bank,REVIEW_ONLY
+R530-D-BIO26-S25-01,diagram,BIO26-R530-BIO26-S25-01,CREATE_ORIGINAL,editable HTML + PNG + PDF,REVIEW_ONLY
+R530-SKILL-BIO26-S11-01,subskill,BIO26-S11-01,NEW_DEEP_DIVE,156 canonical source occurrences across 8 skills,REVIEW_ONLY
+R530-MAP-BIO26-S11-01,main_map_node,BIO26-M11,UPDATE_NODE_SUMMARY,node BIO26-S11-01; eight node updates across seven unique maps,REVIEW_ONLY
+R530-Q-BIO26-S11-01-1,editorial_question,BIO26-S11-01-R530-Q01,CREATE_ORIGINAL,original explained question; not imported to canonical bank,REVIEW_ONLY
+R530-Q-BIO26-S11-01-2,editorial_question,BIO26-S11-01-R530-Q02,CREATE_ORIGINAL,original explained question; not imported to canonical bank,REVIEW_ONLY
+R530-D-BIO26-S11-01,diagram,BIO26-R530-BIO26-S11-01,CREATE_ORIGINAL,editable HTML + PNG + PDF,REVIEW_ONLY
+R530-SKILL-BIO26-S11-02,subskill,BIO26-S11-02,NEW_DEEP_DIVE,156 canonical source occurrences across 8 skills,REVIEW_ONLY
+R530-MAP-BIO26-S11-02,main_map_node,BIO26-M11,UPDATE_NODE_SUMMARY,node BIO26-S11-02; eight node updates across seven unique maps,REVIEW_ONLY
+R530-Q-BIO26-S11-02-1,editorial_question,BIO26-S11-02-R530-Q01,CREATE_ORIGINAL,original explained question; not imported to canonical bank,REVIEW_ONLY
+R530-Q-BIO26-S11-02-2,editorial_question,BIO26-S11-02-R530-Q02,CREATE_ORIGINAL,original explained question; not imported to canonical bank,REVIEW_ONLY
+R530-D-BIO26-S11-02,diagram,BIO26-R530-BIO26-S11-02,CREATE_ORIGINAL,editable HTML + PNG + PDF,REVIEW_ONLY
+R530-SKILL-BIO26-S21-02,subskill,BIO26-S21-02,NEW_DEEP_DIVE,156 canonical source occurrences across 8 skills,REVIEW_ONLY
+R530-MAP-BIO26-S21-02,main_map_node,BIO26-M21,UPDATE_NODE_SUMMARY,node BIO26-S21-02; eight node updates across seven unique maps,REVIEW_ONLY
+R530-Q-BIO26-S21-02-1,editorial_question,BIO26-S21-02-R530-Q01,CREATE_ORIGINAL,original explained question; not imported to canonical bank,REVIEW_ONLY
+R530-Q-BIO26-S21-02-2,editorial_question,BIO26-S21-02-R530-Q02,CREATE_ORIGINAL,original explained question; not imported to canonical bank,REVIEW_ONLY
+R530-D-BIO26-S21-02,diagram,BIO26-R530-BIO26-S21-02,CREATE_ORIGINAL,editable HTML + PNG + PDF,REVIEW_ONLY
+R530-SKILL-BIO26-S24-04,subskill,BIO26-S24-04,NEW_DEEP_DIVE,156 canonical source occurrences across 8 skills,REVIEW_ONLY
+R530-MAP-BIO26-S24-04,main_map_node,BIO26-M24,UPDATE_NODE_SUMMARY,node BIO26-S24-04; eight node updates across seven unique maps,REVIEW_ONLY
+R530-Q-BIO26-S24-04-1,editorial_question,BIO26-S24-04-R530-Q01,CREATE_ORIGINAL,original explained question; not imported to canonical bank,REVIEW_ONLY
+R530-Q-BIO26-S24-04-2,editorial_question,BIO26-S24-04-R530-Q02,CREATE_ORIGINAL,original explained question; not imported to canonical bank,REVIEW_ONLY
+R530-D-BIO26-S24-04,diagram,BIO26-R530-BIO26-S24-04,CREATE_ORIGINAL,editable HTML + PNG + PDF,REVIEW_ONLY
+R530-SKILL-BIO26-S01-02,subskill,BIO26-S01-02,NEW_DEEP_DIVE,156 canonical source occurrences across 8 skills,REVIEW_ONLY
+R530-MAP-BIO26-S01-02,main_map_node,BIO26-M01,UPDATE_NODE_SUMMARY,node BIO26-S01-02; eight node updates across seven unique maps,REVIEW_ONLY
+R530-Q-BIO26-S01-02-1,editorial_question,BIO26-S01-02-R530-Q01,CREATE_ORIGINAL,original explained question; not imported to canonical bank,REVIEW_ONLY
+R530-Q-BIO26-S01-02-2,editorial_question,BIO26-S01-02-R530-Q02,CREATE_ORIGINAL,original explained question; not imported to canonical bank,REVIEW_ONLY
+R530-D-BIO26-S01-02,diagram,BIO26-R530-BIO26-S01-02,CREATE_ORIGINAL,editable HTML + PNG + PDF,REVIEW_ONLY
+R530-SKILL-BIO26-S02-03,subskill,BIO26-S02-03,NEW_DEEP_DIVE,156 canonical source occurrences across 8 skills,REVIEW_ONLY
+R530-MAP-BIO26-S02-03,main_map_node,BIO26-M02,UPDATE_NODE_SUMMARY,node BIO26-S02-03; eight node updates across seven unique maps,REVIEW_ONLY
+R530-Q-BIO26-S02-03-1,editorial_question,BIO26-S02-03-R530-Q01,CREATE_ORIGINAL,original explained question; not imported to canonical bank,REVIEW_ONLY
+R530-Q-BIO26-S02-03-2,editorial_question,BIO26-S02-03-R530-Q02,CREATE_ORIGINAL,original explained question; not imported to canonical bank,REVIEW_ONLY
+R530-D-BIO26-S02-03,diagram,BIO26-R530-BIO26-S02-03,CREATE_ORIGINAL,editable HTML + PNG + PDF,REVIEW_ONLY
+R530-BOOK-BIO26_R530_UNIFIED_LIBRARY_EDITABLE.html,library_artifact,BIO26_R530_UNIFIED_LIBRARY_EDITABLE.html,CREATE_OR_UPDATE,local review package; not production-published,REVIEW_ONLY
+R530-BOOK-BIO26_R530_UNIFIED_LIBRARY_REVIEW_ONLY.pdf,library_artifact,BIO26_R530_UNIFIED_LIBRARY_REVIEW_ONLY.pdf,CREATE_OR_UPDATE,local review package; not production-published,REVIEW_ONLY
+R530-BOOK-BIO26_R530_UNIFIED_LIBRARY_REVIEW_ONLY.epub,library_artifact,BIO26_R530_UNIFIED_LIBRARY_REVIEW_ONLY.epub,CREATE_OR_UPDATE,local review package; not production-published,REVIEW_ONLY
+R530-BOOK-BIO26_R530_29_MAIN_MAPS_ATLAS_EDITABLE.html,library_artifact,BIO26_R530_29_MAIN_MAPS_ATLAS_EDITABLE.html,CREATE_OR_UPDATE,local review package; not production-published,REVIEW_ONLY
+R530-BOOK-BIO26_R530_29_MAIN_MAPS_ATLAS_WITH_R530_ADDENDUM_REVIEW_ONLY.pdf,library_artifact,BIO26_R530_29_MAIN_MAPS_ATLAS_WITH_R530_ADDENDUM_REVIEW_ONLY.pdf,CREATE_OR_UPDATE,local review package; not production-published,REVIEW_ONLY
+R530-BOOK-BIO26_R530_8_SKILL_DEEP_DIVES_SUPPLEMENT_EDITABLE.html,library_artifact,BIO26_R530_8_SKILL_DEEP_DIVES_SUPPLEMENT_EDITABLE.html,CREATE_OR_UPDATE,local review package; not production-published,REVIEW_ONLY
+R530-BOOK-BIO26_R530_8_SKILL_DEEP_DIVES_SUPPLEMENT_REVIEW_ONLY.pdf,library_artifact,BIO26_R530_8_SKILL_DEEP_DIVES_SUPPLEMENT_REVIEW_ONLY.pdf,CREATE_OR_UPDATE,local review package; not production-published,REVIEW_ONLY
+R530-BOOK-BIO26_R530_8_UPDATED_MAIN_MAPS_ADDENDUM_EDITABLE.html,library_artifact,BIO26_R530_8_UPDATED_MAIN_MAPS_ADDENDUM_EDITABLE.html,CREATE_OR_UPDATE,local review package; not production-published,REVIEW_ONLY
+R530-BOOK-BIO26_R530_8_UPDATED_MAIN_MAPS_ADDENDUM_REVIEW_ONLY.pdf,library_artifact,BIO26_R530_8_UPDATED_MAIN_MAPS_ADDENDUM_REVIEW_ONLY.pdf,CREATE_OR_UPDATE,local review package; not production-published,REVIEW_ONLY
