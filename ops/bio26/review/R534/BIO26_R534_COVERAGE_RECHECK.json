@@ -1,0 +1,21 @@
+{
+  "taxonomy_sha": "a2ee6daf6279354db6bce723c8110c9d966e3370",
+  "range_map_sha": "9e38eb5b9d2adc8750d135d2f1c3410b456177cd",
+  "prior_unique_ids": 88,
+  "new_ids": [
+    "BIO26-S25-03",
+    "BIO26-S01-01",
+    "BIO26-S02-01",
+    "BIO26-S15-01",
+    "BIO26-S19-02",
+    "BIO26-S21-03",
+    "BIO26-S20-04",
+    "BIO26-S01-04",
+    "BIO26-S24-03",
+    "BIO26-S03-02"
+  ],
+  "new_count": 10,
+  "coverage_after": 98,
+  "remaining": 0,
+  "note": "Processed-ID coverage includes prior clarifications and deep dives; it does not certify that every existing page has identical depth."
+}
