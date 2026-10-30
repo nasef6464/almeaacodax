@@ -1,0 +1,10 @@
+artifact,format,localPath,pagesOrItems,status
+Unified library,HTML,books/BIO26_R528_UNIFIED_LIBRARY_EDITABLE.html,127 chapters,Review Only
+Unified library,PDF,books/BIO26_R528_UNIFIED_LIBRARY_REVIEW_ONLY.pdf,286 pages,Review Only
+Unified library,EPUB,books/BIO26_R528_UNIFIED_LIBRARY_REVIEW_ONLY.epub,127 chapters; 130 XML files; 0 XML errors,Review Only
+Main-map atlas,HTML,books/BIO26_R528_29_MAIN_MAPS_ATLAS_EDITABLE.html,29 maps,Review Only
+Main-map atlas,PDF,books/BIO26_R528_29_MAIN_MAPS_ATLAS_REVIEW_ONLY.pdf,59 pages,Review Only
+Skill supplement,HTML,books/BIO26_R528_8_SKILL_DEEP_DIVES_SUPPLEMENT_EDITABLE.html,8 skills,Review Only
+Skill supplement,PDF,books/BIO26_R528_8_SKILL_DEEP_DIVES_SUPPLEMENT_REVIEW_ONLY.pdf,32 pages,Review Only
+Map addendum,HTML,books/BIO26_R528_8_UPDATED_MAPS_ADDENDUM_EDITABLE.html,8 maps,Review Only
+Map addendum,PDF,books/BIO26_R528_8_UPDATED_MAPS_ADDENDUM_REVIEW_ONLY.pdf,10 pages,Review Only
