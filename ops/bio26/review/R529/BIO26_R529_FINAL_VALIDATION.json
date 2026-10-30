@@ -1,0 +1,39 @@
+{
+  "status": "PASS_WITH_REVIEW_GATES",
+  "html": {
+    "mainMaps": 29,
+    "subSkills": 98,
+    "articles": 127,
+    "selectedIdsExactlyOnce": true,
+    "missingImages": 0,
+    "brokenAnchors": 0
+  },
+  "pdf": {
+    "unifiedPages": 291,
+    "atlasPages": 74,
+    "skillSupplementPages": 16,
+    "mapAddendumPages": 15,
+    "arabicTextOnEveryPage": true
+  },
+  "epub": {
+    "crc": "PASS",
+    "xmlErrors": 0,
+    "chapters": 127,
+    "newDiagramImages": 8
+  },
+  "diagrams": {
+    "editableHTML": 8,
+    "png": 8,
+    "pdf": 8,
+    "visualContactSheetChecked": true
+  },
+  "questions": {
+    "editorial": 16,
+    "lexicalPairsAtOrAbove0_65": 0,
+    "fullBankSemanticReview": "PENDING"
+  },
+  "protectedAssets": "UNCHANGED",
+  "productionImport": false,
+  "mainMerge": false,
+  "publication": false
+}
