@@ -1,0 +1,76 @@
+{
+  "round": "R528",
+  "status": "REVIEW_ONLY",
+  "taxonomyBlobSHA": "a2ee6daf6279354db6bce723c8110c9d966e3370",
+  "frozenCounts": {
+    "mainMaps": 29,
+    "subSkills": 98,
+    "canonicalQuestions": 2832,
+    "sourceOccurrences": 2835,
+    "learningQuizzes": 147,
+    "standardTests": 71
+  },
+  "selection": {
+    "skills": [
+      "BIO26-S07-03",
+      "BIO26-S04-02",
+      "BIO26-S20-01",
+      "BIO26-S01-03",
+      "BIO26-S06-01",
+      "BIO26-S27-04",
+      "BIO26-S26-04",
+      "BIO26-S25-02"
+    ],
+    "sourceOccurrences": 233,
+    "canonicalItems": 232,
+    "editorialQuestions": 16,
+    "originalDiagrams": 8,
+    "updatedMainMaps": 8
+  },
+  "unifiedHTML": {
+    "articles": 127,
+    "maps": 29,
+    "skills": 98,
+    "missingLocalImages": 0,
+    "selectedIdsExactlyOnce": true
+  },
+  "pdf": {
+    "unified": {
+      "pages": 286,
+      "pagesWithArabic": 286
+    },
+    "atlas": {
+      "pages": 59,
+      "pagesWithArabic": 59
+    },
+    "skillSupplement": {
+      "pages": 32,
+      "pagesWithArabic": 32
+    },
+    "mapAddendum": {
+      "pages": 10,
+      "pagesWithArabic": 10
+    },
+    "individualSkillPDFs": 8,
+    "eachIndividualPages": 4
+  },
+  "epub": {
+    "chapters": 127,
+    "xmlFiles": 130,
+    "xmlErrors": 0,
+    "crc": "PASS",
+    "newDiagramImages": 8
+  },
+  "dedupe": {
+    "newQuestions": 16,
+    "priorVisibleEditorialBlocks": 149,
+    "maxLexicalSimilarity": 0.464,
+    "pairsAtOrAbove0_65": 0,
+    "fullBankSemanticDedupe": "NOT_CLAIMED"
+  },
+  "protectedAssets": "UNCHANGED",
+  "drive": "NOT_READ_NOT_UPLOADED",
+  "productionImport": false,
+  "published": false,
+  "mainMerged": false
+}

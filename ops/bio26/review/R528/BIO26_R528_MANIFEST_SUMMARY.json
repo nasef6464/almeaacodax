@@ -1,0 +1,38 @@
+{
+  "round": "R528",
+  "status": "REVIEW_ONLY",
+  "selectedSkills": 8,
+  "sourceOccurrences": 233,
+  "canonicalItems": 232,
+  "editorialQuestions": 16,
+  "originalDiagrams": 8,
+  "updatedMainMaps": 8,
+  "unifiedHTML": {
+    "articles": 127,
+    "maps": 29,
+    "skills": 98
+  },
+  "pdf": {
+    "unifiedPages": 286,
+    "atlasPages": 59,
+    "skillSupplementPages": 32,
+    "mapAddendumPages": 10,
+    "allPagesWithArabic": true
+  },
+  "epub": {
+    "chapters": 127,
+    "xmlFiles": 130,
+    "xmlErrors": 0,
+    "crc": "PASS",
+    "newImages": 8
+  },
+  "archive": {
+    "file": "BIO26_R528_8_NEW_SKILL_DEEP_DIVES_REVIEW_ONLY.zip",
+    "bytes": 177364601,
+    "sha256": "8a09285c168c404b8a0c27e31b76138c09818fcec0d053066dcda072cdc21ac5"
+  },
+  "taxonomyBlobSHA": "a2ee6daf6279354db6bce723c8110c9d966e3370",
+  "driveStatus": "NOT_READ_NOT_UPLOADED",
+  "productionImport": false,
+  "published": false
+}

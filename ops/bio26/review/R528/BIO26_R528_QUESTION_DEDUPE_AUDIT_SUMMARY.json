@@ -1,0 +1,12 @@
+{
+  "round": "R528",
+  "status": "PRELIMINARY_LEXICAL_AND_CONCEPT_AUDIT",
+  "newEditorialQuestions": 16,
+  "priorVisibleEditorialBlocksCompared": 149,
+  "maxLexicalSimilarity": 0.464,
+  "pairsAtOrAbove0_65": 0,
+  "fullCanonicalBankSemanticReview": "NOT_CLAIMED",
+  "sourceQuestionRangesAndAIContextConceptsReviewed": true,
+  "sourceImagesOrCropsModified": false,
+  "questionsImported": false
+}
