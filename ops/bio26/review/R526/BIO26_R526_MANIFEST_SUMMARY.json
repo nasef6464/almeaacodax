@@ -1,0 +1,42 @@
+{
+  "project": "BIO26",
+  "round": "R526",
+  "status": "REVIEW_ONLY",
+  "baseRound": "R525",
+  "taxonomyBlobSHA": "a2ee6daf6279354db6bce723c8110c9d966e3370",
+  "localArchive": {
+    "filename": "BIO26_R526_8_NEW_SKILL_DEEP_DIVES_REVIEW_ONLY.zip",
+    "bytes": 122937268,
+    "sha256": "59a71912c36444f5a9af63476ed0bae45632f90f4cf0658cda87c03a14c03d9c",
+    "entries": 500,
+    "crc": "PASS",
+    "manifestFiles": 499,
+    "manifestVerified": 499
+  },
+  "selectedSkillCount": 8,
+  "updatedMapCount": 7,
+  "updatedMapNodeCount": 8,
+  "originalDiagramCount": 8,
+  "editorialQuestionCount": 16,
+  "book": {
+    "chapters": 127,
+    "maps": 29,
+    "skills": 98,
+    "html": true,
+    "pdfPages": 249,
+    "epubChapters": 127
+  },
+  "pdfs": {
+    "atlasPages": 37,
+    "updatedMapAddendumPages": 13,
+    "skillSupplementPages": 32
+  },
+  "sha256": {
+    "unifiedHTML": "240fa10acdd2e432673802e26753c81af6aa2f056db7d45d2fe572679887fe97",
+    "unifiedPDF": "92ddc39d5af8c9fa58c27cf596d96502304f9b92cd0cfa1c67bc58b07b522926",
+    "unifiedEPUB": "7972c95976ec11da0743b9ec83dc734dd6f3a91456ac4948c062076b079855ea",
+    "skillSupplementPDF": "a8534783d8818b31ee4e1333aca702dc5f448aecc911f6be1a98eb649ef1cf51",
+    "mainMapAtlasPDF": "d5783ba186f8660278848d1ccbb0aaf69cc448d126dc035050b3e539930698a6",
+    "updatedMapAddendumPDF": "e80386a60840ccccc56edf309a4fee2aa23be5694edacebfc0d3f7f95afbcc0b"
+  }
+}
