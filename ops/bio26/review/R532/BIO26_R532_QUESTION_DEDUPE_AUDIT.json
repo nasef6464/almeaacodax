@@ -1,0 +1,9 @@
+{
+  "round": "R532",
+  "comparedEditorialQuestions": 16,
+  "maxWithinBatchLexicalSimilarity": 0.481,
+  "pairsAtOrAbove0_65": [],
+  "comparisonAgainstR531VisibleStems": "Not performed; R531 register was inspected remotely but full stem corpus was not locally materialized.",
+  "fullCanonicalBankSemanticScan": false,
+  "status": "PRELIMINARY_ONLY"
+}
