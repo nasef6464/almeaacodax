@@ -2,7 +2,7 @@
   "round": "R531",
   "status": "REVIEW_ONLY",
   "fileCount": 102,
-  "totalBytes": 0,
+  "totalBytes": 40758510,
   "skills": 8,
   "sourceOccurrences": 129,
   "questions": 16,
@@ -17,5 +17,8 @@
   "taxonomySHA": "a2ee6daf6279354db6bce723c8110c9d966e3370",
   "githubBranch": "review/bio26-r531-eight-deep-dives-20261030",
   "drive": "NOT_READ",
-  "production": "NOT_IMPORTED"
+  "production": "NOT_IMPORTED",
+  "archiveBytes": 36594886,
+  "archiveSHA256": "98e17f109d064f2299a1c312cec79e18f256364fff769689e55ccc48667d2cfe",
+  "manifestSHA256": "25808b0ab8d6a16d4562b439eaba6d1b7815623265d0222e2611ad97a6f7ce60"
 }
