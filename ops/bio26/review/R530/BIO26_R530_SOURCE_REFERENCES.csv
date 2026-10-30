@@ -1,0 +1,18 @@
+source_id,skill_id,reference,url,scope
+SRC01,BIO26-S20-03,OpenStax Biology 2e 4.3 Eukaryotic Cells,https://openstax.org/books/biology-2e/pages/4-3-eukaryotic-cells,النواة والرايبوسومات والعضيات
+SRC02,BIO26-S20-03,OpenStax Biology 2e 4.5 The Cytoskeleton,https://openstax.org/books/biology-2e/pages/4-5-the-cytoskeleton,الأكتين والأنابيب الدقيقة والأهداب والأسواط
+SRC03,BIO26-S20-03,OpenStax Biology 2e 15.5 Ribosomes and Protein Synthesis,https://openstax.org/books/biology-2e/pages/15-5-ribosomes-and-protein-synthesis,وظيفة الرايبوسوم والترجمة
+SRC04,BIO26-S25-01,OpenStax Biology 2e 12.2 Characteristics and Traits,https://openstax.org/books/biology-2e/pages/12-2-characteristics-and-traits,السيادة غير التامة والمشتركة وتعدد الأليلات
+SRC05,BIO26-S11-01,OpenStax Biology 2e 25.1 Early Plant Life,https://openstax.org/books/biology-2e/pages/25-1-early-plant-life,تعاقب الأجيال والنباتات البرية
+SRC06,BIO26-S11-01,OpenStax Biology 2e 25.4 Seedless Vascular Plants,https://openstax.org/books/biology-2e/pages/25-4-seedless-vascular-plants,الأنسجة الوعائية والطور السائد والسرخسيات
+SRC07,BIO26-S11-02,OpenStax Biology 2e 26.1 Evolution of Seed Plants,https://openstax.org/books/biology-2e/pages/26-1-evolution-of-seed-plants,البذور وحبوب اللقاح ومعراة ومغطاة البذور
+SRC08,BIO26-S21-02,OpenStax Biology 2e 3.4 Proteins,https://openstax.org/books/biology-2e/pages/3-4-proteins,الأحماض الأمينية والروابط ومستويات البنية والتمسخ
+SRC09,BIO26-S21-02,OpenStax Biology 2e 6.5 Enzymes,https://openstax.org/books/biology-2e/pages/6-5-enzymes,الموقع النشط وطاقة التنشيط
+SRC10,BIO26-S24-04,OpenStax Biology 2e 11.1 The Process of Meiosis,https://openstax.org/books/biology-2e/pages/11-1-the-process-of-meiosis,العبور والتوزيع المستقل والتنوع
+SRC11,BIO26-S24-04,OpenStax Biology 2e 18.2 Formation of New Species,https://openstax.org/books/biology-2e/pages/18-2-formation-of-new-species,تعدد المجموعة الكروموسومية
+SRC12,BIO26-S01-02,OpenStax Biology 2e 33.3 Homeostasis,https://openstax.org/books/biology-2e/pages/33-3-homeostasis,التغذية الراجعة وتنظيم الاتزان
+SRC13,BIO26-S01-02,OpenStax Biology 2e 1.2 Themes and Concepts of Biology,https://openstax.org/books/biology-2e/pages/1-2-themes-and-concepts-of-biology,خصائص الحياة والتكيف والاتزان
+SRC14,BIO26-S02-03,OpenStax Biology 2e 1.2 Themes and Concepts of Biology,https://openstax.org/books/biology-2e/pages/1-2-themes-and-concepts-of-biology,المجالات الثلاثة والممالك الست
+SRC15,BIO26-S11-01,OpenStax Biology 2e 25.3 Bryophytes,https://openstax.org/books/biology-2e/pages/25-3-bryophytes,الحزازيات والطور المشيجي والاعتماد على الماء
+SRC16,BIO26-S02-03,OpenStax Biology 2e 22.2 Structure of Prokaryotes: Bacteria and Archaea,https://openstax.org/books/biology-2e/pages/22-2-structure-of-prokaryotes-bacteria-and-archaea,الفروق الكيميائية بين البكتيريا والعتائق والمجالات الثلاثة
+SRC17,BIO26-S02-03,OpenStax Biology 2e Chapter 22 Introduction,https://openstax.org/books/biology-2e/pages/22-introduction,نموذج الممالك الست والمجالات الثلاثة
