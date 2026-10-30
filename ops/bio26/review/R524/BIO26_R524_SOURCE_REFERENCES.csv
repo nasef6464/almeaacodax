@@ -1,0 +1,12 @@
+source_id,title,url,claims_supported
+SRC01,OpenStax Biology 2e 28.6 Arthropods,https://openstax.org/books/biology-2e/pages/28-6-superphylum-ecdysozoa-arthropods,"jointed appendages; segmentation; chitinous exoskeleton; molting; respiratory variation"
+SRC02,OpenStax Biology 2e 29.5 Birds,https://openstax.org/books/biology-2e/pages/29-5-birds,"feathers; endothermy; pneumatic bones; unidirectional airflow and air sacs"
+SRC03,OpenStax Biology 2e 29.6 Mammals,https://openstax.org/books/biology-2e/pages/29-6-mammals,"hair; mammary glands; endothermy; monotremes; marsupials; eutherians"
+SRC04,OpenStax Biology 2e 38.2 Bone,https://openstax.org/books/biology-2e/pages/38-2-bone,"osteoblasts; osteoclasts; osteocytes; bone remodeling"
+SRC05,OpenStax Biology 2e 38.3 Joints and Skeletal Movement,https://openstax.org/books/biology-2e/pages/38-3-joints-and-skeletal-movement,"synovial cartilage; capsule; ligaments; synovial fluid"
+SRC06,OpenStax Biology 2e 40.2 Components of the Blood,https://openstax.org/books/biology-2e/pages/40-2-components-of-the-blood,"blood cell functions; ABO and Rh surface antigens"
+SRC07,OpenStax Anatomy and Physiology 2e 18.6 Blood Typing,https://openstax.org/books/anatomy-and-physiology-2e/pages/18-6-blood-typing,"ABO antibodies; Rh sensitization; compatibility caveats"
+SRC08,OpenStax Biology 2e 33.3 Homeostasis,https://openstax.org/books/biology-2e/pages/33-3-homeostasis,"negative feedback; insulin; glucagon"
+SRC09,OpenStax Biology 2e 11.1 The Process of Meiosis,https://openstax.org/books/biology-2e/pages/11-1-the-process-of-meiosis,"crossing over; independent assortment; two meiotic divisions"
+SRC10,OpenStax Biology 2e 13.2 Chromosomal Basis of Inherited Disorders,https://openstax.org/books/biology-2e/pages/13-2-chromosomal-basis-of-inherited-disorders,"karyotype; nondisjunction outcomes in meiosis I and II"
+SRC11,OpenStax Biology 2e 46.2 Energy Flow through Ecosystems,https://openstax.org/books/biology-2e/pages/46-2-energy-flow-through-ecosystems,"energy transfer; trophic levels; ecological efficiency"
