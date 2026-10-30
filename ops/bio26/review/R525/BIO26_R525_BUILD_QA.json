@@ -80,13 +80,13 @@
     "imagesWithAlt": 142
   },
   "pdf": {
-    "unifiedPages": 247,
-    "pagesWithText": 247,
-    "pagesWithArabic": 247,
+    "unifiedPages": 239,
+    "pagesWithText": 239,
+    "pagesWithArabic": 239,
     "mapAtlasMaps": 29,
     "mapAtlasPages": 37,
     "updatedMapAddendumPages": 6,
-    "skillSupplementPages": 18
+    "skillSupplementPages": 16
   },
   "epub": {
     "chapters": 127,
