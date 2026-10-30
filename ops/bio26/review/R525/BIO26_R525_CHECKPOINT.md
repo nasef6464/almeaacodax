@@ -16,14 +16,15 @@ Top eight remaining skills by frozen taxonomy source occurrences: S28-03 (78), S
 - Eight expanded skill pages, two original explained questions per skill (16 total).
 - Eight corresponding main-map node summaries updated across five maps.
 - Eight original editable HTML diagrams, eight PNGs and eight individual PDFs.
-- Updated unified HTML, EPUB and PDF; 29-map atlas; five-map update addendum; eight-skill supplement.
+- Updated unified editable HTML, EPUB and 239-page PDF.
+- 29-map atlas (37 PDF pages; eight image-bearing maps use continuation pages), five-map update addendum (6 pages), eight-skill supplement (16 pages).
 - Manifest, QA, source references and change set.
 
 ## Verification
 - Unified HTML: 127 chapters = 29 maps + 98 skills.
 - Broken internal anchors: 0. Missing local image assets: 0. Images with alt text: 142/142.
-- Unified PDF: 247 pages; Arabic text detected on 247/247 pages.
-- Map atlas: 29 maps across 37 pages; eight maps use continuation pages because original embedded illustrations are retained. Five-map update addendum: 6 pages. Skill supplement: 18 pages.
+- Unified PDF: 239 pages; Arabic text detected on 239/239 pages.
+- Map atlas: 29 maps across 37 pages. Five-map updated addendum: 6 pages. Skill supplement: 16 pages.
 - EPUB: 127 chapters, CRC PASS, zero XML errors, zero missing referenced images.
 - New question stems: zero exact duplicates and zero lexical matches at or above 0.68 against other visible skill-page MCQ stems. This does not establish semantic uniqueness against the protected bank.
 
