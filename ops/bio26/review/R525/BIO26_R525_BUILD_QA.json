@@ -1,0 +1,131 @@
+{
+  "project": "BIO26",
+  "round": "R525",
+  "status": "REVIEW_ONLY",
+  "baseRound": "R524",
+  "taxonomyBlobSHA": "a2ee6daf6279354db6bce723c8110c9d966e3370",
+  "frozen": {
+    "mainAxes": 29,
+    "subskills": 98,
+    "canonicalQuestions": 2832,
+    "sourceOccurrences": 2835,
+    "learningQuizzes": 147,
+    "standardTests": 71
+  },
+  "selection": {
+    "method": "Top remaining skills ranked by frozen sourceQuestionOccurrences after excluding R523/R524 deep dives",
+    "totalSourceOccurrences": 500,
+    "selected": [
+      {
+        "skill": "BIO26-S28-03",
+        "mainMap": "BIO26-M28",
+        "occurrences": 78
+      },
+      {
+        "skill": "BIO26-S10-04",
+        "mainMap": "BIO26-M10",
+        "occurrences": 71
+      },
+      {
+        "skill": "BIO26-S28-01",
+        "mainMap": "BIO26-M28",
+        "occurrences": 62
+      },
+      {
+        "skill": "BIO26-S10-01",
+        "mainMap": "BIO26-M10",
+        "occurrences": 61
+      },
+      {
+        "skill": "BIO26-S27-01",
+        "mainMap": "BIO26-M27",
+        "occurrences": 61
+      },
+      {
+        "skill": "BIO26-S09-03",
+        "mainMap": "BIO26-M09",
+        "occurrences": 57
+      },
+      {
+        "skill": "BIO26-S23-02",
+        "mainMap": "BIO26-M23",
+        "occurrences": 57
+      },
+      {
+        "skill": "BIO26-S28-02",
+        "mainMap": "BIO26-M28",
+        "occurrences": 53
+      }
+    ]
+  },
+  "newWork": {
+    "deepenedSkills": 8,
+    "updatedMapNodes": 8,
+    "updatedMainMaps": 5,
+    "originalDiagrams": 8,
+    "originalEditorialQuestions": 16,
+    "bankWrites": 0,
+    "taxonomyWrites": 0,
+    "quizOrTestWrites": 0
+  },
+  "coverage": {
+    "unifiedChapters": 127,
+    "mainMaps": 29,
+    "subskillPages": 98
+  },
+  "html": {
+    "brokenAnchors": 0,
+    "missingAssets": 0,
+    "images": 142,
+    "imagesWithAlt": 142
+  },
+  "pdf": {
+    "unifiedPages": 247,
+    "pagesWithText": 247,
+    "pagesWithArabic": 247,
+    "mapAtlasMaps": 29,
+    "mapAtlasPages": 37,
+    "updatedMapAddendumPages": 6,
+    "skillSupplementPages": 18
+  },
+  "epub": {
+    "chapters": 127,
+    "crc": "PASS",
+    "xmlErrors": 0,
+    "missingReferencedImages": 0
+  },
+  "questionDedup": {
+    "newStems": 16,
+    "exactDuplicatesAgainstOtherVisibleSkillPages": 0,
+    "lexicalMatchesAtOrAbove0_68": 0,
+    "semanticComparisonAgainstProtected2832Bank": "NOT RUN"
+  },
+  "protectedAssets": {
+    "taxonomy": "unchanged",
+    "questionBank": "unchanged",
+    "answerKeys": "unchanged",
+    "learningQuizzes": "unchanged",
+    "standardTests": "unchanged",
+    "commercialPolicy": "unchanged",
+    "studentData": "unchanged"
+  },
+  "remote": {
+    "mainModified": false,
+    "mergeToMain": false,
+    "pullRequest": false,
+    "productionImport": false,
+    "publication": false
+  },
+  "drive": {
+    "status": "NOT_READ",
+    "reason": "Direct folder open returned internal access error; no Drive connector exposed."
+  },
+  "outstanding": [
+    "Independent biology review",
+    "Full-bank semantic dedup in a read-only authorized environment",
+    "PDF/UA and Arabic screen-reader testing",
+    "Official EPUBCheck",
+    "Authorized non-production import dry-run",
+    "Live Drive read/upload"
+  ]
+}
