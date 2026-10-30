@@ -1,0 +1,82 @@
+{
+  "project": "BIO26",
+  "round": "R529",
+  "status": "REVIEW_ONLY",
+  "taxonomyBlobSHA": "a2ee6daf6279354db6bce723c8110c9d966e3370",
+  "frozenCounts": {
+    "mainMaps": 29,
+    "subSkills": 98,
+    "sourceOccurrences": 2835,
+    "canonicalQuestions": 2832,
+    "learningQuizzes": 147,
+    "standardTests": 71
+  },
+  "selection": {
+    "skills": [
+      "BIO26-S17-03",
+      "BIO26-S19-01",
+      "BIO26-S08-03",
+      "BIO26-S02-02",
+      "BIO26-S03-01",
+      "BIO26-S04-03",
+      "BIO26-S27-02",
+      "BIO26-S15-03"
+    ],
+    "sourceOccurrences": 180,
+    "canonicalItems": 180,
+    "editorialQuestions": 16,
+    "originalDiagrams": 8,
+    "updatedMainMaps": 8,
+    "selectedRangeAliases": 0
+  },
+  "coverage": {
+    "mapArticles": 29,
+    "skillArticles": 98,
+    "totalArticles": 127,
+    "selectedIdsExactlyOnce": true,
+    "missingLocalImages": 0,
+    "brokenInternalAnchors": 0
+  },
+  "rendered": {
+    "unifiedPDFPages": 291,
+    "atlasPDFPages": 74,
+    "skillSupplementPDFPages": 16,
+    "mapAddendumPDFPages": 15,
+    "allPagesHaveExtractableArabic": true
+  },
+  "epub": {
+    "entries": 338,
+    "chapters": 127,
+    "xmlFiles": 130,
+    "xmlErrors": 0,
+    "newDiagramImages": 8,
+    "crc": "PASS",
+    "mimetypeFirst": true
+  },
+  "dedupe": {
+    "newQuestions": 16,
+    "priorVisibleMCQStems": 49,
+    "maxSequenceSimilarity": 0.484,
+    "pairsAtOrAbove0_65": 0,
+    "fullBankSemanticDedupe": "NOT_CLAIMED"
+  },
+  "drive": {
+    "status": "BLOCKED",
+    "error": "Internal Error on folder URL and /u/0 URL; no Drive connector exposed",
+    "read": false,
+    "upload": false
+  },
+  "protectedAssets": "UNCHANGED",
+  "productionImport": false,
+  "published": false,
+  "mainMerged": false,
+  "openGates": [
+    "independent biology review",
+    "full-bank semantic dedupe",
+    "PDF/UA",
+    "Arabic screen-reader test",
+    "official EPUBCheck",
+    "authorized non-production import dry-run",
+    "Drive access"
+  ]
+}
