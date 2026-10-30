@@ -1,0 +1,21 @@
+{
+  "project": "BIO26",
+  "round": "R532",
+  "status": "REVIEW_ONLY",
+  "fileCount": 390,
+  "totalBytes": 54597352,
+  "skills": 8,
+  "sourceOccurrences": 104,
+  "editorialQuestions": 16,
+  "diagrams": 8,
+  "mapsUpdated": 8,
+  "workingUnifiedHTMLArticles": 127,
+  "workingUnifiedPDFPages": 359,
+  "atlasPDFPages": 101,
+  "taxonomySHA": "a2ee6daf6279354db6bce723c8110c9d966e3370",
+  "githubBranch": "review/bio26-r532-eight-deep-dives-20261030",
+  "drive": "NOT_READ",
+  "production": "NOT_IMPORTED",
+  "published": false,
+  "R531BinaryIntegration": "PENDING"
+}
