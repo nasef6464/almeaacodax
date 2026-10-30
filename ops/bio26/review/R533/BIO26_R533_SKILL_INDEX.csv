@@ -1,0 +1,9 @@
+skill_id,main_map,lesson,title_ar,source_occurrences,canonical_range_items,source_ranges,editorial_questions,status
+BIO26-S23-03,BIO26-M23,BIO26-L36,تنظيم دورة الخلية والسرطان والموت المبرمج والخلايا الجذعية,12,12,Q23-Q27; Q80-Q86,2,REVIEW_ONLY_NEW_DEEP_DIVE
+BIO26-S09-02,BIO26-M09,BIO26-L08,الحشرات والتحول والتنوع في المفصليات,11,11,Q69-Q79,2,REVIEW_ONLY_NEW_DEEP_DIVE
+BIO26-S18-01,BIO26-M18,BIO26-L29,الجهاز التناسلي الذكري وتكوين الحيوانات المنوية,11,11,Q1-Q4; Q23-Q29,2,REVIEW_ONLY_NEW_DEEP_DIVE
+BIO26-S18-03,BIO26-M18,BIO26-L30,الإخصاب وبدايات النمو والأغشية الجنينية والمشيمة,11,11,Q1-Q6; Q12-Q16,2,REVIEW_ONLY_NEW_DEEP_DIVE
+BIO26-S19-03,BIO26-M19,BIO26-L31,المناعة النشطة والسلبية واللقاحات والذاكرة المناعية,10,10,Q10-Q14; Q19-Q23,2,REVIEW_ONLY_NEW_DEEP_DIVE
+BIO26-S07-02,BIO26-M07,BIO26-L06,الإسفنجيات: التركيب والتغذية والتكاثر,9,9,Q13-Q16; Q61-Q65,2,REVIEW_ONLY_NEW_DEEP_DIVE
+BIO26-S12-02,BIO26-M12,BIO26-L17,الأنسجة النباتية والبشرة والأنسجة الأساسية,9,9,Q8-Q11; Q24-Q28,2,REVIEW_ONLY_NEW_DEEP_DIVE
+BIO26-S12-03,BIO26-M12,BIO26-L17,الأنسجة الوعائية ونقل الماء والمواد في النبات,9,9,Q12-Q16; Q29-Q32,2,REVIEW_ONLY_NEW_DEEP_DIVE
