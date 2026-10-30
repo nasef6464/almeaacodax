@@ -1,0 +1,3 @@
+# PHYS26 source access audit — 2026-10-08
+
+Three source PDFs were located in ChatGPT conversation files by exact title and file ID. File search returns index snippets, but page-level reads returned no readable content (summary PDF: HTTP 500), and all three raw-file materializations returned HTTP 403 Forbidden. Google Drive searches for PHYS26/physics/Yelo found no matching copies of these three books. Do not claim page-level extraction or reviewed question count. Current verified questions: 0; verified image crops: 0. Continue independent offline schema and QA design without modifying production. Recheck approved source access next run; never circumvent file authorization.
