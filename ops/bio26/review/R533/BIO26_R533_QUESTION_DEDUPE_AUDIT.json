@@ -1,0 +1,13 @@
+{
+  "round":"R533",
+  "newEditorialQuestions":16,
+  "uniqueQuestionIds":16,
+  "status":"NOT_BANK_ITEM",
+  "answerDistribution":{"A":4,"B":4,"C":4,"D":4},
+  "visiblePriorStemsCompared":80,
+  "maxInternalLexicalSimilarity":0.533,
+  "maxPriorVisibleLexicalSimilarity":0.593,
+  "pairsAtOrAbove065Internal":0,
+  "pairsAtOrAbove065Prior":0,
+  "scopeLimit":"Lexical screen only; not a full semantic scan of all 2,832 canonical questions and source images."
+}
