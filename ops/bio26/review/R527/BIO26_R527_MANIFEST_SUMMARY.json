@@ -1,0 +1,22 @@
+{
+  "round": "R527",
+  "status": "REVIEW_ONLY",
+  "packageEntries": 575,
+  "manifestFilesExcludingManifest": 574,
+  "selectedSkills": 8,
+  "selectedSourceOccurrences": 265,
+  "editorialQuestions": 16,
+  "originalDiagrams": 8,
+  "updatedMainMaps": 6,
+  "unifiedPdfPages": 268,
+  "atlasPdfPages": 49,
+  "skillSupplementPdfPages": 32,
+  "mapAddendumPdfPages": 3,
+  "epubCRC": "PASS",
+  "epubXmlErrors": 0,
+  "taxonomyBlobSHA": "a2ee6daf6279354db6bce723c8110c9d966e3370",
+  "archiveSHA256": "e889204ad9ce96eea4a4b0ca643c628c33e339db6ee9565302fdbea272b731d6",
+  "driveStatus": "NOT_READ_NOT_UPLOADED",
+  "productionImport": false,
+  "published": false
+}

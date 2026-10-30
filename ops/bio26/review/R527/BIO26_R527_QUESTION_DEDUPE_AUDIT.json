@@ -1,0 +1,14 @@
+{
+  "round": "R527",
+  "status": "READ_ONLY_LEXICAL_SCREEN",
+  "visiblePriorQuestionStemsCompared": 45,
+  "newEditorialQuestionStems": 16,
+  "exactDuplicates": 0,
+  "nearDuplicatePairsAtOrAbove0_65": [],
+  "maxSequenceSimilarity": 0.432,
+  "maxTokenJaccard": 0.114,
+  "limitations": [
+    "Compared only against 45 visible stems in the R526 unified HTML.",
+    "Not a semantic or full-bank comparison against all 2,832 protected canonical questions."
+  ]
+}

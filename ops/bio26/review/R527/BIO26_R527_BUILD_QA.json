@@ -1,0 +1,62 @@
+{
+  "project": "BIO26",
+  "round": "R527",
+  "status": "REVIEW_ONLY",
+  "taxonomyBlobSHA": "a2ee6daf6279354db6bce723c8110c9d966e3370",
+  "frozen": {
+    "mainAxes": 29,
+    "subskills": 98,
+    "canonicalQuestions": 2832,
+    "sourceOccurrences": 2835,
+    "learningQuizzes": 147,
+    "standardTests": 71
+  },
+  "selectedSkills": 8,
+  "selectedSourceOccurrences": 265,
+  "editorialQuestions": 16,
+  "originalDiagrams": 8,
+  "updatedMainMaps": 6,
+  "checks": {
+    "unifiedMapArticles": 29,
+    "unifiedSkillArticles": 98,
+    "selectedSkillArticles": 8,
+    "brokenSelectedAnchors": 0,
+    "diagramPNG": 8,
+    "diagramPDF": 8,
+    "diagramEditableHTML": 8,
+    "unifiedPDF": {
+      "pages": 268,
+      "pagesWithArabic": 268
+    },
+    "mapAtlasPDF": {
+      "pages": 49,
+      "pagesWithArabic": 49
+    },
+    "skillSupplementPDF": {
+      "pages": 32,
+      "pagesWithArabic": 32
+    },
+    "mapAddendumPDF": {
+      "pages": 3,
+      "pagesWithArabic": 3
+    },
+    "epubCRC": "PASS",
+    "epubXmlFiles": 129,
+    "epubXmlErrors": 0,
+    "epubNewImages": 8,
+    "visiblePriorQuestionLexicalScreen": {
+      "priorVisibleStems": 45,
+      "newStems": 16,
+      "exactDuplicates": 0,
+      "nearDuplicatePairsAtOrAbove0_65": 0,
+      "maxSequenceSimilarity": 0.432,
+      "maxTokenJaccard": 0.114
+    }
+  },
+  "limitations": [
+    "Drive folder could not be read or uploaded in this session.",
+    "Full semantic dedup against all 2,832 canonical questions remains pending.",
+    "Independent biology review, PDF/UA, Arabic screen-reader test, official EPUBCheck, and authorized non-production import dry-run remain pending.",
+    "No protected-bank, taxonomy, answer-key, quiz, test, commercial-policy, or student-data writes. No merge, PR, import, or production publication."
+  ]
+}
