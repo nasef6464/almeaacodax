@@ -1,0 +1,129 @@
+{
+  "project": "BIO26",
+  "round": "R523",
+  "status": "REVIEW_ONLY",
+  "baseRound": "R521",
+  "taxonomyBlobSHA": "a2ee6daf6279354db6bce723c8110c9d966e3370",
+  "frozen": {
+    "mainAxes": 29,
+    "subskills": 98,
+    "canonicalQuestions": 2832,
+    "sourceOccurrences": 2835
+  },
+  "patches": {
+    "mainMaps": 8,
+    "skillPages": 8,
+    "originalDiagrams": 8,
+    "newMCQs": 0,
+    "bankWrites": 0,
+    "taxonomyWrites": 0,
+    "trainingOrTestWrites": 0
+  },
+  "outputs": {
+    "diagramSourcesHTML": 8,
+    "diagramPNGs": 8,
+    "diagramPDFs": 8,
+    "unifiedHTML": "books/BIO26_R523_UNIFIED_LIBRARY_EDITABLE.html",
+    "unifiedEPUB": "books/BIO26_R523_UNIFIED_LIBRARY_REVIEW_ONLY.epub",
+    "unifiedPDF": "books/BIO26_R523_UNIFIED_LIBRARY_REVIEW_ONLY.pdf",
+    "diagramSupplementPDF": "books/BIO26_R523_8_ORIGINAL_SCIENCE_DIAGRAMS.pdf",
+    "diagramContactSheet": "previews/BIO26_R523_8_DIAGRAMS_CONTACT.jpg",
+    "sourceReferenceLedger": "data/BIO26_R523_SOURCE_REFERENCES.csv"
+  },
+  "checks": {
+    "taxonomyCoverage": {
+      "mainMaps": 29,
+      "skillPages": 98,
+      "totalChapters": 127,
+      "expected": {"mainMaps": 29, "skillPages": 98}
+    },
+    "standaloneLinksAndImages": {
+      "missingImages": [],
+      "imagesMissingAlt": [],
+      "missingLocalLinks": []
+    },
+    "chapterComponents": {
+      "chaptersChecked": 127,
+      "missingIdea": 0,
+      "missingCauseEffect": 0,
+      "missingComparisonOrTrap": 0,
+      "missingQuestion": 0
+    },
+    "unifiedPDF": {
+      "pages": 234,
+      "pagesWithText": 234,
+      "pagesWithArabic": 234,
+      "tagged": false,
+      "pdfUAClaimed": false,
+      "bytes": 7479612
+    },
+    "epub": {
+      "zipCRC": "PASS",
+      "mimetypeFirst": true,
+      "mimetypeUncompressed": true,
+      "entries": 290,
+      "xmlFiles": 130,
+      "xmlErrors": [],
+      "imageFiles": 158,
+      "chapters": 127,
+      "patchedChaptersWithDiagram": 16,
+      "expectedPatchedChapters": 16
+    },
+    "unifiedHTML": {
+      "chapters": 127,
+      "mainMaps": 29,
+      "skillPages": 98,
+      "images": 137,
+      "imagesWithAlt": 137,
+      "brokenInternalAnchors": 0
+    },
+    "sourceArchive": {
+      "file": "BIO26_R521_29_MAIN_CONCEPT_MAPS_98_SKILL_LIBRARY_REVIEW_ONLY.zip",
+      "sha256": "c8b2332af20a68aeff31f1aad94ddb5ccf7563a48908e48a9cee86bc17924ba4"
+    },
+    "package": {
+      "zipBytes": 46140544,
+      "zipEntries": 329,
+      "zipCRC": "PASS",
+      "manifestFiles": 328,
+      "manifestHashes": "PASS",
+      "archiveCoverage": "PASS"
+    },
+    "diagramVisualReview": {
+      "all8Rendered": "PASS",
+      "manualVisualInspection": "PASS",
+      "issuesRemaining": [],
+      "note": "All eight original diagrams rendered with Arabic labels; branch and pathway layouts visually corrected."
+    }
+  },
+  "notRun": [
+    "independent biology reviewer sign-off",
+    "semantic duplicate scan against protected 2832-question text bank",
+    "PDF/UA certification",
+    "Arabic screen-reader test",
+    "official EPUBCheck",
+    "platform import dry-run",
+    "Drive folder live read"
+  ],
+  "remote": {
+    "mainHead": "bf7281fc9fe34165a070e3d2d58f65f91b4a3ef7",
+    "branchName": "review/bio26-r523-science-clarifications-20261030",
+    "branchWrite": "COMPLETED_REVIEW_ONLY",
+    "branchHeadAfterReviewDocs": "8eb529100da885c336d2433a5e49187e4f75a308",
+    "reviewDocs": [
+      "README.md",
+      "BIO26_R523_SCIENCE_REVIEW.md",
+      "BIO26_R523_CHECKPOINT.md",
+      "BIO26_R523_CHANGESET.csv",
+      "BIO26_R523_SOURCE_REFERENCES.csv"
+    ],
+    "mainModified": false,
+    "pullRequestOpened": false,
+    "productionImport": false,
+    "publication": false
+  },
+  "drive": {
+    "status": "NOT_READ",
+    "error": "Google Drive folder URL inaccessible through web path; no Drive connector exposed."
+  }
+}
