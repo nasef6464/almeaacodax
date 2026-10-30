@@ -1,0 +1,521 @@
+{
+  "schema": "almeaa.einstein.source-crosswalk.v1",
+  "createdAt": "2026-10-12",
+  "purpose": "Source-ordered FND26/COL2627 quantitative subskill audit, first chapter only. NEVER treat chapter proximity as sufficient proof of a skill.",
+  "taxonomy": {
+    "mainCount": 25,
+    "subskillCount": 95,
+    "freezeIds": true
+  },
+  "scope": {
+    "banks": [
+      "FND26",
+      "COL2627"
+    ],
+    "chapter": "العمليات على الأعداد",
+    "sourceCheckedPages": {
+      "FND26": [
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "COL2627": [
+        5,
+        6
+      ]
+    },
+    "mappedLiveQuestionRecords": 48
+  },
+  "requirements": [
+    "Use the rule heading printed in original Einstein FND/COL PDF as primary ground truth; never override with inferred conceptual labels.",
+    "Verify question text, actual image, choices and book-rule label before any live skill mutation.",
+    "Never replace a canonical questionCode.",
+    "For ambiguous items do not auto-reclassify; record review decision.",
+    "After real skill changes, reconcile drill questionIds and show student/teacher skill reports.",
+    "Historical student scores and assessment attempts are test-only data; do not use them to veto correcting question-to-skill mapping.",
+    "Map source book rule(s) into stable 25/95 skill IDs via an explicit reviewed crosswalk; do not invent or silently alter book rule numbers."
+  ],
+  "missingSourceCandidates": [
+    {
+      "bank": "FND26",
+      "sourcePage": 8,
+      "number": 14,
+      "expectedQuestionCode": "QDR-QNT-FND26-P008-Q14",
+      "status": "SOURCE_HAS_ITEM_LIVE_EXACT_CODE_NOT_FOUND_CHECK_IMPORT"
+    },
+    {
+      "bank": "FND26",
+      "sourcePage": 8,
+      "number": 15,
+      "expectedQuestionCode": "QDR-QNT-FND26-P008-Q15",
+      "status": "SOURCE_HAS_ITEM_LIVE_EXACT_CODE_NOT_FOUND_CHECK_IMPORT"
+    },
+    {
+      "bank": "FND26",
+      "sourcePage": 9,
+      "number": 16,
+      "expectedQuestionCode": "QDR-QNT-FND26-P009-Q16",
+      "status": "SOURCE_HAS_ITEM_LIVE_EXACT_CODE_NOT_FOUND_CHECK_IMPORT"
+    },
+    {
+      "bank": "FND26",
+      "sourcePage": 9,
+      "number": 17,
+      "expectedQuestionCode": "QDR-QNT-FND26-P009-Q17",
+      "status": "SOURCE_HAS_ITEM_LIVE_EXACT_CODE_NOT_FOUND_CHECK_IMPORT"
+    },
+    {
+      "bank": "FND26",
+      "sourcePage": 9,
+      "number": 18,
+      "expectedQuestionCode": "QDR-QNT-FND26-P009-Q18",
+      "status": "SOURCE_HAS_ITEM_LIVE_EXACT_CODE_NOT_FOUND_CHECK_IMPORT"
+    },
+    {
+      "bank": "FND26",
+      "sourcePage": 9,
+      "number": 19,
+      "expectedQuestionCode": "QDR-QNT-FND26-P009-Q19",
+      "status": "SOURCE_HAS_ITEM_LIVE_EXACT_CODE_NOT_FOUND_CHECK_IMPORT"
+    }
+  ],
+  "questions": [
+    {
+      "questionCode": "QDR-QNT-FND26-P006-Q01",
+      "bank": "FND26",
+      "sourcePage": 6,
+      "sourceRule": "قاعدة 3: العامل المشترك",
+      "currentSubskillId": "sub_quant_01_2",
+      "proposedSubskillId": "sub_quant_01_2",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P006-Q02",
+      "bank": "FND26",
+      "sourcePage": 6,
+      "sourceRule": "قواعد 4–5: الزوجية والفردية ومجاميعها",
+      "currentSubskillId": "sub_quant_01_3",
+      "proposedSubskillId": "sub_quant_01_3",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P006-Q03",
+      "bank": "FND26",
+      "sourcePage": 6,
+      "sourceRule": "قواعد 4–5: الزوجية والفردية ومجاميعها",
+      "currentSubskillId": "sub_quant_01_3",
+      "proposedSubskillId": "sub_quant_01_3",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P006-Q04",
+      "bank": "FND26",
+      "sourcePage": 6,
+      "sourceRule": "قواعد 4–5: الزوجية والفردية ومجاميعها",
+      "currentSubskillId": "sub_quant_01_3",
+      "proposedSubskillId": "sub_quant_01_3",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P006-Q05",
+      "bank": "FND26",
+      "sourcePage": 6,
+      "sourceRule": "قواعد 4–5: الزوجية والفردية ومجاميعها",
+      "currentSubskillId": "sub_quant_01_3",
+      "proposedSubskillId": "sub_quant_01_3",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P006-Q06",
+      "bank": "FND26",
+      "sourcePage": 6,
+      "sourceRule": "قواعد 4–5: الزوجية والفردية ومجاميعها",
+      "currentSubskillId": "sub_quant_01_3",
+      "proposedSubskillId": "sub_quant_01_3",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P007-Q07",
+      "bank": "FND26",
+      "sourcePage": 7,
+      "sourceRule": "قواعد 6–7: الزوجية والفردية والمسائل المتتابعة",
+      "currentSubskillId": "sub_quant_01_3",
+      "proposedSubskillId": "sub_quant_01_3",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P007-Q08",
+      "bank": "FND26",
+      "sourcePage": 7,
+      "sourceRule": "قواعد 6–7: الزوجية والفردية والمسائل المتتابعة",
+      "currentSubskillId": "sub_quant_01_3",
+      "proposedSubskillId": "sub_quant_01_3",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P007-Q09",
+      "bank": "FND26",
+      "sourcePage": 7,
+      "sourceRule": "قواعد 6–7: الزوجية والفردية والمسائل المتتابعة",
+      "currentSubskillId": "sub_quant_01_3",
+      "proposedSubskillId": "sub_quant_01_3",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P007-Q10",
+      "bank": "FND26",
+      "sourcePage": 7,
+      "sourceRule": "قواعد 6–7: الزوجية والفردية والمسائل المتتابعة",
+      "currentSubskillId": "sub_quant_01_3",
+      "proposedSubskillId": "sub_quant_01_3",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P007-Q11",
+      "bank": "FND26",
+      "sourcePage": 7,
+      "sourceRule": "قواعد 6–7: الزوجية والفردية والمسائل المتتابعة",
+      "currentSubskillId": "sub_quant_01_3",
+      "proposedSubskillId": "sub_quant_01_3",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P008-Q12",
+      "bank": "FND26",
+      "sourcePage": 8,
+      "sourceRule": "قاعدة 8: مجموع المتتاليات",
+      "currentSubskillId": "sub_quant_01_3",
+      "proposedSubskillId": "sub_quant_01_3",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P008-Q13",
+      "bank": "FND26",
+      "sourcePage": 8,
+      "sourceRule": "قاعدة 8: مجموع المتتاليات",
+      "currentSubskillId": "sub_quant_01_3",
+      "proposedSubskillId": "sub_quant_01_3",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P009-Q20",
+      "bank": "FND26",
+      "sourcePage": 9,
+      "sourceRule": "قاعدة 9: ترتيب العمليات",
+      "currentSubskillId": "sub_quant_01_4",
+      "proposedSubskillId": "sub_quant_01_4",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P009-Q21",
+      "bank": "FND26",
+      "sourcePage": 9,
+      "sourceRule": "قاعدة 9: ترتيب العمليات",
+      "currentSubskillId": "sub_quant_01_4",
+      "proposedSubskillId": "sub_quant_01_4",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P009-Q22",
+      "bank": "FND26",
+      "sourcePage": 9,
+      "sourceRule": "قاعدة 9: ترتيب العمليات",
+      "currentSubskillId": "sub_quant_01_4",
+      "proposedSubskillId": "sub_quant_01_4",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P009-Q23",
+      "bank": "FND26",
+      "sourcePage": 9,
+      "sourceRule": "قاعدة 9: ترتيب العمليات",
+      "currentSubskillId": "sub_quant_01_4",
+      "proposedSubskillId": "sub_quant_01_4",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P009-Q24",
+      "bank": "FND26",
+      "sourcePage": 9,
+      "sourceRule": "قاعدة 9: ترتيب العمليات",
+      "currentSubskillId": "sub_quant_01_4",
+      "proposedSubskillId": "sub_quant_01_4",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P005-Q01",
+      "bank": "COL2627",
+      "sourcePage": 5,
+      "sourceRule": "قاعدة 1: الإشارات والتجميع الذكي",
+      "currentSubskillId": "sub_quant_01_1",
+      "proposedSubskillId": "sub_quant_01_1",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P005-Q02",
+      "bank": "COL2627",
+      "sourcePage": 5,
+      "sourceRule": "قاعدة 1: الإشارات والتجميع الذكي",
+      "currentSubskillId": "sub_quant_01_1",
+      "proposedSubskillId": "sub_quant_01_1",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P005-Q03",
+      "bank": "COL2627",
+      "sourcePage": 5,
+      "sourceRule": "قاعدة 1: الإشارات والتجميع الذكي",
+      "currentSubskillId": "sub_quant_01_1",
+      "proposedSubskillId": "sub_quant_01_1",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P005-Q04",
+      "bank": "COL2627",
+      "sourcePage": 5,
+      "sourceRule": "قاعدة 1: الإشارات والتجميع الذكي",
+      "currentSubskillId": "sub_quant_01_1",
+      "proposedSubskillId": "sub_quant_01_1",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P005-Q05",
+      "bank": "COL2627",
+      "sourcePage": 5,
+      "sourceRule": "قاعدة 1: الإشارات والتجميع الذكي",
+      "currentSubskillId": "sub_quant_01_1",
+      "proposedSubskillId": "sub_quant_01_1",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P005-Q06",
+      "bank": "COL2627",
+      "sourcePage": 5,
+      "sourceRule": "قاعدة 1: الإشارات والتجميع الذكي",
+      "currentSubskillId": "sub_quant_01_1",
+      "proposedSubskillId": "sub_quant_01_1",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P005-Q07",
+      "bank": "COL2627",
+      "sourcePage": 5,
+      "sourceRule": "كتاب تجميعات أينشتاين — العمليات على الأعداد — قاعدة 1 (صفحة 5)",
+      "currentSubskillId": "sub_quant_01_1",
+      "proposedSubskillId": "sub_quant_01_1",
+      "auditState": "SOURCE_RULE_MATCH_PENDING_VISUAL_OPTION_AUDIT",
+      "notes": "Keep in printed Einstein Rule 1 group; no AI reinterpretation to another subskill based on 'sum of squares'. Verify picture/option identity before final certification."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P005-Q08",
+      "bank": "COL2627",
+      "sourcePage": 5,
+      "sourceRule": "قاعدة 1: الإشارات والتجميع الذكي",
+      "currentSubskillId": "sub_quant_01_1",
+      "proposedSubskillId": "sub_quant_01_1",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P005-Q09",
+      "bank": "COL2627",
+      "sourcePage": 5,
+      "sourceRule": "قاعدة 2: المتكرر",
+      "currentSubskillId": "sub_quant_01_2",
+      "proposedSubskillId": "sub_quant_01_2",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P005-Q10",
+      "bank": "COL2627",
+      "sourcePage": 5,
+      "sourceRule": "قاعدة 2: المتكرر",
+      "currentSubskillId": "sub_quant_01_2",
+      "proposedSubskillId": "sub_quant_01_2",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P005-Q11",
+      "bank": "COL2627",
+      "sourcePage": 5,
+      "sourceRule": "قاعدة 2: المتكرر",
+      "currentSubskillId": "sub_quant_01_2",
+      "proposedSubskillId": "sub_quant_01_2",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P005-Q12",
+      "bank": "COL2627",
+      "sourcePage": 5,
+      "sourceRule": "قاعدة 3: العامل المشترك",
+      "currentSubskillId": "sub_quant_01_2",
+      "proposedSubskillId": "sub_quant_01_2",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P005-Q13",
+      "bank": "COL2627",
+      "sourcePage": 5,
+      "sourceRule": "قاعدة 3: العامل المشترك",
+      "currentSubskillId": "sub_quant_01_2",
+      "proposedSubskillId": "sub_quant_01_2",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P005-Q14",
+      "bank": "COL2627",
+      "sourcePage": 5,
+      "sourceRule": "الزوجية والفردية ومجاميع المتتاليات",
+      "currentSubskillId": "sub_quant_01_3",
+      "proposedSubskillId": "sub_quant_01_3",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P006-Q15",
+      "bank": "COL2627",
+      "sourcePage": 6,
+      "sourceRule": "قواعد 6–8: الزوجية والفردية والمتتاليات",
+      "currentSubskillId": "sub_quant_01_3",
+      "proposedSubskillId": "sub_quant_01_3",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P006-Q16",
+      "bank": "COL2627",
+      "sourcePage": 6,
+      "sourceRule": "قواعد 6–8: الزوجية والفردية والمتتاليات",
+      "currentSubskillId": "sub_quant_01_3",
+      "proposedSubskillId": "sub_quant_01_3",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P006-Q17",
+      "bank": "COL2627",
+      "sourcePage": 6,
+      "sourceRule": "قواعد 6–8: الزوجية والفردية والمتتاليات",
+      "currentSubskillId": "sub_quant_01_3",
+      "proposedSubskillId": "sub_quant_01_3",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P006-Q18",
+      "bank": "COL2627",
+      "sourcePage": 6,
+      "sourceRule": "قواعد 6–8: الزوجية والفردية والمتتاليات",
+      "currentSubskillId": "sub_quant_01_3",
+      "proposedSubskillId": "sub_quant_01_3",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P006-Q19",
+      "bank": "COL2627",
+      "sourcePage": 6,
+      "sourceRule": "قواعد 6–8: الزوجية والفردية والمتتاليات",
+      "currentSubskillId": "sub_quant_01_3",
+      "proposedSubskillId": "sub_quant_01_3",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P006-Q20",
+      "bank": "COL2627",
+      "sourcePage": 6,
+      "sourceRule": "قواعد 6–8: الزوجية والفردية والمتتاليات",
+      "currentSubskillId": "sub_quant_01_3",
+      "proposedSubskillId": "sub_quant_01_3",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P006-Q21",
+      "bank": "COL2627",
+      "sourcePage": 6,
+      "sourceRule": "قواعد 6–8: الزوجية والفردية والمتتاليات",
+      "currentSubskillId": "sub_quant_01_3",
+      "proposedSubskillId": "sub_quant_01_3",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P006-Q22",
+      "bank": "COL2627",
+      "sourcePage": 6,
+      "sourceRule": "قواعد 6–8: الزوجية والفردية والمتتاليات",
+      "currentSubskillId": "sub_quant_01_3",
+      "proposedSubskillId": "sub_quant_01_3",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P006-Q23",
+      "bank": "COL2627",
+      "sourcePage": 6,
+      "sourceRule": "قواعد 6–8: الزوجية والفردية والمتتاليات",
+      "currentSubskillId": "sub_quant_01_3",
+      "proposedSubskillId": "sub_quant_01_3",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P006-Q24",
+      "bank": "COL2627",
+      "sourcePage": 6,
+      "sourceRule": "قاعدة 9: ترتيب العمليات",
+      "currentSubskillId": "sub_quant_01_4",
+      "proposedSubskillId": "sub_quant_01_4",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P006-Q25",
+      "bank": "COL2627",
+      "sourcePage": 6,
+      "sourceRule": "قاعدة 9: ترتيب العمليات",
+      "currentSubskillId": "sub_quant_01_4",
+      "proposedSubskillId": "sub_quant_01_4",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P006-Q26",
+      "bank": "COL2627",
+      "sourcePage": 6,
+      "sourceRule": "قاعدة 9: ترتيب العمليات",
+      "currentSubskillId": "sub_quant_01_4",
+      "proposedSubskillId": "sub_quant_01_4",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P006-Q27",
+      "bank": "COL2627",
+      "sourcePage": 6,
+      "sourceRule": "قاعدة 9: ترتيب العمليات",
+      "currentSubskillId": "sub_quant_01_4",
+      "proposedSubskillId": "sub_quant_01_4",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P006-Q28",
+      "bank": "COL2627",
+      "sourcePage": 6,
+      "sourceRule": "قاعدة 9: ترتيب العمليات",
+      "currentSubskillId": "sub_quant_01_4",
+      "proposedSubskillId": "sub_quant_01_4",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P006-Q29",
+      "bank": "COL2627",
+      "sourcePage": 6,
+      "sourceRule": "قاعدة 9: ترتيب العمليات",
+      "currentSubskillId": "sub_quant_01_4",
+      "proposedSubskillId": "sub_quant_01_4",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P006-Q30",
+      "bank": "COL2627",
+      "sourcePage": 6,
+      "sourceRule": "قاعدة 9: ترتيب العمليات",
+      "currentSubskillId": "sub_quant_01_4",
+      "proposedSubskillId": "sub_quant_01_4",
+      "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
+    }
+  ],
+  "sourceAuthority": "EINSTEIN_BOOK_FIRST_PRINTED_RULE_OR_SECTION; NO_AI_INFERRED_RULES",
+  "studentResults": "ALL_TEST_DATA_NOT_A_MIGRATION_CONSTRAINT"
+}

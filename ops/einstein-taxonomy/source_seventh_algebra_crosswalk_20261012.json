@@ -1,0 +1,3737 @@
+{
+  "schema": "almeaa.einstein.source-crosswalk.v3",
+  "date": "2026-10-12",
+  "chapter": "07 الجبر والمتطابقات",
+  "sourceMethod": "Parsed PDF source page text + live Atlas question identifiers and current skill fields. Original PDF page images and R2 question pixels could not be retrieved, so no item is visually approved.",
+  "caution": "Book headings and page grouping are not individual-question rule certification; do not retag on this manifest alone.",
+  "summary": {
+    "total": 108,
+    "FND26": 42,
+    "COL2627": 66,
+    "previousMapped": 587,
+    "totalMappedAfterThisManifest": 695,
+    "visualVerified": 0,
+    "correctionApproved": 0,
+    "hold": 108,
+    "productionWrites": 0
+  },
+  "questions": [
+    {
+      "questionCode": "QDR-QNT-FND26-P047-Q01",
+      "bank": "FND26",
+      "sourcePage": 47,
+      "printedQuestionNumber": 1,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "قاعدة 1",
+        "قاعدة 2"
+      ],
+      "sourceHeading": "الفرق بين مربعين / مفكوك المربع الكامل",
+      "sourceEvidence": {
+        "document": "تاسيس انشتين معدل .pdf",
+        "page": 47,
+        "parsedHeading": "الفرق بين مربعين / مفكوك المربع الكامل",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p047/QDR-QNT-FND26-P047-Q01.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_1",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_1"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_1",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "MULTI_RULE_PAGE",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P047-Q02",
+      "bank": "FND26",
+      "sourcePage": 47,
+      "printedQuestionNumber": 2,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "قاعدة 1",
+        "قاعدة 2"
+      ],
+      "sourceHeading": "الفرق بين مربعين / مفكوك المربع الكامل",
+      "sourceEvidence": {
+        "document": "تاسيس انشتين معدل .pdf",
+        "page": 47,
+        "parsedHeading": "الفرق بين مربعين / مفكوك المربع الكامل",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p047/QDR-QNT-FND26-P047-Q02.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_1",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_1"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_1",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "MULTI_RULE_PAGE",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P047-Q03",
+      "bank": "FND26",
+      "sourcePage": 47,
+      "printedQuestionNumber": 3,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "قاعدة 1",
+        "قاعدة 2"
+      ],
+      "sourceHeading": "الفرق بين مربعين / مفكوك المربع الكامل",
+      "sourceEvidence": {
+        "document": "تاسيس انشتين معدل .pdf",
+        "page": 47,
+        "parsedHeading": "الفرق بين مربعين / مفكوك المربع الكامل",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p047/QDR-QNT-FND26-P047-Q03.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_1",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_1"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_1",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "MULTI_RULE_PAGE",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P047-Q04",
+      "bank": "FND26",
+      "sourcePage": 47,
+      "printedQuestionNumber": 4,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "قاعدة 1",
+        "قاعدة 2"
+      ],
+      "sourceHeading": "الفرق بين مربعين / مفكوك المربع الكامل",
+      "sourceEvidence": {
+        "document": "تاسيس انشتين معدل .pdf",
+        "page": 47,
+        "parsedHeading": "الفرق بين مربعين / مفكوك المربع الكامل",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p047/QDR-QNT-FND26-P047-Q04.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_1",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_1"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_1",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "MULTI_RULE_PAGE",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P047-Q05",
+      "bank": "FND26",
+      "sourcePage": 47,
+      "printedQuestionNumber": 5,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "قاعدة 1",
+        "قاعدة 2"
+      ],
+      "sourceHeading": "الفرق بين مربعين / مفكوك المربع الكامل",
+      "sourceEvidence": {
+        "document": "تاسيس انشتين معدل .pdf",
+        "page": 47,
+        "parsedHeading": "الفرق بين مربعين / مفكوك المربع الكامل",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p047/QDR-QNT-FND26-P047-Q05.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_1",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_1"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_1",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "MULTI_RULE_PAGE",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P047-Q06",
+      "bank": "FND26",
+      "sourcePage": 47,
+      "printedQuestionNumber": 6,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "قاعدة 1",
+        "قاعدة 2"
+      ],
+      "sourceHeading": "الفرق بين مربعين / مفكوك المربع الكامل",
+      "sourceEvidence": {
+        "document": "تاسيس انشتين معدل .pdf",
+        "page": 47,
+        "parsedHeading": "الفرق بين مربعين / مفكوك المربع الكامل",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p047/QDR-QNT-FND26-P047-Q06.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_1",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_1"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_1",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "MULTI_RULE_PAGE",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P047-Q07",
+      "bank": "FND26",
+      "sourcePage": 47,
+      "printedQuestionNumber": 7,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "قاعدة 1",
+        "قاعدة 2"
+      ],
+      "sourceHeading": "الفرق بين مربعين / مفكوك المربع الكامل",
+      "sourceEvidence": {
+        "document": "تاسيس انشتين معدل .pdf",
+        "page": 47,
+        "parsedHeading": "الفرق بين مربعين / مفكوك المربع الكامل",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p047/QDR-QNT-FND26-P047-Q07.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_1",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_1"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_1",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "MULTI_RULE_PAGE",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P048-Q08",
+      "bank": "FND26",
+      "sourcePage": 48,
+      "printedQuestionNumber": 8,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": "قاعدة 2",
+      "ruleCandidates": null,
+      "sourceHeading": "مفكوك المربع الكامل",
+      "sourceEvidence": {
+        "document": "تاسيس انشتين معدل .pdf",
+        "page": 48,
+        "parsedHeading": "مفكوك المربع الكامل",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p048/QDR-QNT-FND26-P048-Q08.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_1",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_1"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_1",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P048-Q09",
+      "bank": "FND26",
+      "sourcePage": 48,
+      "printedQuestionNumber": 9,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": "قاعدة 2",
+      "ruleCandidates": null,
+      "sourceHeading": "مفكوك المربع الكامل",
+      "sourceEvidence": {
+        "document": "تاسيس انشتين معدل .pdf",
+        "page": 48,
+        "parsedHeading": "مفكوك المربع الكامل",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p048/QDR-QNT-FND26-P048-Q09.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_1",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_1"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_1",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P048-Q10",
+      "bank": "FND26",
+      "sourcePage": 48,
+      "printedQuestionNumber": 10,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": "قاعدة 2",
+      "ruleCandidates": null,
+      "sourceHeading": "مفكوك المربع الكامل",
+      "sourceEvidence": {
+        "document": "تاسيس انشتين معدل .pdf",
+        "page": 48,
+        "parsedHeading": "مفكوك المربع الكامل",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p048/QDR-QNT-FND26-P048-Q10.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_1",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_1"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_1",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P048-Q11",
+      "bank": "FND26",
+      "sourcePage": 48,
+      "printedQuestionNumber": 11,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": "قاعدة 2",
+      "ruleCandidates": null,
+      "sourceHeading": "مفكوك المربع الكامل",
+      "sourceEvidence": {
+        "document": "تاسيس انشتين معدل .pdf",
+        "page": 48,
+        "parsedHeading": "مفكوك المربع الكامل",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p048/QDR-QNT-FND26-P048-Q11.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_1",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_1"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_1",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P048-Q12",
+      "bank": "FND26",
+      "sourcePage": 48,
+      "printedQuestionNumber": 12,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": "قاعدة 2",
+      "ruleCandidates": null,
+      "sourceHeading": "مفكوك المربع الكامل",
+      "sourceEvidence": {
+        "document": "تاسيس انشتين معدل .pdf",
+        "page": 48,
+        "parsedHeading": "مفكوك المربع الكامل",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p048/QDR-QNT-FND26-P048-Q12.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_1",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_1"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_1",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P048-Q13",
+      "bank": "FND26",
+      "sourcePage": 48,
+      "printedQuestionNumber": 13,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": "قاعدة 2",
+      "ruleCandidates": null,
+      "sourceHeading": "مفكوك المربع الكامل",
+      "sourceEvidence": {
+        "document": "تاسيس انشتين معدل .pdf",
+        "page": 48,
+        "parsedHeading": "مفكوك المربع الكامل",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p048/QDR-QNT-FND26-P048-Q13.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_1",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_1"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_1",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P048-Q14",
+      "bank": "FND26",
+      "sourcePage": 48,
+      "printedQuestionNumber": 14,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": "قاعدة 2",
+      "ruleCandidates": null,
+      "sourceHeading": "مفكوك المربع الكامل",
+      "sourceEvidence": {
+        "document": "تاسيس انشتين معدل .pdf",
+        "page": 48,
+        "parsedHeading": "مفكوك المربع الكامل",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p048/QDR-QNT-FND26-P048-Q14.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_1",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_1"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_1",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P049-Q15",
+      "bank": "FND26",
+      "sourcePage": 49,
+      "printedQuestionNumber": 15,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": "قاعدة 3",
+      "ruleCandidates": null,
+      "sourceHeading": "القاسم المشترك الأكبر",
+      "sourceEvidence": {
+        "document": "تاسيس انشتين معدل .pdf",
+        "page": 49,
+        "parsedHeading": "القاسم المشترك الأكبر",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p049/QDR-QNT-FND26-P049-Q15.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_02",
+      "currentSubskillId": "sub_quant_02_3",
+      "currentSkillIds": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "candidateSkillId": "skill_quant_02",
+      "candidateSubskillId": "sub_quant_02_3",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "INTENTIONAL_CROSS_CHAPTER",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P049-Q16",
+      "bank": "FND26",
+      "sourcePage": 49,
+      "printedQuestionNumber": 16,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": "قاعدة 3",
+      "ruleCandidates": null,
+      "sourceHeading": "القاسم المشترك الأكبر",
+      "sourceEvidence": {
+        "document": "تاسيس انشتين معدل .pdf",
+        "page": 49,
+        "parsedHeading": "القاسم المشترك الأكبر",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p049/QDR-QNT-FND26-P049-Q16.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_02",
+      "currentSubskillId": "sub_quant_02_3",
+      "currentSkillIds": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "candidateSkillId": "skill_quant_02",
+      "candidateSubskillId": "sub_quant_02_3",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "INTENTIONAL_CROSS_CHAPTER",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P049-Q17",
+      "bank": "FND26",
+      "sourcePage": 49,
+      "printedQuestionNumber": 17,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": "قاعدة 4",
+      "ruleCandidates": null,
+      "sourceHeading": "المضاعف المشترك الأصغر",
+      "sourceEvidence": {
+        "document": "تاسيس انشتين معدل .pdf",
+        "page": 49,
+        "parsedHeading": "المضاعف المشترك الأصغر",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p049/QDR-QNT-FND26-P049-Q17.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_02",
+      "currentSubskillId": "sub_quant_02_3",
+      "currentSkillIds": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "candidateSkillId": "skill_quant_02",
+      "candidateSubskillId": "sub_quant_02_3",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "INTENTIONAL_CROSS_CHAPTER",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P049-Q18",
+      "bank": "FND26",
+      "sourcePage": 49,
+      "printedQuestionNumber": 18,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": "قاعدة 4",
+      "ruleCandidates": null,
+      "sourceHeading": "المضاعف المشترك الأصغر",
+      "sourceEvidence": {
+        "document": "تاسيس انشتين معدل .pdf",
+        "page": 49,
+        "parsedHeading": "المضاعف المشترك الأصغر",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p049/QDR-QNT-FND26-P049-Q18.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_02",
+      "currentSubskillId": "sub_quant_02_3",
+      "currentSkillIds": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "candidateSkillId": "skill_quant_02",
+      "candidateSubskillId": "sub_quant_02_3",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "INTENTIONAL_CROSS_CHAPTER",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P050-Q19",
+      "bank": "FND26",
+      "sourcePage": 50,
+      "printedQuestionNumber": 19,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": "قاعدة 4",
+      "ruleCandidates": null,
+      "sourceHeading": "المضاعف المشترك الأصغر / بداية المعادلات",
+      "sourceEvidence": {
+        "document": "تاسيس انشتين معدل .pdf",
+        "page": 50,
+        "parsedHeading": "المضاعف المشترك الأصغر / بداية المعادلات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p050/QDR-QNT-FND26-P050-Q19.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_02",
+      "currentSubskillId": "sub_quant_02_3",
+      "currentSkillIds": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "candidateSkillId": "skill_quant_02",
+      "candidateSubskillId": "sub_quant_02_3",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "DUPLICATE_PRINTED_Q19_VERIFY",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P051-Q19",
+      "bank": "FND26",
+      "sourcePage": 51,
+      "printedQuestionNumber": 19,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": "قاعدة 5",
+      "ruleCandidates": null,
+      "sourceHeading": "المعادلات",
+      "sourceEvidence": {
+        "document": "تاسيس انشتين معدل .pdf",
+        "page": 51,
+        "parsedHeading": "المعادلات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p051/QDR-QNT-FND26-P051-Q19.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "DUPLICATE_PRINTED_Q19_VERIFY",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P051-Q20",
+      "bank": "FND26",
+      "sourcePage": 51,
+      "printedQuestionNumber": 20,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": "قاعدة 5",
+      "ruleCandidates": null,
+      "sourceHeading": "المعادلات",
+      "sourceEvidence": {
+        "document": "تاسيس انشتين معدل .pdf",
+        "page": 51,
+        "parsedHeading": "المعادلات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p051/QDR-QNT-FND26-P051-Q20.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P051-Q21",
+      "bank": "FND26",
+      "sourcePage": 51,
+      "printedQuestionNumber": 21,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": "قاعدة 5",
+      "ruleCandidates": null,
+      "sourceHeading": "المعادلات",
+      "sourceEvidence": {
+        "document": "تاسيس انشتين معدل .pdf",
+        "page": 51,
+        "parsedHeading": "المعادلات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p051/QDR-QNT-FND26-P051-Q21.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P051-Q22",
+      "bank": "FND26",
+      "sourcePage": 51,
+      "printedQuestionNumber": 22,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": "قاعدة 5",
+      "ruleCandidates": null,
+      "sourceHeading": "المعادلات",
+      "sourceEvidence": {
+        "document": "تاسيس انشتين معدل .pdf",
+        "page": 51,
+        "parsedHeading": "المعادلات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p051/QDR-QNT-FND26-P051-Q22.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P051-Q23",
+      "bank": "FND26",
+      "sourcePage": 51,
+      "printedQuestionNumber": 23,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": "قاعدة 5",
+      "ruleCandidates": null,
+      "sourceHeading": "المعادلات",
+      "sourceEvidence": {
+        "document": "تاسيس انشتين معدل .pdf",
+        "page": 51,
+        "parsedHeading": "المعادلات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p051/QDR-QNT-FND26-P051-Q23.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P051-Q24",
+      "bank": "FND26",
+      "sourcePage": 51,
+      "printedQuestionNumber": 24,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": "قاعدة 5",
+      "ruleCandidates": null,
+      "sourceHeading": "المعادلات",
+      "sourceEvidence": {
+        "document": "تاسيس انشتين معدل .pdf",
+        "page": 51,
+        "parsedHeading": "المعادلات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p051/QDR-QNT-FND26-P051-Q24.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P051-Q25",
+      "bank": "FND26",
+      "sourcePage": 51,
+      "printedQuestionNumber": 25,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": "قاعدة 5",
+      "ruleCandidates": null,
+      "sourceHeading": "المعادلات",
+      "sourceEvidence": {
+        "document": "تاسيس انشتين معدل .pdf",
+        "page": 51,
+        "parsedHeading": "المعادلات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p051/QDR-QNT-FND26-P051-Q25.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P051-Q26",
+      "bank": "FND26",
+      "sourcePage": 51,
+      "printedQuestionNumber": 26,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": "قاعدة 5",
+      "ruleCandidates": null,
+      "sourceHeading": "المعادلات",
+      "sourceEvidence": {
+        "document": "تاسيس انشتين معدل .pdf",
+        "page": 51,
+        "parsedHeading": "المعادلات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p051/QDR-QNT-FND26-P051-Q26.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P051-Q27",
+      "bank": "FND26",
+      "sourcePage": 51,
+      "printedQuestionNumber": 27,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": "قاعدة 5",
+      "ruleCandidates": null,
+      "sourceHeading": "المعادلات",
+      "sourceEvidence": {
+        "document": "تاسيس انشتين معدل .pdf",
+        "page": 51,
+        "parsedHeading": "المعادلات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p051/QDR-QNT-FND26-P051-Q27.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_3",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_3"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_3",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P051-Q28",
+      "bank": "FND26",
+      "sourcePage": 51,
+      "printedQuestionNumber": 28,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": "قاعدة 5",
+      "ruleCandidates": null,
+      "sourceHeading": "المعادلات",
+      "sourceEvidence": {
+        "document": "تاسيس انشتين معدل .pdf",
+        "page": 51,
+        "parsedHeading": "المعادلات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p051/QDR-QNT-FND26-P051-Q28.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P051-Q29",
+      "bank": "FND26",
+      "sourcePage": 51,
+      "printedQuestionNumber": 29,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": "قاعدة 5",
+      "ruleCandidates": null,
+      "sourceHeading": "المعادلات",
+      "sourceEvidence": {
+        "document": "تاسيس انشتين معدل .pdf",
+        "page": 51,
+        "parsedHeading": "المعادلات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p051/QDR-QNT-FND26-P051-Q29.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P051-Q30",
+      "bank": "FND26",
+      "sourcePage": 51,
+      "printedQuestionNumber": 30,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": "قاعدة 5",
+      "ruleCandidates": null,
+      "sourceHeading": "المعادلات",
+      "sourceEvidence": {
+        "document": "تاسيس انشتين معدل .pdf",
+        "page": 51,
+        "parsedHeading": "المعادلات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p051/QDR-QNT-FND26-P051-Q30.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_3",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_3"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_3",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P052-Q31",
+      "bank": "FND26",
+      "sourcePage": 52,
+      "printedQuestionNumber": 31,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": "قاعدة 5",
+      "ruleCandidates": null,
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تاسيس انشتين معدل .pdf",
+        "page": 52,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p052/QDR-QNT-FND26-P052-Q31.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P052-Q32",
+      "bank": "FND26",
+      "sourcePage": 52,
+      "printedQuestionNumber": 32,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": "قاعدة 5",
+      "ruleCandidates": null,
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تاسيس انشتين معدل .pdf",
+        "page": 52,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p052/QDR-QNT-FND26-P052-Q32.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P052-Q33",
+      "bank": "FND26",
+      "sourcePage": 52,
+      "printedQuestionNumber": 33,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": "قاعدة 5",
+      "ruleCandidates": null,
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تاسيس انشتين معدل .pdf",
+        "page": 52,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p052/QDR-QNT-FND26-P052-Q33.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P052-Q34",
+      "bank": "FND26",
+      "sourcePage": 52,
+      "printedQuestionNumber": 34,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": "قاعدة 5",
+      "ruleCandidates": null,
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تاسيس انشتين معدل .pdf",
+        "page": 52,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p052/QDR-QNT-FND26-P052-Q34.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P052-Q35",
+      "bank": "FND26",
+      "sourcePage": 52,
+      "printedQuestionNumber": 35,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": "قاعدة 5",
+      "ruleCandidates": null,
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تاسيس انشتين معدل .pdf",
+        "page": 52,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p052/QDR-QNT-FND26-P052-Q35.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P052-Q36",
+      "bank": "FND26",
+      "sourcePage": 52,
+      "printedQuestionNumber": 36,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": "قاعدة 5",
+      "ruleCandidates": null,
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تاسيس انشتين معدل .pdf",
+        "page": 52,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p052/QDR-QNT-FND26-P052-Q36.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_1",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_1"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_1",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P052-Q37",
+      "bank": "FND26",
+      "sourcePage": 52,
+      "printedQuestionNumber": 37,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": "قاعدة 5",
+      "ruleCandidates": null,
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تاسيس انشتين معدل .pdf",
+        "page": 52,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p052/QDR-QNT-FND26-P052-Q37.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_1",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_1"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_1",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P052-Q38",
+      "bank": "FND26",
+      "sourcePage": 52,
+      "printedQuestionNumber": 38,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": "قاعدة 5",
+      "ruleCandidates": null,
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تاسيس انشتين معدل .pdf",
+        "page": 52,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p052/QDR-QNT-FND26-P052-Q38.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_1",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_1"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_1",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P052-Q39",
+      "bank": "FND26",
+      "sourcePage": 52,
+      "printedQuestionNumber": 39,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": "قاعدة 5",
+      "ruleCandidates": null,
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تاسيس انشتين معدل .pdf",
+        "page": 52,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p052/QDR-QNT-FND26-P052-Q39.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_4",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_4"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_4",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "INEQUALITY_BOUNDARY",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P052-Q40",
+      "bank": "FND26",
+      "sourcePage": 52,
+      "printedQuestionNumber": 40,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": "قاعدة 5",
+      "ruleCandidates": null,
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تاسيس انشتين معدل .pdf",
+        "page": 52,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p052/QDR-QNT-FND26-P052-Q40.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_4",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_4"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_4",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "INEQUALITY_BOUNDARY",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P052-Q41",
+      "bank": "FND26",
+      "sourcePage": 52,
+      "printedQuestionNumber": 41,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": "قاعدة 5",
+      "ruleCandidates": null,
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تاسيس انشتين معدل .pdf",
+        "page": 52,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p052/QDR-QNT-FND26-P052-Q41.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_4",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_4"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_4",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "INEQUALITY_BOUNDARY",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P031-Q01",
+      "bank": "COL2627",
+      "sourcePage": 31,
+      "printedQuestionNumber": 1,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 1"
+      ],
+      "sourceHeading": "الفرق بين مربعين",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 31,
+        "parsedHeading": "الفرق بين مربعين",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p031/QDR-QNT-COL2627-P031-Q01.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_1",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_1"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_1",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "COL_SECTION_HEADING_NOT_NUMBERED",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P031-Q02",
+      "bank": "COL2627",
+      "sourcePage": 31,
+      "printedQuestionNumber": 2,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 1"
+      ],
+      "sourceHeading": "الفرق بين مربعين",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 31,
+        "parsedHeading": "الفرق بين مربعين",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p031/QDR-QNT-COL2627-P031-Q02.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_1",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_1"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_1",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "COL_SECTION_HEADING_NOT_NUMBERED",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P031-Q03",
+      "bank": "COL2627",
+      "sourcePage": 31,
+      "printedQuestionNumber": 3,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 1"
+      ],
+      "sourceHeading": "الفرق بين مربعين",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 31,
+        "parsedHeading": "الفرق بين مربعين",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p031/QDR-QNT-COL2627-P031-Q03.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_1",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_1"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_1",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "COL_SECTION_HEADING_NOT_NUMBERED",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P031-Q04",
+      "bank": "COL2627",
+      "sourcePage": 31,
+      "printedQuestionNumber": 4,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 1"
+      ],
+      "sourceHeading": "الفرق بين مربعين",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 31,
+        "parsedHeading": "الفرق بين مربعين",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p031/QDR-QNT-COL2627-P031-Q04.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_1",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_1"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_1",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "COL_SECTION_HEADING_NOT_NUMBERED",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P031-Q05",
+      "bank": "COL2627",
+      "sourcePage": 31,
+      "printedQuestionNumber": 5,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 1"
+      ],
+      "sourceHeading": "الفرق بين مربعين",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 31,
+        "parsedHeading": "الفرق بين مربعين",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p031/QDR-QNT-COL2627-P031-Q05.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_1",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_1"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_1",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "COL_SECTION_HEADING_NOT_NUMBERED",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P031-Q06",
+      "bank": "COL2627",
+      "sourcePage": 31,
+      "printedQuestionNumber": 6,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 1"
+      ],
+      "sourceHeading": "الفرق بين مربعين",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 31,
+        "parsedHeading": "الفرق بين مربعين",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p031/QDR-QNT-COL2627-P031-Q06.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_1",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_1"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_1",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "COL_SECTION_HEADING_NOT_NUMBERED",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P031-Q07",
+      "bank": "COL2627",
+      "sourcePage": 31,
+      "printedQuestionNumber": 7,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 1"
+      ],
+      "sourceHeading": "الفرق بين مربعين",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 31,
+        "parsedHeading": "الفرق بين مربعين",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p031/QDR-QNT-COL2627-P031-Q07.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_1",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_1"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_1",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "COL_SECTION_HEADING_NOT_NUMBERED",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P031-Q08",
+      "bank": "COL2627",
+      "sourcePage": 31,
+      "printedQuestionNumber": 8,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 1"
+      ],
+      "sourceHeading": "الفرق بين مربعين",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 31,
+        "parsedHeading": "الفرق بين مربعين",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p031/QDR-QNT-COL2627-P031-Q08.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_1",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_1"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_1",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "COL_SECTION_HEADING_NOT_NUMBERED",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P031-Q09",
+      "bank": "COL2627",
+      "sourcePage": 31,
+      "printedQuestionNumber": 9,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 1"
+      ],
+      "sourceHeading": "الفرق بين مربعين",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 31,
+        "parsedHeading": "الفرق بين مربعين",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p031/QDR-QNT-COL2627-P031-Q09.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_1",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_1"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_1",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "COL_SECTION_HEADING_NOT_NUMBERED",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P031-Q10",
+      "bank": "COL2627",
+      "sourcePage": 31,
+      "printedQuestionNumber": 10,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 1"
+      ],
+      "sourceHeading": "الفرق بين مربعين",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 31,
+        "parsedHeading": "الفرق بين مربعين",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p031/QDR-QNT-COL2627-P031-Q10.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_1",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_1"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_1",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "COL_SECTION_HEADING_NOT_NUMBERED",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P031-Q11",
+      "bank": "COL2627",
+      "sourcePage": 31,
+      "printedQuestionNumber": 11,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 1"
+      ],
+      "sourceHeading": "الفرق بين مربعين",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 31,
+        "parsedHeading": "الفرق بين مربعين",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p031/QDR-QNT-COL2627-P031-Q11.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_1",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_1"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_1",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "COL_SECTION_HEADING_NOT_NUMBERED",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P031-Q12",
+      "bank": "COL2627",
+      "sourcePage": 31,
+      "printedQuestionNumber": 12,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 1"
+      ],
+      "sourceHeading": "الفرق بين مربعين",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 31,
+        "parsedHeading": "الفرق بين مربعين",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p031/QDR-QNT-COL2627-P031-Q12.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_1",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_1"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_1",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "COL_SECTION_HEADING_NOT_NUMBERED",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P031-Q13",
+      "bank": "COL2627",
+      "sourcePage": 31,
+      "printedQuestionNumber": 13,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 2"
+      ],
+      "sourceHeading": "مفكوك المربع الكامل",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 31,
+        "parsedHeading": "مفكوك المربع الكامل",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p031/QDR-QNT-COL2627-P031-Q13.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_1",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_1"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_1",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "COL_SECTION_HEADING_NOT_NUMBERED",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P031-Q14",
+      "bank": "COL2627",
+      "sourcePage": 31,
+      "printedQuestionNumber": 14,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 2"
+      ],
+      "sourceHeading": "مفكوك المربع الكامل",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 31,
+        "parsedHeading": "مفكوك المربع الكامل",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p031/QDR-QNT-COL2627-P031-Q14.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_1",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_1"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_1",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "COL_SECTION_HEADING_NOT_NUMBERED",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P031-Q15",
+      "bank": "COL2627",
+      "sourcePage": 31,
+      "printedQuestionNumber": 15,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 2"
+      ],
+      "sourceHeading": "مفكوك المربع الكامل",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 31,
+        "parsedHeading": "مفكوك المربع الكامل",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p031/QDR-QNT-COL2627-P031-Q15.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_1",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_1"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_1",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "COL_SECTION_HEADING_NOT_NUMBERED",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P032-Q16",
+      "bank": "COL2627",
+      "sourcePage": 32,
+      "printedQuestionNumber": 16,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 2"
+      ],
+      "sourceHeading": "مفكوك المربع الكامل",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 32,
+        "parsedHeading": "مفكوك المربع الكامل",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p032/QDR-QNT-COL2627-P032-Q16.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_1",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_1"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_1",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "COL_SECTION_HEADING_NOT_NUMBERED",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P032-Q17",
+      "bank": "COL2627",
+      "sourcePage": 32,
+      "printedQuestionNumber": 17,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 3"
+      ],
+      "sourceHeading": "القاسم المشترك الأكبر",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 32,
+        "parsedHeading": "القاسم المشترك الأكبر",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p032/QDR-QNT-COL2627-P032-Q17.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_02",
+      "currentSubskillId": "sub_quant_02_3",
+      "currentSkillIds": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "candidateSkillId": "skill_quant_02",
+      "candidateSubskillId": "sub_quant_02_3",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "INTENTIONAL_CROSS_CHAPTER",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P032-Q18",
+      "bank": "COL2627",
+      "sourcePage": 32,
+      "printedQuestionNumber": 18,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 3"
+      ],
+      "sourceHeading": "القاسم المشترك الأكبر",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 32,
+        "parsedHeading": "القاسم المشترك الأكبر",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p032/QDR-QNT-COL2627-P032-Q18.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_02",
+      "currentSubskillId": "sub_quant_02_3",
+      "currentSkillIds": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "candidateSkillId": "skill_quant_02",
+      "candidateSubskillId": "sub_quant_02_3",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "INTENTIONAL_CROSS_CHAPTER",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P032-Q19",
+      "bank": "COL2627",
+      "sourcePage": 32,
+      "printedQuestionNumber": 19,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 3"
+      ],
+      "sourceHeading": "القاسم المشترك الأكبر",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 32,
+        "parsedHeading": "القاسم المشترك الأكبر",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p032/QDR-QNT-COL2627-P032-Q19.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_02",
+      "currentSubskillId": "sub_quant_02_3",
+      "currentSkillIds": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "candidateSkillId": "skill_quant_02",
+      "candidateSubskillId": "sub_quant_02_3",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "INTENTIONAL_CROSS_CHAPTER",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P032-Q20",
+      "bank": "COL2627",
+      "sourcePage": 32,
+      "printedQuestionNumber": 20,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 4"
+      ],
+      "sourceHeading": "المضاعف المشترك الأصغر",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 32,
+        "parsedHeading": "المضاعف المشترك الأصغر",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p032/QDR-QNT-COL2627-P032-Q20.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_02",
+      "currentSubskillId": "sub_quant_02_3",
+      "currentSkillIds": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "candidateSkillId": "skill_quant_02",
+      "candidateSubskillId": "sub_quant_02_3",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "INTENTIONAL_CROSS_CHAPTER",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P032-Q21",
+      "bank": "COL2627",
+      "sourcePage": 32,
+      "printedQuestionNumber": 21,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 4"
+      ],
+      "sourceHeading": "المضاعف المشترك الأصغر",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 32,
+        "parsedHeading": "المضاعف المشترك الأصغر",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p032/QDR-QNT-COL2627-P032-Q21.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_02",
+      "currentSubskillId": "sub_quant_02_3",
+      "currentSkillIds": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "candidateSkillId": "skill_quant_02",
+      "candidateSubskillId": "sub_quant_02_3",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "INTENTIONAL_CROSS_CHAPTER",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P032-Q22",
+      "bank": "COL2627",
+      "sourcePage": 32,
+      "printedQuestionNumber": 22,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 4"
+      ],
+      "sourceHeading": "المضاعف المشترك الأصغر",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 32,
+        "parsedHeading": "المضاعف المشترك الأصغر",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p032/QDR-QNT-COL2627-P032-Q22.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_02",
+      "currentSubskillId": "sub_quant_02_3",
+      "currentSkillIds": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "candidateSkillId": "skill_quant_02",
+      "candidateSubskillId": "sub_quant_02_3",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "INTENTIONAL_CROSS_CHAPTER",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P032-Q23",
+      "bank": "COL2627",
+      "sourcePage": 32,
+      "printedQuestionNumber": 23,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 4"
+      ],
+      "sourceHeading": "المضاعف المشترك الأصغر",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 32,
+        "parsedHeading": "المضاعف المشترك الأصغر",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p032/QDR-QNT-COL2627-P032-Q23.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_02",
+      "currentSubskillId": "sub_quant_02_3",
+      "currentSkillIds": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "candidateSkillId": "skill_quant_02",
+      "candidateSubskillId": "sub_quant_02_3",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "INTENTIONAL_CROSS_CHAPTER",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P032-Q24",
+      "bank": "COL2627",
+      "sourcePage": 32,
+      "printedQuestionNumber": 24,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 4"
+      ],
+      "sourceHeading": "المضاعف المشترك الأصغر",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 32,
+        "parsedHeading": "المضاعف المشترك الأصغر",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p032/QDR-QNT-COL2627-P032-Q24.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_02",
+      "currentSubskillId": "sub_quant_02_3",
+      "currentSkillIds": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "candidateSkillId": "skill_quant_02",
+      "candidateSubskillId": "sub_quant_02_3",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "INTENTIONAL_CROSS_CHAPTER",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P032-Q25",
+      "bank": "COL2627",
+      "sourcePage": 32,
+      "printedQuestionNumber": 25,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 4"
+      ],
+      "sourceHeading": "المضاعف المشترك الأصغر",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 32,
+        "parsedHeading": "المضاعف المشترك الأصغر",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p032/QDR-QNT-COL2627-P032-Q25.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_02",
+      "currentSubskillId": "sub_quant_02_3",
+      "currentSkillIds": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "candidateSkillId": "skill_quant_02",
+      "candidateSubskillId": "sub_quant_02_3",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "INTENTIONAL_CROSS_CHAPTER",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P032-Q26",
+      "bank": "COL2627",
+      "sourcePage": 32,
+      "printedQuestionNumber": 26,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 4"
+      ],
+      "sourceHeading": "المضاعف المشترك الأصغر",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 32,
+        "parsedHeading": "المضاعف المشترك الأصغر",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p032/QDR-QNT-COL2627-P032-Q26.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_02",
+      "currentSubskillId": "sub_quant_02_3",
+      "currentSkillIds": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "candidateSkillId": "skill_quant_02",
+      "candidateSubskillId": "sub_quant_02_3",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "INTENTIONAL_CROSS_CHAPTER",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P032-Q27",
+      "bank": "COL2627",
+      "sourcePage": 32,
+      "printedQuestionNumber": 27,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 4"
+      ],
+      "sourceHeading": "المضاعف المشترك الأصغر",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 32,
+        "parsedHeading": "المضاعف المشترك الأصغر",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p032/QDR-QNT-COL2627-P032-Q27.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_02",
+      "currentSubskillId": "sub_quant_02_3",
+      "currentSkillIds": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "candidateSkillId": "skill_quant_02",
+      "candidateSubskillId": "sub_quant_02_3",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "INTENTIONAL_CROSS_CHAPTER",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P032-Q28",
+      "bank": "COL2627",
+      "sourcePage": 32,
+      "printedQuestionNumber": 28,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 4"
+      ],
+      "sourceHeading": "المضاعف المشترك الأصغر",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 32,
+        "parsedHeading": "المضاعف المشترك الأصغر",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p032/QDR-QNT-COL2627-P032-Q28.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_02",
+      "currentSubskillId": "sub_quant_02_3",
+      "currentSkillIds": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "candidateSkillId": "skill_quant_02",
+      "candidateSubskillId": "sub_quant_02_3",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "INTENTIONAL_CROSS_CHAPTER",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P032-Q29",
+      "bank": "COL2627",
+      "sourcePage": 32,
+      "printedQuestionNumber": 29,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 5"
+      ],
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 32,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p032/QDR-QNT-COL2627-P032-Q29.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P032-Q30",
+      "bank": "COL2627",
+      "sourcePage": 32,
+      "printedQuestionNumber": 30,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 5"
+      ],
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 32,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p032/QDR-QNT-COL2627-P032-Q30.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P033-Q31",
+      "bank": "COL2627",
+      "sourcePage": 33,
+      "printedQuestionNumber": 31,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 5"
+      ],
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 33,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p033/QDR-QNT-COL2627-P033-Q31.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P033-Q32",
+      "bank": "COL2627",
+      "sourcePage": 33,
+      "printedQuestionNumber": 32,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 5"
+      ],
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 33,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p033/QDR-QNT-COL2627-P033-Q32.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P033-Q33",
+      "bank": "COL2627",
+      "sourcePage": 33,
+      "printedQuestionNumber": 33,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 5"
+      ],
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 33,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p033/QDR-QNT-COL2627-P033-Q33.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P033-Q34",
+      "bank": "COL2627",
+      "sourcePage": 33,
+      "printedQuestionNumber": 34,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 5"
+      ],
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 33,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p033/QDR-QNT-COL2627-P033-Q34.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P033-Q35",
+      "bank": "COL2627",
+      "sourcePage": 33,
+      "printedQuestionNumber": 35,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 5"
+      ],
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 33,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p033/QDR-QNT-COL2627-P033-Q35.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P033-Q36",
+      "bank": "COL2627",
+      "sourcePage": 33,
+      "printedQuestionNumber": 36,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 5"
+      ],
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 33,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p033/QDR-QNT-COL2627-P033-Q36.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P033-Q37",
+      "bank": "COL2627",
+      "sourcePage": 33,
+      "printedQuestionNumber": 37,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 5"
+      ],
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 33,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p033/QDR-QNT-COL2627-P033-Q37.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P033-Q38",
+      "bank": "COL2627",
+      "sourcePage": 33,
+      "printedQuestionNumber": 38,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 5"
+      ],
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 33,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p033/QDR-QNT-COL2627-P033-Q38.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P033-Q39",
+      "bank": "COL2627",
+      "sourcePage": 33,
+      "printedQuestionNumber": 39,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 5"
+      ],
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 33,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p033/QDR-QNT-COL2627-P033-Q39.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P033-Q40",
+      "bank": "COL2627",
+      "sourcePage": 33,
+      "printedQuestionNumber": 40,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 5"
+      ],
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 33,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p033/QDR-QNT-COL2627-P033-Q40.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P033-Q41",
+      "bank": "COL2627",
+      "sourcePage": 33,
+      "printedQuestionNumber": 41,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 5"
+      ],
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 33,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p033/QDR-QNT-COL2627-P033-Q41.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P033-Q42",
+      "bank": "COL2627",
+      "sourcePage": 33,
+      "printedQuestionNumber": 42,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 5"
+      ],
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 33,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p033/QDR-QNT-COL2627-P033-Q42.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P033-Q43",
+      "bank": "COL2627",
+      "sourcePage": 33,
+      "printedQuestionNumber": 43,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 5"
+      ],
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 33,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p033/QDR-QNT-COL2627-P033-Q43.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P033-Q44",
+      "bank": "COL2627",
+      "sourcePage": 33,
+      "printedQuestionNumber": 44,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 5"
+      ],
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 33,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p033/QDR-QNT-COL2627-P033-Q44.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P033-Q45",
+      "bank": "COL2627",
+      "sourcePage": 33,
+      "printedQuestionNumber": 45,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 5"
+      ],
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 33,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p033/QDR-QNT-COL2627-P033-Q45.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P033-Q46",
+      "bank": "COL2627",
+      "sourcePage": 33,
+      "printedQuestionNumber": 46,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 5"
+      ],
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 33,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p033/QDR-QNT-COL2627-P033-Q46.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P033-Q47",
+      "bank": "COL2627",
+      "sourcePage": 33,
+      "printedQuestionNumber": 47,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 5"
+      ],
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 33,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p033/QDR-QNT-COL2627-P033-Q47.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_05",
+      "currentSubskillId": "sub_quant_05_2",
+      "currentSkillIds": [
+        "skill_quant_05",
+        "sub_quant_05_2"
+      ],
+      "candidateSkillId": "skill_quant_05",
+      "candidateSubskillId": "sub_quant_05_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "EXPONENT_CURRENT_SKILL_HOLD",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P033-Q48",
+      "bank": "COL2627",
+      "sourcePage": 33,
+      "printedQuestionNumber": 48,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 5"
+      ],
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 33,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p033/QDR-QNT-COL2627-P033-Q48.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_05",
+      "currentSubskillId": "sub_quant_05_2",
+      "currentSkillIds": [
+        "skill_quant_05",
+        "sub_quant_05_2"
+      ],
+      "candidateSkillId": "skill_quant_05",
+      "candidateSubskillId": "sub_quant_05_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "EXPONENT_CURRENT_SKILL_HOLD",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P034-Q49",
+      "bank": "COL2627",
+      "sourcePage": 34,
+      "printedQuestionNumber": 49,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 5"
+      ],
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 34,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p034/QDR-QNT-COL2627-P034-Q49.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P034-Q50",
+      "bank": "COL2627",
+      "sourcePage": 34,
+      "printedQuestionNumber": 50,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 5"
+      ],
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 34,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p034/QDR-QNT-COL2627-P034-Q50.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P034-Q51",
+      "bank": "COL2627",
+      "sourcePage": 34,
+      "printedQuestionNumber": 51,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 5"
+      ],
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 34,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p034/QDR-QNT-COL2627-P034-Q51.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P034-Q52",
+      "bank": "COL2627",
+      "sourcePage": 34,
+      "printedQuestionNumber": 52,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 5"
+      ],
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 34,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p034/QDR-QNT-COL2627-P034-Q52.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P034-Q53",
+      "bank": "COL2627",
+      "sourcePage": 34,
+      "printedQuestionNumber": 53,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 5"
+      ],
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 34,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p034/QDR-QNT-COL2627-P034-Q53.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_3",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_3"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_3",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P034-Q54",
+      "bank": "COL2627",
+      "sourcePage": 34,
+      "printedQuestionNumber": 54,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 5"
+      ],
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 34,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p034/QDR-QNT-COL2627-P034-Q54.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P034-Q55",
+      "bank": "COL2627",
+      "sourcePage": 34,
+      "printedQuestionNumber": 55,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 5"
+      ],
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 34,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p034/QDR-QNT-COL2627-P034-Q55.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P034-Q56",
+      "bank": "COL2627",
+      "sourcePage": 34,
+      "printedQuestionNumber": 56,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 5"
+      ],
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 34,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p034/QDR-QNT-COL2627-P034-Q56.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P034-Q57",
+      "bank": "COL2627",
+      "sourcePage": 34,
+      "printedQuestionNumber": 57,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 5"
+      ],
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 34,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p034/QDR-QNT-COL2627-P034-Q57.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P034-Q58",
+      "bank": "COL2627",
+      "sourcePage": 34,
+      "printedQuestionNumber": 58,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 5"
+      ],
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 34,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p034/QDR-QNT-COL2627-P034-Q58.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P034-Q59",
+      "bank": "COL2627",
+      "sourcePage": 34,
+      "printedQuestionNumber": 59,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 5"
+      ],
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 34,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p034/QDR-QNT-COL2627-P034-Q59.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P034-Q60",
+      "bank": "COL2627",
+      "sourcePage": 34,
+      "printedQuestionNumber": 60,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 5"
+      ],
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 34,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p034/QDR-QNT-COL2627-P034-Q60.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P034-Q61",
+      "bank": "COL2627",
+      "sourcePage": 34,
+      "printedQuestionNumber": 61,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 5"
+      ],
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 34,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p034/QDR-QNT-COL2627-P034-Q61.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P034-Q62",
+      "bank": "COL2627",
+      "sourcePage": 34,
+      "printedQuestionNumber": 62,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 5"
+      ],
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 34,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p034/QDR-QNT-COL2627-P034-Q62.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P034-Q63",
+      "bank": "COL2627",
+      "sourcePage": 34,
+      "printedQuestionNumber": 63,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 5"
+      ],
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 34,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p034/QDR-QNT-COL2627-P034-Q63.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_1",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_1"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_1",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P034-Q64",
+      "bank": "COL2627",
+      "sourcePage": 34,
+      "printedQuestionNumber": 64,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 5"
+      ],
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 34,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p034/QDR-QNT-COL2627-P034-Q64.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_2",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_2",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P034-Q65",
+      "bank": "COL2627",
+      "sourcePage": 34,
+      "printedQuestionNumber": 65,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 5"
+      ],
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 34,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p034/QDR-QNT-COL2627-P034-Q65.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_4",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_4"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_4",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P034-Q66",
+      "bank": "COL2627",
+      "sourcePage": 34,
+      "printedQuestionNumber": 66,
+      "bookLesson": "الجبر والمتطابقات",
+      "printedRule": null,
+      "ruleCandidates": [
+        "تأسيس قاعدة 5"
+      ],
+      "sourceHeading": "المعادلات والمتباينات",
+      "sourceEvidence": {
+        "document": "تجميع انشيتن معدل(1).pdf",
+        "page": 34,
+        "parsedHeading": "المعادلات والمتباينات",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p034/QDR-QNT-COL2627-P034-Q66.webp",
+        "imageUrlContainsCode": true,
+        "imageHash": null,
+        "actualQuestionImageVerified": false,
+        "printedRuleQuestionBoundaryVerified": false
+      },
+      "currentSkillId": "skill_quant_07",
+      "currentSubskillId": "sub_quant_07_4",
+      "currentSkillIds": [
+        "skill_quant_07",
+        "sub_quant_07_4"
+      ],
+      "candidateSkillId": "skill_quant_07",
+      "candidateSubskillId": "sub_quant_07_4",
+      "approvedSkillId": null,
+      "approvedSubskillId": null,
+      "disposition": "HOLD_INDIVIDUAL_VISUAL_AND_RULE_BOUNDARY",
+      "holdReason": "VERIFY_PER_QUESTION",
+      "productionModified": false
+    }
+  ]
+}
