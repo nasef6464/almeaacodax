@@ -1,0 +1,33 @@
+{
+  "round": "R531",
+  "result": "PASS_WITH_OPEN_REVIEW_GATES",
+  "checks": {
+    "taxonomyCountsPreserved": true,
+    "selectedSkillsUnique": true,
+    "candidateOverlapWithR523_R530": 0,
+    "sourceRangeItems": 129,
+    "uniqueEditorialQuestionIDs": 16,
+    "questionsMarkedNotBankItem": true,
+    "skillHTML": 8,
+    "skillPDF": 8,
+    "skillPagePNGs": 32,
+    "diagramHTML": 8,
+    "diagramPNG": 8,
+    "diagramPDF": 8,
+    "mapPNGs": 7,
+    "unifiedHTMLArticles": 127,
+    "unifiedPDFArabicPages": "341/341",
+    "unifiedPDFContainsAllSkills": true,
+    "unifiedPDFContainsAllUpdatedMaps": true,
+    "EPUBCRC": "PASS",
+    "EPUBXMLParseErrors": 0,
+    "EPUBMissingImages": 0,
+    "lexicalPairsAtOrAbove065": 0
+  },
+  "manualReviewRequired": [
+    "biology reviewer sign-off",
+    "semantic full-bank dedupe",
+    "accessibility certification",
+    "authorized dry-run"
+  ]
+}
