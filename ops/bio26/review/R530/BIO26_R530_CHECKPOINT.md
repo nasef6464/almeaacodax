@@ -48,5 +48,18 @@ No changes to taxonomy, canonical question bank, answer keys, AI-context records
 - Authorized non-production import dry-run.
 - Drive read/upload once an authorized Drive access path is available.
 
-## Next
-R531: re-rank remaining untouched skills from the frozen taxonomy after excluding the verified R523–R530 coverage set; select the largest safe non-duplicate slice. Continue Drive-access and QA work independently.
+## Next R531 candidate slice
+The frozen taxonomy was re-ranked after excluding the verified 64-skill coverage set from R523–R530. The next eight highest-priority untouched skills total 129 source occurrences. Their lesson ranges do not intersect the three frozen alias-exclusion lessons L10, L35, or L40.
+
+| Priority | Skill | Main map | Lesson | Source ranges | Occurrences |
+|---:|---|---|---|---|---:|
+| 1 | BIO26-S23-01 | BIO26-M23 | L36 | Q1–Q13; Q48–Q52 | 18 |
+| 2 | BIO26-S06-02 | BIO26-M06 | L05 | Q10–Q16; Q43–Q52 | 17 |
+| 3 | BIO26-S16-01 | BIO26-M16 | L24 | Q6–Q11; Q61–Q71 | 17 |
+| 4 | BIO26-S16-03 | BIO26-M16 | L25 | Q1–Q7; Q25–Q34 | 17 |
+| 5 | BIO26-S15-02 | BIO26-M15 | L22 | Q5–Q10; Q25–Q34 | 16 |
+| 6 | BIO26-S24-01 | BIO26-M24 | L38 | Q1–Q10; Q36–Q41 | 16 |
+| 7 | BIO26-S03-04 | BIO26-M03 | L03 | Q15–Q22; Q75–Q80 | 14 |
+| 8 | BIO26-S12-01 | BIO26-M12 | L17 | Q1–Q7; Q17–Q23 | 14 |
+
+Total: **129 source occurrences / 129 canonical items**. Reconfirm against the live range map and current checkpoints before R531 production. Continue Drive-access and QA work independently.
