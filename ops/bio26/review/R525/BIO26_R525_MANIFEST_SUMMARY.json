@@ -1,0 +1,35 @@
+{
+  "project": "BIO26",
+  "round": "R525",
+  "status": "REVIEW_ONLY",
+  "manifestPath": "BIO26_R525_MANIFEST.json",
+  "manifestBytes": 78401,
+  "manifestSHA256": "76eaae3f56f67b9cbc650b786a414664052164f82ebd0a217b4a386c505a55d4",
+  "manifestFileCount": 450,
+  "archivePath": "BIO26_R525_8_HIGH_PRIORITY_DEEP_DIVES_REVIEW_ONLY.zip",
+  "archiveBytes": 103784524,
+  "archiveSHA256": "11aca4ddd19d51e95d325e4ba2f125395d57b585d9a7d01ed1754c0dcc45e7cf",
+  "archiveCRC": "PASS",
+  "manifestFileHashes": "PASS",
+  "archiveCoverage": "PASS",
+  "frozen": {
+    "mainAxes": 29,
+    "subskills": 98,
+    "canonicalQuestions": 2832,
+    "sourceOccurrences": 2835,
+    "learningQuizzes": 147,
+    "standardTests": 71
+  },
+  "selectedSkills": [
+    "BIO26-S28-03",
+    "BIO26-S10-04",
+    "BIO26-S28-01",
+    "BIO26-S10-01",
+    "BIO26-S27-01",
+    "BIO26-S09-03",
+    "BIO26-S23-02",
+    "BIO26-S28-02"
+  ],
+  "binaryArchiveLocation": "local conversation artifact only; not uploaded to GitHub or Drive",
+  "note": "Stable GitHub record of local artifact hashes; does not claim remote binary storage or publication."
+}
