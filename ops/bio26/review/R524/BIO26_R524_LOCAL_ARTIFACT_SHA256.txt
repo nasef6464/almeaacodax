@@ -1,0 +1,10 @@
+R524 local review package
+File: BIO26_R524_8_DEEP_DIVES_REVIEW_ONLY.zip
+Bytes: 71744436
+SHA-256: f12914553601c5e284b0281976c5ca0ef7ee8921acac4e2ff6556697503c2323
+Manifest: BIO26_R524_MANIFEST.json
+Manifest SHA-256: 1469735628b30debc6e26e39d927fa1adf63b3531faee747df541c1488218eab
+Manifest files excluding manifest: 393
+Archive entries: 394
+Archive CRC: PASS
+Note: the binary package remains a local review artifact and is not stored in this GitHub branch.
