@@ -33,12 +33,23 @@
   "epubCRC": "PASS",
   "epubAllManifestLinksResolve": true,
   "manifestEntries": 362,
-  "manifestBytes": 77781876,
-  "archiveSHA256": "4a965b1bfcb212d612c2b9c69957cc0f24f367d3659a279a1745543af5541740",
+  "manifestBytes": 77782815,
+  "archiveSHA256": "5abf488bd947ec26182442aedf73151b23dca057c6c6d7499f584f43094c1b63",
   "aiContextSelectedItemsRead": 61,
   "driveRead": false,
   "driveUpload": false,
   "productionImport": false,
   "published": false,
-  "mainMerged": false
+  "mainMerged": false,
+  "nextCandidateSkills": [
+    "BIO26-S23-01",
+    "BIO26-S06-02",
+    "BIO26-S16-01",
+    "BIO26-S16-03",
+    "BIO26-S15-02",
+    "BIO26-S24-01",
+    "BIO26-S03-04",
+    "BIO26-S12-01"
+  ],
+  "nextCandidateSourceOccurrences": 129
 }
