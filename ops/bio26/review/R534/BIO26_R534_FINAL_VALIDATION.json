@@ -1,0 +1,35 @@
+{
+  "round": "R534",
+  "status": "PASS_WITH_OPEN_REVIEW_GATES",
+  "checks": {
+    "taxonomy_preserved": true,
+    "coverage_98_of_98": true,
+    "new_ids_unique": true,
+    "no_prior_overlap": true,
+    "source_ranges_63": true,
+    "range_coordinates_unique": true,
+    "alias_intersections_zero": true,
+    "questions_20_unique": true,
+    "all_not_bank_item": true,
+    "answer_distribution_balanced": true,
+    "unified_html_127_unique_articles": true,
+    "unified_html_29_maps_98_skills": true,
+    "html_missing_images_zero": true,
+    "html_missing_alt_zero": true,
+    "epub_crc_pass": true,
+    "epub_xml_errors_zero": true,
+    "epub_missing_images_zero": true,
+    "epub_missing_alt_zero": true,
+    "epub_manifest_unique_ids": true
+  },
+  "open_gates": [
+    "R531 binary recovery/integration",
+    "98-page editorial completeness audit",
+    "full semantic dedupe against 2,832 canonical stems/images",
+    "independent biology review",
+    "PDF/UA and Arabic screen-reader test",
+    "official EPUBCheck",
+    "authorized non-production import",
+    "Drive access and upload"
+  ]
+}
