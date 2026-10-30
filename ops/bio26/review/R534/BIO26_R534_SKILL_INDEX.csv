@@ -1,0 +1,11 @@
+skill_id,main_map,lesson,title_ar,source_occurrences,canonical_range_items,source_ranges,editorial_questions,page_count,status
+BIO26-S25-03,BIO26-M25,BIO26-L39,تحديد الجنس والصفات المرتبطة والمتأثرة بالجنس,9,9,Q39; Q108–Q115,2,4,REVIEW_ONLY_NEW_DEEP_DIVE
+BIO26-S01-01,BIO26-M01,BIO26-L01,دور علم الأحياء والعلم الطبيعي ومجالاته,7,7,Q1–Q2; Q32–Q36,2,4,REVIEW_ONLY_NEW_DEEP_DIVE
+BIO26-S02-01,BIO26-M02,BIO26-L02,التسمية الثنائية وقواعد الاسم العلمي,7,7,Q1–Q5; Q27–Q28,2,4,REVIEW_ONLY_NEW_DEEP_DIVE
+BIO26-S15-01,BIO26-M15,BIO26-L22,الخلية العصبية والتشابك العصبي,7,7,Q1–Q4; Q22–Q24,2,4,REVIEW_ONLY_NEW_DEEP_DIVE
+BIO26-S19-02,BIO26-M19,BIO26-L31,المناعة المتخصصة والخلايا اللمفية والأجسام المضادة,7,7,Q15–Q18; Q39–Q41,2,4,REVIEW_ONLY_NEW_DEEP_DIVE
+BIO26-S21-03,BIO26-M21,BIO26-L33,الأحماض النووية والنيوكليوتيدات والجزيئات الحيوية,7,7,Q15–Q20; Q39,2,4,REVIEW_ONLY_NEW_DEEP_DIVE
+BIO26-S20-04,BIO26-M20,BIO26-L32,الغشاء البلازمي والنقل والانتشار والأسموزية والنقل النشط,6,6,Q100–Q105,2,4,REVIEW_ONLY_NEW_DEEP_DIVE
+BIO26-S01-04,BIO26-M01,BIO26-L01,الملاحظة والبيانات والقياس ومراجعة الأقران,5,5,Q23; Q56–Q59,2,4,REVIEW_ONLY_NEW_DEEP_DIVE
+BIO26-S24-03,BIO26-M24,BIO26-L38,التهجين الثنائي وقانون التوزيع الحر,5,5,Q18–Q20; Q48–Q49,2,4,REVIEW_ONLY_NEW_DEEP_DIVE
+BIO26-S03-02,BIO26-M03,BIO26-L03,صبغة جرام والجدار الخلوي والتراكيب الواقية,3,3,Q9; Q67–Q68,2,4,REVIEW_ONLY_NEW_DEEP_DIVE
