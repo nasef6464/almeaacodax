@@ -1,0 +1,91 @@
+{
+  "project": "BIO26",
+  "round": "R524",
+  "status": "REVIEW_ONLY",
+  "baseRound": "R523",
+  "taxonomyBlobSHA": "a2ee6daf6279354db6bce723c8110c9d966e3370",
+  "productionClosure": {
+    "status": "CLOSED",
+    "date": "2026-10-07",
+    "canonicalQuestions": 2832,
+    "occurrences": 2835,
+    "learningQuizzes": 147,
+    "standardTests": 71
+  },
+  "frozen": {
+    "mainAxes": 29,
+    "subskills": 98,
+    "canonicalQuestions": 2832,
+    "sourceOccurrences": 2835
+  },
+  "newWork": {
+    "mainMapsUpdated": 8,
+    "skillPagesDeepened": 8,
+    "originalDiagrams": 8,
+    "newEditorialQuestions": 8,
+    "bankWrites": 0,
+    "taxonomyWrites": 0,
+    "quizOrTestWrites": 0
+  },
+  "checks": {
+    "unifiedHTMLChapters": 127,
+    "mainMaps": 29,
+    "skillPages": 98,
+    "brokenAnchors": 0,
+    "missingAssets": 0,
+    "images": 153,
+    "imagesWithAlt": 153,
+    "exactDuplicatesAgainstVisible98": 0,
+    "unifiedPDFPages": 239,
+    "unifiedPDFArabicPages": 239,
+    "baselineAtlasPages": 29,
+    "mapAddendumPages": 8,
+    "diagramSupplementPages": 8,
+    "epubChapters": 127,
+    "epubCRC": "PASS",
+    "epubXMLFiles": 130,
+    "epubXMLErrors": 0,
+    "epubMissingImages": 0,
+    "zipBytes": 71744436,
+    "zipEntries": 394,
+    "zipCRC": "PASS",
+    "manifestFiles": 393,
+    "manifestHashes": "PASS",
+    "archiveCoverage": "PASS"
+  },
+  "notRun": [
+    "independent biology subject-matter reviewer sign-off",
+    "semantic dedupe against protected 2,832-question bank",
+    "PDF/UA certification",
+    "Arabic screen-reader test",
+    "official EPUBCheck",
+    "platform import dry-run",
+    "Drive live read/upload"
+  ],
+  "protectedAssets": {
+    "taxonomy": "unchanged",
+    "questionBank": "unchanged",
+    "answerKeys": "unchanged",
+    "learningQuizzes": "unchanged",
+    "standardTests": "unchanged",
+    "commercialPolicy": "unchanged",
+    "studentData": "unchanged"
+  },
+  "remote": {
+    "mainModified": false,
+    "mergeToMain": false,
+    "pullRequest": false,
+    "productionImport": false,
+    "publication": false
+  },
+  "drive": {
+    "status": "NOT_READ",
+    "error": "Folder URL returned inaccessible/internal error; no Drive connector is exposed."
+  },
+  "localPackage": {
+    "file": "BIO26_R524_8_DEEP_DIVES_REVIEW_ONLY.zip",
+    "sha256": "f12914553601c5e284b0281976c5ca0ef7ee8921acac4e2ff6556697503c2323",
+    "bytes": 71744436,
+    "manifestSHA256": "1469735628b30debc6e26e39d927fa1adf63b3531faee747df541c1488218eab"
+  }
+}
