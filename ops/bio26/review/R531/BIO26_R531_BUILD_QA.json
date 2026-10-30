@@ -1,0 +1,78 @@
+{
+  "project": "BIO26",
+  "round": "R531",
+  "status": "REVIEW_ONLY",
+  "frozen": {
+    "mainMaps": 29,
+    "subSkills": 98,
+    "canonicalQuestions": 2832,
+    "sourceOccurrences": 2835,
+    "learningQuizzes": 147,
+    "standardTests": 71
+  },
+  "preflight": {
+    "taxonomyBlobSHA": "a2ee6daf6279354db6bce723c8110c9d966e3370",
+    "rangeMapBlobSHA": "9e38eb5b9d2adc8750d135d2f1c3410b456177cd",
+    "previousCoverage": 64,
+    "remainingBefore": 34,
+    "remainingAfter": 26,
+    "selectedCanonicalRangeItems": 129,
+    "aliasExclusionLessons": [
+      "BIO26-L10",
+      "BIO26-L35",
+      "BIO26-L40"
+    ],
+    "directContextSamples": [
+      "BIO26-L36",
+      "BIO26-L38"
+    ],
+    "fullBaseAIContextReread": false
+  },
+  "production": {
+    "newSkills": 8,
+    "questions": 16,
+    "diagrams": 8,
+    "uniqueMapsUpdated": 7,
+    "skillPhysicalPages": 32,
+    "unifiedHTMLArticles": 127,
+    "unifiedPDFPages": 341,
+    "atlasPDFPages": 92
+  },
+  "questionAudit": {
+    "visiblePriorStems": 390,
+    "maxLexicalSimilarity": 0.552,
+    "pairsAtOrAbove0_65": 0,
+    "fullSemanticBankScan": false,
+    "allQuestionsNotBankItem": true
+  },
+  "epub": {
+    "zipCRC": "PASS",
+    "xmlParseErrors": 0,
+    "missingImageReferences": 0
+  },
+  "drive": {
+    "status": "NOT_READ",
+    "error": "Internal Error; no Drive connector exposed"
+  },
+  "protectedState": {
+    "taxonomy": false,
+    "bank": false,
+    "answerKeys": false,
+    "AIContext": false,
+    "quizzes": false,
+    "tests": false,
+    "commercialPolicy": false,
+    "studentData": false,
+    "mainMerged": false,
+    "productionImport": false,
+    "published": false
+  },
+  "openGates": [
+    "independent biology review",
+    "full-bank semantic dedupe",
+    "PDF/UA and Arabic screen-reader test",
+    "official EPUBCheck",
+    "authorized non-production import dry-run",
+    "Drive read/upload"
+  ]
+}
