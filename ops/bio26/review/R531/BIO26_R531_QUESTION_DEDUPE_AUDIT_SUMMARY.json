@@ -1,0 +1,8 @@
+{
+  "visiblePriorStemsCompared": 390,
+  "newEditorialQuestions": 16,
+  "maxLexicalSimilarity": 0.552,
+  "pairsAtOrAbove0_65": 0,
+  "semanticFullBankScan": false,
+  "scopeNote": "Lexical comparison against visible prior editorial registers and baseline R530 skill-page questions only; not a semantic scan of all 2,832 protected questions."
+}
