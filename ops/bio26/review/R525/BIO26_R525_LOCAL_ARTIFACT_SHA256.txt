@@ -1,6 +1,11 @@
 Local review package: BIO26_R525_8_HIGH_PRIORITY_DEEP_DIVES_REVIEW_ONLY.zip
-Bytes: 103784524
-SHA-256: 11aca4ddd19d51e95d325e4ba2f125395d57b585d9a7d01ed1754c0dcc45e7cf
+Bytes: 103792080
+SHA-256: 12ac7baf94934693c5e4834f79392f6a06c0c9d61a3e6ff321f987653aac9d44
+Manifest: BIO26_R525_MANIFEST.json
+Manifest bytes: 78401
+Manifest SHA-256: eefb0add820f72fb6e494a8a1353339cab93fb337e5187347a85ab32c7fb5261
+Manifest file hashes: PASS (450 files)
+Archive CRC: PASS
+Archive coverage: PASS
 Taxonomy blob SHA: a2ee6daf6279354db6bce723c8110c9d966e3370
-Status: REVIEW_ONLY; local package hash verified after archive CRC and manifest SHA-256 checks.
-The ZIP itself is retained as a local artifact; this text record does not imply binary upload to GitHub or Drive.
+Status: REVIEW_ONLY. Binary package remains a local conversation artifact; this record does not imply upload to GitHub or Drive.
