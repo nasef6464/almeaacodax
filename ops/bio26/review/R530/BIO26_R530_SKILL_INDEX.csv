@@ -1,0 +1,9 @@
+skill_id,main_map,lesson,name_ar,source_occurrences,canonical_items,source_ranges,status
+BIO26-S20-03,BIO26-M20,BIO26-L32,النواة والرايبوسومات والهيكل الخلوي والأهداب والأسواط,21,L32 Q30–Q45; Q96–Q99; Q106,21,L32 Q30–Q45; Q96–Q99; Q106,NEW_DEEP_DIVE_REVIEW_ONLY
+BIO26-S25-01,BIO26-M25,BIO26-L39,السيادة غير التامة والمشتركة والجينات المتعددة المتقابلة,21,L39 Q13–Q17; Q89–Q104,21,L39 Q13–Q17; Q89–Q104,NEW_DEEP_DIVE_REVIEW_ONLY
+BIO26-S11-01,BIO26-M11,BIO26-L16,النباتات اللاوعائية والوعائية اللابذرية وتعاقب الأجيال,20,L16 Q1–Q13; Q22–Q28,20,L16 Q1–Q13; Q22–Q28,NEW_DEEP_DIVE_REVIEW_ONLY
+BIO26-S11-02,BIO26-M11,BIO26-L16,النباتات البذرية ومعراة ومغطاة البذور وتكيفاتها,20,L16 Q14–Q21; Q29–Q40,20,L16 Q14–Q21; Q29–Q40,NEW_DEEP_DIVE_REVIEW_ONLY
+BIO26-S21-02,BIO26-M21,BIO26-L33,البروتينات والأحماض الأمينية والإنزيمات,19,L33 Q9–Q14; Q26–Q38,19,L33 Q9–Q14; Q26–Q38,NEW_DEEP_DIVE_REVIEW_ONLY
+BIO26-S24-04,BIO26-M24,BIO26-L38,مصادر التنوع الوراثي وتعدد المجموعة الكروموسومية,19,L38 Q21–Q35; Q50–Q53,19,L38 Q21–Q35; Q50–Q53,NEW_DEEP_DIVE_REVIEW_ONLY
+BIO26-S01-02,BIO26-M01,BIO26-L01,خصائص الحياة والاتزان الداخلي والتكيف,18,L01 Q3–Q5; Q22; Q24–Q25; Q27–Q28; Q30; Q37–Q45,18,L01 Q3–Q5; Q22; Q24–Q25; Q27–Q28; Q30; Q37–Q45,NEW_DEEP_DIVE_REVIEW_ONLY
+BIO26-S02-03,BIO26-M02,BIO26-L02,فوق الممالك والممالك الست وخصائصها,18,L02 Q17–Q26; Q40–Q47,18,L02 Q17–Q26; Q40–Q47,NEW_DEEP_DIVE_REVIEW_ONLY
