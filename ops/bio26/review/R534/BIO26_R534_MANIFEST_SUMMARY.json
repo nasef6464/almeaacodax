@@ -1,0 +1,18 @@
+{
+  "project": "BIO26",
+  "round": "R534",
+  "status": "REVIEW_ONLY",
+  "file_count_excluding_manifest_and_summary": 385,
+  "total_bytes_excluding_manifest_and_summary": 73148795,
+  "skills": 10,
+  "source_occurrences": 63,
+  "questions": 20,
+  "diagrams": 10,
+  "maps_updated": 9,
+  "unified_html_articles": 127,
+  "epub_xml_errors": 0,
+  "epub_missing_images": 0,
+  "epub_crc": "PASS",
+  "manifest_sha256": "dd189002744100ee52003532989dd5549a5193109cfcabdabdef19239fd5a47d",
+  "archive_sha256": "5fccf076b0192e041009d8bf27eded9e9b6338a4573f3bcea50012538426b80d"
+}
