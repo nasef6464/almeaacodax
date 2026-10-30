@@ -1,0 +1,40 @@
+{
+  "round": "R532",
+  "result": "PASS_WITH_OPEN_REVIEW_GATES",
+  "checks": {
+    "taxonomyCountsPreserved": true,
+    "sourceRangeItems": 104,
+    "aliasIntersections": 0,
+    "selectedSkillIdsUnique": true,
+    "editorialQuestionIds": 16,
+    "questionsMarkedNotBankItem": true,
+    "diagramHTML": 8,
+    "diagramPNG": 8,
+    "diagramPDF": 8,
+    "skillHTML": 8,
+    "skillPDF": 8,
+    "skillPagePNGs": 32,
+    "mapAddendumContentPages": 8,
+    "mapAddendumPDFPages": 9,
+    "workingUnifiedHTMLArticles": 127,
+    "workingUnifiedMaps": 29,
+    "workingUnifiedSkills": 98,
+    "workingUnifiedPDFPages": 359,
+    "workingEPUBCRC": "PASS",
+    "workingEPUBXMLParseErrors": 0,
+    "workingEPUBMissingImages": 0,
+    "driveRead": false,
+    "productionImport": false,
+    "published": false,
+    "mainMerged": false
+  },
+  "manualReviewRequired": [
+    "incorporate R531 binary package into unified library",
+    "independent biology reviewer sign-off",
+    "full-bank semantic comparison against 2,832 canonical questions/images",
+    "PDF/UA and Arabic screen-reader testing",
+    "official EPUBCheck",
+    "authorized non-production import dry-run",
+    "Google Drive read/upload"
+  ]
+}
