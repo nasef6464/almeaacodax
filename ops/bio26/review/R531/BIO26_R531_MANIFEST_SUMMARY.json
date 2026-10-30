@@ -1,0 +1,21 @@
+{
+  "round": "R531",
+  "status": "REVIEW_ONLY",
+  "fileCount": 102,
+  "totalBytes": 0,
+  "skills": 8,
+  "sourceOccurrences": 129,
+  "questions": 16,
+  "diagrams": 8,
+  "mapsUpdated": 7,
+  "unifiedHTMLArticles": 127,
+  "unifiedPDFPages": 341,
+  "atlasPDFPages": 92,
+  "epubEntries": 354,
+  "maxVisibleLexicalSimilarity": 0.552,
+  "pairsAtOrAbove065": 0,
+  "taxonomySHA": "a2ee6daf6279354db6bce723c8110c9d966e3370",
+  "githubBranch": "review/bio26-r531-eight-deep-dives-20261030",
+  "drive": "NOT_READ",
+  "production": "NOT_IMPORTED"
+}
