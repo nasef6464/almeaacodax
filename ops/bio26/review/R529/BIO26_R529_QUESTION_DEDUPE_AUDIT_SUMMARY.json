@@ -1,0 +1,11 @@
+{
+  "round": "R529",
+  "method": "SequenceMatcher on normalized visible editorial MCQ stems from R528 unified HTML; token Jaccard secondary",
+  "priorVisibleMCQStems": 49,
+  "newQuestions": 16,
+  "threshold": 0.65,
+  "maxSequenceSimilarity": 0.484,
+  "pairsAtOrAboveThreshold": 0,
+  "fullBankSemanticDedupe": "NOT_CLAIMED",
+  "note": "The base AI-context JSON fetch returned empty content in this connector response. Frozen range map, alias index, existing-bank audit and dedupe report were checked; L42 shard and skill-specific search excerpts provided partial concept cross-checks."
+}
