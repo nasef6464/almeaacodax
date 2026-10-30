@@ -1,0 +1,12 @@
+artifact,format,localPath,scope,status
+Unified library,HTML,books/BIO26_R529_UNIFIED_LIBRARY_EDITABLE.html,127 chapters: 29 maps + 98 skills,REVIEW_ONLY
+Unified library,PDF,books/BIO26_R529_UNIFIED_LIBRARY_REVIEW_ONLY.pdf,291 pages,REVIEW_ONLY
+Unified library,EPUB,books/BIO26_R529_UNIFIED_LIBRARY_REVIEW_ONLY.epub,127 chapters; XML validated,REVIEW_ONLY
+Main-map atlas,HTML,books/BIO26_R529_29_MAIN_MAPS_ATLAS_EDITABLE.html,29 maps; 8 nodes updated,REVIEW_ONLY
+Main-map atlas,PDF,books/BIO26_R529_29_MAIN_MAPS_ATLAS_WITH_R529_ADDENDUM_REVIEW_ONLY.pdf,R528 atlas + 15-page R529 addendum,REVIEW_ONLY
+Skill supplement,HTML,books/BIO26_R529_8_SKILL_DEEP_DIVES_SUPPLEMENT_EDITABLE.html,8 skills,REVIEW_ONLY
+Skill supplement,PDF,books/BIO26_R529_8_SKILL_DEEP_DIVES_SUPPLEMENT_REVIEW_ONLY.pdf,16 pages,REVIEW_ONLY
+Map addendum,HTML,books/BIO26_R529_8_UPDATED_MAPS_ADDENDUM_EDITABLE.html,8 maps,REVIEW_ONLY
+Map addendum,PDF,books/BIO26_R529_8_UPDATED_MAPS_ADDENDUM_REVIEW_ONLY.pdf,15 pages,REVIEW_ONLY
+Contact sheet,JPG,previews/BIO26_R529_8_DIAGRAMS_CONTACT.jpg,8 original diagrams,REVIEW_ONLY
+Map contact sheet,JPG,previews/BIO26_R529_8_MAPS_CONTACT.jpg,8 updated maps,REVIEW_ONLY
