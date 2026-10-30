@@ -1,0 +1,9 @@
+{
+  "scope": "visible prior editorial question stems in R529 unified HTML only; not protected 2,832 canonical question images",
+  "newQuestions": 16,
+  "comparedAgainstVisibleStems": 104,
+  "exactDuplicateCount": 0,
+  "pairsAtOrAbove065": 0,
+  "maximumLexicalSimilarity": 0.543,
+  "fullBankSemanticDedupe": "NOT_RUN"
+}
