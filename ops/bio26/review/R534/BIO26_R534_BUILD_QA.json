@@ -1,0 +1,96 @@
+{
+  "round": "R534",
+  "status": "REVIEW_ONLY",
+  "taxonomy": {
+    "maps": 29,
+    "skills": 98,
+    "canonical_questions": 2832,
+    "source_occurrences": 2835,
+    "quizzes": 147,
+    "tests": 71
+  },
+  "coverage": {
+    "prior_unique": 88,
+    "new": 10,
+    "after": 98,
+    "remaining": 0,
+    "overlap": []
+  },
+  "production": {
+    "skills": 10,
+    "skill_page_pngs": 40,
+    "skill_html": 10,
+    "skill_pdf": 10,
+    "diagrams": 10,
+    "diagram_svg": 10,
+    "diagram_png": 10,
+    "diagram_pdf": 10,
+    "questions": 20,
+    "maps_updated": 9,
+    "map_nodes": 10,
+    "source_occurrences": 63,
+    "range_rows": 19
+  },
+  "html": {
+    "articles": 127,
+    "unique_ids": 127,
+    "maps": 29,
+    "skills": 98,
+    "image_refs": 130,
+    "missing_images": 0,
+    "missing_alt": 0
+  },
+  "epub": {
+    "zip_crc": "PASS",
+    "xhtml_xml_docs": 128,
+    "xml_errors": 0,
+    "image_refs": 140,
+    "missing_images": 0,
+    "missing_alt": 0,
+    "new_diagram_manifest_items": 10,
+    "manifest_duplicate_ids": 0
+  },
+  "questions": {
+    "status": "NOT_BANK_ITEM",
+    "answer_distribution": {
+      "A": 5,
+      "B": 5,
+      "C": 5,
+      "D": 5
+    },
+    "max_internal_lexical_similarity": 0.49710982658959535,
+    "prior_local_stems_compared": 176,
+    "max_similarity_to_prior_local_stems": 0.6,
+    "pairs_ge_0_65": 0
+  },
+  "pdf_pages": {
+    "skill_supplement": 41,
+    "map_addendum": 10,
+    "unified_appendix": 450,
+    "atlas_appendix": 118
+  },
+  "source_ranges": {
+    "rows": 19,
+    "items": 63,
+    "coordinate_duplicates": 0,
+    "alias_intersections": 0
+  },
+  "protected_state": {
+    "taxonomy_changed": false,
+    "question_bank_changed": false,
+    "answer_keys_changed": false,
+    "quizzes_changed": false,
+    "tests_changed": false,
+    "commercial_policy_changed": false,
+    "student_data_changed": false,
+    "production_import": false,
+    "published": false,
+    "main_merged": false
+  },
+  "limitations": [
+    "No semantic dedupe against all 2,832 canonical stems and images.",
+    "R531 binary integration pending.",
+    "PDF/UA, Arabic screen-reader and official EPUBCheck not run.",
+    "Drive read/upload not completed."
+  ]
+}
