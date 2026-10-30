@@ -1,0 +1,109 @@
+{
+  "project": "BIO26",
+  "round": "R532",
+  "status": "REVIEW_ONLY",
+  "frozen": {
+    "mainMaps": 29,
+    "subSkills": 98,
+    "canonicalQuestions": 2832,
+    "sourceOccurrences": 2835,
+    "learningQuizzes": 147,
+    "standardTests": 71
+  },
+  "preflight": {
+    "taxonomySHA": "a2ee6daf6279354db6bce723c8110c9d966e3370",
+    "rangeMapSHA": "9e38eb5b9d2adc8750d135d2f1c3410b456177cd",
+    "coverageThroughR531": 72,
+    "remainingBefore": 26,
+    "remainingAfter": 18,
+    "selectedCanonicalRangeItems": 104,
+    "directAIContextItems": 41,
+    "baseAIContextDirectRead": false,
+    "aliasLessons": [
+      "BIO26-L10",
+      "BIO26-L35",
+      "BIO26-L40"
+    ]
+  },
+  "production": {
+    "newSkills": 8,
+    "editorialQuestions": 16,
+    "originalDiagrams": 8,
+    "uniqueMapsUpdated": 8,
+    "skillHTML": 8,
+    "skillPDF": 8,
+    "skillPagePNGs": 32,
+    "diagramHTML": 8,
+    "diagramPNG": 8,
+    "diagramPDF": 8,
+    "skillSupplementPages": 33,
+    "skillContentSheets": 32,
+    "mapAddendumPDFPages": 9,
+    "mapAddendumContentPages": 8,
+    "workingUnifiedHTMLArticles": 127,
+    "workingUnifiedMaps": 29,
+    "workingUnifiedSkills": 98,
+    "workingUnifiedPDFPages": 359,
+    "workingAtlasPDFPages": 101
+  },
+  "questionAudit": {
+    "uniqueIds": true,
+    "allNotBankItem": true,
+    "answerDistribution": {
+      "A": 4,
+      "B": 4,
+      "C": 4,
+      "D": 4
+    },
+    "maxWithinBatchLexicalSimilarity": 0.481,
+    "fullBankSemanticScan": false
+  },
+  "epub": {
+    "crc": "PASS",
+    "entries": 357,
+    "xmlFiles": 130,
+    "xmlParseErrors": 0,
+    "missingImageReferences": 0
+  },
+  "pdfChecks": {
+    "skill supplement": {
+      "pages": 33,
+      "pagesWithArabic": 33
+    },
+    "map addendum": {
+      "pages": 9,
+      "pagesWithArabic": 9
+    },
+    "working unified": {
+      "pages": 359,
+      "pagesWithArabic": 359
+    },
+    "working atlas": {
+      "pages": 101,
+      "pagesWithArabic": 101
+    }
+  },
+  "workingLibraryCaveat": "R530 binary baseline plus R532 additions. R531 binary pages remain pending because the R531 package is not locally available and its GitHub branch contains review metadata only.",
+  "protectedState": {
+    "taxonomyChanged": false,
+    "canonicalBankChanged": false,
+    "answerKeysChanged": false,
+    "AIContextChanged": false,
+    "learningQuizzesChanged": false,
+    "standardTestsChanged": false,
+    "commercialPolicyChanged": false,
+    "studentDataChanged": false,
+    "mainMerged": false,
+    "productionImport": false,
+    "published": false
+  },
+  "openGates": [
+    "incorporate R531 binary package into unified library",
+    "independent biology reviewer sign-off",
+    "full-bank semantic comparison against 2,832 canonical questions/images",
+    "PDF/UA and Arabic screen-reader testing",
+    "official EPUBCheck",
+    "authorized non-production import dry-run",
+    "Google Drive read/upload"
+  ]
+}
