@@ -1,0 +1,150 @@
+{
+  "project": "BIO26",
+  "round": "R526",
+  "status": "REVIEW_ONLY",
+  "baseRound": "R525",
+  "taxonomyBlobSHA": "a2ee6daf6279354db6bce723c8110c9d966e3370",
+  "frozen": {
+    "mainAxes": 29,
+    "subskills": 98,
+    "canonicalQuestions": 2832,
+    "sourceOccurrences": 2835,
+    "learningQuizzes": 147,
+    "standardTests": 71
+  },
+  "selection": {
+    "totalSourceOccurrences": 351,
+    "selected": [
+      {
+        "skill": "BIO26-S13-03",
+        "mainMap": "BIO26-M13",
+        "occurrences": 51
+      },
+      {
+        "skill": "BIO26-S20-02",
+        "mainMap": "BIO26-M20",
+        "occurrences": 50
+      },
+      {
+        "skill": "BIO26-S17-02",
+        "mainMap": "BIO26-M17",
+        "occurrences": 49
+      },
+      {
+        "skill": "BIO26-S05-01",
+        "mainMap": "BIO26-M05",
+        "occurrences": 47
+      },
+      {
+        "skill": "BIO26-S22-03",
+        "mainMap": "BIO26-M22",
+        "occurrences": 43
+      },
+      {
+        "skill": "BIO26-S14-02",
+        "mainMap": "BIO26-M14",
+        "occurrences": 38
+      },
+      {
+        "skill": "BIO26-S15-04",
+        "mainMap": "BIO26-M15",
+        "occurrences": 38
+      },
+      {
+        "skill": "BIO26-S05-02",
+        "mainMap": "BIO26-M05",
+        "occurrences": 35
+      }
+    ]
+  },
+  "newWork": {
+    "deepenedSkills": 8,
+    "updatedMainMaps": 7,
+    "updatedMapNodes": 8,
+    "originalDiagrams": 8,
+    "originalEditorialQuestions": 16,
+    "bankWrites": 0,
+    "taxonomyWrites": 0,
+    "quizOrTestWrites": 0
+  },
+  "coverage": {
+    "unifiedChapters": 127,
+    "mainMaps": 29,
+    "subskillPages": 98
+  },
+  "html": {
+    "missingLocalAssets": 0,
+    "brokenInternalAnchors": 0,
+    "images": 141,
+    "imagesWithAlt": 141
+  },
+  "questionDedup": {
+    "newStems": 16,
+    "otherSkillPagesChecked": 90,
+    "questionLikeParagraphsCompared": 249,
+    "exactMatchesAgainstOtherVisibleSkillPages": 0,
+    "lexicalSimilarityAtOrAbove0_78": 0,
+    "semanticComparisonAgainstProtected2832Bank": "NOT RUN"
+  },
+  "pdf": {
+    "unifiedLibrary": {
+      "pages": 249,
+      "pagesWithArabic": 249
+    },
+    "mainMapAtlas": {
+      "pages": 37,
+      "pagesWithArabic": 37
+    },
+    "updatedMapAddendum": {
+      "pages": 13,
+      "pagesWithArabic": 13
+    },
+    "skillSupplement": {
+      "pages": 32,
+      "pagesWithArabic": 32
+    }
+  },
+  "epub": {
+    "zipTest": "PASS",
+    "xmlErrors": 0,
+    "chapters": 127,
+    "missingImages": 0,
+    "mimetypeFirst": true
+  },
+  "package": {
+    "zipBytes": 122937268,
+    "zipEntries": 500,
+    "zipCRC": "PASS",
+    "manifestFiles": 499,
+    "manifestVerified": 499,
+    "manifestFailures": 0
+  },
+  "protectedAssets": {
+    "taxonomy": "unchanged",
+    "questionBank": "unchanged",
+    "answerKeys": "unchanged",
+    "learningQuizzes": "unchanged",
+    "standardTests": "unchanged",
+    "commercialPolicy": "unchanged",
+    "studentData": "unchanged"
+  },
+  "remote": {
+    "mainModified": false,
+    "mergeToMain": false,
+    "pullRequest": false,
+    "productionImport": false,
+    "publication": false
+  },
+  "drive": {
+    "status": "NOT_READ",
+    "reason": "Direct folder open returned internal error; no Drive connector was exposed."
+  },
+  "outstanding": [
+    "Independent biology reviewer sign-off",
+    "Read-only semantic deduplication against all 2,832 protected questions",
+    "PDF/UA and Arabic screen-reader testing",
+    "Official EPUBCheck",
+    "Authorized non-production import dry-run",
+    "Live Drive read/upload"
+  ]
+}
