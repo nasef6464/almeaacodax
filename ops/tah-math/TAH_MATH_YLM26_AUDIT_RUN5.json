@@ -1,0 +1,106 @@
+{
+  "project": "TAH-MATH",
+  "bank": "YLM26",
+  "sourceCollection": "questions_backup_ylm26_326_post_finalqa_pre_approval_20261001",
+  "status": "IN_PROGRESS",
+  "baseline": {
+    "_id": null,
+    "total": 326,
+    "missingSkill": 0,
+    "missingExplanation": 0,
+    "missingHint": 0,
+    "missingStrategy": 0,
+    "missingAi": 0,
+    "missingHash": 0,
+    "missingAnswer": 0,
+    "medium": 326,
+    "easy": 0,
+    "hard": 0
+  },
+  "conclusions": {
+    "structuralCompleteness": "PASS",
+    "difficultyAudit": "FAIL",
+    "difficultyReason": "326/326 are Medium; this is a placeholder-style distribution, not a valid pedagogical review.",
+    "pageVsSkillCandidates": 5,
+    "confirmedRemaps": 3,
+    "confirmedKeeps": 2
+  },
+  "anomalyTriage": [
+    {
+      "questionCode": "TAH-MATH-YLM26-P013-Q12",
+      "sourcePage": 13,
+      "old": {
+        "skillId": "skill_tah_math_01",
+        "subSkillId": "sub_tah_math_01_02"
+      },
+      "decision": "REMAP",
+      "new": {
+        "skillId": "skill_tah_math_03",
+        "subSkillId": "sub_tah_math_03_03"
+      },
+      "evidence": "Source page 13 is inside the triangle lesson and the item is indirect proof in the triangle-inequalities block; sub_tah_math_03_03 explicitly includes triangle inequalities."
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P016-Q10",
+      "sourcePage": 16,
+      "old": {
+        "skillId": "skill_tah_math_03",
+        "subSkillId": "sub_tah_math_03_01"
+      },
+      "decision": "REMAP",
+      "new": {
+        "skillId": "skill_tah_math_04",
+        "subSkillId": "sub_tah_math_04_02"
+      },
+      "evidence": "Source page 16 is quadrilaterals/coordinate proof; the item determines a coordinate using a congruent isosceles-trapezoid style coordinate setup. sub_tah_math_04_02 includes quadrilateral properties and coordinate proof."
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P050-Q02",
+      "sourcePage": 50,
+      "old": {
+        "skillId": "skill_tah_math_18",
+        "subSkillId": "sub_tah_math_18_01"
+      },
+      "decision": "REMAP",
+      "new": {
+        "skillId": "skill_tah_math_15",
+        "subSkillId": "sub_tah_math_15_02"
+      },
+      "evidence": "Source page 50 is Calculus of Trigonometry, and the item simplifies sin(theta)*cot(theta) using reciprocal/quotient trig ratios. sub_tah_math_15_02 covers sin/cos/tan and reciprocals."
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P063-Q20",
+      "sourcePage": 63,
+      "old": {
+        "skillId": "skill_tah_math_11",
+        "subSkillId": "sub_tah_math_11_02"
+      },
+      "decision": "KEEP",
+      "new": {
+        "skillId": "skill_tah_math_11",
+        "subSkillId": "sub_tah_math_11_02"
+      },
+      "evidence": "Although the page belongs to the broader Analysis of Functions section, the actual item asks for the inverse of a radical function with domain restriction. Existing inverse-function subskill is mathematically precise; page alone must not force a remap."
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P086-Q06",
+      "sourcePage": 86,
+      "old": {
+        "skillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_04"
+      },
+      "decision": "KEEP",
+      "new": {
+        "skillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_04"
+      },
+      "evidence": "The actual source block on page 86 is probability and the question asks conditional selection probability. Existing compound/conditional probability subskill is correct despite neighboring statistics content on the same page."
+    }
+  ],
+  "next": [
+    "Generate full 326-row deterministic review manifest.",
+    "Reclassify every question easy/medium/hard by source question complexity, not bulk defaults.",
+    "Fill whyCorrect/whyOthersWrong/commonMistakes/foundationReference/fingerprints and optional fast/mental/elimination methods where applicable.",
+    "Only then apply production mutation with rollback manifest."
+  ]
+}

@@ -1,0 +1,1309 @@
+{
+  "run": "RUN28",
+  "bank": "YLM26",
+  "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+  "rowsCount": 20,
+  "wrongOptionReasonsCount": 60,
+  "fullPedagogyFinalApproved": 0,
+  "productionMutation": false,
+  "rows": [
+    {
+      "questionCode": "TAH-MATH-YLM26-P034-Q01",
+      "source": {
+        "sourceItemId": "YLM26-PDF033-P034-N01",
+        "pdfPageIndex": 33,
+        "printedPageNumber": 34,
+        "printedQuestionNumber": 1,
+        "imageHash": "ea41f5003f18ba6f6a93f223e1f76e71907169f08571ddd67d6e1ffcf88e5b3c",
+        "imageVersion": 2
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_10",
+        "skillName": "المعادلات التربيعية وكثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_03",
+        "subSkillName": "العمليات على كثيرات الحدود والتحليل"
+      },
+      "foundationReference": {
+        "lessonNumber": 14,
+        "lessonTitle": "كثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_03",
+        "subSkillName": "العمليات على كثيرات الحدود والتحليل"
+      },
+      "difficulty": "easy",
+      "questionText": "أي وحيدات الحد الآتية درجتها تساوي درجة وحيدة الحد 7n³m²؟",
+      "options": {
+        "A": "7nm",
+        "B": "3nm^4",
+        "C": "2n^5m",
+        "D": "5n^3m"
+      },
+      "answerLetter": "B",
+      "whyCorrect": "درجة 7n³m² هي 3+2=5. وحيدة الحد 3nm⁴ درجتها 1+4=5؛ لذا الاختيار الصحيح B.",
+      "whyOthersWrong": {
+        "A": "درجته 2 لا 5",
+        "C": "درجته 6 لا 5",
+        "D": "درجته 4 لا 5"
+      },
+      "hint": "درجة وحيدة الحد تساوي مجموع أسس المتغيرات.",
+      "solvingStrategy": "مقارنة درجات وحيدات الحد.",
+      "commonMistakes": [
+        "احتساب المعامل العددي ضمن الدرجة أو نسيان أس m"
+      ],
+      "aiContext": {
+        "readableText": "أي وحيدات الحد الآتية درجتها تساوي درجة وحيدة الحد 7n³m²؟",
+        "speechText": "أي وحيدات الحد الآتية درجتها تساوي درجة وحيدة الحد 7n³m²؟",
+        "visualDescription": "سؤال عن درجة وحيدة الحد 7n³m² ومقارنتها بأربع وحيدات حد.",
+        "concepts": [
+          "كثيرات الحدود",
+          "مقارنة درجات وحيدات الحد."
+        ],
+        "requiredData": [
+          "أي وحيدات الحد الآتية درجتها تساوي درجة وحيدة الحد 7n³m²؟",
+          "A: 7nm",
+          "B: 3nm^4",
+          "C: 2n^5m",
+          "D: 5n^3m"
+        ]
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF033-P034-N01|ea41f5003f18ba6f6a93f223e1f76e71907169f08571ddd67d6e1ffcf88e5b3c",
+      "teachingFingerprintCandidate": "sub_tah_math_10_03|مقارنة درجات وحيدات الحد.",
+      "reviewState": "SOURCE_BACKED_PEDAGOGY_CANDIDATE_NOT_FINAL",
+      "fingerprintsNeedRehashWithActualOptions": true,
+      "productionImageParity": "NOT_TESTED",
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P034-Q02",
+      "source": {
+        "sourceItemId": "YLM26-PDF033-P034-N02",
+        "pdfPageIndex": 33,
+        "printedPageNumber": 34,
+        "printedQuestionNumber": 2,
+        "imageHash": "ef1d13aa3b5a29e389f02afc5ba20329676074dc657066dd2053980a03db9a56",
+        "imageVersion": 2
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_10",
+        "skillName": "المعادلات التربيعية وكثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_03",
+        "subSkillName": "العمليات على كثيرات الحدود والتحليل"
+      },
+      "foundationReference": {
+        "lessonNumber": 14,
+        "lessonTitle": "كثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_03",
+        "subSkillName": "العمليات على كثيرات الحدود والتحليل"
+      },
+      "difficulty": "easy",
+      "questionText": "بسّط المقدار (2a²b²)/(6ba⁵).",
+      "options": {
+        "A": "3a^7b^4",
+        "B": "b/(3a^3)",
+        "C": "4b^5/a^6",
+        "D": "3a^7b^2"
+      },
+      "answerLetter": "B",
+      "whyCorrect": "نبسّط المعامل 2/6=1/3، وb²/b=b، وa²/a⁵=1/a³. إذن الناتج b/(3a³)، فالاختيار الصحيح B.",
+      "whyOthersWrong": {
+        "A": "جمع الأسس بدل طرحها",
+        "C": "لم يختزل المعاملات والأسس",
+        "D": "أسس المتغيرات زادت بدل أن تختزل"
+      },
+      "hint": "اطرح الأسس عند قسمة قوى لها الأساس نفسه.",
+      "solvingStrategy": "تبسيط وحيدات حد باستخدام خصائص الأسس.",
+      "commonMistakes": [
+        "قلب طرح الأسس في القسمة"
+      ],
+      "aiContext": {
+        "readableText": "بسّط المقدار (2a²b²)/(6ba⁵).",
+        "speechText": "بسّط المقدار (2a²b²)/(6ba⁵).",
+        "visualDescription": "كسر جبري بسطه 2a²b² ومقامه 6ba⁵.",
+        "concepts": [
+          "كثيرات الحدود",
+          "تبسيط وحيدات حد باستخدام خصائص الأسس."
+        ],
+        "requiredData": [
+          "بسّط المقدار (2a²b²)/(6ba⁵).",
+          "A: 3a^7b^4",
+          "B: b/(3a^3)",
+          "C: 4b^5/a^6",
+          "D: 3a^7b^2"
+        ]
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF033-P034-N02|ef1d13aa3b5a29e389f02afc5ba20329676074dc657066dd2053980a03db9a56",
+      "teachingFingerprintCandidate": "sub_tah_math_10_03|تبسيط وحيدات حد باستخدام خصائص الأسس.",
+      "reviewState": "SOURCE_BACKED_PEDAGOGY_CANDIDATE_NOT_FINAL",
+      "fingerprintsNeedRehashWithActualOptions": true,
+      "productionImageParity": "NOT_TESTED",
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P034-Q03",
+      "source": {
+        "sourceItemId": "YLM26-PDF033-P034-N03",
+        "pdfPageIndex": 33,
+        "printedPageNumber": 34,
+        "printedQuestionNumber": 3,
+        "imageHash": "8e52ebf52e4e2eb1eff5c38cf71b9bb3071222754c6f9ab1178b4829e984f2c1",
+        "imageVersion": 2
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_10",
+        "skillName": "المعادلات التربيعية وكثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_03",
+        "subSkillName": "العمليات على كثيرات الحدود والتحليل"
+      },
+      "foundationReference": {
+        "lessonNumber": 14,
+        "lessonTitle": "كثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_03",
+        "subSkillName": "العمليات على كثيرات الحدود والتحليل"
+      },
+      "difficulty": "easy",
+      "questionText": "ما تبسيط العبارة -2a + 9d + 5a - 6d؟",
+      "options": {
+        "A": "6ad−11ad",
+        "B": "7a−15d",
+        "C": "−7a²+3d²",
+        "D": "3a+3d"
+      },
+      "answerLetter": "D",
+      "whyCorrect": "نجمع الحدود المتشابهة: -2a+5a=3a و9d-6d=3d، فيكون الناتج 3a+3d، فالاختيار الصحيح D.",
+      "whyOthersWrong": {
+        "A": "دمج الحدود المتشابهة في حاصل ضرب ad",
+        "B": "جمع معاملات حدود غير متشابهة",
+        "C": "تحويل الجمع إلى تربيع"
+      },
+      "hint": "اجمع معاملات الحدود المتشابهة لكل متغير.",
+      "solvingStrategy": "جمع وطرح حدود جبرية متشابهة.",
+      "commonMistakes": [
+        "خلط معاملات a وd"
+      ],
+      "aiContext": {
+        "readableText": "ما تبسيط العبارة -2a + 9d + 5a - 6d؟",
+        "speechText": "ما تبسيط العبارة -2a + 9d + 5a - 6d؟",
+        "visualDescription": "عبارة جبرية خطية في المتغيرين a وd.",
+        "concepts": [
+          "كثيرات الحدود",
+          "جمع وطرح حدود جبرية متشابهة."
+        ],
+        "requiredData": [
+          "ما تبسيط العبارة -2a + 9d + 5a - 6d؟",
+          "A: 6ad−11ad",
+          "B: 7a−15d",
+          "C: −7a²+3d²",
+          "D: 3a+3d"
+        ]
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF033-P034-N03|8e52ebf52e4e2eb1eff5c38cf71b9bb3071222754c6f9ab1178b4829e984f2c1",
+      "teachingFingerprintCandidate": "sub_tah_math_10_03|جمع وطرح حدود جبرية متشابهة.",
+      "reviewState": "SOURCE_BACKED_PEDAGOGY_CANDIDATE_NOT_FINAL",
+      "fingerprintsNeedRehashWithActualOptions": true,
+      "productionImageParity": "NOT_TESTED",
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P034-Q04",
+      "source": {
+        "sourceItemId": "YLM26-PDF033-P034-N04",
+        "pdfPageIndex": 33,
+        "printedPageNumber": 34,
+        "printedQuestionNumber": 4,
+        "imageHash": "4854dadf19aa6214498e57dba92cae569aaa93458e03211b50b31deeed659d0d",
+        "imageVersion": 2
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_10",
+        "skillName": "المعادلات التربيعية وكثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_03",
+        "subSkillName": "العمليات على كثيرات الحدود والتحليل"
+      },
+      "foundationReference": {
+        "lessonNumber": 14,
+        "lessonTitle": "كثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_03",
+        "subSkillName": "العمليات على كثيرات الحدود والتحليل"
+      },
+      "difficulty": "easy",
+      "questionText": "بسّط العبارة 2(x - 2x)(x + 2x).",
+      "options": {
+        "A": "2x^4−8x^4",
+        "B": "2x²−8x²",
+        "C": "2x^4+8x^4",
+        "D": "2x²+8x²"
+      },
+      "answerLetter": "B",
+      "whyCorrect": "x-2x=-x وx+2x=3x؛ إذن 2(-x)(3x)=-6x²، وهو يساوي 2x²-8x²، فالاختيار الصحيح B.",
+      "whyOthersWrong": {
+        "A": "يساوي −6x⁴ لا −6x²",
+        "C": "يساوي 10x⁴",
+        "D": "يساوي 10x² لا −6x²"
+      },
+      "hint": "بسّط كل قوس أولًا ثم اضرب.",
+      "solvingStrategy": "تبسيط حاصل ضرب حدود جبرية.",
+      "commonMistakes": [
+        "نسيان إشارة −x بعد تبسيط القوس"
+      ],
+      "aiContext": {
+        "readableText": "بسّط العبارة 2(x - 2x)(x + 2x).",
+        "speechText": "بسّط العبارة 2(x - 2x)(x + 2x).",
+        "visualDescription": "حاصل ضرب 2 في القوسين (x-2x) و(x+2x).",
+        "concepts": [
+          "كثيرات الحدود",
+          "تبسيط حاصل ضرب حدود جبرية."
+        ],
+        "requiredData": [
+          "بسّط العبارة 2(x - 2x)(x + 2x).",
+          "A: 2x^4−8x^4",
+          "B: 2x²−8x²",
+          "C: 2x^4+8x^4",
+          "D: 2x²+8x²"
+        ]
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF033-P034-N04|4854dadf19aa6214498e57dba92cae569aaa93458e03211b50b31deeed659d0d",
+      "teachingFingerprintCandidate": "sub_tah_math_10_03|تبسيط حاصل ضرب حدود جبرية.",
+      "reviewState": "SOURCE_BACKED_PEDAGOGY_CANDIDATE_NOT_FINAL",
+      "fingerprintsNeedRehashWithActualOptions": true,
+      "productionImageParity": "NOT_TESTED",
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P034-Q05",
+      "source": {
+        "sourceItemId": "YLM26-PDF033-P034-N05",
+        "pdfPageIndex": 33,
+        "printedPageNumber": 34,
+        "printedQuestionNumber": 5,
+        "imageHash": "564781062517f836483f2d2f4dbda72dba381b03c0784a8d1cc8b5f516d1dbd7",
+        "imageVersion": 2
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_10",
+        "skillName": "المعادلات التربيعية وكثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_03",
+        "subSkillName": "العمليات على كثيرات الحدود والتحليل"
+      },
+      "foundationReference": {
+        "lessonNumber": 14,
+        "lessonTitle": "كثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_03",
+        "subSkillName": "العمليات على كثيرات الحدود والتحليل"
+      },
+      "difficulty": "easy",
+      "questionText": "ما أبسط صورة للعبارة (4x²y²)/(5xy²) ÷ (2y)/(10xy)؟",
+      "options": {
+        "A": "(4/5)x",
+        "B": "4x²/y",
+        "C": "4x²",
+        "D": "4x²y^5"
+      },
+      "answerLetter": "C",
+      "whyCorrect": "الكسر الأول يساوي 4x/5، والثاني يساوي 1/(5x). القسمة تعني الضرب في المقلوب: (4x/5)×(5x)=4x²، فالاختيار الصحيح C.",
+      "whyOthersWrong": {
+        "A": "فقد عامل x",
+        "B": "أبقى y رغم اختزاله",
+        "D": "أبقى أس y غير موجود بعد الاختزال"
+      },
+      "hint": "بسّط كل كسر ثم اضرب في مقلوب الكسر الثاني.",
+      "solvingStrategy": "تبسيط قسمة كسور جبرية ووحيدات حد.",
+      "commonMistakes": [
+        "نسيان ضرب الكسر في مقلوب المقسوم عليه"
+      ],
+      "aiContext": {
+        "readableText": "ما أبسط صورة للعبارة (4x²y²)/(5xy²) ÷ (2y)/(10xy)؟",
+        "speechText": "ما أبسط صورة للعبارة (4x²y²)/(5xy²) ÷ (2y)/(10xy)؟",
+        "visualDescription": "قسمة كسرين جبريين يحتويان x وy.",
+        "concepts": [
+          "كثيرات الحدود",
+          "تبسيط قسمة كسور جبرية ووحيدات حد."
+        ],
+        "requiredData": [
+          "ما أبسط صورة للعبارة (4x²y²)/(5xy²) ÷ (2y)/(10xy)؟",
+          "A: (4/5)x",
+          "B: 4x²/y",
+          "C: 4x²",
+          "D: 4x²y^5"
+        ]
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF033-P034-N05|564781062517f836483f2d2f4dbda72dba381b03c0784a8d1cc8b5f516d1dbd7",
+      "teachingFingerprintCandidate": "sub_tah_math_10_03|تبسيط قسمة كسور جبرية ووحيدات حد.",
+      "reviewState": "SOURCE_BACKED_PEDAGOGY_CANDIDATE_NOT_FINAL",
+      "fingerprintsNeedRehashWithActualOptions": true,
+      "productionImageParity": "NOT_TESTED",
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P035-Q06",
+      "source": {
+        "sourceItemId": "YLM26-PDF034-P035-N06",
+        "pdfPageIndex": 34,
+        "printedPageNumber": 35,
+        "printedQuestionNumber": 6,
+        "imageHash": "341db30ede23886e34b95ba47d66c81fc9a918564e115f2e8252d04443cf89fb",
+        "imageVersion": 2
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_10",
+        "skillName": "المعادلات التربيعية وكثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_03",
+        "subSkillName": "العمليات على كثيرات الحدود والتحليل"
+      },
+      "foundationReference": {
+        "lessonNumber": 14,
+        "lessonTitle": "كثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_03",
+        "subSkillName": "العمليات على كثيرات الحدود والتحليل"
+      },
+      "difficulty": "easy",
+      "questionText": "بسّط العبارة y⁻²(y⁵ + y²).",
+      "options": {
+        "A": "3y−1",
+        "B": "y³+1",
+        "C": "y³−1",
+        "D": "3y+1"
+      },
+      "answerLetter": "B",
+      "whyCorrect": "بالتوزيع: y⁻²·y⁵ = y³ وy⁻²·y² = y⁰ = 1، إذن الناتج y³+1، فالاختيار الصحيح B.",
+      "whyOthersWrong": {
+        "A": "لا يتبع قوانين الأسس",
+        "C": "الثابت موجب لا سالب",
+        "D": "أس الحد الأول 3 لا 1"
+      },
+      "hint": "استخدم قاعدة جمع الأسس عند ضرب قوى لها الأساس نفسه.",
+      "solvingStrategy": "توزيع قوة ذات أس سالب على مجموع حدود.",
+      "commonMistakes": [
+        "توزيع الأس السالب بصورة غير صحيحة"
+      ],
+      "aiContext": {
+        "readableText": "بسّط العبارة y⁻²(y⁵ + y²).",
+        "speechText": "بسّط العبارة y⁻²(y⁵ + y²).",
+        "visualDescription": "تعبير جبري y أس -2 مضروب في مجموع y أس5 وy أس2.",
+        "concepts": [
+          "كثيرات الحدود",
+          "توزيع قوة ذات أس سالب على مجموع حدود."
+        ],
+        "requiredData": [
+          "بسّط العبارة y⁻²(y⁵ + y²).",
+          "A: 3y−1",
+          "B: y³+1",
+          "C: y³−1",
+          "D: 3y+1"
+        ]
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF034-P035-N06|341db30ede23886e34b95ba47d66c81fc9a918564e115f2e8252d04443cf89fb",
+      "teachingFingerprintCandidate": "sub_tah_math_10_03|توزيع قوة ذات أس سالب على مجموع حدود.",
+      "reviewState": "SOURCE_BACKED_PEDAGOGY_CANDIDATE_NOT_FINAL",
+      "fingerprintsNeedRehashWithActualOptions": true,
+      "productionImageParity": "NOT_TESTED",
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P035-Q07",
+      "source": {
+        "sourceItemId": "YLM26-PDF034-P035-N07",
+        "pdfPageIndex": 34,
+        "printedPageNumber": 35,
+        "printedQuestionNumber": 7,
+        "imageHash": "cea997d1362e23b70664657c73e730264fffb01b876270d3976e042a798163b5",
+        "imageVersion": 2
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_10",
+        "skillName": "المعادلات التربيعية وكثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_03",
+        "subSkillName": "العمليات على كثيرات الحدود والتحليل"
+      },
+      "foundationReference": {
+        "lessonNumber": 14,
+        "lessonTitle": "كثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_03",
+        "subSkillName": "العمليات على كثيرات الحدود والتحليل"
+      },
+      "difficulty": "easy",
+      "questionText": "إذا كان x - 1/x = 2، فما قيمة x² + 1/x²؟",
+      "options": {
+        "A": "−6",
+        "B": "−4",
+        "C": "4",
+        "D": "6"
+      },
+      "answerLetter": "D",
+      "whyCorrect": "بتربيع الطرفين: (x-1/x)² = x² - 2 + 1/x² = 4. إذن x² + 1/x² = 6، فالاختيار الصحيح D.",
+      "whyOthersWrong": {
+        "A": "مجموع المربعين غير سالب",
+        "B": "مجموع المربعين غير سالب",
+        "C": "نسي إضافة 2 بعد تربيع الفرق"
+      },
+      "hint": "ربّع المعادلة المعطاة واستخدم مربع الفرق.",
+      "solvingStrategy": "استخدام متطابقة مربع الفرق لاستخراج مقدار جديد.",
+      "commonMistakes": [
+        "إسقاط الحد −2 عند التربيع"
+      ],
+      "aiContext": {
+        "readableText": "إذا كان x - 1/x = 2، فما قيمة x² + 1/x²؟",
+        "speechText": "إذا كان x - 1/x = 2، فما قيمة x² + 1/x²؟",
+        "visualDescription": "معادلة كسرية x - 1/x = 2 ومطلوب x² + 1/x².",
+        "concepts": [
+          "كثيرات الحدود",
+          "استخدام متطابقة مربع الفرق لاستخراج مقدار جديد."
+        ],
+        "requiredData": [
+          "إذا كان x - 1/x = 2، فما قيمة x² + 1/x²؟",
+          "A: −6",
+          "B: −4",
+          "C: 4",
+          "D: 6"
+        ]
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF034-P035-N07|cea997d1362e23b70664657c73e730264fffb01b876270d3976e042a798163b5",
+      "teachingFingerprintCandidate": "sub_tah_math_10_03|استخدام متطابقة مربع الفرق لاستخراج مقدار جديد.",
+      "reviewState": "SOURCE_BACKED_PEDAGOGY_CANDIDATE_NOT_FINAL",
+      "fingerprintsNeedRehashWithActualOptions": true,
+      "productionImageParity": "NOT_TESTED",
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P035-Q08",
+      "source": {
+        "sourceItemId": "YLM26-PDF034-P035-N08",
+        "pdfPageIndex": 34,
+        "printedPageNumber": 35,
+        "printedQuestionNumber": 8,
+        "imageHash": "fee88936fe26503ee1125fd7db89c8024c29c8db251c82f1ddf71fb3a628b0cd",
+        "imageVersion": 2
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_10",
+        "skillName": "المعادلات التربيعية وكثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_03",
+        "subSkillName": "العمليات على كثيرات الحدود والتحليل"
+      },
+      "foundationReference": {
+        "lessonNumber": 14,
+        "lessonTitle": "كثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_03",
+        "subSkillName": "العمليات على كثيرات الحدود والتحليل"
+      },
+      "difficulty": "easy",
+      "questionText": "ما طول مستطيل مساحته 3x² + 2x - 8 وعرضه x + 2؟",
+      "options": {
+        "A": "3x−2",
+        "B": "3x+2",
+        "C": "3x−4",
+        "D": "3x+4"
+      },
+      "answerLetter": "C",
+      "whyCorrect": "الطول = المساحة ÷ العرض. بتحليل 3x²+2x-8 = (3x-4)(x+2)، ثم القسمة على x+2 نحصل على 3x-4، فالاختيار الصحيح C.",
+      "whyOthersWrong": {
+        "A": "الضرب في العرض لا يعطي المساحة",
+        "B": "يعطي 3x²+8x+4",
+        "D": "يعطي 3x²+10x+8"
+      },
+      "hint": "حلّل كثيرة الحدود في المساحة ثم اختصر عامل العرض.",
+      "solvingStrategy": "قسمة كثيرة حدود بعد تحليلها لإيجاد بعد هندسي.",
+      "commonMistakes": [
+        "الخلط بين طول المستطيل ومحيطه"
+      ],
+      "aiContext": {
+        "readableText": "ما طول مستطيل مساحته 3x² + 2x - 8 وعرضه x + 2؟",
+        "speechText": "ما طول مستطيل مساحته 3x² + 2x - 8 وعرضه x + 2؟",
+        "visualDescription": "مسألة عن مستطيل مساحته كثيرة حدود وعرضه x+2.",
+        "concepts": [
+          "كثيرات الحدود",
+          "قسمة كثيرة حدود بعد تحليلها لإيجاد بعد هندسي."
+        ],
+        "requiredData": [
+          "ما طول مستطيل مساحته 3x² + 2x - 8 وعرضه x + 2؟",
+          "A: 3x−2",
+          "B: 3x+2",
+          "C: 3x−4",
+          "D: 3x+4"
+        ]
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF034-P035-N08|fee88936fe26503ee1125fd7db89c8024c29c8db251c82f1ddf71fb3a628b0cd",
+      "teachingFingerprintCandidate": "sub_tah_math_10_03|قسمة كثيرة حدود بعد تحليلها لإيجاد بعد هندسي.",
+      "reviewState": "SOURCE_BACKED_PEDAGOGY_CANDIDATE_NOT_FINAL",
+      "fingerprintsNeedRehashWithActualOptions": true,
+      "productionImageParity": "NOT_TESTED",
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P036-Q10",
+      "source": {
+        "sourceItemId": "YLM26-PDF035-P036-N10",
+        "pdfPageIndex": 35,
+        "printedPageNumber": 36,
+        "printedQuestionNumber": 10,
+        "imageHash": "92fdfb137e618046a531b6d497c256e7a3b45ab88dd1242c127d511eb7ec42d7",
+        "imageVersion": 2
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_10",
+        "skillName": "المعادلات التربيعية وكثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_04",
+        "subSkillName": "دوال كثيرات الحدود والأصفار ونظريتا العامل والباقي"
+      },
+      "foundationReference": {
+        "lessonNumber": 14,
+        "lessonTitle": "كثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_04",
+        "subSkillName": "دوال كثيرات الحدود والأصفار ونظريتا العامل والباقي"
+      },
+      "difficulty": "easy",
+      "questionText": "ما باقي قسمة 3x³ - 22x² + 44x - 36 على (x - 2)؟",
+      "options": {
+        "A": "−24",
+        "B": "−12",
+        "C": "12",
+        "D": "24"
+      },
+      "answerLetter": "B",
+      "whyCorrect": "حسب نظرية الباقي، الباقي = f(2) = 3(8)-22(4)+44(2)-36 = 24-88+88-36 = -12، فالاختيار الصحيح B.",
+      "whyOthersWrong": {
+        "A": "خطأ في جمع حدود f(2)",
+        "C": "عكس إشارة الباقي",
+        "D": "استخدم الحد الأول فقط"
+      },
+      "hint": "استخدم نظرية الباقي واحسب f(2).",
+      "solvingStrategy": "تطبيق نظرية الباقي على كثيرة حدود.",
+      "commonMistakes": [
+        "التعويض بـ−2 بدل 2"
+      ],
+      "aiContext": {
+        "readableText": "ما باقي قسمة 3x³ - 22x² + 44x - 36 على (x - 2)؟",
+        "speechText": "ما باقي قسمة 3x³ - 22x² + 44x - 36 على (x - 2)؟",
+        "visualDescription": "قسمة كثيرة حدود تكعيبية على العامل x-2.",
+        "concepts": [
+          "كثيرات الحدود",
+          "تطبيق نظرية الباقي على كثيرة حدود."
+        ],
+        "requiredData": [
+          "ما باقي قسمة 3x³ - 22x² + 44x - 36 على (x - 2)؟",
+          "A: −24",
+          "B: −12",
+          "C: 12",
+          "D: 24"
+        ]
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF035-P036-N10|92fdfb137e618046a531b6d497c256e7a3b45ab88dd1242c127d511eb7ec42d7",
+      "teachingFingerprintCandidate": "sub_tah_math_10_04|تطبيق نظرية الباقي على كثيرة حدود.",
+      "reviewState": "SOURCE_BACKED_PEDAGOGY_CANDIDATE_NOT_FINAL",
+      "fingerprintsNeedRehashWithActualOptions": true,
+      "productionImageParity": "NOT_TESTED",
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P036-Q11",
+      "source": {
+        "sourceItemId": "YLM26-PDF035-P036-N11",
+        "pdfPageIndex": 35,
+        "printedPageNumber": 36,
+        "printedQuestionNumber": 11,
+        "imageHash": "674e8c8e88d6519bfdba92a5e31216f4a6bfec97deb589b9fe5e929346424f0f",
+        "imageVersion": 2
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_10",
+        "skillName": "المعادلات التربيعية وكثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_04",
+        "subSkillName": "دوال كثيرات الحدود والأصفار ونظريتا العامل والباقي"
+      },
+      "foundationReference": {
+        "lessonNumber": 14,
+        "lessonTitle": "كثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_04",
+        "subSkillName": "دوال كثيرات الحدود والأصفار ونظريتا العامل والباقي"
+      },
+      "difficulty": "easy",
+      "questionText": "أي مما يلي ليس عاملًا من عوامل كثيرة الحدود x³ + 3x² + 2x؟",
+      "options": {
+        "A": "x−1",
+        "B": "x+2",
+        "C": "x",
+        "D": "x+1"
+      },
+      "answerLetter": "A",
+      "whyCorrect": "نحلل: x³+3x²+2x = x(x²+3x+2)=x(x+1)(x+2). إذن x وx+1 وx+2 عوامل، أما x-1 فليس عاملًا؛ فالاختيار الصحيح A.",
+      "whyOthersWrong": {
+        "B": "عامل صحيح بعد التحليل",
+        "C": "عامل مشترك",
+        "D": "عامل صحيح بعد التحليل"
+      },
+      "hint": "أخرج x عاملًا مشتركًا ثم حلّل المقدار التربيعي.",
+      "solvingStrategy": "تحليل كثيرة حدود لتحديد عواملها.",
+      "commonMistakes": [
+        "تجاهل كلمة ليس"
+      ],
+      "aiContext": {
+        "readableText": "أي مما يلي ليس عاملًا من عوامل كثيرة الحدود x³ + 3x² + 2x؟",
+        "speechText": "أي مما يلي ليس عاملًا من عوامل كثيرة الحدود x³ + 3x² + 2x؟",
+        "visualDescription": "كثيرة حدود x³+3x²+2x وأربعة عوامل محتملة.",
+        "concepts": [
+          "دوال كثيرات الحدود والأصفار",
+          "تحليل كثيرة حدود لتحديد عواملها."
+        ],
+        "requiredData": [
+          "أي مما يلي ليس عاملًا من عوامل كثيرة الحدود x³ + 3x² + 2x؟",
+          "A: x−1",
+          "B: x+2",
+          "C: x",
+          "D: x+1"
+        ]
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF035-P036-N11|674e8c8e88d6519bfdba92a5e31216f4a6bfec97deb589b9fe5e929346424f0f",
+      "teachingFingerprintCandidate": "sub_tah_math_10_04|تحليل كثيرة حدود لتحديد عواملها.",
+      "reviewState": "SOURCE_BACKED_PEDAGOGY_CANDIDATE_NOT_FINAL",
+      "fingerprintsNeedRehashWithActualOptions": true,
+      "productionImageParity": "NOT_TESTED",
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P036-Q12",
+      "source": {
+        "sourceItemId": "YLM26-PDF035-P036-N12",
+        "pdfPageIndex": 35,
+        "printedPageNumber": 36,
+        "printedQuestionNumber": 12,
+        "imageHash": "c9ea0f7fb51eecdec231bb629f5fe61c7e0daf77f7e47c6fc7b5b1341a873635",
+        "imageVersion": 2
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_10",
+        "skillName": "المعادلات التربيعية وكثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_04",
+        "subSkillName": "دوال كثيرات الحدود والأصفار ونظريتا العامل والباقي"
+      },
+      "foundationReference": {
+        "lessonNumber": 14,
+        "lessonTitle": "كثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_04",
+        "subSkillName": "دوال كثيرات الحدود والأصفار ونظريتا العامل والباقي"
+      },
+      "difficulty": "easy",
+      "questionText": "أي الآتي أحد عوامل كثيرة الحدود f(x)=x³ - 7x² + 4x + 12؟",
+      "options": {
+        "A": "x−1",
+        "B": "x−2",
+        "C": "x+3",
+        "D": "x+2"
+      },
+      "answerLetter": "B",
+      "whyCorrect": "نختبر x=2: f(2)=8-28+8+12=0، لذلك x-2 عامل وفق نظرية العامل، فالاختيار الصحيح B.",
+      "whyOthersWrong": {
+        "A": "f(1)=10 وليس صفرًا",
+        "C": "f(−3)=−90 وليس صفرًا",
+        "D": "f(−2)=−32 وليس صفرًا"
+      },
+      "hint": "عوّض بقيمة الجذر المقابلة لكل عامل؛ العامل صحيح إذا كانت f(r)=0.",
+      "solvingStrategy": "استخدام نظرية العامل للتحقق من عامل خطي.",
+      "commonMistakes": [
+        "نسي عكس إشارة الجذر عند اختبار العامل"
+      ],
+      "aiContext": {
+        "readableText": "أي الآتي أحد عوامل كثيرة الحدود f(x)=x³ - 7x² + 4x + 12؟",
+        "speechText": "أي الآتي أحد عوامل كثيرة الحدود f(x)=x³ - 7x² + 4x + 12؟",
+        "visualDescription": "كثيرة حدود تكعيبية وأربعة عوامل خطية محتملة.",
+        "concepts": [
+          "دوال كثيرات الحدود والأصفار",
+          "استخدام نظرية العامل للتحقق من عامل خطي."
+        ],
+        "requiredData": [
+          "أي الآتي أحد عوامل كثيرة الحدود f(x)=x³ - 7x² + 4x + 12؟",
+          "A: x−1",
+          "B: x−2",
+          "C: x+3",
+          "D: x+2"
+        ]
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF035-P036-N12|c9ea0f7fb51eecdec231bb629f5fe61c7e0daf77f7e47c6fc7b5b1341a873635",
+      "teachingFingerprintCandidate": "sub_tah_math_10_04|استخدام نظرية العامل للتحقق من عامل خطي.",
+      "reviewState": "SOURCE_BACKED_PEDAGOGY_CANDIDATE_NOT_FINAL",
+      "fingerprintsNeedRehashWithActualOptions": true,
+      "productionImageParity": "NOT_TESTED",
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P036-Q13",
+      "source": {
+        "sourceItemId": "YLM26-PDF035-P036-N13",
+        "pdfPageIndex": 35,
+        "printedPageNumber": 36,
+        "printedQuestionNumber": 13,
+        "imageHash": "8b6adef5444ab13eea34dc4c690be81c758f6aa4dafed75cb6526fdfc8b687d3",
+        "imageVersion": 2
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_10",
+        "skillName": "المعادلات التربيعية وكثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_04",
+        "subSkillName": "دوال كثيرات الحدود والأصفار ونظريتا العامل والباقي"
+      },
+      "foundationReference": {
+        "lessonNumber": 14,
+        "lessonTitle": "كثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_04",
+        "subSkillName": "دوال كثيرات الحدود والأصفار ونظريتا العامل والباقي"
+      },
+      "difficulty": "easy",
+      "questionText": "إذا كان (x - 2) عاملًا لكثيرة الحدود f(x)=x³ - kx² + kx + 4، فما قيمة k؟",
+      "options": {
+        "A": "−6",
+        "B": "−3",
+        "C": "2",
+        "D": "6"
+      },
+      "answerLetter": "D",
+      "whyCorrect": "بما أن x-2 عامل، فإن f(2)=0. إذن 8-4k+2k+4=0، أي 12-2k=0 ومنه k=6، فالاختيار الصحيح D.",
+      "whyOthersWrong": {
+        "A": "لا يحقق f(2)=0",
+        "B": "لا يحقق f(2)=0",
+        "C": "يجعل f(2)=8 لا صفرًا"
+      },
+      "hint": "استخدم نظرية العامل: f(2)=0.",
+      "solvingStrategy": "إيجاد معامل مجهول باستخدام نظرية العامل.",
+      "commonMistakes": [
+        "الخطأ في إشارة الحد −4k"
+      ],
+      "aiContext": {
+        "readableText": "إذا كان (x - 2) عاملًا لكثيرة الحدود f(x)=x³ - kx² + kx + 4، فما قيمة k؟",
+        "speechText": "إذا كان (x - 2) عاملًا لكثيرة الحدود f(x)=x³ - kx² + kx + 4، فما قيمة k؟",
+        "visualDescription": "كثيرة حدود بمعامل k معطى أن x-2 عامل لها.",
+        "concepts": [
+          "دوال كثيرات الحدود والأصفار",
+          "إيجاد معامل مجهول باستخدام نظرية العامل."
+        ],
+        "requiredData": [
+          "إذا كان (x - 2) عاملًا لكثيرة الحدود f(x)=x³ - kx² + kx + 4، فما قيمة k؟",
+          "A: −6",
+          "B: −3",
+          "C: 2",
+          "D: 6"
+        ]
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF035-P036-N13|8b6adef5444ab13eea34dc4c690be81c758f6aa4dafed75cb6526fdfc8b687d3",
+      "teachingFingerprintCandidate": "sub_tah_math_10_04|إيجاد معامل مجهول باستخدام نظرية العامل.",
+      "reviewState": "SOURCE_BACKED_PEDAGOGY_CANDIDATE_NOT_FINAL",
+      "fingerprintsNeedRehashWithActualOptions": true,
+      "productionImageParity": "NOT_TESTED",
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P036-Q14",
+      "source": {
+        "sourceItemId": "YLM26-PDF035-P036-N14",
+        "pdfPageIndex": 35,
+        "printedPageNumber": 36,
+        "printedQuestionNumber": 14,
+        "imageHash": "9e9d0f9ea78aeee96425e690a333a4ea9a40392fccc2a52fb8e9d2e23b56aa73",
+        "imageVersion": 2
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_10",
+        "skillName": "المعادلات التربيعية وكثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_04",
+        "subSkillName": "دوال كثيرات الحدود والأصفار ونظريتا العامل والباقي"
+      },
+      "foundationReference": {
+        "lessonNumber": 14,
+        "lessonTitle": "كثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_04",
+        "subSkillName": "دوال كثيرات الحدود والأصفار ونظريتا العامل والباقي"
+      },
+      "difficulty": "easy",
+      "questionText": "كم عدد الجذور المركبة لكثيرة الحدود f(x)=3x⁵ + 2x³ - 5x + 1؟",
+      "options": {
+        "A": "2",
+        "B": "3",
+        "C": "4",
+        "D": "5"
+      },
+      "answerLetter": "D",
+      "whyCorrect": "حسب النظرية الأساسية في الجبر، كثيرة الحدود من الدرجة الخامسة لها 5 جذور مركبة مع احتساب التكرار؛ لذا الاختيار الصحيح D.",
+      "whyOthersWrong": {
+        "A": "أقل من الدرجة الخامسة",
+        "B": "أقل من الدرجة الخامسة",
+        "C": "أقل من الدرجة الخامسة"
+      },
+      "hint": "عدد الجذور المركبة لكثيرة حدود يساوي درجتها مع احتساب التكرار.",
+      "solvingStrategy": "تطبيق النظرية الأساسية في الجبر.",
+      "commonMistakes": [
+        "الخلط بين الجذور غير الحقيقية وجميع الجذور المركبة"
+      ],
+      "aiContext": {
+        "readableText": "كم عدد الجذور المركبة لكثيرة الحدود f(x)=3x⁵ + 2x³ - 5x + 1؟",
+        "speechText": "كم عدد الجذور المركبة لكثيرة الحدود f(x)=3x⁵ + 2x³ - 5x + 1؟",
+        "visualDescription": "كثيرة حدود من الدرجة الخامسة ومطلوب عدد جذورها المركبة.",
+        "concepts": [
+          "دوال كثيرات الحدود والأصفار",
+          "تطبيق النظرية الأساسية في الجبر."
+        ],
+        "requiredData": [
+          "كم عدد الجذور المركبة لكثيرة الحدود f(x)=3x⁵ + 2x³ - 5x + 1؟",
+          "A: 2",
+          "B: 3",
+          "C: 4",
+          "D: 5"
+        ]
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF035-P036-N14|9e9d0f9ea78aeee96425e690a333a4ea9a40392fccc2a52fb8e9d2e23b56aa73",
+      "teachingFingerprintCandidate": "sub_tah_math_10_04|تطبيق النظرية الأساسية في الجبر.",
+      "reviewState": "SOURCE_BACKED_PEDAGOGY_CANDIDATE_NOT_FINAL",
+      "fingerprintsNeedRehashWithActualOptions": true,
+      "productionImageParity": "NOT_TESTED",
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P037-Q16",
+      "source": {
+        "sourceItemId": "YLM26-PDF036-P037-N16",
+        "pdfPageIndex": 36,
+        "printedPageNumber": 37,
+        "printedQuestionNumber": 16,
+        "imageHash": "324f42b409d27c03fb1c39db325a91cb092404c6e639c410f61088cfb21e90f7",
+        "imageVersion": 2
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_10",
+        "skillName": "المعادلات التربيعية وكثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_04",
+        "subSkillName": "دوال كثيرات الحدود والأصفار ونظريتا العامل والباقي"
+      },
+      "foundationReference": {
+        "lessonNumber": 14,
+        "lessonTitle": "كثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_04",
+        "subSkillName": "دوال كثيرات الحدود والأصفار ونظريتا العامل والباقي"
+      },
+      "difficulty": "easy",
+      "questionText": "أي الفترات الآتية يوجد بها صفر حقيقي للدالة f(x)=x² - 4x - 5؟",
+      "options": {
+        "A": "[−4,−3]",
+        "B": "[0,1]",
+        "C": "[4,6]",
+        "D": "[6,8]"
+      },
+      "answerLetter": "C",
+      "whyCorrect": "نحلل f(x)=(x-5)(x+1)، فتكون الأصفار x=5 وx=-1. الفترة [4,6] تحتوي الصفر 5؛ إذن الاختيار الصحيح C.",
+      "whyOthersWrong": {
+        "A": "لا تحتوي −1 أو 5",
+        "B": "لا تحتوي −1 أو 5",
+        "D": "لا تحتوي −1 أو 5"
+      },
+      "hint": "أوجد جذور المعادلة أولًا ثم حدد أي فترة تحتوي أحدها.",
+      "solvingStrategy": "إيجاد أصفار دالة تربيعية ثم تحديد فترة تحتوي صفرًا.",
+      "commonMistakes": [
+        "عدم اختبار انتماء الجذر إلى الفترة"
+      ],
+      "aiContext": {
+        "readableText": "أي الفترات الآتية يوجد بها صفر حقيقي للدالة f(x)=x² - 4x - 5؟",
+        "speechText": "أي الفترات الآتية يوجد بها صفر حقيقي للدالة f(x)=x² - 4x - 5؟",
+        "visualDescription": "دالة تربيعية وأربع فترات عددية محتملة.",
+        "concepts": [
+          "دوال كثيرات الحدود والأصفار",
+          "إيجاد أصفار دالة تربيعية ثم تحديد فترة تحتوي صفرًا."
+        ],
+        "requiredData": [
+          "أي الفترات الآتية يوجد بها صفر حقيقي للدالة f(x)=x² - 4x - 5؟",
+          "A: [−4,−3]",
+          "B: [0,1]",
+          "C: [4,6]",
+          "D: [6,8]"
+        ]
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF036-P037-N16|324f42b409d27c03fb1c39db325a91cb092404c6e639c410f61088cfb21e90f7",
+      "teachingFingerprintCandidate": "sub_tah_math_10_04|إيجاد أصفار دالة تربيعية ثم تحديد فترة تحتوي صفرًا.",
+      "reviewState": "SOURCE_BACKED_PEDAGOGY_CANDIDATE_NOT_FINAL",
+      "fingerprintsNeedRehashWithActualOptions": true,
+      "productionImageParity": "NOT_TESTED",
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P037-Q17",
+      "source": {
+        "sourceItemId": "YLM26-PDF036-P037-N17",
+        "pdfPageIndex": 36,
+        "printedPageNumber": 37,
+        "printedQuestionNumber": 17,
+        "imageHash": "4b92c7f120e06267afaca403e87219eb763bd966924b1201d34e46b86cdc7c7f",
+        "imageVersion": 2
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_10",
+        "skillName": "المعادلات التربيعية وكثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_04",
+        "subSkillName": "دوال كثيرات الحدود والأصفار ونظريتا العامل والباقي"
+      },
+      "foundationReference": {
+        "lessonNumber": 14,
+        "lessonTitle": "كثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_04",
+        "subSkillName": "دوال كثيرات الحدود والأصفار ونظريتا العامل والباقي"
+      },
+      "difficulty": "easy",
+      "questionText": "إذا كان x⁵ - 625x = 0، فما قيم x؟",
+      "options": {
+        "A": "0,±5i,±5",
+        "B": "0,5i,5",
+        "C": "0,5i,±5",
+        "D": "±5i,±5"
+      },
+      "answerLetter": "A",
+      "whyCorrect": "نحلل: x(x⁴-625)=x(x²-25)(x²+25)=0. إذن x=0 أو x=±5 أو x=±5i، فالاختيار الصحيح A.",
+      "whyOthersWrong": {
+        "B": "يفتقد الجذرين السالبين",
+        "C": "يفتقد −5i",
+        "D": "يفتقد الجذر صفر"
+      },
+      "hint": "أخرج x عاملًا مشتركًا ثم استخدم فرق مربعين.",
+      "solvingStrategy": "تحليل معادلة كثيرة حدود إلى عوامل حقيقية ومركبة.",
+      "commonMistakes": [
+        "نسيان الصفر أو أحد المرافقين"
+      ],
+      "aiContext": {
+        "readableText": "إذا كان x⁵ - 625x = 0، فما قيم x؟",
+        "speechText": "إذا كان x⁵ - 625x = 0، فما قيم x؟",
+        "visualDescription": "معادلة من الدرجة الخامسة x⁵-625x=0.",
+        "concepts": [
+          "دوال كثيرات الحدود والأصفار",
+          "تحليل معادلة كثيرة حدود إلى عوامل حقيقية ومركبة."
+        ],
+        "requiredData": [
+          "إذا كان x⁵ - 625x = 0، فما قيم x؟",
+          "A: 0,±5i,±5",
+          "B: 0,5i,5",
+          "C: 0,5i,±5",
+          "D: ±5i,±5"
+        ]
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF036-P037-N17|4b92c7f120e06267afaca403e87219eb763bd966924b1201d34e46b86cdc7c7f",
+      "teachingFingerprintCandidate": "sub_tah_math_10_04|تحليل معادلة كثيرة حدود إلى عوامل حقيقية ومركبة.",
+      "reviewState": "SOURCE_BACKED_PEDAGOGY_CANDIDATE_NOT_FINAL",
+      "fingerprintsNeedRehashWithActualOptions": true,
+      "productionImageParity": "NOT_TESTED",
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P037-Q18",
+      "source": {
+        "sourceItemId": "YLM26-PDF036-P037-N18",
+        "pdfPageIndex": 36,
+        "printedPageNumber": 37,
+        "printedQuestionNumber": 18,
+        "imageHash": "5cdc12fe53ec8b9e8c21d49638bf967d37fadba1766e7f1d0a8fe873a0a46cc1",
+        "imageVersion": 2
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_10",
+        "skillName": "المعادلات التربيعية وكثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_04",
+        "subSkillName": "دوال كثيرات الحدود والأصفار ونظريتا العامل والباقي"
+      },
+      "foundationReference": {
+        "lessonNumber": 14,
+        "lessonTitle": "كثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_04",
+        "subSkillName": "دوال كثيرات الحدود والأصفار ونظريتا العامل والباقي"
+      },
+      "difficulty": "easy",
+      "questionText": "كم عدد الجذور الحقيقية للمعادلة x⁴ - 16 = 0؟",
+      "options": {
+        "A": "5",
+        "B": "4",
+        "C": "3",
+        "D": "2"
+      },
+      "answerLetter": "D",
+      "whyCorrect": "x⁴-16=(x²-4)(x²+4). الجذور الحقيقية تأتي من x²-4=0 وهي x=±2؛ إذن عدد الجذور الحقيقية 2، فالاختيار الصحيح D.",
+      "whyOthersWrong": {
+        "A": "أكبر من درجة كثيرة الحدود",
+        "B": "يحسب ±2i كجذور حقيقية",
+        "C": "ليس العدد الصحيح للجذور الحقيقية"
+      },
+      "hint": "حلّل فرق المربعين ثم ميّز الجذور الحقيقية من المركبة.",
+      "solvingStrategy": "عدّ الجذور الحقيقية بعد تحليل كثيرة حدود.",
+      "commonMistakes": [
+        "احتساب الجذور التخيلية ضمن الحقيقية"
+      ],
+      "aiContext": {
+        "readableText": "كم عدد الجذور الحقيقية للمعادلة x⁴ - 16 = 0؟",
+        "speechText": "كم عدد الجذور الحقيقية للمعادلة x⁴ - 16 = 0؟",
+        "visualDescription": "معادلة رباعية x⁴-16=0 ومطلوب عدد جذورها الحقيقية.",
+        "concepts": [
+          "دوال كثيرات الحدود والأصفار",
+          "عدّ الجذور الحقيقية بعد تحليل كثيرة حدود."
+        ],
+        "requiredData": [
+          "كم عدد الجذور الحقيقية للمعادلة x⁴ - 16 = 0؟",
+          "A: 5",
+          "B: 4",
+          "C: 3",
+          "D: 2"
+        ]
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF036-P037-N18|5cdc12fe53ec8b9e8c21d49638bf967d37fadba1766e7f1d0a8fe873a0a46cc1",
+      "teachingFingerprintCandidate": "sub_tah_math_10_04|عدّ الجذور الحقيقية بعد تحليل كثيرة حدود.",
+      "reviewState": "SOURCE_BACKED_PEDAGOGY_CANDIDATE_NOT_FINAL",
+      "fingerprintsNeedRehashWithActualOptions": true,
+      "productionImageParity": "NOT_TESTED",
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P037-Q19",
+      "source": {
+        "sourceItemId": "YLM26-PDF036-P037-N19",
+        "pdfPageIndex": 36,
+        "printedPageNumber": 37,
+        "printedQuestionNumber": 19,
+        "imageHash": "ead3a476535ceae4dd93733e312ac0c4ffdff9371995125456a496a64a977fbb",
+        "imageVersion": 2
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_10",
+        "skillName": "المعادلات التربيعية وكثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_04",
+        "subSkillName": "دوال كثيرات الحدود والأصفار ونظريتا العامل والباقي"
+      },
+      "foundationReference": {
+        "lessonNumber": 14,
+        "lessonTitle": "كثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_04",
+        "subSkillName": "دوال كثيرات الحدود والأصفار ونظريتا العامل والباقي"
+      },
+      "difficulty": "easy",
+      "questionText": "إذا كانت الدالة f(x)=x⁴ - 8، فما عدد الأصفار التخيلية غير الحقيقية لها؟",
+      "options": {
+        "A": "4",
+        "B": "3",
+        "C": "2",
+        "D": "1"
+      },
+      "answerLetter": "C",
+      "whyCorrect": "المعادلة x⁴=8 لها أربعة جذور مركبة. يوجد جذران حقيقيان ±⁴√8، ويبقى جذران غير حقيقيين؛ إذن العدد 2، فالاختيار الصحيح C.",
+      "whyOthersWrong": {
+        "A": "4 هو مجموع الجذور المركبة",
+        "B": "3 لا ينتج من التحليل",
+        "D": "يعد جذرًا تخيليًا واحدًا بدل زوج"
+      },
+      "hint": "كثيرة الحدود من الدرجة الرابعة لها أربعة جذور مركبة مع احتساب التكرار.",
+      "solvingStrategy": "استخدام درجة كثيرة الحدود وعدد الجذور الحقيقية لحساب غير الحقيقية.",
+      "commonMistakes": [
+        "افتراض أن جميع الجذور الأربعة تخيلية"
+      ],
+      "aiContext": {
+        "readableText": "إذا كانت الدالة f(x)=x⁴ - 8، فما عدد الأصفار التخيلية غير الحقيقية لها؟",
+        "speechText": "إذا كانت الدالة f(x)=x⁴ - 8، فما عدد الأصفار التخيلية غير الحقيقية لها؟",
+        "visualDescription": "دالة رباعية f(x)=x⁴-8 ومطلوب عدد أصفارها التخيلية.",
+        "concepts": [
+          "دوال كثيرات الحدود والأصفار",
+          "استخدام درجة كثيرة الحدود وعدد الجذور الحقيقية لحساب غير الحقيقية."
+        ],
+        "requiredData": [
+          "إذا كانت الدالة f(x)=x⁴ - 8، فما عدد الأصفار التخيلية غير الحقيقية لها؟",
+          "A: 4",
+          "B: 3",
+          "C: 2",
+          "D: 1"
+        ]
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF036-P037-N19|ead3a476535ceae4dd93733e312ac0c4ffdff9371995125456a496a64a977fbb",
+      "teachingFingerprintCandidate": "sub_tah_math_10_04|استخدام درجة كثيرة الحدود وعدد الجذور الحقيقية لحساب غير الحقيقية.",
+      "reviewState": "SOURCE_BACKED_PEDAGOGY_CANDIDATE_NOT_FINAL",
+      "fingerprintsNeedRehashWithActualOptions": true,
+      "productionImageParity": "NOT_TESTED",
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P037-Q20",
+      "source": {
+        "sourceItemId": "YLM26-PDF036-P037-N20",
+        "pdfPageIndex": 36,
+        "printedPageNumber": 37,
+        "printedQuestionNumber": 20,
+        "imageHash": "beb78118a57f104de5440f4d4509f6b16f35d3ab01f4ce331904f8e5e09f035e",
+        "imageVersion": 2
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_10",
+        "skillName": "المعادلات التربيعية وكثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_04",
+        "subSkillName": "دوال كثيرات الحدود والأصفار ونظريتا العامل والباقي"
+      },
+      "foundationReference": {
+        "lessonNumber": 14,
+        "lessonTitle": "كثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_04",
+        "subSkillName": "دوال كثيرات الحدود والأصفار ونظريتا العامل والباقي"
+      },
+      "difficulty": "hard",
+      "questionText": "أوجد عدد الأصفار الحقيقية والتخيلية، على الترتيب، للدالة f(x)=x³ + 5x - 128.",
+      "options": {
+        "A": "1,3",
+        "B": "0,2",
+        "C": "0,3",
+        "D": "1,2"
+      },
+      "answerLetter": "D",
+      "whyCorrect": "المشتقة f'(x)=3x²+5 موجبة دائمًا، لذلك الدالة متزايدة تمامًا ولها صفر حقيقي واحد فقط. وبما أنها من الدرجة الثالثة فلها 3 جذور مركبة إجمالًا، فيتبقى جذران غير حقيقيين. إذن العددان 1 و2، فالاختيار الصحيح D.",
+      "whyOthersWrong": {
+        "A": "3 جذور غير حقيقية لا تتفق مع التكعيبية ذات جذر حقيقي",
+        "B": "لا يمكن انعدام الجذور الحقيقية لتكعيبية",
+        "C": "لا يمكن وجود 3 جذور غير حقيقية مع الجذر الحقيقي"
+      },
+      "hint": "أثبت أولًا أن الدالة متزايدة دائمًا لتحديد عدد الجذور الحقيقية.",
+      "solvingStrategy": "تحديد عدد الجذور الحقيقية ثم استخدام النظرية الأساسية في الجبر.",
+      "commonMistakes": [
+        "افتراض أن درجة 3 تعني ثلاثة جذور حقيقية"
+      ],
+      "aiContext": {
+        "readableText": "أوجد عدد الأصفار الحقيقية والتخيلية، على الترتيب، للدالة f(x)=x³ + 5x - 128.",
+        "speechText": "أوجد عدد الأصفار الحقيقية والتخيلية، على الترتيب، للدالة f(x)=x³ + 5x - 128.",
+        "visualDescription": "دالة تكعيبية x³+5x-128 ومطلوب عدد أصفارها الحقيقية وغير الحقيقية.",
+        "concepts": [
+          "دوال كثيرات الحدود والأصفار",
+          "تحديد عدد الجذور الحقيقية ثم استخدام النظرية الأساسية في الجبر."
+        ],
+        "requiredData": [
+          "أوجد عدد الأصفار الحقيقية والتخيلية، على الترتيب، للدالة f(x)=x³ + 5x - 128.",
+          "A: 1,3",
+          "B: 0,2",
+          "C: 0,3",
+          "D: 1,2"
+        ]
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF036-P037-N20|beb78118a57f104de5440f4d4509f6b16f35d3ab01f4ce331904f8e5e09f035e",
+      "teachingFingerprintCandidate": "sub_tah_math_10_04|تحديد عدد الجذور الحقيقية ثم استخدام النظرية الأساسية في الجبر.",
+      "reviewState": "SOURCE_BACKED_PEDAGOGY_CANDIDATE_NOT_FINAL",
+      "fingerprintsNeedRehashWithActualOptions": true,
+      "productionImageParity": "NOT_TESTED",
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P038-Q01",
+      "source": {
+        "sourceItemId": "YLM26-PDF037-P038-N01",
+        "pdfPageIndex": 37,
+        "printedPageNumber": 38,
+        "printedQuestionNumber": 1,
+        "imageHash": "f10446fa19665a702693e555f50dd4eb9fa25f2715448ad4d3d728641d8ce671",
+        "imageVersion": 2
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_11",
+        "skillName": "العمليات على الدوال والدوال الجذرية",
+        "subSkillId": "sub_tah_math_11_01",
+        "subSkillName": "العمليات على الدوال وتركيب الدوال"
+      },
+      "foundationReference": {
+        "lessonNumber": 15,
+        "lessonTitle": "العمليات على الدوال",
+        "subSkillId": "sub_tah_math_11_01",
+        "subSkillName": "العمليات على الدوال وتركيب الدوال"
+      },
+      "difficulty": "easy",
+      "questionText": "إذا كانت f(x)=x²+3 وg(x)=x+3، فأوجد (f+g)(x).",
+      "options": {
+        "A": "x²+6",
+        "B": "x²+x+6",
+        "C": "x²−9",
+        "D": "x³+3"
+      },
+      "answerLetter": "B",
+      "whyCorrect": "نجمع الدالتين: (f+g)(x)=x²+3+x+3=x²+x+6، فالاختيار الصحيح B.",
+      "whyOthersWrong": {
+        "A": "أهمل حد x",
+        "C": "طرح الثوابت بدل جمعها",
+        "D": "ضرب الدالتين بدل جمعهما"
+      },
+      "hint": "اجمع حدود الدالتين ثم جمّع الحدود المتشابهة.",
+      "solvingStrategy": "جمع دالتين جبريتين.",
+      "commonMistakes": [
+        "الخلط بين جمع الدوال وتركيبها"
+      ],
+      "aiContext": {
+        "readableText": "إذا كانت f(x)=x²+3 وg(x)=x+3، فأوجد (f+g)(x).",
+        "speechText": "إذا كانت f(x)=x²+3 وg(x)=x+3، فأوجد (f+g)(x).",
+        "visualDescription": "دالتان جبريتان f وg ومطلوب مجموعهما.",
+        "concepts": [
+          "جمع دالتين جبريتين."
+        ],
+        "requiredData": [
+          "إذا كانت f(x)=x²+3 وg(x)=x+3، فأوجد (f+g)(x).",
+          "A: x²+6",
+          "B: x²+x+6",
+          "C: x²−9",
+          "D: x³+3"
+        ]
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF037-P038-N01|f10446fa19665a702693e555f50dd4eb9fa25f2715448ad4d3d728641d8ce671",
+      "teachingFingerprintCandidate": "sub_tah_math_11_01|جمع دالتين جبريتين.",
+      "reviewState": "SOURCE_BACKED_PEDAGOGY_CANDIDATE_NOT_FINAL",
+      "fingerprintsNeedRehashWithActualOptions": true,
+      "productionImageParity": "NOT_TESTED",
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P038-Q02",
+      "source": {
+        "sourceItemId": "YLM26-PDF037-P038-N02",
+        "pdfPageIndex": 37,
+        "printedPageNumber": 38,
+        "printedQuestionNumber": 2,
+        "imageHash": "a62ee8c81fe9f5618d73a1292889a65b9faa369a97d296c1a9f0d63d3cc7969a",
+        "imageVersion": 2
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_11",
+        "skillName": "العمليات على الدوال والدوال الجذرية",
+        "subSkillId": "sub_tah_math_11_01",
+        "subSkillName": "العمليات على الدوال وتركيب الدوال"
+      },
+      "foundationReference": {
+        "lessonNumber": 15,
+        "lessonTitle": "العمليات على الدوال",
+        "subSkillId": "sub_tah_math_11_01",
+        "subSkillName": "العمليات على الدوال وتركيب الدوال"
+      },
+      "difficulty": "easy",
+      "questionText": "إذا كان f(x)=x²+1 وg(x)=x−3، فما قيمة x التي تجعل (f∘g)(x)=(g∘f)(x)؟",
+      "options": {
+        "A": "0",
+        "B": "1",
+        "C": "2",
+        "D": "3"
+      },
+      "answerLetter": "C",
+      "whyCorrect": "f(g(x))=(x−3)^2+1=x²−6x+10، وg(f(x))=x²−2. بالمساواة: −6x+10=−2، فيكون x=2، أي C.",
+      "whyOthersWrong": {
+        "A": "لا يحقق تساوي التركيبين",
+        "B": "لا يحقق تساوي التركيبين",
+        "D": "لا يحقق تساوي التركيبين"
+      },
+      "hint": "اكتب كل تركيب على حدة ثم ساوِ التعبيرين.",
+      "solvingStrategy": "حساب تركيب الدوال ثم حل المعادلة الناتجة.",
+      "commonMistakes": [
+        "الافتراض الخاطئ أن تركيب الدوال تبادلي"
+      ],
+      "aiContext": {
+        "readableText": "إذا كان f(x)=x²+1 وg(x)=x−3، فما قيمة x التي تجعل (f∘g)(x)=(g∘f)(x)؟",
+        "speechText": "إذا كان f(x)=x²+1 وg(x)=x−3، فما قيمة x التي تجعل (f∘g)(x)=(g∘f)(x)؟",
+        "visualDescription": "سؤال نصي عن تركيب دالتين ومساواة التركيبين.",
+        "concepts": [
+          "حساب تركيب الدوال ثم حل المعادلة الناتجة."
+        ],
+        "requiredData": [
+          "إذا كان f(x)=x²+1 وg(x)=x−3، فما قيمة x التي تجعل (f∘g)(x)=(g∘f)(x)؟",
+          "A: 0",
+          "B: 1",
+          "C: 2",
+          "D: 3"
+        ]
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF037-P038-N02|a62ee8c81fe9f5618d73a1292889a65b9faa369a97d296c1a9f0d63d3cc7969a",
+      "teachingFingerprintCandidate": "sub_tah_math_11_01|حساب تركيب الدوال ثم حل المعادلة الناتجة.",
+      "reviewState": "SOURCE_BACKED_PEDAGOGY_CANDIDATE_NOT_FINAL",
+      "fingerprintsNeedRehashWithActualOptions": true,
+      "productionImageParity": "NOT_TESTED",
+      "productionMutation": false
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+# TAH-MATH Master Control — RUN59 addendum
+
+YLM26 remains IN PROGRESS / NOT GREEN. RUN59 re-inspected 150 distinct question images from RUN58 official-PDF-derived crops; source RGB parity 150/150 PASS, original PDF not reopened. Completed 22 math-verified pedagogical candidates (22/22 PASS), 21 visual-QA source recrop candidates (21/21 PASS), 0 canonical approvals and 0 production changes. Conditional cumulative source-review events RUN21–RUN59: 6646 including repeats; unique YLM26 inventory: 326. Previous deep candidate coverage: 271; RUN59 cross-run uniqueness pending RUN47 evidence. R2 and topicId verification pending. Next: resolve holds, validate full canonical metadata and R2 parity, reversible manifest, then COL26 1012.

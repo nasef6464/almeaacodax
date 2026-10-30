@@ -1,0 +1,671 @@
+{
+  "project": "TAH-MATH",
+  "status": "PASS",
+  "authority": "Yellow 2026 foundation/collections source map + exact production taxonomy snapshot",
+  "rules": [
+    "Lesson binding narrows candidates; actual question idea/sub-heading decides the subskill.",
+    "A source page alone is not sufficient to override a mathematically correct existing mapping.",
+    "Lesson 31 enrichment has no fabricated mapping."
+  ],
+  "lessons": [
+    {
+      "lesson": 1,
+      "title": "التبرير والبرهان",
+      "main": "skill_tah_math_01",
+      "subs": [
+        "sub_tah_math_01_01",
+        "sub_tah_math_01_02"
+      ],
+      "mainName": "المنطق والتبرير والبرهان",
+      "subSkills": [
+        {
+          "id": "sub_tah_math_01_01",
+          "name": "العبارات المنطقية وقيم الصواب والعبارات الشرطية"
+        },
+        {
+          "id": "sub_tah_math_01_02",
+          "name": "الاستدلال والبرهان والمجموعات"
+        }
+      ]
+    },
+    {
+      "lesson": 2,
+      "title": "المسلمات والعلاقات الهندسية",
+      "main": "skill_tah_math_02",
+      "subs": [
+        "sub_tah_math_02_01",
+        "sub_tah_math_02_02"
+      ],
+      "mainName": "الهندسة الأساسية والمستقيمات",
+      "subSkills": [
+        {
+          "id": "sub_tah_math_02_01",
+          "name": "المسلمات والقطع والزوايا والعلاقات الهندسية"
+        },
+        {
+          "id": "sub_tah_math_02_02",
+          "name": "المستقيمات المتوازية والقاطع وعلاقات الزوايا"
+        }
+      ]
+    },
+    {
+      "lesson": 3,
+      "title": "المستقيم",
+      "main": "skill_tah_math_02",
+      "subs": [
+        "sub_tah_math_02_03"
+      ],
+      "mainName": "الهندسة الأساسية والمستقيمات",
+      "subSkills": [
+        {
+          "id": "sub_tah_math_02_03",
+          "name": "الميل ومعادلات المستقيم والتوازي والتعامد"
+        }
+      ]
+    },
+    {
+      "lesson": 4,
+      "title": "المثلث",
+      "main": "skill_tah_math_03",
+      "subs": [
+        "sub_tah_math_03_01",
+        "sub_tah_math_03_02",
+        "sub_tah_math_03_03"
+      ],
+      "mainName": "المثلثات والعلاقات في المثلث",
+      "subSkills": [
+        {
+          "id": "sub_tah_math_03_01",
+          "name": "تصنيف المثلثات وزوايا المثلث"
+        },
+        {
+          "id": "sub_tah_math_03_02",
+          "name": "تطابق المثلثات ومسلماته"
+        },
+        {
+          "id": "sub_tah_math_03_03",
+          "name": "القطع الخاصة في المثلث ومراكز التلاقي ومتباينات المثلث"
+        }
+      ]
+    },
+    {
+      "lesson": 5,
+      "title": "المضلعات والأشكال الرباعية",
+      "main": "skill_tah_math_04",
+      "subs": [
+        "sub_tah_math_04_01",
+        "sub_tah_math_04_02"
+      ],
+      "mainName": "المضلعات والأشكال الرباعية",
+      "subSkills": [
+        {
+          "id": "sub_tah_math_04_01",
+          "name": "زوايا المضلعات المنتظمة وغير المنتظمة"
+        },
+        {
+          "id": "sub_tah_math_04_02",
+          "name": "خصائص الأشكال الرباعية وتمييزها"
+        }
+      ]
+    },
+    {
+      "lesson": 6,
+      "title": "التشابه",
+      "main": "skill_tah_math_05",
+      "subs": [
+        "sub_tah_math_05_01",
+        "sub_tah_math_05_02"
+      ],
+      "mainName": "التشابه",
+      "subSkills": [
+        {
+          "id": "sub_tah_math_05_01",
+          "name": "تشابه المضلعات والنسب بين الأضلاع"
+        },
+        {
+          "id": "sub_tah_math_05_02",
+          "name": "تشابه المثلثات والتناسب داخل المثلث"
+        }
+      ]
+    },
+    {
+      "lesson": 7,
+      "title": "التحويلات الهندسية",
+      "main": "skill_tah_math_06",
+      "subs": [
+        "sub_tah_math_06_01",
+        "sub_tah_math_06_02"
+      ],
+      "mainName": "التحويلات الهندسية",
+      "subSkills": [
+        {
+          "id": "sub_tah_math_06_01",
+          "name": "الانعكاس والانسحاب والدوران"
+        },
+        {
+          "id": "sub_tah_math_06_02",
+          "name": "التمدد وتركيب التحويلات والتماثل"
+        }
+      ]
+    },
+    {
+      "lesson": 8,
+      "title": "الدائرة",
+      "main": "skill_tah_math_07",
+      "subs": [
+        "sub_tah_math_07_01",
+        "sub_tah_math_07_02",
+        "sub_tah_math_07_03"
+      ],
+      "mainName": "الدائرة",
+      "subSkills": [
+        {
+          "id": "sub_tah_math_07_01",
+          "name": "الدائرة والمحيط والمساحة والأقواس والزوايا"
+        },
+        {
+          "id": "sub_tah_math_07_02",
+          "name": "الأوتار والمماسات والقواطع والقوى في الدائرة"
+        },
+        {
+          "id": "sub_tah_math_07_03",
+          "name": "معادلة الدائرة في المستوى الإحداثي"
+        }
+      ]
+    },
+    {
+      "lesson": 9,
+      "title": "الأعداد الحقيقية والدوال",
+      "main": "skill_tah_math_08",
+      "subs": [
+        "sub_tah_math_08_01"
+      ],
+      "mainName": "الأعداد الحقيقية والدوال والمتباينات",
+      "subSkills": [
+        {
+          "id": "sub_tah_math_08_01",
+          "name": "مجموعات الأعداد الحقيقية وخصائصها والعلاقات والدوال"
+        }
+      ]
+    },
+    {
+      "lesson": 10,
+      "title": "دوال خاصة",
+      "main": "skill_tah_math_08",
+      "subs": [
+        "sub_tah_math_08_02"
+      ],
+      "mainName": "الأعداد الحقيقية والدوال والمتباينات",
+      "subSkills": [
+        {
+          "id": "sub_tah_math_08_02",
+          "name": "المجال والمدى والدوال الخاصة والقيمة المطلقة والمتعددة التعريف"
+        }
+      ]
+    },
+    {
+      "lesson": 11,
+      "title": "المتباينات",
+      "main": "skill_tah_math_08",
+      "subs": [
+        "sub_tah_math_08_03"
+      ],
+      "mainName": "الأعداد الحقيقية والدوال والمتباينات",
+      "subSkills": [
+        {
+          "id": "sub_tah_math_08_03",
+          "name": "المتباينات الخطية وأنظمة المتباينات وتمثيل منطقة الحل"
+        }
+      ]
+    },
+    {
+      "lesson": 12,
+      "title": "المصفوفات",
+      "main": "skill_tah_math_09",
+      "subs": [
+        "sub_tah_math_09_01",
+        "sub_tah_math_09_02"
+      ],
+      "mainName": "المصفوفات",
+      "subSkills": [
+        {
+          "id": "sub_tah_math_09_01",
+          "name": "العمليات على المصفوفات"
+        },
+        {
+          "id": "sub_tah_math_09_02",
+          "name": "المحدد والمعكوس وحل أنظمة المعادلات بالمصفوفات"
+        }
+      ]
+    },
+    {
+      "lesson": 13,
+      "title": "الأعداد المركبة والمعادلة التربيعية",
+      "main": "skill_tah_math_10",
+      "subs": [
+        "sub_tah_math_10_01",
+        "sub_tah_math_10_02"
+      ],
+      "mainName": "المعادلات التربيعية وكثيرات الحدود",
+      "subSkills": [
+        {
+          "id": "sub_tah_math_10_01",
+          "name": "الأعداد المركبة وعملياتها"
+        },
+        {
+          "id": "sub_tah_math_10_02",
+          "name": "المعادلة التربيعية والمميز والجذور"
+        }
+      ]
+    },
+    {
+      "lesson": 14,
+      "title": "كثيرات الحدود",
+      "main": "skill_tah_math_10",
+      "subs": [
+        "sub_tah_math_10_03",
+        "sub_tah_math_10_04"
+      ],
+      "mainName": "المعادلات التربيعية وكثيرات الحدود",
+      "subSkills": [
+        {
+          "id": "sub_tah_math_10_03",
+          "name": "العمليات على كثيرات الحدود والتحليل"
+        },
+        {
+          "id": "sub_tah_math_10_04",
+          "name": "دوال كثيرات الحدود والأصفار ونظريتا العامل والباقي"
+        }
+      ]
+    },
+    {
+      "lesson": 15,
+      "title": "العمليات على الدوال",
+      "main": "skill_tah_math_11",
+      "subs": [
+        "sub_tah_math_11_01",
+        "sub_tah_math_11_02"
+      ],
+      "mainName": "العمليات على الدوال والدوال الجذرية",
+      "subSkills": [
+        {
+          "id": "sub_tah_math_11_01",
+          "name": "العمليات على الدوال وتركيب الدوال"
+        },
+        {
+          "id": "sub_tah_math_11_02",
+          "name": "الدالة العكسية وشروط وجودها"
+        }
+      ]
+    },
+    {
+      "lesson": 16,
+      "title": "الدالة الجذرية",
+      "main": "skill_tah_math_11",
+      "subs": [
+        "sub_tah_math_11_03"
+      ],
+      "mainName": "العمليات على الدوال والدوال الجذرية",
+      "subSkills": [
+        {
+          "id": "sub_tah_math_11_03",
+          "name": "الدوال الجذرية والمعادلات والمتباينات الجذرية"
+        }
+      ]
+    },
+    {
+      "lesson": 17,
+      "title": "العلاقات والدوال النسبية",
+      "main": "skill_tah_math_12",
+      "subs": [
+        "sub_tah_math_12_01",
+        "sub_tah_math_12_02"
+      ],
+      "mainName": "العلاقات والدوال النسبية",
+      "subSkills": [
+        {
+          "id": "sub_tah_math_12_01",
+          "name": "العبارات والدوال النسبية والمجال وخطوط التقارب"
+        },
+        {
+          "id": "sub_tah_math_12_02",
+          "name": "المعادلات النسبية والتغير الطردي والعكسي والمشترك"
+        }
+      ]
+    },
+    {
+      "lesson": 18,
+      "title": "المتتابعات والمتسلسلات",
+      "main": "skill_tah_math_13",
+      "subs": [
+        "sub_tah_math_13_01",
+        "sub_tah_math_13_02",
+        "sub_tah_math_13_03"
+      ],
+      "mainName": "المتتابعات والمتسلسلات",
+      "subSkills": [
+        {
+          "id": "sub_tah_math_13_01",
+          "name": "المتتابعات والمتسلسلات الحسابية"
+        },
+        {
+          "id": "sub_tah_math_13_02",
+          "name": "المتتابعات والمتسلسلات الهندسية"
+        },
+        {
+          "id": "sub_tah_math_13_03",
+          "name": "رمز سيغما والمتسلسلة الهندسية اللانهائية والكسر الدوري"
+        }
+      ]
+    },
+    {
+      "lesson": 19,
+      "title": "نظرية ذات الحدين",
+      "main": "skill_tah_math_14",
+      "subs": [
+        "sub_tah_math_14_01"
+      ],
+      "mainName": "الاحتمالات ونظرية ذات الحدين",
+      "subSkills": [
+        {
+          "id": "sub_tah_math_14_01",
+          "name": "نظرية ذات الحدين ومعاملات التوسع"
+        }
+      ]
+    },
+    {
+      "lesson": 20,
+      "title": "الاحتمالات",
+      "main": "skill_tah_math_14",
+      "subs": [
+        "sub_tah_math_14_02",
+        "sub_tah_math_14_03",
+        "sub_tah_math_14_04"
+      ],
+      "mainName": "الاحتمالات ونظرية ذات الحدين",
+      "subSkills": [
+        {
+          "id": "sub_tah_math_14_02",
+          "name": "مبدأ العد والتباديل"
+        },
+        {
+          "id": "sub_tah_math_14_03",
+          "name": "التوافيق والاختيار دون ترتيب"
+        },
+        {
+          "id": "sub_tah_math_14_04",
+          "name": "الاحتمال البسيط والمركب والشرطي والهندسي"
+        }
+      ]
+    },
+    {
+      "lesson": 21,
+      "title": "حسابات المثلثات",
+      "main": "skill_tah_math_15",
+      "subs": [
+        "sub_tah_math_15_01",
+        "sub_tah_math_15_02",
+        "sub_tah_math_15_03",
+        "sub_tah_math_15_04"
+      ],
+      "mainName": "حساب المثلثات",
+      "subSkills": [
+        {
+          "id": "sub_tah_math_15_01",
+          "name": "قياس الزوايا بالراديان والدائرة الوحدة"
+        },
+        {
+          "id": "sub_tah_math_15_02",
+          "name": "النسب المثلثية والزوايا المرجعية والدوال العكسية"
+        },
+        {
+          "id": "sub_tah_math_15_03",
+          "name": "قانونا الجيب وجيب التمام ومساحة المثلث"
+        },
+        {
+          "id": "sub_tah_math_15_04",
+          "name": "التمثيل البياني للدوال المثلثية والدورية"
+        }
+      ]
+    },
+    {
+      "lesson": 22,
+      "title": "تحليل الدوال",
+      "main": "skill_tah_math_16",
+      "subs": [
+        "sub_tah_math_16_01",
+        "sub_tah_math_16_02",
+        "sub_tah_math_16_03",
+        "sub_tah_math_16_04",
+        "sub_tah_math_16_05"
+      ],
+      "mainName": "تحليل الدوال",
+      "subSkills": [
+        {
+          "id": "sub_tah_math_16_01",
+          "name": "الفترات والمتباينات وقراءة مجال الدالة ومداه"
+        },
+        {
+          "id": "sub_tah_math_16_02",
+          "name": "خصائص التمثيل البياني والتماثل والدوال الزوجية والفردية"
+        },
+        {
+          "id": "sub_tah_math_16_03",
+          "name": "التزايد والتناقص والقيم العظمى والصغرى ومتوسط معدل التغير"
+        },
+        {
+          "id": "sub_tah_math_16_04",
+          "name": "الاتصال وأنواع عدم الاتصال ونظرية القيمة المتوسطة"
+        },
+        {
+          "id": "sub_tah_math_16_05",
+          "name": "تحويلات الدوال والتمدد والانكماش والانعكاس"
+        }
+      ]
+    },
+    {
+      "lesson": 23,
+      "title": "الدوال الأسية واللوغاريتمية",
+      "main": "skill_tah_math_17",
+      "subs": [
+        "sub_tah_math_17_01",
+        "sub_tah_math_17_02",
+        "sub_tah_math_17_03"
+      ],
+      "mainName": "الدوال الأسية واللوغاريتمية",
+      "subSkills": [
+        {
+          "id": "sub_tah_math_17_01",
+          "name": "الدالة الأسية والمعادلات والمتباينات الأسية"
+        },
+        {
+          "id": "sub_tah_math_17_02",
+          "name": "اللوغاريتم وخصائصه والمعادلات اللوغاريتمية"
+        },
+        {
+          "id": "sub_tah_math_17_03",
+          "name": "النمو والتناقص الأسي والفائدة المركبة"
+        }
+      ]
+    },
+    {
+      "lesson": 24,
+      "title": "المتطابقات المثلثية",
+      "main": "skill_tah_math_18",
+      "subs": [
+        "sub_tah_math_18_01",
+        "sub_tah_math_18_02",
+        "sub_tah_math_18_03"
+      ],
+      "mainName": "المتطابقات المثلثية",
+      "subSkills": [
+        {
+          "id": "sub_tah_math_18_01",
+          "name": "المتطابقات المثلثية الأساسية والمقلوب والقسمة"
+        },
+        {
+          "id": "sub_tah_math_18_02",
+          "name": "متطابقات الجمع والفرق والزاوية المضاعفة ونصف الزاوية"
+        },
+        {
+          "id": "sub_tah_math_18_03",
+          "name": "حل المعادلات المثلثية"
+        }
+      ]
+    },
+    {
+      "lesson": 25,
+      "title": "القطوع",
+      "main": "skill_tah_math_19",
+      "subs": [
+        "sub_tah_math_19_01",
+        "sub_tah_math_19_02",
+        "sub_tah_math_19_03",
+        "sub_tah_math_19_04"
+      ],
+      "mainName": "القطوع المخروطية",
+      "subSkills": [
+        {
+          "id": "sub_tah_math_19_01",
+          "name": "القطع المكافئ"
+        },
+        {
+          "id": "sub_tah_math_19_02",
+          "name": "القطع الناقص"
+        },
+        {
+          "id": "sub_tah_math_19_03",
+          "name": "القطع الزائد"
+        },
+        {
+          "id": "sub_tah_math_19_04",
+          "name": "الدائرة والصيغة العامة وتصنيف القطوع"
+        }
+      ]
+    },
+    {
+      "lesson": 26,
+      "title": "المتجهات",
+      "main": "skill_tah_math_20",
+      "subs": [
+        "sub_tah_math_20_01",
+        "sub_tah_math_20_02"
+      ],
+      "mainName": "المتجهات والإحداثيات القطبية والديكارتية",
+      "subSkills": [
+        {
+          "id": "sub_tah_math_20_01",
+          "name": "المتجهات والمقدار والاتجاه والمركبات والعمليات"
+        },
+        {
+          "id": "sub_tah_math_20_02",
+          "name": "الضرب الداخلي والزاوية والإسقاط والمتجهات في الفضاء"
+        }
+      ]
+    },
+    {
+      "lesson": 27,
+      "title": "الإحداثيات القطبية والديكارتية",
+      "main": "skill_tah_math_20",
+      "subs": [
+        "sub_tah_math_20_03",
+        "sub_tah_math_20_04"
+      ],
+      "mainName": "المتجهات والإحداثيات القطبية والديكارتية",
+      "subSkills": [
+        {
+          "id": "sub_tah_math_20_03",
+          "name": "الإحداثيات القطبية والتحويل بين القطبي والديكارتي"
+        },
+        {
+          "id": "sub_tah_math_20_04",
+          "name": "المعادلات القطبية والأعداد المركبة قطبيًا ونظرية ديموافر"
+        }
+      ]
+    },
+    {
+      "lesson": 28,
+      "title": "الإحصاء",
+      "main": "skill_tah_math_21",
+      "subs": [
+        "sub_tah_math_21_01",
+        "sub_tah_math_21_02",
+        "sub_tah_math_21_03",
+        "sub_tah_math_21_04"
+      ],
+      "mainName": "الإحصاء",
+      "subSkills": [
+        {
+          "id": "sub_tah_math_21_01",
+          "name": "أنواع الدراسات وطرق أخذ العينات والتحيز"
+        },
+        {
+          "id": "sub_tah_math_21_02",
+          "name": "مقاييس النزعة المركزية والتشتت والدرجة المعيارية"
+        },
+        {
+          "id": "sub_tah_math_21_03",
+          "name": "التوزيع الطبيعي وقاعدة 68-95-99.7"
+        },
+        {
+          "id": "sub_tah_math_21_04",
+          "name": "المتغير العشوائي والتوزيعات الاحتمالية وذات الحدين"
+        }
+      ]
+    },
+    {
+      "lesson": 29,
+      "title": "النهايات",
+      "main": "skill_tah_math_22",
+      "subs": [
+        "sub_tah_math_22_01",
+        "sub_tah_math_22_02"
+      ],
+      "mainName": "النهايات والاشتقاق والتكامل",
+      "subSkills": [
+        {
+          "id": "sub_tah_math_22_01",
+          "name": "مفهوم النهاية والنهايات الجانبية من الرسم والجدول"
+        },
+        {
+          "id": "sub_tah_math_22_02",
+          "name": "حساب النهايات جبريًا والنهايات عند اللانهاية وحالات عدم التعيين"
+        }
+      ]
+    },
+    {
+      "lesson": 30,
+      "title": "الاشتقاق والتكامل",
+      "main": "skill_tah_math_22",
+      "subs": [
+        "sub_tah_math_22_03",
+        "sub_tah_math_22_04",
+        "sub_tah_math_22_05"
+      ],
+      "mainName": "النهايات والاشتقاق والتكامل",
+      "subSkills": [
+        {
+          "id": "sub_tah_math_22_03",
+          "name": "مشتقة الدالة وقواعد الاشتقاق الأساسية"
+        },
+        {
+          "id": "sub_tah_math_22_04",
+          "name": "قواعد الضرب والقسمة والمشتقات العليا وتطبيقات الاشتقاق"
+        },
+        {
+          "id": "sub_tah_math_22_05",
+          "name": "التكامل غير المحدد والمحدد والمساحة تحت المنحنى"
+        }
+      ]
+    },
+    {
+      "lesson": 31,
+      "title": "إثراء",
+      "main": null,
+      "subs": [],
+      "note": "Foundation-only enrichment. Do not fabricate taxonomy binding.",
+      "mainName": null,
+      "subSkills": []
+    }
+  ]
+}

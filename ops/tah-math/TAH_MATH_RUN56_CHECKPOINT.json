@@ -1,0 +1,36 @@
+{
+  "run": "RUN56",
+  "date": "2026-10-09",
+  "scope": "TAH-MATH/YLM26",
+  "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+  "sourceVisualDistinctThisRun": 200,
+  "sourcePages": 61,
+  "manualContactSheets": 20,
+  "pixelExactPass": 199,
+  "pixelException": 1,
+  "pixelExceptionCode": "P047-Q07",
+  "independentMathPass": 65,
+  "independentMathFail": 0,
+  "printedSourceKeyMatches": 18,
+  "printedKeyBlankOrUnverified": 47,
+  "printedKeyMismatches": 0,
+  "fullPedagogyCandidates": 21,
+  "optionSpecificWrongReasons": 63,
+  "semanticHolds": [
+    "P036-Q09",
+    "P036-Q15",
+    "P050-Q04",
+    "P094-Q11"
+  ],
+  "domainReview": [
+    "P066-Q14"
+  ],
+  "cumulativeReviewEventsIncludingRepeats": 6196,
+  "uniqueYLM26Inventory": 326,
+  "canonicalApprovedNew": 0,
+  "productionMutation": false,
+  "R2Parity": "NOT_TESTED",
+  "status": "YLM26_IN_PROGRESS_NOT_GREEN",
+  "sourceEvidenceZipSha256": "9c36a2a44d4ad4c67fa86dd436e9318c12354bc1f18bd24867609bda598d7c07",
+  "next": "Resolve holds; approve 326 canonical rows with R2 parity and reversible manifest; then COL26 1012."
+}

@@ -1,0 +1,156 @@
+{
+  "run": "RUN57",
+  "status": "SOURCE_CANDIDATES_NOT_CANONICAL",
+  "records": [
+    {
+      "code": "P062-Q16",
+      "answerCandidate": "D",
+      "proof": "g=-|x-4|+5"
+    },
+    {
+      "code": "P062-Q17",
+      "answerCandidate": "D",
+      "proof": "g=-sqrt(x+2)-3"
+    },
+    {
+      "code": "P085-Q03",
+      "answerCandidate": "B",
+      "proof": "median robust to 75 outlier"
+    },
+    {
+      "code": "P087-Q07",
+      "answerCandidate": "A",
+      "proof": "right tail => positive skew"
+    },
+    {
+      "code": "P087-Q08",
+      "answerCandidate": "B",
+      "proof": "mean +/- 2 sd => 95%"
+    },
+    {
+      "code": "P087-Q09",
+      "answerCandidate": "A",
+      "proof": "68% of 10000 = 6800"
+    },
+    {
+      "code": "P087-Q10",
+      "answerCandidate": "B",
+      "proof": "half of 95% = 47.5%"
+    },
+    {
+      "code": "P087-Q11",
+      "answerCandidate": "B",
+      "proof": "(52+68)/2=60"
+    },
+    {
+      "code": "P088-Q12",
+      "answerCandidate": "D",
+      "proof": "sqrt(25)=5"
+    },
+    {
+      "code": "P090-Q02",
+      "answerCandidate": "A",
+      "proof": "0^2 cos(0)=0"
+    },
+    {
+      "code": "P090-Q03",
+      "answerCandidate": "C",
+      "proof": "1-1+0-1=-1"
+    },
+    {
+      "code": "P090-Q04",
+      "answerCandidate": "B",
+      "proof": "375-125-15-10=225"
+    },
+    {
+      "code": "P090-Q05",
+      "answerCandidate": "A",
+      "proof": "pi/cos(pi)=-pi"
+    },
+    {
+      "code": "P090-Q06",
+      "answerCandidate": "B",
+      "proof": "sqrt(9)-sqrt(7)=3-sqrt(7)"
+    },
+    {
+      "code": "P090-Q07",
+      "answerCandidate": "C",
+      "proof": "3h^2-h+5 => 5"
+    },
+    {
+      "code": "P090-Q08",
+      "answerCandidate": "C",
+      "proof": "(x-2)(x+2)/(x-2) => 4"
+    },
+    {
+      "code": "P090-Q09",
+      "answerCandidate": "C",
+      "proof": "(x-4)(x+3)/(x-4) => 7"
+    },
+    {
+      "code": "P073-Q01",
+      "answerCandidate": "C",
+      "proof": "vertex (2,-2)"
+    },
+    {
+      "code": "P091-Q11",
+      "answerCandidate": "D",
+      "proof": "positive leading x^2 => +infinity"
+    },
+    {
+      "code": "P091-Q12",
+      "answerCandidate": "C",
+      "proof": "leading coefficient ratio 3/2"
+    },
+    {
+      "code": "P091-Q13",
+      "answerCandidate": "D",
+      "proof": "denominator degree 3 > numerator 2 => 0"
+    },
+    {
+      "code": "P092-Q01",
+      "answerCandidate": "C",
+      "proof": "d(2*x^(5/4))=(5/2)*x^(1/4)"
+    },
+    {
+      "code": "P092-Q02",
+      "answerCandidate": "C",
+      "proof": "derivative of constant sqrt(7) is 0"
+    },
+    {
+      "code": "P092-Q03",
+      "answerCandidate": "B",
+      "proof": "d(3x^2-5x+12)=6x-5"
+    },
+    {
+      "code": "P093-Q05",
+      "answerCandidate": "B",
+      "proof": "sixth derivative of degree-five polynomial =0"
+    },
+    {
+      "code": "P093-Q06",
+      "answerCandidate": "B",
+      "proof": "d(1+55t-3t^3)=55-9t^2"
+    },
+    {
+      "code": "P093-Q07",
+      "answerCandidate": "B",
+      "proof": "f(5)=2*25-4=46"
+    },
+    {
+      "code": "P093-Q08",
+      "answerCandidate": "B",
+      "proof": "vertex t=5, s(5)=53"
+    },
+    {
+      "code": "P094-Q09",
+      "answerCandidate": "A",
+      "proof": "integral 3x^2 dx=x^3+C"
+    },
+    {
+      "code": "P094-Q12",
+      "answerCandidate": "A",
+      "proof": "integral_0^1(4-3x^2)dx=3"
+    }
+  ]
+}

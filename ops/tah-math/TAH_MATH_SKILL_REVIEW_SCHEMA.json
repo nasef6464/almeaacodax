@@ -1,0 +1,428 @@
+{
+  "schemaVersion": 2,
+  "recordType": "TAH_MATH_FULL_QUESTION_REVIEW",
+  "purpose": "A question is not review-complete until source, answer, visual, taxonomy, difficulty, explanation, AI context, and audit metadata are complete.",
+  "required": [
+    "questionCode",
+    "sourceBank",
+    "sourceItemId",
+    "pdfPageIndex",
+    "printedPageNumber",
+    "printedQuestionNumber",
+    "sourceLessonNumber",
+    "sourceLessonTitle",
+    "sourceIdeaTitle",
+    "imageHash",
+    "imageVersion",
+    "optionsEmbeddedInImage",
+    "optionTexts",
+    "correctOptionIndex",
+    "answerLetter",
+    "primarySkillId",
+    "primarySubSkillId",
+    "additionalSubSkillIds",
+    "mappingDecision",
+    "mappingEvidence",
+    "difficulty",
+    "text",
+    "readableText",
+    "speechText",
+    "visualDescription",
+    "concepts",
+    "requiredData",
+    "explanation",
+    "whyCorrect",
+    "whyOthersWrong",
+    "hint",
+    "solvingStrategy",
+    "commonMistakes",
+    "foundationReference",
+    "questionFingerprint",
+    "teachingFingerprint",
+    "answerVerified",
+    "visualVerified",
+    "auditStatus",
+    "reviewerNotes"
+  ],
+  "properties": {
+    "questionCode": {
+      "type": "string"
+    },
+    "sourceBank": {
+      "enum": [
+        "YLM26",
+        "COL26",
+        "COL26OLD"
+      ]
+    },
+    "sourceItemId": {
+      "type": "string"
+    },
+    "pdfPageIndex": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "printedPageNumber": {
+      "type": [
+        "integer",
+        "string",
+        "null"
+      ]
+    },
+    "printedQuestionNumber": {
+      "type": [
+        "integer",
+        "string",
+        "null"
+      ]
+    },
+    "sourcePage": {
+      "type": "integer"
+    },
+    "sourceSection": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "enum": [
+        1,
+        2,
+        null
+      ]
+    },
+    "sourceLessonNumber": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 31
+    },
+    "sourceLessonTitle": {
+      "type": "string"
+    },
+    "sourceIdeaTitle": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "imageFileName": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "imageHash": {
+      "type": "string",
+      "description": "SHA-256 of canonical question image"
+    },
+    "imageVersion": {
+      "type": [
+        "integer",
+        "string"
+      ]
+    },
+    "optionsEmbeddedInImage": {
+      "type": "boolean"
+    },
+    "optionTexts": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "type": "string"
+      },
+      "description": "A/B/C/D in display order"
+    },
+    "correctOptionIndex": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 3
+    },
+    "answerLetter": {
+      "enum": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ]
+    },
+    "primarySkillId": {
+      "type": "string"
+    },
+    "primarySubSkillId": {
+      "type": "string"
+    },
+    "additionalSubSkillIds": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      }
+    },
+    "mappingDecision": {
+      "enum": [
+        "KEEP",
+        "REMAP",
+        "MULTI_SKILL",
+        "REVIEW"
+      ]
+    },
+    "mappingEvidence": {
+      "type": "string"
+    },
+    "difficulty": {
+      "enum": [
+        "easy",
+        "medium",
+        "hard"
+      ],
+      "description": "Mandatory final pedagogical difficulty classification"
+    },
+    "text": {
+      "type": "string",
+      "description": "Complete student-facing question text where applicable"
+    },
+    "readableText": {
+      "type": "string",
+      "description": "AI-readable normalized question content"
+    },
+    "speechText": {
+      "type": "string",
+      "description": "Natural Arabic speech rendering for voice teacher"
+    },
+    "visualDescription": {
+      "type": "string",
+      "description": "Description of diagrams, tables, graphs, geometry, and other visual information"
+    },
+    "mathExpressions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "concepts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "requiredData": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "explanation": {
+      "type": "string",
+      "description": "Clear correct explanation suitable for Tahsili learner"
+    },
+    "whyCorrect": {
+      "type": "string",
+      "description": "Why the approved answer is correct"
+    },
+    "whyOthersWrong": {
+      "type": "object",
+      "properties": {
+        "A": {
+          "type": "string"
+        },
+        "B": {
+          "type": "string"
+        },
+        "C": {
+          "type": "string"
+        },
+        "D": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "hint": {
+      "type": "string",
+      "description": "Short hint that does not reveal the answer immediately"
+    },
+    "hint2": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "solvingStrategy": {
+      "type": "string",
+      "description": "Standard solution strategy / ordered steps"
+    },
+    "mentalMathMethod": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "fastMethod": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Fast Tahsili method when genuinely applicable; otherwise null"
+    },
+    "eliminationMethod": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "optionTestingMethod": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "commonMistakes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "foundationReference": {
+      "type": "object",
+      "required": [
+        "lessonNumber",
+        "lessonTitle"
+      ],
+      "properties": {
+        "lessonNumber": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 31
+        },
+        "lessonTitle": {
+          "type": "string"
+        },
+        "ideaTitle": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "topicId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "subTopicId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "videoUrl": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "trainingRef": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "aiContext": {
+      "type": "object",
+      "required": [
+        "version",
+        "readableText",
+        "speechText",
+        "visualDescription",
+        "optionTexts",
+        "mathExpressions",
+        "concepts",
+        "requiredData"
+      ],
+      "properties": {
+        "version": {
+          "const": 1
+        },
+        "readableText": {
+          "type": "string"
+        },
+        "speechText": {
+          "type": "string"
+        },
+        "visualDescription": {
+          "type": "string"
+        },
+        "optionTexts": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": {
+            "type": "string"
+          }
+        },
+        "mathExpressions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "concepts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "requiredData": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "questionFingerprint": {
+      "type": "object",
+      "description": "Stable fingerprint of concept, representation, task type, operations, difficulty, distractor/error pattern"
+    },
+    "teachingFingerprint": {
+      "type": "object",
+      "description": "Concept summary, standard method, fast/mental methods, common mistakes, hint and explanation style"
+    },
+    "answerVerified": {
+      "type": "boolean"
+    },
+    "visualVerified": {
+      "type": "boolean"
+    },
+    "answerValidationStatus": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "REVIEW"
+      ]
+    },
+    "auditStatus": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "REVIEW"
+      ]
+    },
+    "reviewerNotes": {
+      "type": "string"
+    }
+  },
+  "completionRules": [
+    "difficulty must be easy, medium, or hard; unrated is not allowed for a completed review",
+    "no placeholder explanation, hint, solvingStrategy, readableText, speechText, or visualDescription",
+    "whyCorrect must be consistent with correctOptionIndex/answerLetter",
+    "whyOthersWrong must explain every meaningful distractor; if an option is visually unreadable the item stays REVIEW",
+    "primary/subskill mapping must be supported by source lesson/idea and question content",
+    "multi-skill questions retain one primary mapping plus supported additionalSubSkillIds",
+    "AI context must be source-grounded and must not invent data absent from the question/source",
+    "source and image identity metadata must be preserved for dedupe and rollback"
+  ]
+}

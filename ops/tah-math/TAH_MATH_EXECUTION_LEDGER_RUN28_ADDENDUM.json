@@ -1,0 +1,33 @@
+{
+  "run": "RUN28",
+  "date": "2026-10-08",
+  "supersedesRun": "RUN27",
+  "ledgerOriginalUpdate": "BLOCKED_BY_TOOL_SAFETY",
+  "masterOriginalUpdate": "BLOCKED_BY_TOOL_SAFETY",
+  "stage": "P2_YLM26_IN_PROGRESS",
+  "reviewedSourceImagesThisRun": 200,
+  "previouslyInventoriedSourceQuestions": true,
+  "newUniqueCanonicalQuestions": 0,
+  "sourceImageHashPass": 200,
+  "cropIssuesReAdjudicated": 20,
+  "manualCropFixes": 2,
+  "originalSourceBoundsReused": 18,
+  "sourceGroundedPedagogyCandidates": 20,
+  "wrongAnswerOptionExplanations": 60,
+  "fullyApprovedPedagogy": 0,
+  "productionMutation": false,
+  "pass": [
+    "PDF_HASH",
+    "200_SOURCE_IMAGE_HASHES",
+    "20_LOCAL_CROP_VISUAL",
+    "20_PEDAGOGY_STRUCTURE"
+  ],
+  "fail": [
+    "YLM26_FULL_PEDAGOGY",
+    "PRODUCTION_IMAGE_PARITY",
+    "PRODUCTION_KEY_CORRECTIONS_NOT_APPLIED",
+    "COL26_FULL_CLOSURE",
+    "LIVE_STUDENT_E2E"
+  ],
+  "next": "Compare local crop fixes with production images, finish real options and pedagogy for all 326 YLM26 rows, approve reversible key corrections, then COL26 1012."
+}

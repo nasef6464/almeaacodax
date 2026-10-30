@@ -1,0 +1,337 @@
+{
+  "run": "RUN49",
+  "part": "2B",
+  "count": 5,
+  "records": [
+    {
+      "questionCode": "TAH-MATH-YLM26-P042-Q03",
+      "source": {
+        "sourceItemId": "YLM26-PDF041-P042-N03",
+        "pdfPageIndex": 41,
+        "printedPageNumber": 42,
+        "printedQuestionNumber": 3,
+        "imageHash": "2d7b2f82b5712f4c9ce57e59457907a1538c2cfde9b2e9385d821a2cd9e5ba96",
+        "imageVersion": 2
+      },
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "questionText": "ما الحد النوني للمتتابعة 3، 7، 11، 15، ...؟",
+      "options": {
+        "A": "5n−2",
+        "B": "4n−1",
+        "C": "2n+1",
+        "D": "3n+1"
+      },
+      "answerLetter": "B",
+      "correctOptionIndex": 1,
+      "explanation": "a_n=3+4(n−1)=4n−1.",
+      "whyCorrect": "a_n=3+4(n−1)=4n−1.",
+      "whyOthersWrong": {
+        "A": "فرقها 5 لا 4.",
+        "C": "فرقها 2 لا 4.",
+        "D": "حدها الأول 4 لا 3."
+      },
+      "hint": "حدّد الفرق المشترك ثم استخدم قانون الحد النوني للمتتابعة الحسابية.",
+      "solvingStrategy": "استخراج صيغة الحد النوني لمتتابعة حسابية.",
+      "commonMistakes": [
+        "فرقها 5 لا 4.",
+        "فرقها 2 لا 4.",
+        "حدها الأول 4 لا 3."
+      ],
+      "aiContext": {
+        "readableText": "ما الحد النوني للمتتابعة 3، 7، 11، 15، ...؟",
+        "speechText": "ما الحد النوني للمتتابعة 3، 7، 11، 15، ...؟",
+        "visualDescription": "متتابعة حسابية حدها الأول 3 والفرق المشترك 4.",
+        "concepts": [
+          "استخراج صيغة الحد النوني لمتتابعة حسابية."
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "difficultyCandidate": "easy",
+      "mapping": {
+        "skillId": "skill_tah_math_13",
+        "skillName": "المتتابعات والمتسلسلات",
+        "subSkillId": "sub_tah_math_13_01",
+        "subSkillName": "المتتابعات والمتسلسلات الحسابية"
+      },
+      "foundationReference": {
+        "lessonNumber": 18,
+        "lessonTitle": "المتتابعات والمتسلسلات",
+        "subSkillId": "sub_tah_math_13_01",
+        "subSkillName": "المتتابعات والمتسلسلات الحسابية"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF041-P042-N03|2d7b2f82b5712f4c9ce57e59457907a1538c2cfde9b2e9385d821a2cd9e5ba96",
+      "teachingFingerprintCandidate": "sub_tah_math_13_01|استخراج صيغة الحد النوني لمتتابعة حسابية.",
+      "sourceImageHash": "2d7b2f82b5712f4c9ce57e59457907a1538c2cfde9b2e9385d821a2cd9e5ba96",
+      "sourceVisualReviewed": true,
+      "canonicalApproved": false,
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P042-Q04",
+      "source": {
+        "sourceItemId": "YLM26-PDF041-P042-N04",
+        "pdfPageIndex": 41,
+        "printedPageNumber": 42,
+        "printedQuestionNumber": 4,
+        "imageHash": "eaa8970cf6065e5a097537217eed0251bc9deb0920c7a2009140de3060d9d2e6",
+        "imageVersion": 2
+      },
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "questionText": "احسب الوسطين الحسابيين بين العددين 3 و24.",
+      "options": {
+        "A": "10 و17",
+        "B": "11 و19",
+        "C": "12 و19",
+        "D": "7 و17"
+      },
+      "answerLetter": "A",
+      "correctOptionIndex": 0,
+      "explanation": "d=(24−3)/3=7، الوسطان 10 و17.",
+      "whyCorrect": "d=(24−3)/3=7، الوسطان 10 و17.",
+      "whyOthersWrong": {
+        "B": "فروقها ليست ثابتة.",
+        "C": "فروقها 9 و7 و5.",
+        "D": "فروقها 4 و10 و7."
+      },
+      "hint": "قسّم الفرق بين الطرفين على عدد الفواصل الثلاثة.",
+      "solvingStrategy": "إيجاد أوساط حسابية بين عددين.",
+      "commonMistakes": [
+        "فروقها ليست ثابتة.",
+        "فروقها 9 و7 و5.",
+        "فروقها 4 و10 و7."
+      ],
+      "aiContext": {
+        "readableText": "احسب الوسطين الحسابيين بين العددين 3 و24.",
+        "speechText": "احسب الوسطين الحسابيين بين العددين 3 و24.",
+        "visualDescription": "سؤال عن إدراج وسطين حسابيين بين 3 و24.",
+        "concepts": [
+          "إيجاد أوساط حسابية بين عددين."
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "difficultyCandidate": "easy",
+      "mapping": {
+        "skillId": "skill_tah_math_13",
+        "skillName": "المتتابعات والمتسلسلات",
+        "subSkillId": "sub_tah_math_13_01",
+        "subSkillName": "المتتابعات والمتسلسلات الحسابية"
+      },
+      "foundationReference": {
+        "lessonNumber": 18,
+        "lessonTitle": "المتتابعات والمتسلسلات",
+        "subSkillId": "sub_tah_math_13_01",
+        "subSkillName": "المتتابعات والمتسلسلات الحسابية"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF041-P042-N04|eaa8970cf6065e5a097537217eed0251bc9deb0920c7a2009140de3060d9d2e6",
+      "teachingFingerprintCandidate": "sub_tah_math_13_01|إيجاد أوساط حسابية بين عددين.",
+      "sourceImageHash": "eaa8970cf6065e5a097537217eed0251bc9deb0920c7a2009140de3060d9d2e6",
+      "sourceVisualReviewed": true,
+      "canonicalApproved": false,
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P042-Q05",
+      "source": {
+        "sourceItemId": "YLM26-PDF041-P042-N05",
+        "pdfPageIndex": 41,
+        "printedPageNumber": 42,
+        "printedQuestionNumber": 5,
+        "imageHash": "ca5c2ac791c19b8a8a24fde4bc98f749a80a5c142e97c8446be75b3dae63f51d",
+        "imageVersion": 2
+      },
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "questionText": "زوايا مضلع رباعي في متتابعة حسابية، وأصغر زاوية 30°. فما أكبر زاوية؟",
+      "options": {
+        "A": "150°",
+        "B": "140°",
+        "C": "110°",
+        "D": "120°"
+      },
+      "answerLetter": "A",
+      "correctOptionIndex": 0,
+      "explanation": "الزوايا 30،70،110،150، ومجموعها 360°.",
+      "whyCorrect": "الزوايا 30،70،110،150، ومجموعها 360°.",
+      "whyOthersWrong": {
+        "B": "ليست الزاوية الرابعة بعد حساب d=40.",
+        "C": "110° الزاوية الثالثة.",
+        "D": "120° لا تحقق مجموع الزوايا مع أساس 40."
+      },
+      "hint": "مجموع زوايا الشكل الرباعي 360°.",
+      "solvingStrategy": "نمذجة زوايا رباعي بمتتابعة حسابية.",
+      "commonMistakes": [
+        "ليست الزاوية الرابعة بعد حساب d=40.",
+        "110° الزاوية الثالثة.",
+        "120° لا تحقق مجموع الزوايا مع أساس 40."
+      ],
+      "aiContext": {
+        "readableText": "زوايا مضلع رباعي في متتابعة حسابية، وأصغر زاوية 30°. فما أكبر زاوية؟",
+        "speechText": "زوايا مضلع رباعي في متتابعة حسابية، وأصغر زاوية 30°. فما أكبر زاوية؟",
+        "visualDescription": "مسألة لفظية عن أربع زوايا في متتابعة حسابية وأصغرها 30°.",
+        "concepts": [
+          "نمذجة زوايا رباعي بمتتابعة حسابية."
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "difficultyCandidate": "easy",
+      "mapping": {
+        "skillId": "skill_tah_math_13",
+        "skillName": "المتتابعات والمتسلسلات",
+        "subSkillId": "sub_tah_math_13_01",
+        "subSkillName": "المتتابعات والمتسلسلات الحسابية"
+      },
+      "foundationReference": {
+        "lessonNumber": 18,
+        "lessonTitle": "المتتابعات والمتسلسلات",
+        "subSkillId": "sub_tah_math_13_01",
+        "subSkillName": "المتتابعات والمتسلسلات الحسابية"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF041-P042-N05|ca5c2ac791c19b8a8a24fde4bc98f749a80a5c142e97c8446be75b3dae63f51d",
+      "teachingFingerprintCandidate": "sub_tah_math_13_01|نمذجة زوايا رباعي بمتتابعة حسابية.",
+      "sourceImageHash": "ca5c2ac791c19b8a8a24fde4bc98f749a80a5c142e97c8446be75b3dae63f51d",
+      "sourceVisualReviewed": true,
+      "canonicalApproved": false,
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P042-Q06",
+      "source": {
+        "sourceItemId": "YLM26-PDF041-P042-N06",
+        "pdfPageIndex": 41,
+        "printedPageNumber": 42,
+        "printedQuestionNumber": 6,
+        "imageHash": "47bd56cadba2f7e560db6473c66cc45e478e836f763978be272fb69df32b7149",
+        "imageVersion": 2
+      },
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "questionText": "متتابعة حسابية حدها الأول −7 وأساسها 4 وعدد حدودها 15. ما مجموعها؟",
+      "options": {
+        "A": "315",
+        "B": "220",
+        "C": "340",
+        "D": "280"
+      },
+      "answerLetter": "A",
+      "correctOptionIndex": 0,
+      "explanation": "S15=15/2[−14+14×4]=315.",
+      "whyCorrect": "S15=15/2[−14+14×4]=315.",
+      "whyOthersWrong": {
+        "B": "ينقص عن المجموع الصحيح.",
+        "C": "ينتج من حساب خاطئ للحد الأخير.",
+        "D": "ينتج من خطأ في عدد الحدود."
+      },
+      "hint": "استخدم قانون مجموع أول n حدًا في المتتابعة الحسابية.",
+      "solvingStrategy": "تطبيق قانون مجموع المتتابعة الحسابية مباشرة.",
+      "commonMistakes": [
+        "ينقص عن المجموع الصحيح.",
+        "ينتج من حساب خاطئ للحد الأخير.",
+        "ينتج من خطأ في عدد الحدود."
+      ],
+      "aiContext": {
+        "readableText": "متتابعة حسابية حدها الأول −7 وأساسها 4 وعدد حدودها 15. ما مجموعها؟",
+        "speechText": "متتابعة حسابية حدها الأول −7 وأساسها 4 وعدد حدودها 15. ما مجموعها؟",
+        "visualDescription": "سؤال نصي عن مجموع 15 حدًا لمتتابعة حسابية تبدأ بـ−7 وفرقها 4.",
+        "concepts": [
+          "تطبيق قانون مجموع المتتابعة الحسابية مباشرة."
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "difficultyCandidate": "easy",
+      "mapping": {
+        "skillId": "skill_tah_math_13",
+        "skillName": "المتتابعات والمتسلسلات",
+        "subSkillId": "sub_tah_math_13_01",
+        "subSkillName": "المتتابعات والمتسلسلات الحسابية"
+      },
+      "foundationReference": {
+        "lessonNumber": 18,
+        "lessonTitle": "المتتابعات والمتسلسلات",
+        "subSkillId": "sub_tah_math_13_01",
+        "subSkillName": "المتتابعات والمتسلسلات الحسابية"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF041-P042-N06|47bd56cadba2f7e560db6473c66cc45e478e836f763978be272fb69df32b7149",
+      "teachingFingerprintCandidate": "sub_tah_math_13_01|تطبيق قانون مجموع المتتابعة الحسابية مباشرة.",
+      "sourceImageHash": "47bd56cadba2f7e560db6473c66cc45e478e836f763978be272fb69df32b7149",
+      "sourceVisualReviewed": true,
+      "canonicalApproved": false,
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P043-Q07",
+      "source": {
+        "sourceItemId": "YLM26-PDF042-P043-N07",
+        "pdfPageIndex": 42,
+        "printedPageNumber": 43,
+        "printedQuestionNumber": 7,
+        "imageHash": "3d52413755a17dc05d1bbf07e4d1c7e9af1c2ea268819e31f1a3b180c18ea9d6",
+        "imageVersion": 2
+      },
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "questionText": "أوجد قيمة مجموع المتسلسلة Σ(2n-1) عندما n من 3 إلى 17.",
+      "options": {
+        "A": "323",
+        "B": "311",
+        "C": "285",
+        "D": "215"
+      },
+      "answerLetter": "C",
+      "correctOptionIndex": 2,
+      "explanation": "15 حدًا من 5 إلى 33، مجموعها 15×19=285.",
+      "whyCorrect": "15 حدًا من 5 إلى 33، مجموعها 15×19=285.",
+      "whyOthersWrong": {
+        "A": "يزيد عن مجموع 15 حدًا.",
+        "B": "لا يساوي 15×متوسط 5 و33.",
+        "D": "ينقص عن المجموع الصحيح."
+      },
+      "hint": "حوّل صيغة سيغما إلى متسلسلة حسابية وحدد أول حد وآخر حد وعدد الحدود.",
+      "solvingStrategy": "حساب مجموع متسلسلة حسابية معطاة برمز سيغما.",
+      "commonMistakes": [
+        "يزيد عن مجموع 15 حدًا.",
+        "لا يساوي 15×متوسط 5 و33.",
+        "ينقص عن المجموع الصحيح."
+      ],
+      "aiContext": {
+        "readableText": "أوجد قيمة مجموع المتسلسلة Σ(2n-1) عندما n من 3 إلى 17.",
+        "speechText": "أوجد قيمة مجموع المتسلسلة Σ(2n-1) عندما n من 3 إلى 17.",
+        "visualDescription": "رمز سيغما لمجموع 2n-1 من n=3 إلى n=17.",
+        "concepts": [
+          "حساب مجموع متسلسلة حسابية معطاة برمز سيغما."
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "difficultyCandidate": "easy",
+      "mapping": {
+        "skillId": "skill_tah_math_13",
+        "skillName": "المتتابعات والمتسلسلات",
+        "subSkillId": "sub_tah_math_13_01",
+        "subSkillName": "المتتابعات والمتسلسلات الحسابية"
+      },
+      "foundationReference": {
+        "lessonNumber": 18,
+        "lessonTitle": "المتتابعات والمتسلسلات",
+        "subSkillId": "sub_tah_math_13_01",
+        "subSkillName": "المتتابعات والمتسلسلات الحسابية"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF042-P043-N07|3d52413755a17dc05d1bbf07e4d1c7e9af1c2ea268819e31f1a3b180c18ea9d6",
+      "teachingFingerprintCandidate": "sub_tah_math_13_01|حساب مجموع متسلسلة حسابية معطاة برمز سيغما.",
+      "sourceImageHash": "3d52413755a17dc05d1bbf07e4d1c7e9af1c2ea268819e31f1a3b180c18ea9d6",
+      "sourceVisualReviewed": true,
+      "canonicalApproved": false,
+      "productionImageParity": "NOT_TESTED"
+    }
+  ]
+}

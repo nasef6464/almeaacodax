@@ -1,0 +1,96 @@
+{
+  "run": "RUN59",
+  "scope": "YLM26",
+  "source": "RUN58 official-PDF-derived RGB source crops",
+  "status": "21 VISUAL QA PASS candidate recrops, not production approved",
+  "productionMutation": false,
+  "productionR2Parity": "NOT_TESTED",
+  "verticalCropBoundsPx": {
+    "P057-Q09": [
+      42,
+      190
+    ],
+    "P058-Q10": [
+      0,
+      180
+    ],
+    "P059-Q11": [
+      0,
+      175
+    ],
+    "P059-Q12": [
+      35,
+      165
+    ],
+    "P064-Q02": [
+      50,
+      185
+    ],
+    "P065-Q07": [
+      95,
+      175
+    ],
+    "P068-Q03": [
+      55,
+      165
+    ],
+    "P068-Q04": [
+      75,
+      160
+    ],
+    "P069-Q07": [
+      0,
+      175
+    ],
+    "P071-Q15": [
+      35,
+      245
+    ],
+    "P081-Q01": [
+      0,
+      170
+    ],
+    "P082-Q03": [
+      45,
+      185
+    ],
+    "P083-Q06": [
+      65,
+      175
+    ],
+    "P083-Q08": [
+      65,
+      175
+    ],
+    "P084-Q12": [
+      50,
+      225
+    ],
+    "P085-Q04": [
+      48,
+      165
+    ],
+    "P086-Q05": [
+      50,
+      170
+    ],
+    "P092-Q04": [
+      80,
+      165
+    ],
+    "P094-Q10": [
+      40,
+      240
+    ],
+    "P013-Q12": [
+      55,
+      160
+    ],
+    "P016-Q10": [
+      0,
+      310
+    ]
+  },
+  "fullWidthPreserved": true,
+  "images": "Candidate PNGs in RUN59 evidence package; not uploaded to repository"
+}

@@ -1,0 +1,44 @@
+{
+  "run": "RUN25",
+  "date": "2026-10-08",
+  "bank": "YLM26",
+  "officialSourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+  "distinctOfficialSourceQuestionImagesReauditedThisRun": 150,
+  "previouslySourceReviewedOverlap": 150,
+  "newUniqueQuestions": 0,
+  "localSourceCropRepairs": 10,
+  "neighborContaminationStillFlagged": 16,
+  "fullPedagogyPreparedThisRun": 5,
+  "confirmedLiveWrongKeysStillUnapplied": [
+    "TAH-MATH-YLM26-P021-Q04",
+    "TAH-MATH-YLM26-P090-Q10"
+  ],
+  "newSourceAdjudicatedExplanationContamination": [
+    "TAH-MATH-YLM26-P088-Q12",
+    "TAH-MATH-YLM26-P090-Q02",
+    "TAH-MATH-YLM26-P090-Q04"
+  ],
+  "repairs": [
+    "P006-Q07",
+    "P007-Q03",
+    "P008-Q06",
+    "P009-Q04",
+    "P077-Q02",
+    "P078-Q04",
+    "P081-Q01",
+    "P087-Q07",
+    "P087-Q08",
+    "P087-Q10"
+  ],
+  "checks": {
+    "sourceImageHash": "150/150 PASS",
+    "correctedCropHash": "10/10 PASS",
+    "pedagogySchema": "5/5 PASS",
+    "productionImageComparison": "NOT_RUN",
+    "liveStudentE2E": "NOT_RUN"
+  },
+  "productionMutation": false,
+  "fullyPedagogicallyClosed": 0,
+  "evidence": "RUN25 local ZIP contains 150 original source crops, 15 visual contact sheets, 10 corrected crops and reversible clip coordinates, 5 full pedagogical source-grounded correction candidates.",
+  "next": "Review 16 residual neighbor contaminations, validate exact production before rollback-safe 5-row fixes; complete all YLM26 actual options, teaching fields and foundation links before COL26."
+}

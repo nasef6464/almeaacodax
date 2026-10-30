@@ -1,0 +1,17 @@
+{
+  "project": "TAH-MATH",
+  "run": "RUN78",
+  "phase": "P2_YLM26",
+  "sourceBooks": [
+    "Yellow Mathematics 26 Foundation",
+    "Yellow Mathematics 26 Collections"
+  ],
+  "progress": {
+    "newMastered": 0,
+    "newStagedPedagogy": 29,
+    "sourceAnswerDisagreementsAdjudicated": 4
+  },
+  "state": "NOT_GREEN",
+  "nextPhaseBlockedUntil": "326 complete and live R2/topicId parity verified",
+  "productionMutation": false
+}

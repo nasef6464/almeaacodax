@@ -1,0 +1,29 @@
+{
+  "project": "TAH-MATH",
+  "run": "RUN19",
+  "masterControlStatus": "IN_PROGRESS",
+  "branch": "content/tah-math-full-taxonomy-closure",
+  "YLM26": {
+    "baseline": 326,
+    "sourceCropsReRendered": 200,
+    "liveContentRowsChecked": 200,
+    "independentMathVerified": 30,
+    "fullPedagogyProposals": 6,
+    "sourceTitleMetadataManifestRows": 326,
+    "fullPedagogyClosed": false
+  },
+  "COL26": {
+    "sourceAnswerAuditPrior": 1012,
+    "fullPedagogyClosed": false
+  },
+  "downstream": {
+    "COL26OLD": "PENDING",
+    "dedupe": "PENDING",
+    "coverage": "PENDING",
+    "trainingsTests": "PENDING",
+    "studentE2E": "PENDING"
+  },
+  "productionMutation": false,
+  "finalClosed": false,
+  "next": "Complete YLM26 semantic option texts and whyOthersWrong; apply source-verified reversible correction manifest only after approval."
+}

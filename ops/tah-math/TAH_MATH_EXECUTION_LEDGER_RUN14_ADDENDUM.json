@@ -1,0 +1,27 @@
+{
+  "project": "TAH-MATH",
+  "checkpoint": "2026-10-08-heavy-run14",
+  "status": "IN_PROGRESS",
+  "run14": {
+    "distinctSourceOptionCrops": 234,
+    "sourceLabelGeometryPass": 234,
+    "independentMathPass": 12,
+    "fourOptionPedagogyProposals": 8,
+    "mathOnlyProposals": 4,
+    "sourceVisualRemapCandidates": 48
+  },
+  "cumulative": {
+    "distinctPartialOptionRows": 723,
+    "priorRasterMathRows": 19,
+    "unreviewedOptionRegions": 270
+  },
+  "productionMutation": false,
+  "masterControlOriginalUpdate": "BLOCKED_BY_CONNECTOR_SAFETY",
+  "executionLedgerOriginalUpdate": "BLOCKED_BY_CONNECTOR_SAFETY",
+  "pr450Comment": "BLOCKED_BY_CONNECTOR_SAFETY",
+  "evidence": [
+    "ops/tah-math/TAH_MATH_RUN14_CHECKPOINT.json",
+    "ops/tah-math/TAH_MATH_RUN14_REMAP_GROUPS.json"
+  ],
+  "next": "Complete 270 COL26 option-region rows, YLM26 full pedagogy, verify remaps, COL26OLD regression, dedupe, coverage, trainings/tests, live student E2E"
+}

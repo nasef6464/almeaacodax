@@ -1,0 +1,37 @@
+{
+  "project": "TAH-MATH",
+  "bank": "YLM26",
+  "checkpoint": "heavy-run8",
+  "source": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+  "resolvedCandidate": {
+    "questionCode": "TAH-MATH-YLM26-P021-Q04",
+    "status": "PASS_DATABASE_CORRECT",
+    "correctOptionIndex": 2,
+    "answerLetter": "C",
+    "answerText": "2π",
+    "verification": "VISUAL_SOURCE_PAGE",
+    "evidence": "Printed page 21 shows the exact arc-length question: diameter 12 => radius 6, central angle 60°, and worked solution ℓ=(60/360)×2π×6=2π. The answer-key strip marks question 4 as C.",
+    "action": "REMOVE_FROM_REVIEW_CANDIDATES_NO_ANSWER_MUTATION"
+  },
+  "answerAudit": {
+    "lessons1to13": {
+      "reviewed": 110,
+      "confirmed": 110,
+      "unresolved": 0
+    },
+    "lessons15to16": {
+      "reviewed": 5,
+      "confirmed": 5,
+      "unresolved": 0,
+      "note": "Verified in previous run; this checkpoint records it formally."
+    },
+    "totalConfirmedSoFar": 115,
+    "totalYLM26": 326,
+    "remaining": 211
+  },
+  "safety": {
+    "productionMutation": false,
+    "note": "No answer change required. Ambiguous parsed key was overruled by direct visual source verification."
+  },
+  "next": "Continue source answer/visual audit for lessons 14 and 17-31; do not infer answer keys from ambiguous extraction."
+}

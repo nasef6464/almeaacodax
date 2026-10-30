@@ -1,0 +1,337 @@
+{
+  "run": "RUN49",
+  "part": 5,
+  "count": 5,
+  "records": [
+    {
+      "questionCode": "TAH-MATH-YLM26-P046-Q01",
+      "source": {
+        "sourceItemId": "YLM26-PDF045-P046-N01",
+        "pdfPageIndex": 45,
+        "printedPageNumber": 46,
+        "printedQuestionNumber": 1,
+        "imageHash": "0250af0cec720fc1200959b3463f03a5433f560a7b8030c77eec537dab27f418",
+        "imageVersion": 2
+      },
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "questionText": "إذا كان لدينا m قلمًا وسحبنا قلمين على التوالي دون إرجاع، فما عدد النواتج الممكنة؟",
+      "options": {
+        "A": "m²",
+        "B": "m(m−1)",
+        "C": "m",
+        "D": "m−1"
+      },
+      "answerLetter": "B",
+      "correctOptionIndex": 1,
+      "explanation": "السحب الأول m اختيارًا والثاني m−1؛ النواتج m(m−1).",
+      "whyCorrect": "السحب الأول m اختيارًا والثاني m−1؛ النواتج m(m−1).",
+      "whyOthersWrong": {
+        "A": "m² يفترض الإرجاع في السحب الثاني.",
+        "C": "m يحسب السحب الأول فقط.",
+        "D": "m−1 يحسب السحب الثاني فقط."
+      },
+      "hint": "استخدم مبدأ العد الأساسي مع عدم الإرجاع.",
+      "solvingStrategy": "تطبيق مبدأ العد الأساسي في تجربتين متتاليتين.",
+      "commonMistakes": [
+        "m² يفترض الإرجاع في السحب الثاني.",
+        "m يحسب السحب الأول فقط.",
+        "m−1 يحسب السحب الثاني فقط."
+      ],
+      "aiContext": {
+        "readableText": "إذا كان لدينا m قلمًا وسحبنا قلمين على التوالي دون إرجاع، فما عدد النواتج الممكنة؟",
+        "speechText": "إذا كان لدينا m قلمًا وسحبنا قلمين على التوالي دون إرجاع، فما عدد النواتج الممكنة؟",
+        "visualDescription": "مسألة عد عن سحب قلمين من m قلم دون إرجاع.",
+        "concepts": [
+          "تطبيق مبدأ العد الأساسي في تجربتين متتاليتين."
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "difficultyCandidate": "easy",
+      "mapping": {
+        "skillId": "skill_tah_math_14",
+        "skillName": "الاحتمالات ونظرية ذات الحدين",
+        "subSkillId": "sub_tah_math_14_02",
+        "subSkillName": "مبدأ العد والتباديل"
+      },
+      "foundationReference": {
+        "lessonNumber": 20,
+        "lessonTitle": "الاحتمالات",
+        "subSkillId": "sub_tah_math_14_02",
+        "subSkillName": "مبدأ العد والتباديل"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF045-P046-N01|0250af0cec720fc1200959b3463f03a5433f560a7b8030c77eec537dab27f418",
+      "teachingFingerprintCandidate": "sub_tah_math_14_02|تطبيق مبدأ العد الأساسي في تجربتين متتاليتين.",
+      "sourceImageHash": "0250af0cec720fc1200959b3463f03a5433f560a7b8030c77eec537dab27f418",
+      "sourceVisualReviewed": true,
+      "canonicalApproved": false,
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P046-Q02",
+      "source": {
+        "sourceItemId": "YLM26-PDF045-P046-N02",
+        "pdfPageIndex": 45,
+        "printedPageNumber": 46,
+        "printedQuestionNumber": 2,
+        "imageHash": "0ef2593ad5e75bef4b230f35c1f0ea560a618746bf37ac71243f8be765bc9331",
+        "imageVersion": 2
+      },
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "questionText": "فندق فيه خياران للدور T أو F، وخياران لنوع الغرفة S أو B. ما فضاء العينة؟",
+      "options": {
+        "A": "TS-TB-FT-SB",
+        "B": "TS-TB-FS-FB",
+        "C": "TF-FT-SB-BS",
+        "D": "TF-TB-FS-SB"
+      },
+      "answerLetter": "B",
+      "correctOptionIndex": 1,
+      "explanation": "الدور T/F ونوع الغرفة S/B؛ فضاء العينة {TS,TB,FS,FB}.",
+      "whyCorrect": "الدور T/F ونوع الغرفة S/B؛ فضاء العينة {TS,TB,FS,FB}.",
+      "whyOthersWrong": {
+        "A": "يحتوي FT وSB غير الموافقين لترميز الدور ثم نوع الغرفة.",
+        "C": "يخلط ترتيب الرموز وينقص التركيبات الصحيحة.",
+        "D": "يستبعد TS ويستعمل SB بترتيب غير مطلوب."
+      },
+      "hint": "كوّن جميع الأزواج الممكنة من اختيار الدور واختيار نوع الغرفة.",
+      "solvingStrategy": "بناء فضاء عينة لتجربة مركبة من مرحلتين.",
+      "commonMistakes": [
+        "يحتوي FT وSB غير الموافقين لترميز الدور ثم نوع الغرفة.",
+        "يخلط ترتيب الرموز وينقص التركيبات الصحيحة.",
+        "يستبعد TS ويستعمل SB بترتيب غير مطلوب."
+      ],
+      "aiContext": {
+        "readableText": "فندق فيه خياران للدور T أو F، وخياران لنوع الغرفة S أو B. ما فضاء العينة؟",
+        "speechText": "فندق فيه خياران للدور T أو F، وخياران لنوع الغرفة S أو B. ما فضاء العينة؟",
+        "visualDescription": "اختيار بين دورين T وF ونوعين من الغرف S وB.",
+        "concepts": [
+          "بناء فضاء عينة لتجربة مركبة من مرحلتين."
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "difficultyCandidate": "easy",
+      "mapping": {
+        "skillId": "skill_tah_math_14",
+        "skillName": "الاحتمالات ونظرية ذات الحدين",
+        "subSkillId": "sub_tah_math_14_04",
+        "subSkillName": "الاحتمال البسيط والمركب والشرطي والهندسي"
+      },
+      "foundationReference": {
+        "lessonNumber": 20,
+        "lessonTitle": "الاحتمالات",
+        "subSkillId": "sub_tah_math_14_04",
+        "subSkillName": "الاحتمال البسيط والمركب والشرطي والهندسي"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF045-P046-N02|0ef2593ad5e75bef4b230f35c1f0ea560a618746bf37ac71243f8be765bc9331",
+      "teachingFingerprintCandidate": "sub_tah_math_14_04|بناء فضاء عينة لتجربة مركبة من مرحلتين.",
+      "sourceImageHash": "0ef2593ad5e75bef4b230f35c1f0ea560a618746bf37ac71243f8be765bc9331",
+      "sourceVisualReviewed": true,
+      "canonicalApproved": false,
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P046-Q03",
+      "source": {
+        "sourceItemId": "YLM26-PDF045-P046-N03",
+        "pdfPageIndex": 45,
+        "printedPageNumber": 46,
+        "printedQuestionNumber": 3,
+        "imageHash": "e83876621926704ea18603178efec7f6286c3f010695aae66f514e62ed03d94a",
+        "imageVersion": 2
+      },
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "questionText": "عند رمي مكعبين متميزين مرة واحدة، ما احتمال أن يكون مجموع العددين 3؟",
+      "options": {
+        "A": "1/36",
+        "B": "2/36",
+        "C": "2/18",
+        "D": "1/12"
+      },
+      "answerLetter": "B",
+      "correctOptionIndex": 1,
+      "explanation": "الحالتان (1,2) و(2,1) من 36؛ الاحتمال 2/36.",
+      "whyCorrect": "الحالتان (1,2) و(2,1) من 36؛ الاحتمال 2/36.",
+      "whyOthersWrong": {
+        "A": "1/36 يعد حالة واحدة بدل حالتين.",
+        "C": "2/18 يجعل عدد النتائج الكلي 18 بدل 36.",
+        "D": "1/12 لا يساوي 2/36."
+      },
+      "hint": "اكتب الأزواج المرتبة التي مجموعها 3.",
+      "solvingStrategy": "حساب احتمال بسيط باستخدام عدد النواتج الملائمة إلى الكلية.",
+      "commonMistakes": [
+        "1/36 يعد حالة واحدة بدل حالتين.",
+        "2/18 يجعل عدد النتائج الكلي 18 بدل 36.",
+        "1/12 لا يساوي 2/36."
+      ],
+      "aiContext": {
+        "readableText": "عند رمي مكعبين متميزين مرة واحدة، ما احتمال أن يكون مجموع العددين 3؟",
+        "speechText": "عند رمي مكعبين متميزين مرة واحدة، ما احتمال أن يكون مجموع العددين 3؟",
+        "visualDescription": "مكعبا أرقام متميزان ومطلوب احتمال أن يكون المجموع 3.",
+        "concepts": [
+          "حساب احتمال بسيط باستخدام عدد النواتج الملائمة إلى الكلية."
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "difficultyCandidate": "easy",
+      "mapping": {
+        "skillId": "skill_tah_math_14",
+        "skillName": "الاحتمالات ونظرية ذات الحدين",
+        "subSkillId": "sub_tah_math_14_04",
+        "subSkillName": "الاحتمال البسيط والمركب والشرطي والهندسي"
+      },
+      "foundationReference": {
+        "lessonNumber": 20,
+        "lessonTitle": "الاحتمالات",
+        "subSkillId": "sub_tah_math_14_04",
+        "subSkillName": "الاحتمال البسيط والمركب والشرطي والهندسي"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF045-P046-N03|e83876621926704ea18603178efec7f6286c3f010695aae66f514e62ed03d94a",
+      "teachingFingerprintCandidate": "sub_tah_math_14_04|حساب احتمال بسيط باستخدام عدد النواتج الملائمة إلى الكلية.",
+      "sourceImageHash": "e83876621926704ea18603178efec7f6286c3f010695aae66f514e62ed03d94a",
+      "sourceVisualReviewed": true,
+      "canonicalApproved": false,
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P046-Q04",
+      "source": {
+        "sourceItemId": "YLM26-PDF045-P046-N04",
+        "pdfPageIndex": 45,
+        "printedPageNumber": 46,
+        "printedQuestionNumber": 4,
+        "imageHash": "6d4a75a7e61b2eaa76ac7c24f4319bb07b854adedab937b99350b4ab9c750f05",
+        "imageVersion": 2
+      },
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "questionText": "إذا كان n! = 120، فما قيمة (n-1)!؟",
+      "options": {
+        "A": "6",
+        "B": "24",
+        "C": "120",
+        "D": "720"
+      },
+      "answerLetter": "B",
+      "correctOptionIndex": 1,
+      "explanation": "n!=120=5!؛ (n−1)!=4!=24.",
+      "whyCorrect": "n!=120=5!؛ (n−1)!=4!=24.",
+      "whyOthersWrong": {
+        "A": "6 ليس 4! بل 3!.",
+        "C": "120 هي n! وليس (n−1)!.",
+        "D": "720 هي 6! لا 4!."
+      },
+      "hint": "حدّد n من قيمة المضروب أولًا.",
+      "solvingStrategy": "استخدام تعريف مضروب العدد.",
+      "commonMistakes": [
+        "6 ليس 4! بل 3!.",
+        "120 هي n! وليس (n−1)!.",
+        "720 هي 6! لا 4!."
+      ],
+      "aiContext": {
+        "readableText": "إذا كان n! = 120، فما قيمة (n-1)!؟",
+        "speechText": "إذا كان n! = 120، فما قيمة (n-1)!؟",
+        "visualDescription": "سؤال عن n! = 120 ومطلوب (n-1)!.",
+        "concepts": [
+          "استخدام تعريف مضروب العدد."
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "difficultyCandidate": "easy",
+      "mapping": {
+        "skillId": "skill_tah_math_14",
+        "skillName": "الاحتمالات ونظرية ذات الحدين",
+        "subSkillId": "sub_tah_math_14_02",
+        "subSkillName": "مبدأ العد والتباديل"
+      },
+      "foundationReference": {
+        "lessonNumber": 20,
+        "lessonTitle": "الاحتمالات",
+        "subSkillId": "sub_tah_math_14_02",
+        "subSkillName": "مبدأ العد والتباديل"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF045-P046-N04|6d4a75a7e61b2eaa76ac7c24f4319bb07b854adedab937b99350b4ab9c750f05",
+      "teachingFingerprintCandidate": "sub_tah_math_14_02|استخدام تعريف مضروب العدد.",
+      "sourceImageHash": "6d4a75a7e61b2eaa76ac7c24f4319bb07b854adedab937b99350b4ab9c750f05",
+      "sourceVisualReviewed": true,
+      "canonicalApproved": false,
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P046-Q05",
+      "source": {
+        "sourceItemId": "YLM26-PDF045-P046-N05",
+        "pdfPageIndex": 45,
+        "printedPageNumber": 46,
+        "printedQuestionNumber": 5,
+        "imageHash": "62649b5747c6ff68d5f7f602b1f69936559bccc1be76fcddac03e64007abaa06",
+        "imageVersion": 2
+      },
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "questionText": "يرغب 10 أصدقاء مختلفو الأسماء في الدخول إلى مكان ما. ما احتمال أن يكون محمد الأول وفهد الثاني في الترتيب؟",
+      "options": {
+        "A": "1/90",
+        "B": "1/60",
+        "C": "1/20",
+        "D": "1/10"
+      },
+      "answerLetter": "A",
+      "correctOptionIndex": 0,
+      "explanation": "احتمال محمد أولًا 1/10 وفهد ثانيًا بعده 1/9؛ الناتج 1/90.",
+      "whyCorrect": "احتمال محمد أولًا 1/10 وفهد ثانيًا بعده 1/9؛ الناتج 1/90.",
+      "whyOthersWrong": {
+        "B": "1/60 لا يوافق 10×9 ترتيبًا.",
+        "C": "1/20 لا يوافق احتمال الشخصين بترتيب محدد.",
+        "D": "1/10 احتمال الأول فقط دون الثاني."
+      },
+      "hint": "استخدم قاعدة الضرب لاحتمال حدثين متتابعين دون إرجاع.",
+      "solvingStrategy": "حساب احتمال ترتيب محدد في موضعين متتاليين بضرب الاحتمالين الشرطيين.",
+      "commonMistakes": [
+        "1/60 لا يوافق 10×9 ترتيبًا.",
+        "1/20 لا يوافق احتمال الشخصين بترتيب محدد.",
+        "1/10 احتمال الأول فقط دون الثاني."
+      ],
+      "aiContext": {
+        "readableText": "يرغب 10 أصدقاء مختلفو الأسماء في الدخول إلى مكان ما. ما احتمال أن يكون محمد الأول وفهد الثاني في الترتيب؟",
+        "speechText": "يرغب 10 أصدقاء مختلفو الأسماء في الدخول إلى مكان ما. ما احتمال أن يكون محمد الأول وفهد الثاني في الترتيب؟",
+        "visualDescription": "مسألة لفظية عن ترتيب عشوائي لعشرة أشخاص مع تثبيت شخصين في المركزين الأول والثاني.",
+        "concepts": [
+          "حساب احتمال ترتيب محدد في موضعين متتاليين بضرب الاحتمالين الشرطيين."
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "difficultyCandidate": "easy",
+      "mapping": {
+        "skillId": "skill_tah_math_14",
+        "skillName": "الاحتمالات ونظرية ذات الحدين",
+        "subSkillId": "sub_tah_math_14_04",
+        "subSkillName": "الاحتمال البسيط والمركب والشرطي والهندسي"
+      },
+      "foundationReference": {
+        "lessonNumber": 20,
+        "lessonTitle": "الاحتمالات",
+        "subSkillId": "sub_tah_math_14_04",
+        "subSkillName": "الاحتمال البسيط والمركب والشرطي والهندسي"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF045-P046-N05|62649b5747c6ff68d5f7f602b1f69936559bccc1be76fcddac03e64007abaa06",
+      "teachingFingerprintCandidate": "sub_tah_math_14_04|حساب احتمال ترتيب محدد في موضعين متتاليين بضرب الاحتمالين الشرطيين.",
+      "sourceImageHash": "62649b5747c6ff68d5f7f602b1f69936559bccc1be76fcddac03e64007abaa06",
+      "sourceVisualReviewed": true,
+      "canonicalApproved": false,
+      "productionImageParity": "NOT_TESTED"
+    }
+  ]
+}

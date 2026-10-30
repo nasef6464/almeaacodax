@@ -1,0 +1,9 @@
+{
+  "run": "RUN24",
+  "supersedesField": "ops/tah-math/TAH_MATH_RUN24_SOURCE_ANSWER_KEYS.json:last33SourceAnswerLetters",
+  "correctValue": "DAAABCABABADAACAAABBDCABBBDDBDCBA",
+  "length": 33,
+  "source": "RUN24_209_SOURCE_ANSWER_AUDIT.json local source-reviewed 33-row evidence",
+  "warning": "The earlier last33SourceAnswerLetters field was transcribed incorrectly. Use this corrected value only. Other source-review counts unchanged.",
+  "productionMutation": false
+}

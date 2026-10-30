@@ -1,0 +1,19 @@
+{
+  "project": "TAH-MATH",
+  "masterControlStatus": "IN_PROGRESS",
+  "checkpoint": "2026-10-08-heavy-run14-extended",
+  "sourceOptionGeometryRows": "993/1012",
+  "priorRasterMathRows": "19/1012",
+  "sourceOptionGeometryOrRasterCoverage": "1012/1012",
+  "independentMathThisRun": 12,
+  "sourceVisualRemapCandidates": 48,
+  "fullPedagogy": "OPEN",
+  "YLM26": "OPEN",
+  "COL26OLD": "PENDING",
+  "dedupe": "PENDING",
+  "coverage": "PENDING",
+  "trainingAndTests": "PENDING",
+  "liveStudentE2E": "PENDING",
+  "productionMutation": false,
+  "finalClosed": false
+}

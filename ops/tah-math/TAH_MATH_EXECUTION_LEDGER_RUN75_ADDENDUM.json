@@ -1,0 +1,29 @@
+{
+  "run": "RUN75",
+  "date": "2026-10-10",
+  "source": "YLM26 official foundation PDF, SHA256 3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+  "sourceQuestionsVisuallyReviewed": 150,
+  "exactDirectPdfPixelMatchPass": 150,
+  "exactDirectPdfPixelMatchFail": 0,
+  "minimumMatchScore": 0.99986,
+  "sourceMathProofCandidates": 91,
+  "optionSpecificPedagogyCandidates": 37,
+  "wrongOptionExplanations": 111,
+  "symbolicChecksPass": 52,
+  "sourcePdfRecropCandidates": 47,
+  "cumulativeConditionalReviewEvents": 9603,
+  "uniqueYLM26Inventory": 326,
+  "semanticHolds": [
+    "P050-Q04",
+    "P066-Q14",
+    "P081-Q01"
+  ],
+  "canonicalApproved": 0,
+  "productionMutation": false,
+  "liveR2Parity": "NOT_VERIFIED",
+  "liveTopicParity": "NOT_VERIFIED",
+  "taxonomyStatus": "22_MAIN_70_SUB_FAIL",
+  "stage": "YLM26_NOT_GREEN",
+  "checkpoint": "ops/tah-math/TAH_MATH_RUN75_150_DIRECT_PDF_SOURCE_AND_PEDAGOGY_CHECKPOINT.json",
+  "next": "Resolve three semantic holds fail-closed; reconcile candidate recrops, source option pedagogy and live R2/topic parity; finish YLM26 canonical manifest; then COL26 1012"
+}

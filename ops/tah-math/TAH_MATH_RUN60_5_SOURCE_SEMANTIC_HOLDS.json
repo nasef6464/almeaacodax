@@ -1,0 +1,31 @@
+{
+  "run": "RUN60",
+  "sourceHolds": [
+    {
+      "questionCode": "TAH-MATH-YLM26-P036-Q09",
+      "status": "HOLD",
+      "reason": "Source graph appears to show five distinct x-intercepts, while options are 3,4,6,7. Keep HOLD until independent graph adjudication."
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P050-Q04",
+      "status": "HOLD",
+      "reason": "csc(theta)=2 gives sin(theta)=1/2. Without an acute-angle condition tan(theta) may have either sign."
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P066-Q14",
+      "status": "HOLD",
+      "reason": "log base 4 of x^4 equals 4, yielding x=+4 or -4; only +4 is an option."
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P073-Q03",
+      "status": "HOLD",
+      "reason": "Focus (0,5) and points (+/-5,8) permit both upward and downward opening parabolas."
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P094-Q11",
+      "status": "HOLD",
+      "reason": "Integral from 1 to n of 4x^3 equals 15, giving n=+2 or -2; only +2 is listed."
+    }
+  ],
+  "productionMutation": false
+}

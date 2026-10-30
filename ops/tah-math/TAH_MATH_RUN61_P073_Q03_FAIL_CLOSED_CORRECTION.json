@@ -1,0 +1,10 @@
+{
+  "run": "RUN61",
+  "supersedes": "ops/tah-math/TAH_MATH_RUN61_28_SOURCE_GROUNDED_PEDAGOGY.json",
+  "excludedQuestion": "TAH-MATH-YLM26-P073-Q03",
+  "status": "HOLD_AMBIGUOUS_UP_OR_DOWN",
+  "reason": "The focus (0,5) and two points (±5,8) admit both upward- and downward-opening parabolas. For y=ax²+k with focus y=k+1/(4a), solve 25a+k=8 and k+1/(4a)=5: 100a²−12a−1=0 has one positive and one negative real root. Hence both directions are possible; the proposed A in the earlier candidate is NOT approved.",
+  "effectiveFullPedagogyPass": 27,
+  "canonicalApproved": 0,
+  "productionMutation": false
+}

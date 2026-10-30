@@ -1,0 +1,1587 @@
+{
+  "run": "RUN61",
+  "sourceAuthority": "original official Yellow 2026 Foundation PDF",
+  "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+  "scope": "28 source-backed educational candidates not in local RUN50-RUN60 deep records nor GitHub RUN19/RUN28 source pedagogy",
+  "rowsCount": 28,
+  "rows": [
+    {
+      "questionCode": "TAH-MATH-YLM26-P011-Q03",
+      "sourceBank": "YLM26",
+      "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourceItemId": "YLM26-PDF010-P011-N03",
+      "pdfPageIndex": 10,
+      "printedPageNumber": 11,
+      "printedQuestionNumber": 3,
+      "imageHash": "491ce208440babcd37f867ad0dd286d896484dfe59b94f95d055c14065236565",
+      "imageVersion": 2,
+      "sourceCropEvidence": "RUN61 original PDF at 2x; see local evidence package",
+      "questionTextSourceReviewed": "أوجد قياس الزاوية 1 في المثلث ذي الأضلاع المتساوية المعلّمة",
+      "optionsSourceReviewed": {
+        "A": "35°",
+        "B": "40°",
+        "C": "70°",
+        "D": "110°"
+      },
+      "answerLetterMathVerified": "A",
+      "correctOptionIndex": 0,
+      "explanation": "زاوية المثلث الأيسر عند الرأس والقاعدة 70°، فيكون رأس المثلث الأيمن 110°، وزاويتا قاعدته 35°.",
+      "whyCorrect": "زاوية المثلث الأيسر عند الرأس والقاعدة 70°، فيكون رأس المثلث الأيمن 110°، وزاويتا قاعدته 35°.",
+      "whyOthersWrong": {
+        "B": "الاختيار B (40°) لا يطابق نتيجة المسألة: زاوية المثلث الأيسر عند الرأس والقاعدة 70°، فيكون رأس المثلث الأيمن 110°، وزاويتا قاعدته 35°.",
+        "C": "الاختيار C (70°) لا يطابق نتيجة المسألة: زاوية المثلث الأيسر عند الرأس والقاعدة 70°، فيكون رأس المثلث الأيمن 110°، وزاويتا قاعدته 35°.",
+        "D": "الاختيار D (110°) لا يطابق نتيجة المسألة: زاوية المثلث الأيسر عند الرأس والقاعدة 70°، فيكون رأس المثلث الأيمن 110°، وزاويتا قاعدته 35°."
+      },
+      "hint": "استخدم تساوي الأضلاع ثم مجموع زوايا المثلث.",
+      "solvingStrategy": "استخدم تساوي الأضلاع ثم مجموع زوايا المثلث.",
+      "commonMistakes": [
+        "اعتبار زاوية 110° زاوية قاعدة"
+      ],
+      "difficultyCandidate": "Medium",
+      "aiContext": {
+        "readableText": "أوجد قياس الزاوية 1 في المثلث ذي الأضلاع المتساوية المعلّمة",
+        "speechText": "أوجد قياس الزاوية 1 في المثلث ذي الأضلاع المتساوية المعلّمة",
+        "visualDescription": "راجع الرسم/الاختيارات في قصاصة السؤال الأصلية؛ لا تُستنتج بيانات غير ظاهرة."
+      },
+      "skillIdCandidate": "skill_tah_math_03",
+      "subSkillIdCandidate": "sub_tah_math_03_01",
+      "additionalSubSkillIdsCandidate": [],
+      "foundationReferenceCandidate": {
+        "lessonNumber": 4,
+        "lessonTitle": "المثلث",
+        "subSkillId": "sub_tah_math_03_01",
+        "subSkillName": "تصنيف المثلثات وزوايا المثلث",
+        "topicId": "PENDING_LIVE_TOPIC_ID_VERIFICATION"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF010-P011-N03|491ce208440babcd37f867ad0dd286d896484dfe59b94f95d055c14065236565",
+      "teachingFingerprintCandidate": "sub_tah_math_03_01|دمج خصائص المثلث متطابق الضلعين ومجموع زوايا المثلث.",
+      "mathDecision": "PASS_SOURCE_VISUAL_AND_MATH_CANDIDATE",
+      "productionImageParity": "PENDING_R2",
+      "canonicalApproved": false,
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P013-Q09",
+      "sourceBank": "YLM26",
+      "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourceItemId": "YLM26-PDF012-P013-N09",
+      "pdfPageIndex": 12,
+      "printedPageNumber": 13,
+      "printedQuestionNumber": 9,
+      "imageHash": "fed48c3bc166ef4aad057b80c2606868069411ce570f06c5268d482aebdde9e8",
+      "imageVersion": 2,
+      "sourceCropEvidence": "RUN61 original PDF at 2x; see local evidence package",
+      "questionTextSourceReviewed": "زاويتان داخليتان 40° و110°، أي قياس لا يمكن أن يكون زاوية خارجية للمثلث؟",
+      "optionsSourceReviewed": {
+        "A": "160°",
+        "B": "150°",
+        "C": "140°",
+        "D": "70°"
+      },
+      "answerLetterMathVerified": "A",
+      "correctOptionIndex": 0,
+      "explanation": "الزاوية الداخلية الثالثة 30°، والخارجية الممكنة هي 140° و70° و150° فقط.",
+      "whyCorrect": "الزاوية الداخلية الثالثة 30°، والخارجية الممكنة هي 140° و70° و150° فقط.",
+      "whyOthersWrong": {
+        "B": "الاختيار B (150°) لا يطابق نتيجة المسألة: الزاوية الداخلية الثالثة 30°، والخارجية الممكنة هي 140° و70° و150° فقط.",
+        "C": "الاختيار C (140°) لا يطابق نتيجة المسألة: الزاوية الداخلية الثالثة 30°، والخارجية الممكنة هي 140° و70° و150° فقط.",
+        "D": "الاختيار D (70°) لا يطابق نتيجة المسألة: الزاوية الداخلية الثالثة 30°، والخارجية الممكنة هي 140° و70° و150° فقط."
+      },
+      "hint": "احسب الثالثة ثم متممات كل زاوية إلى 180°.",
+      "solvingStrategy": "احسب الثالثة ثم متممات كل زاوية إلى 180°.",
+      "commonMistakes": [
+        "الخلط بين الزاوية الداخلية والخارجية"
+      ],
+      "difficultyCandidate": "Medium",
+      "aiContext": {
+        "readableText": "زاويتان داخليتان 40° و110°، أي قياس لا يمكن أن يكون زاوية خارجية للمثلث؟",
+        "speechText": "زاويتان داخليتان 40° و110°، أي قياس لا يمكن أن يكون زاوية خارجية للمثلث؟",
+        "visualDescription": "راجع الرسم/الاختيارات في قصاصة السؤال الأصلية؛ لا تُستنتج بيانات غير ظاهرة."
+      },
+      "skillIdCandidate": "skill_tah_math_03",
+      "subSkillIdCandidate": "sub_tah_math_03_03",
+      "additionalSubSkillIdsCandidate": [],
+      "foundationReferenceCandidate": {
+        "lessonNumber": 4,
+        "lessonTitle": "المثلث",
+        "subSkillId": "sub_tah_math_03_03",
+        "subSkillName": "القطع الخاصة في المثلث ومراكز التلاقي ومتباينات المثلث",
+        "topicId": "PENDING_LIVE_TOPIC_ID_VERIFICATION"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF012-P013-N09|fed48c3bc166ef4aad057b80c2606868069411ce570f06c5268d482aebdde9e8",
+      "teachingFingerprintCandidate": "sub_tah_math_03_03|استخدام مجموع زوايا المثلث وعلاقة الزاوية الخارجية بالداخلية المجاورة.",
+      "mathDecision": "PASS_SOURCE_VISUAL_AND_MATH_CANDIDATE",
+      "productionImageParity": "PENDING_R2",
+      "canonicalApproved": false,
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P013-Q12",
+      "sourceBank": "YLM26",
+      "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourceItemId": "YLM26-PDF012-P013-N12",
+      "pdfPageIndex": 12,
+      "printedPageNumber": 13,
+      "printedQuestionNumber": 12,
+      "imageHash": "539fa0fecff7a02bcf7b22e99ebbe1c6580a529ae0129cb14975337f6d14c71a",
+      "imageVersion": 2,
+      "sourceCropEvidence": "RUN61 original PDF at 2x; see local evidence package",
+      "questionTextSourceReviewed": "في البرهان غير المباشر: إذا كان 3x<12 فإن x<4، ما الافتراض الابتدائي؟",
+      "optionsSourceReviewed": {
+        "A": "x≤4",
+        "B": "3x<12",
+        "C": "x≥4",
+        "D": "3x>12"
+      },
+      "answerLetterMathVerified": "C",
+      "correctOptionIndex": 2,
+      "explanation": "لنفي النتيجة x<4 نفترض x≥4 ثم نصل لتناقض مع الفرض 3x<12.",
+      "whyCorrect": "لنفي النتيجة x<4 نفترض x≥4 ثم نصل لتناقض مع الفرض 3x<12.",
+      "whyOthersWrong": {
+        "A": "الاختيار A (x≤4) لا يطابق نتيجة المسألة: لنفي النتيجة x<4 نفترض x≥4 ثم نصل لتناقض مع الفرض 3x<12.",
+        "B": "الاختيار B (3x<12) لا يطابق نتيجة المسألة: لنفي النتيجة x<4 نفترض x≥4 ثم نصل لتناقض مع الفرض 3x<12.",
+        "D": "الاختيار D (3x>12) لا يطابق نتيجة المسألة: لنفي النتيجة x<4 نفترض x≥4 ثم نصل لتناقض مع الفرض 3x<12."
+      },
+      "hint": "انفِ النتيجة لا الفرض.",
+      "solvingStrategy": "انفِ النتيجة لا الفرض.",
+      "commonMistakes": [
+        "البدء بنفي الفرض"
+      ],
+      "difficultyCandidate": "Easy",
+      "aiContext": {
+        "readableText": "في البرهان غير المباشر: إذا كان 3x<12 فإن x<4، ما الافتراض الابتدائي؟",
+        "speechText": "في البرهان غير المباشر: إذا كان 3x<12 فإن x<4، ما الافتراض الابتدائي؟",
+        "visualDescription": "راجع الرسم/الاختيارات في قصاصة السؤال الأصلية؛ لا تُستنتج بيانات غير ظاهرة."
+      },
+      "skillIdCandidate": "skill_tah_math_01",
+      "subSkillIdCandidate": "sub_tah_math_01_02",
+      "additionalSubSkillIdsCandidate": [],
+      "foundationReferenceCandidate": {
+        "lessonNumber": 1,
+        "lessonTitle": "التبرير والبرهان",
+        "subSkillId": "sub_tah_math_01_02",
+        "subSkillName": "الاستدلال والبرهان والمجموعات",
+        "topicId": "PENDING_LIVE_TOPIC_ID_VERIFICATION"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF012-P013-N12|539fa0fecff7a02bcf7b22e99ebbe1c6580a529ae0129cb14975337f6d14c71a",
+      "teachingFingerprintCandidate": "sub_tah_math_01_02|تطبيق البرهان غير المباشر على عبارة شرطية.",
+      "mathDecision": "PASS_SOURCE_VISUAL_AND_MATH_CANDIDATE",
+      "productionImageParity": "PENDING_R2",
+      "canonicalApproved": false,
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P014-Q03",
+      "sourceBank": "YLM26",
+      "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourceItemId": "YLM26-PDF013-P014-N03",
+      "pdfPageIndex": 13,
+      "printedPageNumber": 14,
+      "printedQuestionNumber": 3,
+      "imageHash": "fb21696685a8649194145464343ebc19cb6d915eead3319c2254851356ae37af",
+      "imageVersion": 2,
+      "sourceCropEvidence": "RUN61 original PDF at 2x; see local evidence package",
+      "questionTextSourceReviewed": "أوجد θ في الشكل الخماسي المنتظم والمثلث متساوي الساقين المجاور",
+      "optionsSourceReviewed": {
+        "A": "18°",
+        "B": "36°",
+        "C": "72°",
+        "D": "108°"
+      },
+      "answerLetterMathVerified": "B",
+      "correctOptionIndex": 1,
+      "explanation": "الزاوية الداخلية للخماسي 108°، والزاوية الخارجية 72°، وهي زاوية قاعدة المثلث؛ إذن θ=180−2×72=36°.",
+      "whyCorrect": "الزاوية الداخلية للخماسي 108°، والزاوية الخارجية 72°، وهي زاوية قاعدة المثلث؛ إذن θ=180−2×72=36°.",
+      "whyOthersWrong": {
+        "A": "الاختيار A (18°) لا يطابق نتيجة المسألة: الزاوية الداخلية للخماسي 108°، والزاوية الخارجية 72°، وهي زاوية قاعدة المثلث؛ إذن θ=180−2×72=36°.",
+        "C": "الاختيار C (72°) لا يطابق نتيجة المسألة: الزاوية الداخلية للخماسي 108°، والزاوية الخارجية 72°، وهي زاوية قاعدة المثلث؛ إذن θ=180−2×72=36°.",
+        "D": "الاختيار D (108°) لا يطابق نتيجة المسألة: الزاوية الداخلية للخماسي 108°، والزاوية الخارجية 72°، وهي زاوية قاعدة المثلث؛ إذن θ=180−2×72=36°."
+      },
+      "hint": "احسب الزاوية الخارجية للخماسي.",
+      "solvingStrategy": "احسب الزاوية الخارجية للخماسي.",
+      "commonMistakes": [
+        "استخدام 108° بدل 72° كزاوية قاعدة"
+      ],
+      "difficultyCandidate": "Medium",
+      "aiContext": {
+        "readableText": "أوجد θ في الشكل الخماسي المنتظم والمثلث متساوي الساقين المجاور",
+        "speechText": "أوجد θ في الشكل الخماسي المنتظم والمثلث متساوي الساقين المجاور",
+        "visualDescription": "راجع الرسم/الاختيارات في قصاصة السؤال الأصلية؛ لا تُستنتج بيانات غير ظاهرة."
+      },
+      "skillIdCandidate": "skill_tah_math_04",
+      "subSkillIdCandidate": "sub_tah_math_04_01",
+      "additionalSubSkillIdsCandidate": [],
+      "foundationReferenceCandidate": {
+        "lessonNumber": 5,
+        "lessonTitle": "المضلعات والأشكال الرباعية",
+        "subSkillId": "sub_tah_math_04_01",
+        "subSkillName": "زوايا المضلعات المنتظمة وغير المنتظمة",
+        "topicId": "PENDING_LIVE_TOPIC_ID_VERIFICATION"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF013-P014-N03|fb21696685a8649194145464343ebc19cb6d915eead3319c2254851356ae37af",
+      "teachingFingerprintCandidate": "sub_tah_math_04_01|دمج زاوية المضلع المنتظم مع خواص المثلث متطابق الضلعين.",
+      "mathDecision": "PASS_SOURCE_VISUAL_AND_MATH_CANDIDATE",
+      "productionImageParity": "PENDING_R2",
+      "canonicalApproved": false,
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P019-Q01",
+      "sourceBank": "YLM26",
+      "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourceItemId": "YLM26-PDF018-P019-N01",
+      "pdfPageIndex": 18,
+      "printedPageNumber": 19,
+      "printedQuestionNumber": 1,
+      "imageHash": "eb9d94773712468dc68bdfbbbe4a85f794a51b57baf4def07d6f837456abd199",
+      "imageVersion": 2,
+      "sourceCropEvidence": "RUN61 original PDF at 2x; see local evidence package",
+      "questionTextSourceReviewed": "صورة A(4,1) بالانعكاس حول المستقيم y=x",
+      "optionsSourceReviewed": {
+        "A": "(1,-4)",
+        "B": "(1,4)",
+        "C": "(-1,4)",
+        "D": "(-1,-4)"
+      },
+      "answerLetterMathVerified": "B",
+      "correctOptionIndex": 1,
+      "explanation": "الانعكاس حول y=x يبدل الإحداثيين دون تغيير الإشارتين، فتكون (1,4).",
+      "whyCorrect": "الانعكاس حول y=x يبدل الإحداثيين دون تغيير الإشارتين، فتكون (1,4).",
+      "whyOthersWrong": {
+        "A": "الاختيار A ((1,-4)) لا يطابق نتيجة المسألة: الانعكاس حول y=x يبدل الإحداثيين دون تغيير الإشارتين، فتكون (1,4).",
+        "C": "الاختيار C ((-1,4)) لا يطابق نتيجة المسألة: الانعكاس حول y=x يبدل الإحداثيين دون تغيير الإشارتين، فتكون (1,4).",
+        "D": "الاختيار D ((-1,-4)) لا يطابق نتيجة المسألة: الانعكاس حول y=x يبدل الإحداثيين دون تغيير الإشارتين، فتكون (1,4)."
+      },
+      "hint": "بدّل موضعي x وy.",
+      "solvingStrategy": "بدّل موضعي x وy.",
+      "commonMistakes": [
+        "تغيير الإشارة خطأً"
+      ],
+      "difficultyCandidate": "Easy",
+      "aiContext": {
+        "readableText": "صورة A(4,1) بالانعكاس حول المستقيم y=x",
+        "speechText": "صورة A(4,1) بالانعكاس حول المستقيم y=x",
+        "visualDescription": "راجع الرسم/الاختيارات في قصاصة السؤال الأصلية؛ لا تُستنتج بيانات غير ظاهرة."
+      },
+      "skillIdCandidate": "skill_tah_math_06",
+      "subSkillIdCandidate": "sub_tah_math_06_01",
+      "additionalSubSkillIdsCandidate": [],
+      "foundationReferenceCandidate": {
+        "lessonNumber": 7,
+        "lessonTitle": "التحويلات الهندسية",
+        "subSkillId": "sub_tah_math_06_01",
+        "subSkillName": "الانعكاس والانسحاب والدوران",
+        "topicId": "PENDING_LIVE_TOPIC_ID_VERIFICATION"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF018-P019-N01|eb9d94773712468dc68bdfbbbe4a85f794a51b57baf4def07d6f837456abd199",
+      "teachingFingerprintCandidate": "sub_tah_math_06_01|تطبيق قاعدة الانعكاس حول المستقيم y = x.",
+      "mathDecision": "PASS_SOURCE_VISUAL_AND_MATH_CANDIDATE",
+      "productionImageParity": "PENDING_R2",
+      "canonicalApproved": false,
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P021-Q01",
+      "sourceBank": "YLM26",
+      "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourceItemId": "YLM26-PDF020-P021-N01",
+      "pdfPageIndex": 20,
+      "printedPageNumber": 21,
+      "printedQuestionNumber": 1,
+      "imageHash": "8acdfc415dd2ef3dd542191e12c7b730f30fd94bb044380b275bcd56516742d0",
+      "imageVersion": 2,
+      "sourceCropEvidence": "RUN61 original PDF at 2x; see local evidence package",
+      "questionTextSourceReviewed": "إذا كان محيط الدائرة يساوي 2√(9π)، فما مساحتها؟",
+      "optionsSourceReviewed": {
+        "A": "3",
+        "B": "6",
+        "C": "9",
+        "D": "12"
+      },
+      "answerLetterMathVerified": "C",
+      "correctOptionIndex": 2,
+      "explanation": "2πr=6√π، ومنه r=3/√π، فالمساحة πr²=9.",
+      "whyCorrect": "2πr=6√π، ومنه r=3/√π، فالمساحة πr²=9.",
+      "whyOthersWrong": {
+        "A": "الاختيار A (3) لا يطابق نتيجة المسألة: 2πr=6√π، ومنه r=3/√π، فالمساحة πr²=9.",
+        "B": "الاختيار B (6) لا يطابق نتيجة المسألة: 2πr=6√π، ومنه r=3/√π، فالمساحة πr²=9.",
+        "D": "الاختيار D (12) لا يطابق نتيجة المسألة: 2πr=6√π، ومنه r=3/√π، فالمساحة πr²=9."
+      },
+      "hint": "استخدم المحيط لإيجاد نصف القطر ثم المساحة.",
+      "solvingStrategy": "استخدم المحيط لإيجاد نصف القطر ثم المساحة.",
+      "commonMistakes": [
+        "إلغاء π دون تربيع نصف القطر"
+      ],
+      "difficultyCandidate": "Medium",
+      "aiContext": {
+        "readableText": "إذا كان محيط الدائرة يساوي 2√(9π)، فما مساحتها؟",
+        "speechText": "إذا كان محيط الدائرة يساوي 2√(9π)، فما مساحتها؟",
+        "visualDescription": "راجع الرسم/الاختيارات في قصاصة السؤال الأصلية؛ لا تُستنتج بيانات غير ظاهرة."
+      },
+      "skillIdCandidate": "skill_tah_math_07",
+      "subSkillIdCandidate": "sub_tah_math_07_01",
+      "additionalSubSkillIdsCandidate": [],
+      "foundationReferenceCandidate": {
+        "lessonNumber": 8,
+        "lessonTitle": "الدائرة",
+        "subSkillId": "sub_tah_math_07_01",
+        "subSkillName": "الدائرة والمحيط والمساحة والأقواس والزوايا",
+        "topicId": "PENDING_LIVE_TOPIC_ID_VERIFICATION"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF020-P021-N01|8acdfc415dd2ef3dd542191e12c7b730f30fd94bb044380b275bcd56516742d0",
+      "teachingFingerprintCandidate": "sub_tah_math_07_01|تطبيق قواعد الدائرة والمحيط والمساحة والأقواس والزوايا",
+      "mathDecision": "PASS_SOURCE_VISUAL_AND_MATH_CANDIDATE",
+      "productionImageParity": "PENDING_R2",
+      "canonicalApproved": false,
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P021-Q03",
+      "sourceBank": "YLM26",
+      "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourceItemId": "YLM26-PDF020-P021-N03",
+      "pdfPageIndex": 20,
+      "printedPageNumber": 21,
+      "printedQuestionNumber": 3,
+      "imageHash": "2675ee16c4d6e36ac5d509bfa5261a1d6906de6df49f5cb3df4033e56be30d3f",
+      "imageVersion": 2,
+      "sourceCropEvidence": "RUN61 original PDF at 2x; see local evidence package",
+      "questionTextSourceReviewed": "في الدائرة mAB=3mBC وBC≅AD، أوجد mBC",
+      "optionsSourceReviewed": {
+        "A": "72°",
+        "B": "48°",
+        "C": "36°",
+        "D": "24°"
+      },
+      "answerLetterMathVerified": "C",
+      "correctOptionIndex": 2,
+      "explanation": "الأقواس AD وAB وBC تقع في نصف دائرة: BC+3BC+BC=180°، إذن BC=36°.",
+      "whyCorrect": "الأقواس AD وAB وBC تقع في نصف دائرة: BC+3BC+BC=180°، إذن BC=36°.",
+      "whyOthersWrong": {
+        "A": "الاختيار A (72°) لا يطابق نتيجة المسألة: الأقواس AD وAB وBC تقع في نصف دائرة: BC+3BC+BC=180°، إذن BC=36°.",
+        "B": "الاختيار B (48°) لا يطابق نتيجة المسألة: الأقواس AD وAB وBC تقع في نصف دائرة: BC+3BC+BC=180°، إذن BC=36°.",
+        "D": "الاختيار D (24°) لا يطابق نتيجة المسألة: الأقواس AD وAB وBC تقع في نصف دائرة: BC+3BC+BC=180°، إذن BC=36°."
+      },
+      "hint": "اجمع أقواس نصف الدائرة.",
+      "solvingStrategy": "اجمع أقواس نصف الدائرة.",
+      "commonMistakes": [
+        "نسيان القوس AD المساوي لـBC"
+      ],
+      "difficultyCandidate": "Medium",
+      "aiContext": {
+        "readableText": "في الدائرة mAB=3mBC وBC≅AD، أوجد mBC",
+        "speechText": "في الدائرة mAB=3mBC وBC≅AD، أوجد mBC",
+        "visualDescription": "راجع الرسم/الاختيارات في قصاصة السؤال الأصلية؛ لا تُستنتج بيانات غير ظاهرة."
+      },
+      "skillIdCandidate": "skill_tah_math_07",
+      "subSkillIdCandidate": "sub_tah_math_07_01",
+      "additionalSubSkillIdsCandidate": [],
+      "foundationReferenceCandidate": {
+        "lessonNumber": 8,
+        "lessonTitle": "الدائرة",
+        "subSkillId": "sub_tah_math_07_01",
+        "subSkillName": "الدائرة والمحيط والمساحة والأقواس والزوايا",
+        "topicId": "PENDING_LIVE_TOPIC_ID_VERIFICATION"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF020-P021-N03|2675ee16c4d6e36ac5d509bfa5261a1d6906de6df49f5cb3df4033e56be30d3f",
+      "teachingFingerprintCandidate": "sub_tah_math_07_01|تمثيل الأقواس المتطابقة بمتغير ثم استخدام مجموع أقواس نصف الدائرة.",
+      "mathDecision": "PASS_SOURCE_VISUAL_AND_MATH_CANDIDATE",
+      "productionImageParity": "PENDING_R2",
+      "canonicalApproved": false,
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P062-Q14",
+      "sourceBank": "YLM26",
+      "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourceItemId": "YLM26-PDF061-P062-N14",
+      "pdfPageIndex": 61,
+      "printedPageNumber": 62,
+      "printedQuestionNumber": 14,
+      "imageHash": "4420e31d5530300a1d79f76ff5b2a326197df6b3de0ba99961163f6e9e99350d",
+      "imageVersion": 2,
+      "sourceCropEvidence": "RUN61 original PDF at 2x; see local evidence package",
+      "questionTextSourceReviewed": "أي دالة تمثل منحنى الجذر الذي يبدأ عند (-5,0)؟",
+      "optionsSourceReviewed": {
+        "A": "√(x+5)",
+        "B": "√(x−5)",
+        "C": "√x",
+        "D": "√x−5"
+      },
+      "answerLetterMathVerified": "A",
+      "correctOptionIndex": 0,
+      "explanation": "منحنى √x منزاح خمس وحدات لليسار، لذلك f(x)=√(x+5).",
+      "whyCorrect": "منحنى √x منزاح خمس وحدات لليسار، لذلك f(x)=√(x+5).",
+      "whyOthersWrong": {
+        "B": "الاختيار B (√(x−5)) لا يطابق نتيجة المسألة: منحنى √x منزاح خمس وحدات لليسار، لذلك f(x)=√(x+5).",
+        "C": "الاختيار C (√x) لا يطابق نتيجة المسألة: منحنى √x منزاح خمس وحدات لليسار، لذلك f(x)=√(x+5).",
+        "D": "الاختيار D (√x−5) لا يطابق نتيجة المسألة: منحنى √x منزاح خمس وحدات لليسار، لذلك f(x)=√(x+5)."
+      },
+      "hint": "اقرأ نقطة بداية منحنى الجذر.",
+      "solvingStrategy": "اقرأ نقطة بداية منحنى الجذر.",
+      "commonMistakes": [
+        "عكس إشارة الإزاحة الأفقية"
+      ],
+      "difficultyCandidate": "Medium",
+      "aiContext": {
+        "readableText": "أي دالة تمثل منحنى الجذر الذي يبدأ عند (-5,0)؟",
+        "speechText": "أي دالة تمثل منحنى الجذر الذي يبدأ عند (-5,0)؟",
+        "visualDescription": "راجع الرسم/الاختيارات في قصاصة السؤال الأصلية؛ لا تُستنتج بيانات غير ظاهرة."
+      },
+      "skillIdCandidate": "skill_tah_math_16",
+      "subSkillIdCandidate": "sub_tah_math_16_05",
+      "additionalSubSkillIdsCandidate": [],
+      "foundationReferenceCandidate": {
+        "lessonNumber": 22,
+        "lessonTitle": "تحليل الدوال",
+        "subSkillId": "sub_tah_math_16_05",
+        "subSkillName": "تحويلات الدوال والتمدد والانكماش والانعكاس",
+        "topicId": "PENDING_LIVE_TOPIC_ID_VERIFICATION"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF061-P062-N14|4420e31d5530300a1d79f76ff5b2a326197df6b3de0ba99961163f6e9e99350d",
+      "teachingFingerprintCandidate": "sub_tah_math_16_05|تحديد تحويل أفقي لدالة الجذر التربيعي.",
+      "mathDecision": "PASS_SOURCE_VISUAL_AND_MATH_CANDIDATE",
+      "productionImageParity": "PENDING_R2",
+      "canonicalApproved": false,
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P062-Q15",
+      "sourceBank": "YLM26",
+      "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourceItemId": "YLM26-PDF061-P062-N15",
+      "pdfPageIndex": 61,
+      "printedPageNumber": 62,
+      "printedQuestionNumber": 15,
+      "imageHash": "3d168fefcb60fefd8e26873d6e8396af31899f5fcab4020a76be32bb82262bae",
+      "imageVersion": 2,
+      "sourceCropEvidence": "RUN61 original PDF at 2x; see local evidence package",
+      "questionTextSourceReviewed": "ما الانسحاب الأفقي للدالة f(x)=−3/(x−3)+4؟",
+      "optionsSourceReviewed": {
+        "A": "3 وحدات لليمين",
+        "B": "4 وحدات لليمين",
+        "C": "3 وحدات لليسار",
+        "D": "4 وحدات لليسار"
+      },
+      "answerLetterMathVerified": "A",
+      "correctOptionIndex": 0,
+      "explanation": "وجود (x−3) في المقام يزيح المنحنى أفقيًا 3 وحدات إلى اليمين؛ +4 إزاحة رأسية.",
+      "whyCorrect": "وجود (x−3) في المقام يزيح المنحنى أفقيًا 3 وحدات إلى اليمين؛ +4 إزاحة رأسية.",
+      "whyOthersWrong": {
+        "B": "الاختيار B (4 وحدات لليمين) لا يطابق نتيجة المسألة: وجود (x−3) في المقام يزيح المنحنى أفقيًا 3 وحدات إلى اليمين؛ +4 إزاحة رأسية.",
+        "C": "الاختيار C (3 وحدات لليسار) لا يطابق نتيجة المسألة: وجود (x−3) في المقام يزيح المنحنى أفقيًا 3 وحدات إلى اليمين؛ +4 إزاحة رأسية.",
+        "D": "الاختيار D (4 وحدات لليسار) لا يطابق نتيجة المسألة: وجود (x−3) في المقام يزيح المنحنى أفقيًا 3 وحدات إلى اليمين؛ +4 إزاحة رأسية."
+      },
+      "hint": "اقرأ h من x−h.",
+      "solvingStrategy": "اقرأ h من x−h.",
+      "commonMistakes": [
+        "الخلط بين الإزاحة الأفقية والرأسية"
+      ],
+      "difficultyCandidate": "Easy",
+      "aiContext": {
+        "readableText": "ما الانسحاب الأفقي للدالة f(x)=−3/(x−3)+4؟",
+        "speechText": "ما الانسحاب الأفقي للدالة f(x)=−3/(x−3)+4؟",
+        "visualDescription": "راجع الرسم/الاختيارات في قصاصة السؤال الأصلية؛ لا تُستنتج بيانات غير ظاهرة."
+      },
+      "skillIdCandidate": "skill_tah_math_16",
+      "subSkillIdCandidate": "sub_tah_math_16_05",
+      "additionalSubSkillIdsCandidate": [],
+      "foundationReferenceCandidate": {
+        "lessonNumber": 22,
+        "lessonTitle": "تحليل الدوال",
+        "subSkillId": "sub_tah_math_16_05",
+        "subSkillName": "تحويلات الدوال والتمدد والانكماش والانعكاس",
+        "topicId": "PENDING_LIVE_TOPIC_ID_VERIFICATION"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF061-P062-N15|3d168fefcb60fefd8e26873d6e8396af31899f5fcab4020a76be32bb82262bae",
+      "teachingFingerprintCandidate": "sub_tah_math_16_05|قراءة الإزاحة الأفقية من صيغة دالة نسبية.",
+      "mathDecision": "PASS_SOURCE_VISUAL_AND_MATH_CANDIDATE",
+      "productionImageParity": "PENDING_R2",
+      "canonicalApproved": false,
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P063-Q19",
+      "sourceBank": "YLM26",
+      "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourceItemId": "YLM26-PDF062-P063-N19",
+      "pdfPageIndex": 62,
+      "printedPageNumber": 63,
+      "printedQuestionNumber": 19,
+      "imageHash": "38600dacba741aee9cf475a4978f6509c554ee8d7b786406a6ab7bbbb9b9743d",
+      "imageVersion": 2,
+      "sourceCropEvidence": "RUN61 original PDF at 2x; see local evidence package",
+      "questionTextSourceReviewed": "مجال الدالة (2x−1)/√(x²−3x−4)",
+      "optionsSourceReviewed": {
+        "A": "R−{−1,4}",
+        "B": "(−1,4)",
+        "C": "(−∞,−1)∪(4,∞)",
+        "D": "(−1,∞)∪(−∞,−4)"
+      },
+      "answerLetterMathVerified": "C",
+      "correctOptionIndex": 2,
+      "explanation": "لأن الجذر في المقام يجب أن يكون x²−3x−4>0؛ وبالتحليل (x−4)(x+1)>0، فيكون x<−1 أو x>4.",
+      "whyCorrect": "لأن الجذر في المقام يجب أن يكون x²−3x−4>0؛ وبالتحليل (x−4)(x+1)>0، فيكون x<−1 أو x>4.",
+      "whyOthersWrong": {
+        "A": "الاختيار A (R−{−1,4}) لا يطابق نتيجة المسألة: لأن الجذر في المقام يجب أن يكون x²−3x−4>0؛ وبالتحليل (x−4)(x+1)>0، فيكون x<−1 أو x>4.",
+        "B": "الاختيار B ((−1,4)) لا يطابق نتيجة المسألة: لأن الجذر في المقام يجب أن يكون x²−3x−4>0؛ وبالتحليل (x−4)(x+1)>0، فيكون x<−1 أو x>4.",
+        "D": "الاختيار D ((−1,∞)∪(−∞,−4)) لا يطابق نتيجة المسألة: لأن الجذر في المقام يجب أن يكون x²−3x−4>0؛ وبالتحليل (x−4)(x+1)>0، فيكون x<−1 أو x>4."
+      },
+      "hint": "استخدم >0 لا ≥0 للمقام الجذري.",
+      "solvingStrategy": "استخدم >0 لا ≥0 للمقام الجذري.",
+      "commonMistakes": [
+        "إدخال طرفي المجال حيث المقام صفر"
+      ],
+      "difficultyCandidate": "Medium",
+      "aiContext": {
+        "readableText": "مجال الدالة (2x−1)/√(x²−3x−4)",
+        "speechText": "مجال الدالة (2x−1)/√(x²−3x−4)",
+        "visualDescription": "راجع الرسم/الاختيارات في قصاصة السؤال الأصلية؛ لا تُستنتج بيانات غير ظاهرة."
+      },
+      "skillIdCandidate": "skill_tah_math_16",
+      "subSkillIdCandidate": "sub_tah_math_16_01",
+      "additionalSubSkillIdsCandidate": [],
+      "foundationReferenceCandidate": {
+        "lessonNumber": 22,
+        "lessonTitle": "تحليل الدوال",
+        "subSkillId": "sub_tah_math_16_01",
+        "subSkillName": "الفترات والمتباينات وقراءة مجال الدالة ومداه",
+        "topicId": "PENDING_LIVE_TOPIC_ID_VERIFICATION"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF062-P063-N19|38600dacba741aee9cf475a4978f6509c554ee8d7b786406a6ab7bbbb9b9743d",
+      "teachingFingerprintCandidate": "sub_tah_math_16_01|إيجاد مجال دالة كسرية جذرية.",
+      "mathDecision": "PASS_SOURCE_VISUAL_AND_MATH_CANDIDATE",
+      "productionImageParity": "PENDING_R2",
+      "canonicalApproved": false,
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P070-Q10",
+      "sourceBank": "YLM26",
+      "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourceItemId": "YLM26-PDF069-P070-N10",
+      "pdfPageIndex": 69,
+      "printedPageNumber": 70,
+      "printedQuestionNumber": 10,
+      "imageHash": "c851b96e96e427e2fa54c0ceae0bb7830b91f6ba1957bc889820d5073c8582ee",
+      "imageVersion": 2,
+      "sourceCropEvidence": "RUN61 original PDF at 2x; see local evidence package",
+      "questionTextSourceReviewed": "بماذا يكافئ 4sin²(θ/2)cos²(θ/2)؟",
+      "optionsSourceReviewed": {
+        "A": "cosθ",
+        "B": "sinθ",
+        "C": "cos²θ",
+        "D": "sin²θ"
+      },
+      "answerLetterMathVerified": "D",
+      "correctOptionIndex": 3,
+      "explanation": "لأن 2sin(θ/2)cos(θ/2)=sinθ؛ بتربيع الطرفين ينتج sin²θ.",
+      "whyCorrect": "لأن 2sin(θ/2)cos(θ/2)=sinθ؛ بتربيع الطرفين ينتج sin²θ.",
+      "whyOthersWrong": {
+        "A": "الاختيار A (cosθ) لا يطابق نتيجة المسألة: لأن 2sin(θ/2)cos(θ/2)=sinθ؛ بتربيع الطرفين ينتج sin²θ.",
+        "B": "الاختيار B (sinθ) لا يطابق نتيجة المسألة: لأن 2sin(θ/2)cos(θ/2)=sinθ؛ بتربيع الطرفين ينتج sin²θ.",
+        "C": "الاختيار C (cos²θ) لا يطابق نتيجة المسألة: لأن 2sin(θ/2)cos(θ/2)=sinθ؛ بتربيع الطرفين ينتج sin²θ."
+      },
+      "hint": "تعرف على صيغة ضعف الزاوية.",
+      "solvingStrategy": "تعرف على صيغة ضعف الزاوية.",
+      "commonMistakes": [
+        "نسيان تربيع الناتج"
+      ],
+      "difficultyCandidate": "Medium",
+      "aiContext": {
+        "readableText": "بماذا يكافئ 4sin²(θ/2)cos²(θ/2)؟",
+        "speechText": "بماذا يكافئ 4sin²(θ/2)cos²(θ/2)؟",
+        "visualDescription": "راجع الرسم/الاختيارات في قصاصة السؤال الأصلية؛ لا تُستنتج بيانات غير ظاهرة."
+      },
+      "skillIdCandidate": "skill_tah_math_18",
+      "subSkillIdCandidate": "sub_tah_math_18_02",
+      "additionalSubSkillIdsCandidate": [],
+      "foundationReferenceCandidate": {
+        "lessonNumber": 24,
+        "lessonTitle": "المتطابقات المثلثية",
+        "subSkillId": "sub_tah_math_18_02",
+        "subSkillName": "متطابقات الجمع والفرق والزاوية المضاعفة ونصف الزاوية",
+        "topicId": "PENDING_LIVE_TOPIC_ID_VERIFICATION"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF069-P070-N10|c851b96e96e427e2fa54c0ceae0bb7830b91f6ba1957bc889820d5073c8582ee",
+      "teachingFingerprintCandidate": "sub_tah_math_18_02|ربط متطابقة نصف الزاوية بمتطابقة الزاوية المضاعفة.",
+      "mathDecision": "PASS_SOURCE_VISUAL_AND_MATH_CANDIDATE",
+      "productionImageParity": "PENDING_R2",
+      "canonicalApproved": false,
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P070-Q11",
+      "sourceBank": "YLM26",
+      "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourceItemId": "YLM26-PDF069-P070-N11",
+      "pdfPageIndex": 69,
+      "printedPageNumber": 70,
+      "printedQuestionNumber": 11,
+      "imageHash": "80dda476632e37e11d816f22f4ca7c4ddbc29addd03128f50658eaf5065fd83f",
+      "imageVersion": 2,
+      "sourceCropEvidence": "RUN61 original PDF at 2x; see local evidence package",
+      "questionTextSourceReviewed": "إذا كان cosθ=√2/2 و0°<θ<90°، أوجد cos(θ/2)",
+      "optionsSourceReviewed": {
+        "A": "√2/2",
+        "B": "√(2+√2)/2",
+        "C": "1/4",
+        "D": "3/4"
+      },
+      "answerLetterMathVerified": "B",
+      "correctOptionIndex": 1,
+      "explanation": "نستخدم cos(θ/2)=√((1+cosθ)/2)=√(2+√2)/2، والإشارة موجبة في الربع الأول.",
+      "whyCorrect": "نستخدم cos(θ/2)=√((1+cosθ)/2)=√(2+√2)/2، والإشارة موجبة في الربع الأول.",
+      "whyOthersWrong": {
+        "A": "الاختيار A (√2/2) لا يطابق نتيجة المسألة: نستخدم cos(θ/2)=√((1+cosθ)/2)=√(2+√2)/2، والإشارة موجبة في الربع الأول.",
+        "C": "الاختيار C (1/4) لا يطابق نتيجة المسألة: نستخدم cos(θ/2)=√((1+cosθ)/2)=√(2+√2)/2، والإشارة موجبة في الربع الأول.",
+        "D": "الاختيار D (3/4) لا يطابق نتيجة المسألة: نستخدم cos(θ/2)=√((1+cosθ)/2)=√(2+√2)/2، والإشارة موجبة في الربع الأول."
+      },
+      "hint": "استخدم صيغة نصف الزاوية الموجبة.",
+      "solvingStrategy": "استخدم صيغة نصف الزاوية الموجبة.",
+      "commonMistakes": [
+        "حذف الجذر أو اختيار الإشارة السالبة"
+      ],
+      "difficultyCandidate": "Easy",
+      "aiContext": {
+        "readableText": "إذا كان cosθ=√2/2 و0°<θ<90°، أوجد cos(θ/2)",
+        "speechText": "إذا كان cosθ=√2/2 و0°<θ<90°، أوجد cos(θ/2)",
+        "visualDescription": "راجع الرسم/الاختيارات في قصاصة السؤال الأصلية؛ لا تُستنتج بيانات غير ظاهرة."
+      },
+      "skillIdCandidate": "skill_tah_math_18",
+      "subSkillIdCandidate": "sub_tah_math_18_02",
+      "additionalSubSkillIdsCandidate": [],
+      "foundationReferenceCandidate": {
+        "lessonNumber": 24,
+        "lessonTitle": "المتطابقات المثلثية",
+        "subSkillId": "sub_tah_math_18_02",
+        "subSkillName": "متطابقات الجمع والفرق والزاوية المضاعفة ونصف الزاوية",
+        "topicId": "PENDING_LIVE_TOPIC_ID_VERIFICATION"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF069-P070-N11|80dda476632e37e11d816f22f4ca7c4ddbc29addd03128f50658eaf5065fd83f",
+      "teachingFingerprintCandidate": "sub_tah_math_18_02|تطبيق متطابقة نصف الزاوية لجيب التمام.",
+      "mathDecision": "PASS_SOURCE_VISUAL_AND_MATH_CANDIDATE",
+      "productionImageParity": "PENDING_R2",
+      "canonicalApproved": false,
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P073-Q02",
+      "sourceBank": "YLM26",
+      "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourceItemId": "YLM26-PDF072-P073-N02",
+      "pdfPageIndex": 72,
+      "printedPageNumber": 73,
+      "printedQuestionNumber": 2,
+      "imageHash": "cabb7a427f4b94841538b3d22154cf401946b74eea3696b62925f345d4faf96c",
+      "imageVersion": 2,
+      "sourceCropEvidence": "RUN61 original PDF at 2x; see local evidence package",
+      "questionTextSourceReviewed": "رأس القطع المكافئ (x−2)²=8(y+2)",
+      "optionsSourceReviewed": {
+        "A": "(−2,−2)",
+        "B": "(−2,2)",
+        "C": "(2,−2)",
+        "D": "(2,2)"
+      },
+      "answerLetterMathVerified": "C",
+      "correctOptionIndex": 2,
+      "explanation": "الصيغة (x−h)²=4p(y−k) تعطي h=2 وk=−2.",
+      "whyCorrect": "الصيغة (x−h)²=4p(y−k) تعطي h=2 وk=−2.",
+      "whyOthersWrong": {
+        "A": "الاختيار A ((−2,−2)) لا يطابق نتيجة المسألة: الصيغة (x−h)²=4p(y−k) تعطي h=2 وk=−2.",
+        "B": "الاختيار B ((−2,2)) لا يطابق نتيجة المسألة: الصيغة (x−h)²=4p(y−k) تعطي h=2 وk=−2.",
+        "D": "الاختيار D ((2,2)) لا يطابق نتيجة المسألة: الصيغة (x−h)²=4p(y−k) تعطي h=2 وk=−2."
+      },
+      "hint": "قارن بالصورة القياسية.",
+      "solvingStrategy": "قارن بالصورة القياسية.",
+      "commonMistakes": [
+        "عكس إشارة إحداثيات الرأس"
+      ],
+      "difficultyCandidate": "Easy",
+      "aiContext": {
+        "readableText": "رأس القطع المكافئ (x−2)²=8(y+2)",
+        "speechText": "رأس القطع المكافئ (x−2)²=8(y+2)",
+        "visualDescription": "راجع الرسم/الاختيارات في قصاصة السؤال الأصلية؛ لا تُستنتج بيانات غير ظاهرة."
+      },
+      "skillIdCandidate": "skill_tah_math_19",
+      "subSkillIdCandidate": "sub_tah_math_19_01",
+      "additionalSubSkillIdsCandidate": [],
+      "foundationReferenceCandidate": {
+        "lessonNumber": 25,
+        "lessonTitle": "القطوع",
+        "subSkillId": "sub_tah_math_19_01",
+        "subSkillName": "القطع المكافئ",
+        "topicId": "PENDING_LIVE_TOPIC_ID_VERIFICATION"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF072-P073-N02|cabb7a427f4b94841538b3d22154cf401946b74eea3696b62925f345d4faf96c",
+      "teachingFingerprintCandidate": "sub_tah_math_19_01|تطبيق قواعد القطع المكافئ",
+      "mathDecision": "PASS_SOURCE_VISUAL_AND_MATH_CANDIDATE",
+      "productionImageParity": "PENDING_R2",
+      "canonicalApproved": false,
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P073-Q03",
+      "sourceBank": "YLM26",
+      "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourceItemId": "YLM26-PDF072-P073-N03",
+      "pdfPageIndex": 72,
+      "printedPageNumber": 73,
+      "printedQuestionNumber": 3,
+      "imageHash": "b6a0dc7b31780a6522aebf18591bff9f9504d2574f23fbc79d02878a1f77e7b9",
+      "imageVersion": 2,
+      "sourceCropEvidence": "RUN61 original PDF at 2x; see local evidence package",
+      "questionTextSourceReviewed": "قطع مكافئ بؤرته (0,5) ويمر بالنقطتين (±5,8)، ما اتجاهه؟",
+      "optionsSourceReviewed": {
+        "A": "أعلى",
+        "B": "أسفل",
+        "C": "يمين",
+        "D": "يسار"
+      },
+      "answerLetterMathVerified": "A",
+      "correctOptionIndex": 0,
+      "explanation": "النقطتان المتماثلتان حول محور y تقعان عند y=8 فوق البؤرة y=5؛ محور القطع رأسي والفتح لأعلى.",
+      "whyCorrect": "النقطتان المتماثلتان حول محور y تقعان عند y=8 فوق البؤرة y=5؛ محور القطع رأسي والفتح لأعلى.",
+      "whyOthersWrong": {
+        "B": "الاختيار B (أسفل) لا يطابق نتيجة المسألة: النقطتان المتماثلتان حول محور y تقعان عند y=8 فوق البؤرة y=5؛ محور القطع رأسي والفتح لأعلى.",
+        "C": "الاختيار C (يمين) لا يطابق نتيجة المسألة: النقطتان المتماثلتان حول محور y تقعان عند y=8 فوق البؤرة y=5؛ محور القطع رأسي والفتح لأعلى.",
+        "D": "الاختيار D (يسار) لا يطابق نتيجة المسألة: النقطتان المتماثلتان حول محور y تقعان عند y=8 فوق البؤرة y=5؛ محور القطع رأسي والفتح لأعلى."
+      },
+      "hint": "استخدم تماثل النقطتين ومحور القطع.",
+      "solvingStrategy": "استخدم تماثل النقطتين ومحور القطع.",
+      "commonMistakes": [
+        "الخلط بين البؤرة والرأس"
+      ],
+      "difficultyCandidate": "Easy",
+      "aiContext": {
+        "readableText": "قطع مكافئ بؤرته (0,5) ويمر بالنقطتين (±5,8)، ما اتجاهه؟",
+        "speechText": "قطع مكافئ بؤرته (0,5) ويمر بالنقطتين (±5,8)، ما اتجاهه؟",
+        "visualDescription": "راجع الرسم/الاختيارات في قصاصة السؤال الأصلية؛ لا تُستنتج بيانات غير ظاهرة."
+      },
+      "skillIdCandidate": "skill_tah_math_19",
+      "subSkillIdCandidate": "sub_tah_math_19_01",
+      "additionalSubSkillIdsCandidate": [],
+      "foundationReferenceCandidate": {
+        "lessonNumber": 25,
+        "lessonTitle": "القطوع",
+        "subSkillId": "sub_tah_math_19_01",
+        "subSkillName": "القطع المكافئ",
+        "topicId": "PENDING_LIVE_TOPIC_ID_VERIFICATION"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF072-P073-N03|b6a0dc7b31780a6522aebf18591bff9f9504d2574f23fbc79d02878a1f77e7b9",
+      "teachingFingerprintCandidate": "sub_tah_math_19_01|تطبيق قواعد القطع المكافئ",
+      "mathDecision": "PASS_SOURCE_VISUAL_AND_MATH_CANDIDATE",
+      "productionImageParity": "PENDING_R2",
+      "canonicalApproved": false,
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P073-Q04",
+      "sourceBank": "YLM26",
+      "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourceItemId": "YLM26-PDF072-P073-N04",
+      "pdfPageIndex": 72,
+      "printedPageNumber": 73,
+      "printedQuestionNumber": 4,
+      "imageHash": "8f3611320380cd0e7ef007efae69449aa405a0abbff5f27189569261bb579829",
+      "imageVersion": 2,
+      "sourceCropEvidence": "RUN61 original PDF at 2x; see local evidence package",
+      "questionTextSourceReviewed": "ما اتجاه القطع المكافئ (x−2)²=−6(y+1)؟",
+      "optionsSourceReviewed": {
+        "A": "أفقيًا لليسار",
+        "B": "أفقيًا لليمين",
+        "C": "رأسيًا لأعلى",
+        "D": "رأسيًا لأسفل"
+      },
+      "answerLetterMathVerified": "D",
+      "correctOptionIndex": 3,
+      "explanation": "المتغير x هو المربع، لذا المحور رأسي، ومعامل (y+1) سالب، فيفتح لأسفل.",
+      "whyCorrect": "المتغير x هو المربع، لذا المحور رأسي، ومعامل (y+1) سالب، فيفتح لأسفل.",
+      "whyOthersWrong": {
+        "A": "الاختيار A (أفقيًا لليسار) لا يطابق نتيجة المسألة: المتغير x هو المربع، لذا المحور رأسي، ومعامل (y+1) سالب، فيفتح لأسفل.",
+        "B": "الاختيار B (أفقيًا لليمين) لا يطابق نتيجة المسألة: المتغير x هو المربع، لذا المحور رأسي، ومعامل (y+1) سالب، فيفتح لأسفل.",
+        "C": "الاختيار C (رأسيًا لأعلى) لا يطابق نتيجة المسألة: المتغير x هو المربع، لذا المحور رأسي، ومعامل (y+1) سالب، فيفتح لأسفل."
+      },
+      "hint": "حدد المتغير المربع وإشارة 4p.",
+      "solvingStrategy": "حدد المتغير المربع وإشارة 4p.",
+      "commonMistakes": [
+        "اعتبار الإشارة السالبة اتجاهًا أفقيًا"
+      ],
+      "difficultyCandidate": "Easy",
+      "aiContext": {
+        "readableText": "ما اتجاه القطع المكافئ (x−2)²=−6(y+1)؟",
+        "speechText": "ما اتجاه القطع المكافئ (x−2)²=−6(y+1)؟",
+        "visualDescription": "راجع الرسم/الاختيارات في قصاصة السؤال الأصلية؛ لا تُستنتج بيانات غير ظاهرة."
+      },
+      "skillIdCandidate": "skill_tah_math_19",
+      "subSkillIdCandidate": "sub_tah_math_19_01",
+      "additionalSubSkillIdsCandidate": [],
+      "foundationReferenceCandidate": {
+        "lessonNumber": 25,
+        "lessonTitle": "القطوع",
+        "subSkillId": "sub_tah_math_19_01",
+        "subSkillName": "القطع المكافئ",
+        "topicId": "PENDING_LIVE_TOPIC_ID_VERIFICATION"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF072-P073-N04|8f3611320380cd0e7ef007efae69449aa405a0abbff5f27189569261bb579829",
+      "teachingFingerprintCandidate": "sub_tah_math_19_01|تطبيق قواعد القطع المكافئ",
+      "mathDecision": "PASS_SOURCE_VISUAL_AND_MATH_CANDIDATE",
+      "productionImageParity": "PENDING_R2",
+      "canonicalApproved": false,
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P074-Q08",
+      "sourceBank": "YLM26",
+      "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourceItemId": "YLM26-PDF073-P074-N08",
+      "pdfPageIndex": 73,
+      "printedPageNumber": 74,
+      "printedQuestionNumber": 8,
+      "imageHash": "dd5c6cc957c16c00fd98aa884b1e4e8fb1b5b4310d4a4e0c98ef1e6720d428c2",
+      "imageVersion": 2,
+      "sourceCropEvidence": "RUN61 original PDF at 2x; see local evidence package",
+      "questionTextSourceReviewed": "أي خاصية غير صحيحة للقطع الناقص (x−2)²/25+(y−3)²/9=1؟",
+      "optionsSourceReviewed": {
+        "A": "طول المحور الأصغر 6",
+        "B": "المحور الأكبر رأسي",
+        "C": "طول البعد البؤري 8",
+        "D": "المركز (2,3)"
+      },
+      "answerLetterMathVerified": "B",
+      "correctOptionIndex": 1,
+      "explanation": "لأن 25>9 تحت (x−2)² فالمحور الأكبر أفقي؛ أما b=3 وc=√(25−9)=4.",
+      "whyCorrect": "لأن 25>9 تحت (x−2)² فالمحور الأكبر أفقي؛ أما b=3 وc=√(25−9)=4.",
+      "whyOthersWrong": {
+        "A": "الاختيار A (طول المحور الأصغر 6) لا يطابق نتيجة المسألة: لأن 25>9 تحت (x−2)² فالمحور الأكبر أفقي؛ أما b=3 وc=√(25−9)=4.",
+        "C": "الاختيار C (طول البعد البؤري 8) لا يطابق نتيجة المسألة: لأن 25>9 تحت (x−2)² فالمحور الأكبر أفقي؛ أما b=3 وc=√(25−9)=4.",
+        "D": "الاختيار D (المركز (2,3)) لا يطابق نتيجة المسألة: لأن 25>9 تحت (x−2)² فالمحور الأكبر أفقي؛ أما b=3 وc=√(25−9)=4."
+      },
+      "hint": "قارن المقامين لتحديد اتجاه المحور الأكبر.",
+      "solvingStrategy": "قارن المقامين لتحديد اتجاه المحور الأكبر.",
+      "commonMistakes": [
+        "الخلط بين المحور الأكبر والمحور الأصغر"
+      ],
+      "difficultyCandidate": "Easy",
+      "aiContext": {
+        "readableText": "أي خاصية غير صحيحة للقطع الناقص (x−2)²/25+(y−3)²/9=1؟",
+        "speechText": "أي خاصية غير صحيحة للقطع الناقص (x−2)²/25+(y−3)²/9=1؟",
+        "visualDescription": "راجع الرسم/الاختيارات في قصاصة السؤال الأصلية؛ لا تُستنتج بيانات غير ظاهرة."
+      },
+      "skillIdCandidate": "skill_tah_math_19",
+      "subSkillIdCandidate": "sub_tah_math_19_02",
+      "additionalSubSkillIdsCandidate": [],
+      "foundationReferenceCandidate": {
+        "lessonNumber": 25,
+        "lessonTitle": "القطوع",
+        "subSkillId": "sub_tah_math_19_02",
+        "subSkillName": "القطع الناقص",
+        "topicId": "PENDING_LIVE_TOPIC_ID_VERIFICATION"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF073-P074-N08|dd5c6cc957c16c00fd98aa884b1e4e8fb1b5b4310d4a4e0c98ef1e6720d428c2",
+      "teachingFingerprintCandidate": "sub_tah_math_19_02|تطبيق قواعد القطع الناقص",
+      "mathDecision": "PASS_SOURCE_VISUAL_AND_MATH_CANDIDATE",
+      "productionImageParity": "PENDING_R2",
+      "canonicalApproved": false,
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P074-Q09",
+      "sourceBank": "YLM26",
+      "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourceItemId": "YLM26-PDF073-P074-N09",
+      "pdfPageIndex": 73,
+      "printedPageNumber": 74,
+      "printedQuestionNumber": 9,
+      "imageHash": "b8eafcd497616d50d99703b039b01b664d18ab17127de84c8c0eae5ffea57ba8",
+      "imageVersion": 2,
+      "sourceCropEvidence": "RUN61 original PDF at 2x; see local evidence package",
+      "questionTextSourceReviewed": "قطع ناقص مركزه (1,−2)، مجموع طولي المحورين 16 والفرق 4، ما معادلته؟",
+      "optionsSourceReviewed": {
+        "A": "(x−1)²/64+(y+2)²/8=1",
+        "B": "(x+1)²/25+(y−2)²/9=1",
+        "C": "(x−1)²/25+(y+2)²/9=1",
+        "D": "(x+1)²/64+(y−2)²/8=1"
+      },
+      "answerLetterMathVerified": "C",
+      "correctOptionIndex": 2,
+      "explanation": "2a+2b=16 و2a−2b=4، إذن a=5 وb=3؛ المركز (1,−2) يعطي المقامين 25 و9.",
+      "whyCorrect": "2a+2b=16 و2a−2b=4، إذن a=5 وb=3؛ المركز (1,−2) يعطي المقامين 25 و9.",
+      "whyOthersWrong": {
+        "A": "الاختيار A ((x−1)²/64+(y+2)²/8=1) لا يطابق نتيجة المسألة: 2a+2b=16 و2a−2b=4، إذن a=5 وb=3؛ المركز (1,−2) يعطي المقامين 25 و9.",
+        "B": "الاختيار B ((x+1)²/25+(y−2)²/9=1) لا يطابق نتيجة المسألة: 2a+2b=16 و2a−2b=4، إذن a=5 وb=3؛ المركز (1,−2) يعطي المقامين 25 و9.",
+        "D": "الاختيار D ((x+1)²/64+(y−2)²/8=1) لا يطابق نتيجة المسألة: 2a+2b=16 و2a−2b=4، إذن a=5 وb=3؛ المركز (1,−2) يعطي المقامين 25 و9."
+      },
+      "hint": "احسب نصفي المحورين من الأطوال الكاملة.",
+      "solvingStrategy": "احسب نصفي المحورين من الأطوال الكاملة.",
+      "commonMistakes": [
+        "استخدام أطوال المحاور بدل أنصافها"
+      ],
+      "difficultyCandidate": "Medium",
+      "aiContext": {
+        "readableText": "قطع ناقص مركزه (1,−2)، مجموع طولي المحورين 16 والفرق 4، ما معادلته؟",
+        "speechText": "قطع ناقص مركزه (1,−2)، مجموع طولي المحورين 16 والفرق 4، ما معادلته؟",
+        "visualDescription": "راجع الرسم/الاختيارات في قصاصة السؤال الأصلية؛ لا تُستنتج بيانات غير ظاهرة."
+      },
+      "skillIdCandidate": "skill_tah_math_19",
+      "subSkillIdCandidate": "sub_tah_math_19_02",
+      "additionalSubSkillIdsCandidate": [],
+      "foundationReferenceCandidate": {
+        "lessonNumber": 25,
+        "lessonTitle": "القطوع",
+        "subSkillId": "sub_tah_math_19_02",
+        "subSkillName": "القطع الناقص",
+        "topicId": "PENDING_LIVE_TOPIC_ID_VERIFICATION"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF073-P074-N09|b8eafcd497616d50d99703b039b01b664d18ab17127de84c8c0eae5ffea57ba8",
+      "teachingFingerprintCandidate": "sub_tah_math_19_02|استخراج نصفي المحورين من المجموع والفرق ثم كتابة معادلة القطع الناقص.",
+      "mathDecision": "PASS_SOURCE_VISUAL_AND_MATH_CANDIDATE",
+      "productionImageParity": "PENDING_R2",
+      "canonicalApproved": false,
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P075-Q10",
+      "sourceBank": "YLM26",
+      "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourceItemId": "YLM26-PDF074-P075-N10",
+      "pdfPageIndex": 74,
+      "printedPageNumber": 75,
+      "printedQuestionNumber": 10,
+      "imageHash": "9bada8189a509676fd582077ad308aba6c4ca6d6819f249ecefba74e0eb9595a",
+      "imageVersion": 2,
+      "sourceCropEvidence": "RUN61 original PDF at 2x; see local evidence package",
+      "questionTextSourceReviewed": "مركز القطع الزائد (y−4)²/48−(x+5)²/36=1",
+      "optionsSourceReviewed": {
+        "A": "(5,4)",
+        "B": "(4,5)",
+        "C": "(−5,4)",
+        "D": "(5,−4)"
+      },
+      "answerLetterMathVerified": "C",
+      "correctOptionIndex": 2,
+      "explanation": "بمقارنة الصيغة القياسية يكون المركز (h,k)=(−5,4).",
+      "whyCorrect": "بمقارنة الصيغة القياسية يكون المركز (h,k)=(−5,4).",
+      "whyOthersWrong": {
+        "A": "الاختيار A ((5,4)) لا يطابق نتيجة المسألة: بمقارنة الصيغة القياسية يكون المركز (h,k)=(−5,4).",
+        "B": "الاختيار B ((4,5)) لا يطابق نتيجة المسألة: بمقارنة الصيغة القياسية يكون المركز (h,k)=(−5,4).",
+        "D": "الاختيار D ((5,−4)) لا يطابق نتيجة المسألة: بمقارنة الصيغة القياسية يكون المركز (h,k)=(−5,4)."
+      },
+      "hint": "اقرأ المركز من حدود التربيع.",
+      "solvingStrategy": "اقرأ المركز من حدود التربيع.",
+      "commonMistakes": [
+        "عكس إشارة h أو تبادل الإحداثيين"
+      ],
+      "difficultyCandidate": "Easy",
+      "aiContext": {
+        "readableText": "مركز القطع الزائد (y−4)²/48−(x+5)²/36=1",
+        "speechText": "مركز القطع الزائد (y−4)²/48−(x+5)²/36=1",
+        "visualDescription": "راجع الرسم/الاختيارات في قصاصة السؤال الأصلية؛ لا تُستنتج بيانات غير ظاهرة."
+      },
+      "skillIdCandidate": "skill_tah_math_19",
+      "subSkillIdCandidate": "sub_tah_math_19_03",
+      "additionalSubSkillIdsCandidate": [],
+      "foundationReferenceCandidate": {
+        "lessonNumber": 25,
+        "lessonTitle": "القطوع",
+        "subSkillId": "sub_tah_math_19_03",
+        "subSkillName": "القطع الزائد",
+        "topicId": "PENDING_LIVE_TOPIC_ID_VERIFICATION"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF074-P075-N10|9bada8189a509676fd582077ad308aba6c4ca6d6819f249ecefba74e0eb9595a",
+      "teachingFingerprintCandidate": "sub_tah_math_19_03|تطبيق قواعد القطع الناقص",
+      "mathDecision": "PASS_SOURCE_VISUAL_AND_MATH_CANDIDATE",
+      "productionImageParity": "PENDING_R2",
+      "canonicalApproved": false,
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P075-Q11",
+      "sourceBank": "YLM26",
+      "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourceItemId": "YLM26-PDF074-P075-N11",
+      "pdfPageIndex": 74,
+      "printedPageNumber": 75,
+      "printedQuestionNumber": 11,
+      "imageHash": "88cffedcc32635ae7ffb99c7e29c61054f9b97de02b93288fd6c2c76f530c56c",
+      "imageVersion": 2,
+      "sourceCropEvidence": "RUN61 original PDF at 2x; see local evidence package",
+      "questionTextSourceReviewed": "بؤرتا القطع الزائد y²/4−x²=1",
+      "optionsSourceReviewed": {
+        "A": "(0,±√5)",
+        "B": "(0,±√17)",
+        "C": "(±√5,0)",
+        "D": "(±√17,0)"
+      },
+      "answerLetterMathVerified": "A",
+      "correctOptionIndex": 0,
+      "explanation": "a²=4 وb²=1، ومنه c²=a²+b²=5؛ المحور العرضي رأسي فتكون البؤرتان (0,±√5).",
+      "whyCorrect": "a²=4 وb²=1، ومنه c²=a²+b²=5؛ المحور العرضي رأسي فتكون البؤرتان (0,±√5).",
+      "whyOthersWrong": {
+        "B": "الاختيار B ((0,±√17)) لا يطابق نتيجة المسألة: a²=4 وb²=1، ومنه c²=a²+b²=5؛ المحور العرضي رأسي فتكون البؤرتان (0,±√5).",
+        "C": "الاختيار C ((±√5,0)) لا يطابق نتيجة المسألة: a²=4 وb²=1، ومنه c²=a²+b²=5؛ المحور العرضي رأسي فتكون البؤرتان (0,±√5).",
+        "D": "الاختيار D ((±√17,0)) لا يطابق نتيجة المسألة: a²=4 وb²=1، ومنه c²=a²+b²=5؛ المحور العرضي رأسي فتكون البؤرتان (0,±√5)."
+      },
+      "hint": "استخدم c²=a²+b².",
+      "solvingStrategy": "استخدم c²=a²+b².",
+      "commonMistakes": [
+        "استعمال الفرق بدل المجموع أو قلب المحور"
+      ],
+      "difficultyCandidate": "Easy",
+      "aiContext": {
+        "readableText": "بؤرتا القطع الزائد y²/4−x²=1",
+        "speechText": "بؤرتا القطع الزائد y²/4−x²=1",
+        "visualDescription": "راجع الرسم/الاختيارات في قصاصة السؤال الأصلية؛ لا تُستنتج بيانات غير ظاهرة."
+      },
+      "skillIdCandidate": "skill_tah_math_19",
+      "subSkillIdCandidate": "sub_tah_math_19_03",
+      "additionalSubSkillIdsCandidate": [],
+      "foundationReferenceCandidate": {
+        "lessonNumber": 25,
+        "lessonTitle": "القطوع",
+        "subSkillId": "sub_tah_math_19_03",
+        "subSkillName": "القطع الزائد",
+        "topicId": "PENDING_LIVE_TOPIC_ID_VERIFICATION"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF074-P075-N11|88cffedcc32635ae7ffb99c7e29c61054f9b97de02b93288fd6c2c76f530c56c",
+      "teachingFingerprintCandidate": "sub_tah_math_19_03|تطبيق قواعد القطع الناقص",
+      "mathDecision": "PASS_SOURCE_VISUAL_AND_MATH_CANDIDATE",
+      "productionImageParity": "PENDING_R2",
+      "canonicalApproved": false,
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P077-Q01",
+      "sourceBank": "YLM26",
+      "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourceItemId": "YLM26-PDF076-P077-N01",
+      "pdfPageIndex": 76,
+      "printedPageNumber": 77,
+      "printedQuestionNumber": 1,
+      "imageHash": "068e4e55098948f69be55ca5eb84e53cdc4ddff042c5e9b7bd99aba5b1196406",
+      "imageVersion": 2,
+      "sourceCropEvidence": "RUN61 original PDF at 2x; see local evidence package",
+      "questionTextSourceReviewed": "أي من المعطيات كمية قياسية في وصف رحلة خالد؟",
+      "optionsSourceReviewed": {
+        "A": "200m شرقًا",
+        "B": "3km/h باتجاه المسجد",
+        "C": "550m جنوبًا",
+        "D": "15 دقيقة"
+      },
+      "answerLetterMathVerified": "D",
+      "correctOptionIndex": 3,
+      "explanation": "الزمن 15 دقيقة له مقدار فقط دون اتجاه، أما الخيارات الأخرى فمقادير مصحوبة باتجاه.",
+      "whyCorrect": "الزمن 15 دقيقة له مقدار فقط دون اتجاه، أما الخيارات الأخرى فمقادير مصحوبة باتجاه.",
+      "whyOthersWrong": {
+        "A": "الاختيار A (200m شرقًا) لا يطابق نتيجة المسألة: الزمن 15 دقيقة له مقدار فقط دون اتجاه، أما الخيارات الأخرى فمقادير مصحوبة باتجاه.",
+        "B": "الاختيار B (3km/h باتجاه المسجد) لا يطابق نتيجة المسألة: الزمن 15 دقيقة له مقدار فقط دون اتجاه، أما الخيارات الأخرى فمقادير مصحوبة باتجاه.",
+        "C": "الاختيار C (550m جنوبًا) لا يطابق نتيجة المسألة: الزمن 15 دقيقة له مقدار فقط دون اتجاه، أما الخيارات الأخرى فمقادير مصحوبة باتجاه."
+      },
+      "hint": "ابحث عن المقدار دون اتجاه.",
+      "solvingStrategy": "ابحث عن المقدار دون اتجاه.",
+      "commonMistakes": [
+        "الخلط بين المسافة والإزاحة الموجهة"
+      ],
+      "difficultyCandidate": "Hard",
+      "aiContext": {
+        "readableText": "أي من المعطيات كمية قياسية في وصف رحلة خالد؟",
+        "speechText": "أي من المعطيات كمية قياسية في وصف رحلة خالد؟",
+        "visualDescription": "راجع الرسم/الاختيارات في قصاصة السؤال الأصلية؛ لا تُستنتج بيانات غير ظاهرة."
+      },
+      "skillIdCandidate": "skill_tah_math_20",
+      "subSkillIdCandidate": "sub_tah_math_20_01",
+      "additionalSubSkillIdsCandidate": [],
+      "foundationReferenceCandidate": {
+        "lessonNumber": 26,
+        "lessonTitle": "المتجهات",
+        "subSkillId": "sub_tah_math_20_01",
+        "subSkillName": "المتجهات والمقدار والاتجاه والمركبات والعمليات",
+        "topicId": "PENDING_LIVE_TOPIC_ID_VERIFICATION"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF076-P077-N01|068e4e55098948f69be55ca5eb84e53cdc4ddff042c5e9b7bd99aba5b1196406",
+      "teachingFingerprintCandidate": "sub_tah_math_20_01|تطبيق قواعد المتجهات والمقدار والاتجاه والمركبات والعمليات",
+      "mathDecision": "PASS_SOURCE_VISUAL_AND_MATH_CANDIDATE",
+      "productionImageParity": "PENDING_R2",
+      "canonicalApproved": false,
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P077-Q02",
+      "sourceBank": "YLM26",
+      "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourceItemId": "YLM26-PDF076-P077-N02",
+      "pdfPageIndex": 76,
+      "printedPageNumber": 77,
+      "printedQuestionNumber": 2,
+      "imageHash": "eafe101511ff630e0724068ced1fde55d7eaa068bdcc4119885cd220a4a38dad",
+      "imageVersion": 2,
+      "sourceCropEvidence": "RUN61 original PDF at 2x; see local evidence package",
+      "questionTextSourceReviewed": "ما زاوية الاتجاه الربعي لمتجه اتجاهه القياسي 240°؟",
+      "optionsSourceReviewed": {
+        "A": "S60°W",
+        "B": "E60°S",
+        "C": "W60°S",
+        "D": "S240°W"
+      },
+      "answerLetterMathVerified": "A",
+      "correctOptionIndex": 0,
+      "explanation": "الاتجاه 240° من الشمال مع عقارب الساعة يقع في الربع الجنوبي الغربي، ويبعد 60° عن الجنوب باتجاه الغرب.",
+      "whyCorrect": "الاتجاه 240° من الشمال مع عقارب الساعة يقع في الربع الجنوبي الغربي، ويبعد 60° عن الجنوب باتجاه الغرب.",
+      "whyOthersWrong": {
+        "B": "الاختيار B (E60°S) لا يطابق نتيجة المسألة: الاتجاه 240° من الشمال مع عقارب الساعة يقع في الربع الجنوبي الغربي، ويبعد 60° عن الجنوب باتجاه الغرب.",
+        "C": "الاختيار C (W60°S) لا يطابق نتيجة المسألة: الاتجاه 240° من الشمال مع عقارب الساعة يقع في الربع الجنوبي الغربي، ويبعد 60° عن الجنوب باتجاه الغرب.",
+        "D": "الاختيار D (S240°W) لا يطابق نتيجة المسألة: الاتجاه 240° من الشمال مع عقارب الساعة يقع في الربع الجنوبي الغربي، ويبعد 60° عن الجنوب باتجاه الغرب."
+      },
+      "hint": "اطرح 180° من 240°.",
+      "solvingStrategy": "اطرح 180° من 240°.",
+      "commonMistakes": [
+        "القياس من الغرب بدل الجنوب"
+      ],
+      "difficultyCandidate": "Medium",
+      "aiContext": {
+        "readableText": "ما زاوية الاتجاه الربعي لمتجه اتجاهه القياسي 240°؟",
+        "speechText": "ما زاوية الاتجاه الربعي لمتجه اتجاهه القياسي 240°؟",
+        "visualDescription": "راجع الرسم/الاختيارات في قصاصة السؤال الأصلية؛ لا تُستنتج بيانات غير ظاهرة."
+      },
+      "skillIdCandidate": "skill_tah_math_20",
+      "subSkillIdCandidate": "sub_tah_math_20_01",
+      "additionalSubSkillIdsCandidate": [],
+      "foundationReferenceCandidate": {
+        "lessonNumber": 26,
+        "lessonTitle": "المتجهات",
+        "subSkillId": "sub_tah_math_20_01",
+        "subSkillName": "المتجهات والمقدار والاتجاه والمركبات والعمليات",
+        "topicId": "PENDING_LIVE_TOPIC_ID_VERIFICATION"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF076-P077-N02|eafe101511ff630e0724068ced1fde55d7eaa068bdcc4119885cd220a4a38dad",
+      "teachingFingerprintCandidate": "sub_tah_math_20_01|تطبيق قواعد المتجهات والمقدار والاتجاه والمركبات والعمليات",
+      "mathDecision": "PASS_SOURCE_VISUAL_AND_MATH_CANDIDATE",
+      "productionImageParity": "PENDING_R2",
+      "canonicalApproved": false,
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P078-Q06",
+      "sourceBank": "YLM26",
+      "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourceItemId": "YLM26-PDF077-P078-N06",
+      "pdfPageIndex": 77,
+      "printedPageNumber": 78,
+      "printedQuestionNumber": 6,
+      "imageHash": "7448e95849d8cbd1f430b1fbc5f766caf4c354f0d8529712168817d6e266b231",
+      "imageVersion": 2,
+      "sourceCropEvidence": "RUN61 original PDF at 2x; see local evidence package",
+      "questionTextSourceReviewed": "إذا كان AB=(7,4) وA(d,1) وB(4,5)، أوجد d",
+      "optionsSourceReviewed": {
+        "A": "−3",
+        "B": "0",
+        "C": "3",
+        "D": "7"
+      },
+      "answerLetterMathVerified": "A",
+      "correctOptionIndex": 0,
+      "explanation": "B−A=(4−d,5−1)=(7,4)، إذن 4−d=7 ومنه d=−3.",
+      "whyCorrect": "B−A=(4−d,5−1)=(7,4)، إذن 4−d=7 ومنه d=−3.",
+      "whyOthersWrong": {
+        "B": "الاختيار B (0) لا يطابق نتيجة المسألة: B−A=(4−d,5−1)=(7,4)، إذن 4−d=7 ومنه d=−3.",
+        "C": "الاختيار C (3) لا يطابق نتيجة المسألة: B−A=(4−d,5−1)=(7,4)، إذن 4−d=7 ومنه d=−3.",
+        "D": "الاختيار D (7) لا يطابق نتيجة المسألة: B−A=(4−d,5−1)=(7,4)، إذن 4−d=7 ومنه d=−3."
+      },
+      "hint": "استخدم المتجه B−A.",
+      "solvingStrategy": "استخدم المتجه B−A.",
+      "commonMistakes": [
+        "طرح الإحداثيات بالعكس"
+      ],
+      "difficultyCandidate": "Medium",
+      "aiContext": {
+        "readableText": "إذا كان AB=(7,4) وA(d,1) وB(4,5)، أوجد d",
+        "speechText": "إذا كان AB=(7,4) وA(d,1) وB(4,5)، أوجد d",
+        "visualDescription": "راجع الرسم/الاختيارات في قصاصة السؤال الأصلية؛ لا تُستنتج بيانات غير ظاهرة."
+      },
+      "skillIdCandidate": "skill_tah_math_20",
+      "subSkillIdCandidate": "sub_tah_math_20_01",
+      "additionalSubSkillIdsCandidate": [],
+      "foundationReferenceCandidate": {
+        "lessonNumber": 26,
+        "lessonTitle": "المتجهات",
+        "subSkillId": "sub_tah_math_20_01",
+        "subSkillName": "المتجهات والمقدار والاتجاه والمركبات والعمليات",
+        "topicId": "PENDING_LIVE_TOPIC_ID_VERIFICATION"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF077-P078-N06|7448e95849d8cbd1f430b1fbc5f766caf4c354f0d8529712168817d6e266b231",
+      "teachingFingerprintCandidate": "sub_tah_math_20_01|مطابقة مركبات المتجه الناتجة من نقطتين مع المركبات المعطاة.",
+      "mathDecision": "PASS_SOURCE_VISUAL_AND_MATH_CANDIDATE",
+      "productionImageParity": "PENDING_R2",
+      "canonicalApproved": false,
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P078-Q09",
+      "sourceBank": "YLM26",
+      "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourceItemId": "YLM26-PDF077-P078-N09",
+      "pdfPageIndex": 77,
+      "printedPageNumber": 78,
+      "printedQuestionNumber": 9,
+      "imageHash": "f977abae3df3a8395b0d63f5b2566865910a65f2e858cd754cac67c50a5f5521",
+      "imageVersion": 2,
+      "sourceCropEvidence": "RUN61 original PDF at 2x; see local evidence package",
+      "questionTextSourceReviewed": "إذا كان A(−2,7) وB(6,3)، اكتب AB بوحدة i وj",
+      "optionsSourceReviewed": {
+        "A": "8i−4j",
+        "B": "−8i−4j",
+        "C": "4i−4j",
+        "D": "−4i+4j"
+      },
+      "answerLetterMathVerified": "A",
+      "correctOptionIndex": 0,
+      "explanation": "AB=(6−(−2),3−7)=(8,−4)، أي 8i−4j.",
+      "whyCorrect": "AB=(6−(−2),3−7)=(8,−4)، أي 8i−4j.",
+      "whyOthersWrong": {
+        "B": "الاختيار B (−8i−4j) لا يطابق نتيجة المسألة: AB=(6−(−2),3−7)=(8,−4)، أي 8i−4j.",
+        "C": "الاختيار C (4i−4j) لا يطابق نتيجة المسألة: AB=(6−(−2),3−7)=(8,−4)، أي 8i−4j.",
+        "D": "الاختيار D (−4i+4j) لا يطابق نتيجة المسألة: AB=(6−(−2),3−7)=(8,−4)، أي 8i−4j."
+      },
+      "hint": "اطرح A من B إحداثيًا.",
+      "solvingStrategy": "اطرح A من B إحداثيًا.",
+      "commonMistakes": [
+        "الخلط بين اتجاه المتجه AB وBA"
+      ],
+      "difficultyCandidate": "Medium",
+      "aiContext": {
+        "readableText": "إذا كان A(−2,7) وB(6,3)، اكتب AB بوحدة i وj",
+        "speechText": "إذا كان A(−2,7) وB(6,3)، اكتب AB بوحدة i وj",
+        "visualDescription": "راجع الرسم/الاختيارات في قصاصة السؤال الأصلية؛ لا تُستنتج بيانات غير ظاهرة."
+      },
+      "skillIdCandidate": "skill_tah_math_20",
+      "subSkillIdCandidate": "sub_tah_math_20_01",
+      "additionalSubSkillIdsCandidate": [],
+      "foundationReferenceCandidate": {
+        "lessonNumber": 26,
+        "lessonTitle": "المتجهات",
+        "subSkillId": "sub_tah_math_20_01",
+        "subSkillName": "المتجهات والمقدار والاتجاه والمركبات والعمليات",
+        "topicId": "PENDING_LIVE_TOPIC_ID_VERIFICATION"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF077-P078-N09|f977abae3df3a8395b0d63f5b2566865910a65f2e858cd754cac67c50a5f5521",
+      "teachingFingerprintCandidate": "sub_tah_math_20_01|تطبيق قواعد المتجهات والمقدار والاتجاه والمركبات والعمليات",
+      "mathDecision": "PASS_SOURCE_VISUAL_AND_MATH_CANDIDATE",
+      "productionImageParity": "PENDING_R2",
+      "canonicalApproved": false,
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P083-Q05",
+      "sourceBank": "YLM26",
+      "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourceItemId": "YLM26-PDF082-P083-N05",
+      "pdfPageIndex": 82,
+      "printedPageNumber": 83,
+      "printedQuestionNumber": 5,
+      "imageHash": "c092270cd31e9abf818ddfc29b43bed76dd829597898f12c57dc4d92a0e6f7de",
+      "imageVersion": 2,
+      "sourceCropEvidence": "RUN61 original PDF at 2x; see local evidence package",
+      "questionTextSourceReviewed": "ما الصورة القطبية للمعادلة x=2؟",
+      "optionsSourceReviewed": {
+        "A": "r=2",
+        "B": "θ=2",
+        "C": "r=2tanθ",
+        "D": "r=2secθ"
+      },
+      "answerLetterMathVerified": "D",
+      "correctOptionIndex": 3,
+      "explanation": "x=r cosθ، لذا r cosθ=2 ومنه r=2secθ في مواضع التعريف.",
+      "whyCorrect": "x=r cosθ، لذا r cosθ=2 ومنه r=2secθ في مواضع التعريف.",
+      "whyOthersWrong": {
+        "A": "الاختيار A (r=2) لا يطابق نتيجة المسألة: x=r cosθ، لذا r cosθ=2 ومنه r=2secθ في مواضع التعريف.",
+        "B": "الاختيار B (θ=2) لا يطابق نتيجة المسألة: x=r cosθ، لذا r cosθ=2 ومنه r=2secθ في مواضع التعريف.",
+        "C": "الاختيار C (r=2tanθ) لا يطابق نتيجة المسألة: x=r cosθ، لذا r cosθ=2 ومنه r=2secθ في مواضع التعريف."
+      },
+      "hint": "استبدل x بـr cosθ.",
+      "solvingStrategy": "استبدل x بـr cosθ.",
+      "commonMistakes": [
+        "الخلط بين sin وcos"
+      ],
+      "difficultyCandidate": "Medium",
+      "aiContext": {
+        "readableText": "ما الصورة القطبية للمعادلة x=2؟",
+        "speechText": "ما الصورة القطبية للمعادلة x=2؟",
+        "visualDescription": "راجع الرسم/الاختيارات في قصاصة السؤال الأصلية؛ لا تُستنتج بيانات غير ظاهرة."
+      },
+      "skillIdCandidate": "skill_tah_math_20",
+      "subSkillIdCandidate": "sub_tah_math_20_04",
+      "additionalSubSkillIdsCandidate": [],
+      "foundationReferenceCandidate": {
+        "lessonNumber": 27,
+        "lessonTitle": "الإحداثيات القطبية والديكارتية",
+        "subSkillId": "sub_tah_math_20_04",
+        "subSkillName": "المعادلات القطبية والأعداد المركبة قطبيًا ونظرية ديموافر",
+        "topicId": "PENDING_LIVE_TOPIC_ID_VERIFICATION"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF082-P083-N05|c092270cd31e9abf818ddfc29b43bed76dd829597898f12c57dc4d92a0e6f7de",
+      "teachingFingerprintCandidate": "sub_tah_math_20_04|تطبيق قواعد أنواع الدراسات وطرق أخذ العينات والتحيز",
+      "mathDecision": "PASS_SOURCE_VISUAL_AND_MATH_CANDIDATE",
+      "productionImageParity": "PENDING_R2",
+      "canonicalApproved": false,
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P084-Q09",
+      "sourceBank": "YLM26",
+      "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourceItemId": "YLM26-PDF083-P084-N09",
+      "pdfPageIndex": 83,
+      "printedPageNumber": 84,
+      "printedQuestionNumber": 9,
+      "imageHash": "459a844e9fb9f2decf6429f7ee331cf5716ffb63677f0b8b772b2872a9294545",
+      "imageVersion": 2,
+      "sourceCropEvidence": "RUN61 original PDF at 2x; see local evidence package",
+      "questionTextSourceReviewed": "حاصل ضرب z1=2(cosπ/6+i sinπ/6) وz2=5(cosπ/3+i sinπ/3)",
+      "optionsSourceReviewed": {
+        "A": "10(cosπ/2+i sinπ/2)",
+        "B": "10(cosπ/2−i sinπ/2)",
+        "C": "10(cos²π²/18+i sinπ²/18)",
+        "D": "10(cos²π²/18−i sinπ²/18)"
+      },
+      "answerLetterMathVerified": "A",
+      "correctOptionIndex": 0,
+      "explanation": "نضرب المطولين 2×5=10 ونجمع الزاويتين π/6+π/3=π/2.",
+      "whyCorrect": "نضرب المطولين 2×5=10 ونجمع الزاويتين π/6+π/3=π/2.",
+      "whyOthersWrong": {
+        "B": "الاختيار B (10(cosπ/2−i sinπ/2)) لا يطابق نتيجة المسألة: نضرب المطولين 2×5=10 ونجمع الزاويتين π/6+π/3=π/2.",
+        "C": "الاختيار C (10(cos²π²/18+i sinπ²/18)) لا يطابق نتيجة المسألة: نضرب المطولين 2×5=10 ونجمع الزاويتين π/6+π/3=π/2.",
+        "D": "الاختيار D (10(cos²π²/18−i sinπ²/18)) لا يطابق نتيجة المسألة: نضرب المطولين 2×5=10 ونجمع الزاويتين π/6+π/3=π/2."
+      },
+      "hint": "اضرب المطولين واجمع السعتين.",
+      "solvingStrategy": "اضرب المطولين واجمع السعتين.",
+      "commonMistakes": [
+        "طرح السعتين أو تربيعهما"
+      ],
+      "difficultyCandidate": "Easy",
+      "aiContext": {
+        "readableText": "حاصل ضرب z1=2(cosπ/6+i sinπ/6) وz2=5(cosπ/3+i sinπ/3)",
+        "speechText": "حاصل ضرب z1=2(cosπ/6+i sinπ/6) وz2=5(cosπ/3+i sinπ/3)",
+        "visualDescription": "راجع الرسم/الاختيارات في قصاصة السؤال الأصلية؛ لا تُستنتج بيانات غير ظاهرة."
+      },
+      "skillIdCandidate": "skill_tah_math_20",
+      "subSkillIdCandidate": "sub_tah_math_20_04",
+      "additionalSubSkillIdsCandidate": [],
+      "foundationReferenceCandidate": {
+        "lessonNumber": 27,
+        "lessonTitle": "الإحداثيات القطبية والديكارتية",
+        "subSkillId": "sub_tah_math_20_04",
+        "subSkillName": "المعادلات القطبية والأعداد المركبة قطبيًا ونظرية ديموافر",
+        "topicId": "PENDING_LIVE_TOPIC_ID_VERIFICATION"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF083-P084-N09|459a844e9fb9f2decf6429f7ee331cf5716ffb63677f0b8b772b2872a9294545",
+      "teachingFingerprintCandidate": "sub_tah_math_20_04|تطبيق قواعد أنواع الدراسات وطرق أخذ العينات والتحيز",
+      "mathDecision": "PASS_SOURCE_VISUAL_AND_MATH_CANDIDATE",
+      "productionImageParity": "PENDING_R2",
+      "canonicalApproved": false,
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P085-Q02",
+      "sourceBank": "YLM26",
+      "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourceItemId": "YLM26-PDF084-P085-N02",
+      "pdfPageIndex": 84,
+      "printedPageNumber": 85,
+      "printedQuestionNumber": 2,
+      "imageHash": "7f28ade955001d1719b5e642f5faf09a9e535ab0e0c334d7ae97aeb7f1dd3414",
+      "imageVersion": 2,
+      "sourceCropEvidence": "RUN61 original PDF at 2x; see local evidence package",
+      "questionTextSourceReviewed": "أي سؤال استبيان لطلاب مجموعة رياضيات لا يتضمن تحيزًا؟",
+      "optionsSourceReviewed": {
+        "A": "ما المادة التي تود المشاركة فيها؟",
+        "B": "هل تفضل الرياضيات أم العلوم؟",
+        "C": "هل تود الاشتراك في مجموعة رياضيات؟",
+        "D": "هل تحب رياضيات؟"
+      },
+      "answerLetterMathVerified": "A",
+      "correctOptionIndex": 0,
+      "explanation": "السؤال المفتوح المحايد عن المادة لا يوجه المجيب نحو تفضيل الرياضيات؛ بقية الأسئلة تقيد أو توحي بإجابة.",
+      "whyCorrect": "السؤال المفتوح المحايد عن المادة لا يوجه المجيب نحو تفضيل الرياضيات؛ بقية الأسئلة تقيد أو توحي بإجابة.",
+      "whyOthersWrong": {
+        "B": "الاختيار B (هل تفضل الرياضيات أم العلوم؟) لا يطابق نتيجة المسألة: السؤال المفتوح المحايد عن المادة لا يوجه المجيب نحو تفضيل الرياضيات؛ بقية الأسئلة تقيد أو توحي بإجابة.",
+        "C": "الاختيار C (هل تود الاشتراك في مجموعة رياضيات؟) لا يطابق نتيجة المسألة: السؤال المفتوح المحايد عن المادة لا يوجه المجيب نحو تفضيل الرياضيات؛ بقية الأسئلة تقيد أو توحي بإجابة.",
+        "D": "الاختيار D (هل تحب رياضيات؟) لا يطابق نتيجة المسألة: السؤال المفتوح المحايد عن المادة لا يوجه المجيب نحو تفضيل الرياضيات؛ بقية الأسئلة تقيد أو توحي بإجابة."
+      },
+      "hint": "تجنب تضمين إجابة مفضلة في السؤال.",
+      "solvingStrategy": "تجنب تضمين إجابة مفضلة في السؤال.",
+      "commonMistakes": [
+        "اعتبار السؤال الموجه سؤالًا محايدًا"
+      ],
+      "difficultyCandidate": "Easy",
+      "aiContext": {
+        "readableText": "أي سؤال استبيان لطلاب مجموعة رياضيات لا يتضمن تحيزًا؟",
+        "speechText": "أي سؤال استبيان لطلاب مجموعة رياضيات لا يتضمن تحيزًا؟",
+        "visualDescription": "راجع الرسم/الاختيارات في قصاصة السؤال الأصلية؛ لا تُستنتج بيانات غير ظاهرة."
+      },
+      "skillIdCandidate": "skill_tah_math_21",
+      "subSkillIdCandidate": "sub_tah_math_21_01",
+      "additionalSubSkillIdsCandidate": [],
+      "foundationReferenceCandidate": {
+        "lessonNumber": 28,
+        "lessonTitle": "الإحصاء",
+        "subSkillId": "sub_tah_math_21_01",
+        "subSkillName": "أنواع الدراسات وطرق أخذ العينات والتحيز",
+        "topicId": "PENDING_LIVE_TOPIC_ID_VERIFICATION"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF084-P085-N02|7f28ade955001d1719b5e642f5faf09a9e535ab0e0c334d7ae97aeb7f1dd3414",
+      "teachingFingerprintCandidate": "sub_tah_math_21_01|تمييز السؤال الاستقصائي غير المتحيز من السؤال الموجّه.",
+      "mathDecision": "PASS_SOURCE_VISUAL_AND_MATH_CANDIDATE",
+      "productionImageParity": "PENDING_R2",
+      "canonicalApproved": false,
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P085-Q04",
+      "sourceBank": "YLM26",
+      "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourceItemId": "YLM26-PDF084-P085-N04",
+      "pdfPageIndex": 84,
+      "printedPageNumber": 85,
+      "printedQuestionNumber": 4,
+      "imageHash": "27ef5306793321366d68096ee706c9131f83fcfddf699b3e9d07965a91d4d3d7",
+      "imageVersion": 2,
+      "sourceCropEvidence": "RUN61 original PDF at 2x; see local evidence package",
+      "questionTextSourceReviewed": "أوجد المتوسط الحسابي للقيم 12 و9 و14 و5",
+      "optionsSourceReviewed": {
+        "A": "12",
+        "B": "10",
+        "C": "8",
+        "D": "5"
+      },
+      "answerLetterMathVerified": "B",
+      "correctOptionIndex": 1,
+      "explanation": "المجموع 12+9+14+5=40 وعدد القيم 4، إذن المتوسط=10.",
+      "whyCorrect": "المجموع 12+9+14+5=40 وعدد القيم 4، إذن المتوسط=10.",
+      "whyOthersWrong": {
+        "A": "الاختيار A (12) لا يطابق نتيجة المسألة: المجموع 12+9+14+5=40 وعدد القيم 4، إذن المتوسط=10.",
+        "C": "الاختيار C (8) لا يطابق نتيجة المسألة: المجموع 12+9+14+5=40 وعدد القيم 4، إذن المتوسط=10.",
+        "D": "الاختيار D (5) لا يطابق نتيجة المسألة: المجموع 12+9+14+5=40 وعدد القيم 4، إذن المتوسط=10."
+      },
+      "hint": "اجمع القيم واقسم على عددها.",
+      "solvingStrategy": "اجمع القيم واقسم على عددها.",
+      "commonMistakes": [
+        "القسمة على قيمة بدلاً من عدد القيم"
+      ],
+      "difficultyCandidate": "Easy",
+      "aiContext": {
+        "readableText": "أوجد المتوسط الحسابي للقيم 12 و9 و14 و5",
+        "speechText": "أوجد المتوسط الحسابي للقيم 12 و9 و14 و5",
+        "visualDescription": "راجع الرسم/الاختيارات في قصاصة السؤال الأصلية؛ لا تُستنتج بيانات غير ظاهرة."
+      },
+      "skillIdCandidate": "skill_tah_math_21",
+      "subSkillIdCandidate": "sub_tah_math_21_02",
+      "additionalSubSkillIdsCandidate": [],
+      "foundationReferenceCandidate": {
+        "lessonNumber": 28,
+        "lessonTitle": "الإحصاء",
+        "subSkillId": "sub_tah_math_21_02",
+        "subSkillName": "مقاييس النزعة المركزية والتشتت والدرجة المعيارية",
+        "topicId": "PENDING_LIVE_TOPIC_ID_VERIFICATION"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF084-P085-N04|27ef5306793321366d68096ee706c9131f83fcfddf699b3e9d07965a91d4d3d7",
+      "teachingFingerprintCandidate": "sub_tah_math_21_02|تطبيق قواعد مقاييس النزعة المركزية والتشتت والدرجة المعيارية",
+      "mathDecision": "PASS_SOURCE_VISUAL_AND_MATH_CANDIDATE",
+      "productionImageParity": "PENDING_R2",
+      "canonicalApproved": false,
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P086-Q05",
+      "sourceBank": "YLM26",
+      "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourceItemId": "YLM26-PDF085-P086-N05",
+      "pdfPageIndex": 85,
+      "printedPageNumber": 86,
+      "printedQuestionNumber": 5,
+      "imageHash": "fc9b31c2d6a0965f362017672fb035db241c1aaa50a6d335e6bbbc23fc6cdb50",
+      "imageVersion": 2,
+      "sourceCropEvidence": "RUN61 original PDF at 2x; see local evidence package",
+      "questionTextSourceReviewed": "أوجد الانحراف المعياري للنتائج 85،85،95،95،90،90 مقربًا لأقرب عدد صحيح",
+      "optionsSourceReviewed": {
+        "A": "1",
+        "B": "2",
+        "C": "3",
+        "D": "4"
+      },
+      "answerLetterMathVerified": "D",
+      "correctOptionIndex": 3,
+      "explanation": "المتوسط=90، ومجموع مربعات الفروق=100، والتباين السكاني=100/6؛ الجذر≈4.08 فيقرب إلى 4.",
+      "whyCorrect": "المتوسط=90، ومجموع مربعات الفروق=100، والتباين السكاني=100/6؛ الجذر≈4.08 فيقرب إلى 4.",
+      "whyOthersWrong": {
+        "A": "الاختيار A (1) لا يطابق نتيجة المسألة: المتوسط=90، ومجموع مربعات الفروق=100، والتباين السكاني=100/6؛ الجذر≈4.08 فيقرب إلى 4.",
+        "B": "الاختيار B (2) لا يطابق نتيجة المسألة: المتوسط=90، ومجموع مربعات الفروق=100، والتباين السكاني=100/6؛ الجذر≈4.08 فيقرب إلى 4.",
+        "C": "الاختيار C (3) لا يطابق نتيجة المسألة: المتوسط=90، ومجموع مربعات الفروق=100، والتباين السكاني=100/6؛ الجذر≈4.08 فيقرب إلى 4."
+      },
+      "hint": "احسب المتوسط ثم مربعات الفروق.",
+      "solvingStrategy": "احسب المتوسط ثم مربعات الفروق.",
+      "commonMistakes": [
+        "نسيان أخذ الجذر التربيعي بعد التباين"
+      ],
+      "difficultyCandidate": "Easy",
+      "aiContext": {
+        "readableText": "أوجد الانحراف المعياري للنتائج 85،85،95،95،90،90 مقربًا لأقرب عدد صحيح",
+        "speechText": "أوجد الانحراف المعياري للنتائج 85،85،95،95،90،90 مقربًا لأقرب عدد صحيح",
+        "visualDescription": "راجع الرسم/الاختيارات في قصاصة السؤال الأصلية؛ لا تُستنتج بيانات غير ظاهرة."
+      },
+      "skillIdCandidate": "skill_tah_math_21",
+      "subSkillIdCandidate": "sub_tah_math_21_02",
+      "additionalSubSkillIdsCandidate": [],
+      "foundationReferenceCandidate": {
+        "lessonNumber": 28,
+        "lessonTitle": "الإحصاء",
+        "subSkillId": "sub_tah_math_21_02",
+        "subSkillName": "مقاييس النزعة المركزية والتشتت والدرجة المعيارية",
+        "topicId": "PENDING_LIVE_TOPIC_ID_VERIFICATION"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF085-P086-N05|fc9b31c2d6a0965f362017672fb035db241c1aaa50a6d335e6bbbc23fc6cdb50",
+      "teachingFingerprintCandidate": "sub_tah_math_21_02|تطبيق قواعد مقاييس النزعة المركزية والتشتت والدرجة المعيارية",
+      "mathDecision": "PASS_SOURCE_VISUAL_AND_MATH_CANDIDATE",
+      "productionImageParity": "PENDING_R2",
+      "canonicalApproved": false,
+      "productionMutation": false
+    }
+  ],
+  "knownHolds": [
+    "P036-Q14",
+    "P057-Q09",
+    "P058-Q10",
+    "P066-Q14",
+    "P081-Q01",
+    "P085-Q01"
+  ],
+  "productionMutation": false,
+  "canonicalApproved": 0
+}

@@ -1,0 +1,15 @@
+{
+  "run": "RUN70",
+  "bank": "YLM26",
+  "method": "independent grayscale template matching of 50 archived question crops to 3x rendered pages of the official foundation PDF",
+  "sourcePdfSHA256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+  "matched": 50,
+  "failed": 0,
+  "maxNormalizedSquaredDifference": 0.000049097980081569403,
+  "exactRGBParitySeparate": 150,
+  "additionalFullPageSourceItems": 5,
+  "symbolicChecksPass": 31,
+  "optionWrongReasonsPrepared": 90,
+  "canonicalApproved": 0,
+  "productionMutation": false
+}

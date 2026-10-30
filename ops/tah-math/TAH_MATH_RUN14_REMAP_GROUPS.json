@@ -1,0 +1,81 @@
+{
+  "project": "TAH-MATH",
+  "run": "2026-10-08-heavy-run14",
+  "status": "SOURCE_VISUAL_REMAP_CANDIDATES_REVIEW_REQUIRED",
+  "sourceBookSha256": "5c1ec2dc4f2ddd6036dbd3430f0fceaaa9b51e300b7e8442b446c3a21a4ecd51",
+  "count": 48,
+  "groups": [
+    {
+      "page": 101,
+      "q": "41-44",
+      "from": "sub_tah_math_16_02",
+      "to": "sub_tah_math_16_04",
+      "reason": "piecewise continuity"
+    },
+    {
+      "page": 101,
+      "q": "50-53",
+      "from": "sub_tah_math_16_04",
+      "to": "sub_tah_math_16_05",
+      "reason": "function transformations"
+    },
+    {
+      "page": 102,
+      "q": "54-63",
+      "from": "sub_tah_math_16_04",
+      "to": "sub_tah_math_16_05",
+      "reason": "function transformations"
+    },
+    {
+      "page": 103,
+      "q": "64",
+      "from": "sub_tah_math_16_04",
+      "to": "sub_tah_math_16_05",
+      "reason": "function transformation"
+    },
+    {
+      "page": 103,
+      "q": "65-69",
+      "from": "sub_tah_math_16_05",
+      "to": "sub_tah_math_16_01",
+      "reason": "domain and range"
+    },
+    {
+      "page": 111,
+      "q": "15-16",
+      "from": "sub_tah_math_17_01",
+      "to": "sub_tah_math_17_03",
+      "reason": "growth/financial application"
+    },
+    {
+      "page": 112,
+      "q": "20-25",
+      "from": "sub_tah_math_17_01",
+      "to": "sub_tah_math_17_02",
+      "reason": "logarithm equivalence"
+    },
+    {
+      "page": 114,
+      "q": "64-65",
+      "from": "sub_tah_math_17_03",
+      "to": "sub_tah_math_17_02",
+      "reason": "logarithm composition and equivalence"
+    },
+    {
+      "page": 133,
+      "q": "34-35",
+      "from": "sub_tah_math_20_01",
+      "to": "sub_tah_math_20_02",
+      "reason": "dot-product vector angle"
+    },
+    {
+      "page": 138,
+      "q": "1-12",
+      "from": "sub_tah_math_20_04",
+      "to": "sub_tah_math_20_03",
+      "reason": "polar coordinates conversion"
+    }
+  ],
+  "rollback": "Preserve current subSkillId as rollback; apply only after exact compare with live document and final review manifest.",
+  "productionMutation": false
+}

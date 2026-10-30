@@ -1,0 +1,60 @@
+{
+  "project": "TAH-MATH",
+  "bank": "YLM26",
+  "scope": "foundation lessons 9-13 / printed pages 25-33",
+  "source": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+  "method": "Cross-check database correctOptionIndex against source answer-key sequences printed at the end of each lesson. Keys are normalized into q1..qN order. No production mutation.",
+  "reviewedQuestions": 35,
+  "exactAnswerMatches": 35,
+  "discrepancies": 0,
+  "lessonResults": [
+    {
+      "lesson": 9,
+      "pages": "25-26",
+      "questions": 8,
+      "status": "PASS",
+      "matches": 8,
+      "sourceKeyQ1toQ8": "A D C A A D C D"
+    },
+    {
+      "lesson": 10,
+      "pages": "27-28",
+      "questions": 9,
+      "status": "PASS",
+      "matches": 9,
+      "sourceKeyQ1toQ9": "D B C B A A D A D"
+    },
+    {
+      "lesson": 11,
+      "pages": "29",
+      "questions": 2,
+      "status": "PASS",
+      "matches": 2,
+      "sourceKeyQ1toQ2": "B C"
+    },
+    {
+      "lesson": 12,
+      "pages": "30-31",
+      "questions": 8,
+      "status": "PASS",
+      "matches": 8,
+      "sourceKeyQ1toQ8": "C B A C A B B A"
+    },
+    {
+      "lesson": 13,
+      "pages": "32-33",
+      "questions": 8,
+      "status": "PASS",
+      "matches": 8,
+      "sourceKeyQ1toQ8": "D A A A A D C C"
+    }
+  ],
+  "cumulativeAnswerAudit": {
+    "lessons": "1-13",
+    "reviewedQuestions": 110,
+    "exactMatches": 109,
+    "visualReviewCandidates": 1,
+    "candidate": "TAH-MATH-YLM26-P021-Q04"
+  },
+  "sourceEvidence": "Parsed source pages 25-33 of the canonical foundation PDF; lesson-end printed keys are legible enough for deterministic comparison."
+}

@@ -1,0 +1,984 @@
+{
+  "run": "RUN32",
+  "bank": "YLM26",
+  "status": "SOURCE_VISUAL_OPTIONS_CANDIDATES_NOT_PRODUCTION_APPROVED",
+  "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+  "method": "150 source crop images from official 96-page PDF; manual option transcription after visual inspection; pixel-verified against source at 2x; answer letters from prior RUN31 source evidence; pending second pass for flagged ambiguous symbols",
+  "rows": [
+    {
+      "questionCode": "TAH-MATH-YLM26-P011-Q01",
+      "sourceAnswerLetter": "D",
+      "options": {
+        "A": "قائم الزاوية",
+        "B": "منفرج الزاوية",
+        "C": "متطابق الأضلاع",
+        "D": "متطابق الضلعين"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P011-Q02",
+      "sourceAnswerLetter": "D",
+      "options": {
+        "A": "14",
+        "B": "15",
+        "C": "16",
+        "D": "19"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P011-Q03",
+      "sourceAnswerLetter": "A",
+      "options": {
+        "A": "35°",
+        "B": "40°",
+        "C": "70°",
+        "D": "110°"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P011-Q04",
+      "sourceAnswerLetter": "C",
+      "options": {
+        "A": "72°",
+        "B": "90°",
+        "C": "120°",
+        "D": "150°"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P012-Q05",
+      "sourceAnswerLetter": "D",
+      "options": {
+        "A": "AAS",
+        "B": "SSS",
+        "C": "AAA",
+        "D": "SAS"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P012-Q06",
+      "sourceAnswerLetter": "A",
+      "options": {
+        "A": "3",
+        "B": "6",
+        "C": "9",
+        "D": "12"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P012-Q07",
+      "sourceAnswerLetter": "D",
+      "options": {
+        "A": "16",
+        "B": "24",
+        "C": "12",
+        "D": "28"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P013-Q08",
+      "sourceAnswerLetter": "C",
+      "options": {
+        "A": "12",
+        "B": "9",
+        "C": "6",
+        "D": "4"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P013-Q09",
+      "sourceAnswerLetter": "A",
+      "options": {
+        "A": "160°",
+        "B": "150°",
+        "C": "140°",
+        "D": "70°"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P013-Q10",
+      "sourceAnswerLetter": "D",
+      "options": {
+        "A": "27",
+        "B": "32",
+        "C": "33",
+        "D": "34"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P013-Q11",
+      "sourceAnswerLetter": "C",
+      "options": {
+        "A": "8",
+        "B": "15",
+        "C": "45",
+        "D": "60"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P013-Q12",
+      "sourceAnswerLetter": "C",
+      "options": {
+        "A": "x ≤ 4",
+        "B": "3x < 12",
+        "C": "x ≥ 4",
+        "D": "3x > 12"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P014-Q01",
+      "sourceAnswerLetter": "C",
+      "options": {
+        "A": "5",
+        "B": "6",
+        "C": "7",
+        "D": "8"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P014-Q02",
+      "sourceAnswerLetter": "D",
+      "options": {
+        "A": "9",
+        "B": "10",
+        "C": "11",
+        "D": "12"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P014-Q03",
+      "sourceAnswerLetter": "B",
+      "options": {
+        "A": "18°",
+        "B": "36°",
+        "C": "72°",
+        "D": "108°"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P014-Q04",
+      "sourceAnswerLetter": "D",
+      "options": {
+        "A": "6",
+        "B": "7",
+        "C": "12",
+        "D": "15"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P015-Q05",
+      "sourceAnswerLetter": "C",
+      "options": {
+        "A": "20°",
+        "B": "40°",
+        "C": "80°",
+        "D": "120°"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P015-Q06",
+      "sourceAnswerLetter": "A",
+      "options": {
+        "A": "3",
+        "B": "4",
+        "C": "5",
+        "D": "6"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P015-Q07",
+      "sourceAnswerLetter": "D",
+      "options": {
+        "A": "20°",
+        "B": "30°",
+        "C": "60°",
+        "D": "120°"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P015-Q08",
+      "sourceAnswerLetter": "A",
+      "options": {
+        "A": "6",
+        "B": "13",
+        "C": "18",
+        "D": "28"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P016-Q09",
+      "sourceAnswerLetter": "B",
+      "options": {
+        "A": "4",
+        "B": "5",
+        "C": "6",
+        "D": "7"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P016-Q10",
+      "sourceAnswerLetter": "B",
+      "options": {
+        "A": "(3,3)",
+        "B": "(3,4)",
+        "C": "(2,4)",
+        "D": "(4,2)"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P016-Q11",
+      "sourceAnswerLetter": "A",
+      "options": {
+        "A": "(a+b,c)",
+        "B": "(c,a+b)",
+        "C": "(b−a,c)",
+        "D": "(c,b−a)"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P017-Q01",
+      "sourceAnswerLetter": "B",
+      "options": {
+        "A": "6",
+        "B": "18",
+        "C": "24",
+        "D": "26"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P017-Q02",
+      "sourceAnswerLetter": "B",
+      "options": {
+        "A": "4",
+        "B": "6",
+        "C": "8",
+        "D": "10"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P017-Q03",
+      "sourceAnswerLetter": "A",
+      "options": {
+        "A": "x = 7y/10",
+        "B": "y = 7x/10",
+        "C": "x = y",
+        "D": "x = 3y"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P018-Q04",
+      "sourceAnswerLetter": "A",
+      "options": {
+        "A": "18",
+        "B": "16",
+        "C": "15",
+        "D": "14"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P018-Q05",
+      "sourceAnswerLetter": "B",
+      "options": {
+        "A": "3",
+        "B": "4",
+        "C": "5",
+        "D": "6"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P018-Q06",
+      "sourceAnswerLetter": "A",
+      "options": {
+        "A": "5",
+        "B": "7.5",
+        "C": "9",
+        "D": "15"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P019-Q01",
+      "sourceAnswerLetter": "B",
+      "options": {
+        "A": "(1,−4)",
+        "B": "(1,4)",
+        "C": "(−1,4)",
+        "D": "(−1,−4)"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P019-Q02",
+      "sourceAnswerLetter": "A",
+      "options": {
+        "A": "(−1,1)",
+        "B": "(−6,6)",
+        "C": "(5,−7)",
+        "D": "(1,1)"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P019-Q03",
+      "sourceAnswerLetter": "A",
+      "options": {
+        "A": "(1,−3)",
+        "B": "(1,3)",
+        "C": "(3,−1)",
+        "D": "(−1,−3)"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P020-Q04",
+      "sourceAnswerLetter": "C",
+      "options": {
+        "A": "انعكاس",
+        "B": "دوران",
+        "C": "إزاحة",
+        "D": "تمدد"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P020-Q05",
+      "sourceAnswerLetter": "A",
+      "options": {
+        "A": "45°",
+        "B": "80°",
+        "C": "120°",
+        "D": "125°"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P020-Q06",
+      "sourceAnswerLetter": "C",
+      "options": {
+        "A": "(1,−4)",
+        "B": "(2,−2)",
+        "C": "(1,−2)",
+        "D": "(4,−8)"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P020-Q07",
+      "sourceAnswerLetter": "B",
+      "options": {
+        "A": "2/3",
+        "B": "3/2",
+        "C": "4",
+        "D": "6"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P020-Q08",
+      "sourceAnswerLetter": "A",
+      "options": {
+        "A": "التمدد",
+        "B": "الإزاحة",
+        "C": "الدوران",
+        "D": "الانعكاس"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P021-Q01",
+      "sourceAnswerLetter": "C",
+      "options": {
+        "A": "3",
+        "B": "6",
+        "C": "9",
+        "D": "12"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P021-Q02",
+      "sourceAnswerLetter": "A",
+      "options": {
+        "A": "2",
+        "B": "3",
+        "C": "4",
+        "D": "5"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P021-Q03",
+      "sourceAnswerLetter": "C",
+      "options": {
+        "A": "72°",
+        "B": "48°",
+        "C": "36°",
+        "D": "24°"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P021-Q04",
+      "sourceAnswerLetter": "B",
+      "options": {
+        "A": "π",
+        "B": "π/2",
+        "C": "2π",
+        "D": "π/3"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P022-Q05",
+      "sourceAnswerLetter": "B",
+      "options": {
+        "A": "4",
+        "B": "8",
+        "C": "10",
+        "D": "16"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P022-Q06",
+      "sourceAnswerLetter": "B",
+      "options": {
+        "A": "60°",
+        "B": "120°",
+        "C": "180°",
+        "D": "240°"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P022-Q07",
+      "sourceAnswerLetter": "B",
+      "options": {
+        "A": "50°",
+        "B": "40°",
+        "C": "30°",
+        "D": "20°"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P022-Q08",
+      "sourceAnswerLetter": "C",
+      "options": {
+        "A": "30°",
+        "B": "60°",
+        "C": "120°",
+        "D": "180°"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P022-Q09",
+      "sourceAnswerLetter": "B",
+      "options": {
+        "A": "2",
+        "B": "3",
+        "C": "4",
+        "D": "6"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P023-Q10",
+      "sourceAnswerLetter": "A",
+      "options": {
+        "A": "30°",
+        "B": "60°",
+        "C": "90°",
+        "D": "120°"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P023-Q11",
+      "sourceAnswerLetter": "D",
+      "options": {
+        "A": "62.5°",
+        "B": "125°",
+        "C": "150°",
+        "D": "250°"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P023-Q12",
+      "sourceAnswerLetter": "A",
+      "options": {
+        "A": "2",
+        "B": "3",
+        "C": "6",
+        "D": "9"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P023-Q13",
+      "sourceAnswerLetter": "B",
+      "options": {
+        "A": "3",
+        "B": "6",
+        "C": "7",
+        "D": "9"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P023-Q14",
+      "sourceAnswerLetter": "D",
+      "options": {
+        "A": "(−1,−3)",
+        "B": "(1,−3)",
+        "C": "(−1,3)",
+        "D": "(−3,−1)"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P025-Q01",
+      "sourceAnswerLetter": "A",
+      "options": {
+        "A": "√7",
+        "B": "22/7",
+        "C": "2",
+        "D": "0.(45 repeating)"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P025-Q02",
+      "sourceAnswerLetter": "D",
+      "options": {
+        "A": "N",
+        "B": "Q",
+        "C": "Z",
+        "D": "I"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P025-Q03",
+      "sourceAnswerLetter": "C",
+      "options": {
+        "A": "الضرب",
+        "B": "الإبدال",
+        "C": "التوزيع",
+        "D": "الجمع"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P026-Q04",
+      "sourceAnswerLetter": "A",
+      "options": {
+        "A": "{1,3,4}",
+        "B": "{6,2}",
+        "C": "{1,4,5}",
+        "D": "{1,3}"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P026-Q05",
+      "sourceAnswerLetter": "A",
+      "options": {
+        "A": "x−2=0",
+        "B": "y−7=0",
+        "C": "y−2=x",
+        "D": "y=x+2"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P026-Q06",
+      "sourceAnswerLetter": "D",
+      "options": {
+        "A": "11",
+        "B": "12",
+        "C": "15",
+        "D": "18"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P026-Q07",
+      "sourceAnswerLetter": "C",
+      "options": {
+        "A": "2x²+6x−3",
+        "B": "−8x²−6x+3",
+        "C": "8x²+6x−3",
+        "D": "−2x²−6x+3"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P026-Q08",
+      "sourceAnswerLetter": "D",
+      "options": {
+        "A": "−6",
+        "B": "−2",
+        "C": "2",
+        "D": "6"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P027-Q01",
+      "sourceAnswerLetter": "D",
+      "options": {
+        "A": "−4≤x≤1",
+        "B": "−4<x<1",
+        "C": "x≤−4 or x≥1",
+        "D": "x<−4 or x≥1"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P028-Q02",
+      "sourceAnswerLetter": "B",
+      "options": {
+        "A": "(−∞,3]",
+        "B": "(−∞,−3) ∪ {2}",
+        "C": "(−∞,3)",
+        "D": "(−∞,−2] ∪ {3}"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P028-Q03",
+      "sourceAnswerLetter": "C",
+      "options": {
+        "A": "10",
+        "B": "5",
+        "C": "−10",
+        "D": "−15"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P028-Q04",
+      "sourceAnswerLetter": "B",
+      "options": {
+        "A": "2",
+        "B": "3",
+        "C": "4",
+        "D": "[7.3]"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P028-Q05",
+      "sourceAnswerLetter": "A",
+      "options": {
+        "A": "−3",
+        "B": "−2",
+        "C": "−1",
+        "D": "0"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P028-Q06",
+      "sourceAnswerLetter": "A",
+      "options": {
+        "A": "[5,∞)",
+        "B": "(−∞,−5]",
+        "C": "[−5,∞)",
+        "D": "(−∞,5]"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P028-Q07",
+      "sourceAnswerLetter": "D",
+      "options": {
+        "A": "f(x)=4x",
+        "B": "f(x)=[4x]",
+        "C": "f(x)=[x]",
+        "D": "f(x)=[|4x|]"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "VISUAL_SECOND_PASS_REQUIRED"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P028-Q08",
+      "sourceAnswerLetter": "A",
+      "options": {
+        "A": "[3,∞)",
+        "B": "[2,∞)",
+        "C": "[−3,∞)",
+        "D": "[−3,2)"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P028-Q09",
+      "sourceAnswerLetter": "D",
+      "options": {
+        "A": "|−x−2|",
+        "B": "|2x|",
+        "C": "|−x²|",
+        "D": "−|x+2|"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P029-Q01",
+      "sourceAnswerLetter": "B",
+      "options": {
+        "A": "3x+5y<30",
+        "B": "3x+5y≤30",
+        "C": "3x+5y>30",
+        "D": "3x+5y≥30"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P029-Q02",
+      "sourceAnswerLetter": "C",
+      "options": {
+        "A": "(6,0)",
+        "B": "(5,−5)",
+        "C": "(0,0)",
+        "D": "(2,−3)"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P030-Q01",
+      "sourceAnswerLetter": "C",
+      "options": {
+        "A": "1×3",
+        "B": "3×3",
+        "C": "3×1",
+        "D": "1×1"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P030-Q02",
+      "sourceAnswerLetter": "B",
+      "options": {
+        "A": "−3",
+        "B": "−1",
+        "C": "1",
+        "D": "2"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P031-Q03",
+      "sourceAnswerLetter": "A",
+      "options": {
+        "A": "2×2",
+        "B": "3×2",
+        "C": "3×3",
+        "D": "4×4"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P031-Q04",
+      "sourceAnswerLetter": "C",
+      "options": {
+        "A": "[[-5,-1],[1,8]]",
+        "B": "[[5,1],[-1,-8]]",
+        "C": "[[5,-1],[-1,8]]",
+        "D": "[[0,4],[4,2]]"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P031-Q05",
+      "sourceAnswerLetter": "A",
+      "options": {
+        "A": "[8,−12]",
+        "B": "[[8],[-12]]",
+        "C": "[[8,−4],[0,0],[0,−8]]",
+        "D": "غير معرف"
+      },
+      "sourceVisualReviewed": true,
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "reviewStatus": "SOURCE_OPTIONS_TRANSCRIBED_CANDIDATE"
+    }
+  ]
+}

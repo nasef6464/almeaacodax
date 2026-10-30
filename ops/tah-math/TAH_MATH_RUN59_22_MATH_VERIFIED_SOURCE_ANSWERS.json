@@ -1,0 +1,33 @@
+{
+  "run": "RUN59",
+  "bank": "YLM26",
+  "officialSourceSha256FromPriorRun": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+  "sourceEvidence": "Previously extracted official PDF question crops, re-inspected visually; original PDF not reopened",
+  "mathVerified": 22,
+  "answerCandidates": {
+    "P027-Q01": "D",
+    "P028-Q08": "A",
+    "P028-Q09": "D",
+    "P029-Q01": "B",
+    "P029-Q02": "C",
+    "P030-Q02": "B",
+    "P031-Q04": "C",
+    "P031-Q07": "B",
+    "P032-Q02": "A",
+    "P032-Q03": "A",
+    "P032-Q05": "A",
+    "P033-Q06": "D",
+    "P038-Q03": "A",
+    "P039-Q01": "A",
+    "P039-Q02": "D",
+    "P040-Q01": "B",
+    "P040-Q02": "A",
+    "P040-Q04": "A",
+    "P040-Q05": "C",
+    "P041-Q06": "C",
+    "P041-Q07": "A",
+    "P041-Q08": "A"
+  },
+  "canonicalApproved": 0,
+  "productionMutation": false
+}

@@ -1,0 +1,23 @@
+{
+  "run": "RUN70",
+  "bank": "YLM26",
+  "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+  "questionCode": "TAH-MATH-YLM26-P031-Q03",
+  "printedPage": 31,
+  "oldAnswerCandidate": "A",
+  "verifiedAnswerCandidate": "B",
+  "options": {
+    "A": "2×2",
+    "B": "2×3",
+    "C": "3×3",
+    "D": "4×4"
+  },
+  "whyCorrect": "Multiplying a 2×2 matrix by a 2×3 matrix yields a 2×3 matrix.",
+  "whyOthersWrong": {
+    "A": "It incorrectly retains the first matrix's column count.",
+    "C": "It incorrectly uses the second matrix's row count as output rows.",
+    "D": "Neither output dimension is 4."
+  },
+  "canonicalApproved": false,
+  "productionMutation": false
+}

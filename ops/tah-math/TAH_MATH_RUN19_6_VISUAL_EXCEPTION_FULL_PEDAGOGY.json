@@ -1,0 +1,285 @@
+{
+  "project": "TAH-MATH",
+  "run": "RUN19",
+  "branch": "content/tah-math-full-taxonomy-closure",
+  "sourceBook": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+  "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+  "scope": "Six visual-exception questions independently solved from official book; reviewed suggestions only, not production mutation",
+  "verifiedAt": "2026-10-08",
+  "reviewed": 6,
+  "answerMatches": 6,
+  "rows": [
+    {
+      "code": "TAH-MATH-YLM26-P016-Q10",
+      "options": [
+        "(3,3)",
+        "(3,4)",
+        "(2,4)",
+        "(4,2)"
+      ],
+      "answer": 1,
+      "whyCorrect": "AB=3−(−1)=4؛ BC رأسي وطوله 4؛ إذن C=(3,4).",
+      "whyOthersWrong": [
+        "A: الارتفاع 3 لا يساوي AB=4.",
+        "CORRECT_OPTION",
+        "C: الإحداثي السيني يجب أن يساوي إحداثي B وهو 3.",
+        "D: كلا الإحداثيين لا يحققان وقوع C عموديًا فوق B بمسافة 4."
+      ],
+      "hint": "احسب طول AB أولًا، ثم استخدم أن BC رأسي ويساويه.",
+      "strategy": "مسافة أفقية ثم نقل رأسي للإحداثيات.",
+      "mistakes": [
+        "إهمال السالب في −1",
+        "تبديل x وy"
+      ],
+      "difficulty": "Easy",
+      "source": {
+        "documentCode": "YLM26",
+        "sourceItemId": "YLM26-PDF015-P016-N10",
+        "pdfPageIndex": 15,
+        "printedPageNumber": 16,
+        "printedQuestionNumber": 10,
+        "imageHash": "7143c6b9faaf7190131778372033f46ae78952e1eb392a021f516eef99c068fa"
+      },
+      "current": {
+        "answerIndex": 1,
+        "options": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "skillId": "skill_tah_math_03",
+        "subSkillId": "sub_tah_math_03_01"
+      },
+      "answerMatch": true,
+      "status": "SOURCE_VISUAL_AND_INDEPENDENT_MATH_PASS"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P016-Q11",
+      "options": [
+        "(a+b,c)",
+        "(c,a+b)",
+        "(b−a,c)",
+        "(c,b−a)"
+      ],
+      "answer": 0,
+      "whyCorrect": "ارتفاع القاعدة العليا c، وفي شبه المنحرف متطابق الساقين الإزاحة الأفقية من T إلى M تساوي الإزاحة من A إلى L، أي a؛ لذلك M=(a+b,c).",
+      "whyOthersWrong": [
+        "CORRECT_OPTION",
+        "B: يبدّل إحداثيي x وy.",
+        "C: يطرح الإزاحة بدل إضافتها إلى b.",
+        "D: يطرح الإزاحة ويبدّل الإحداثيين."
+      ],
+      "hint": "قارن الإزاحتين الأفقيتين للساقين المتطابقتين.",
+      "strategy": "تماثل الساقين وإزاحة إحداثية أفقية.",
+      "mistakes": [
+        "عكس الإحداثيات",
+        "طرح a من b"
+      ],
+      "difficulty": "Medium",
+      "source": {
+        "documentCode": "YLM26",
+        "sourceItemId": "YLM26-PDF015-P016-N11",
+        "pdfPageIndex": 15,
+        "printedPageNumber": 16,
+        "printedQuestionNumber": 11,
+        "imageHash": "2593cbf076a4bf685e284cc21e8dc92b0102b9785be493e2d74ff9209d82b399"
+      },
+      "current": {
+        "answerIndex": 0,
+        "options": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "skillId": "skill_tah_math_04",
+        "subSkillId": "sub_tah_math_04_02"
+      },
+      "answerMatch": true,
+      "status": "SOURCE_VISUAL_AND_INDEPENDENT_MATH_PASS"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P023-Q13",
+      "options": [
+        "3",
+        "6",
+        "7",
+        "9"
+      ],
+      "answer": 1,
+      "whyCorrect": "نصف قطر الدائرة A هو 6. المماس BC=8 وAC=6، إذن AB=√(6²+8²)=10. وبوجود فراغ 1 بين الدائرتين: r_B=10−6−1=3، والقطر 2r_B=6.",
+      "whyOthersWrong": [
+        "A: هو نصف قطر B وليس قطرها.",
+        "CORRECT_OPTION",
+        "C: يهمل طرح مسافة الفراغ 1.",
+        "D: لا يحقق طول المماس ولا فراغ الدائرتين."
+      ],
+      "hint": "كوّن مثلثًا قائمًا بنصف قطر A والمماس BC، ثم اطرح نصفي القطر والفراغ.",
+      "strategy": "فيثاغورس ثم علاقة المسافة بين مركزي دائرتين منفصلتين.",
+      "mistakes": [
+        "الخلط بين القطر ونصف القطر",
+        "نسيان الفراغ 1"
+      ],
+      "difficulty": "Hard",
+      "source": {
+        "documentCode": "YLM26",
+        "sourceItemId": "YLM26-PDF022-P023-N13",
+        "pdfPageIndex": 22,
+        "printedPageNumber": 23,
+        "printedQuestionNumber": 13,
+        "imageHash": "f3c3eb0379d320a7ce893ed736168d1794166c41548d36ef5cdac3ec8e40762f"
+      },
+      "current": {
+        "answerIndex": 1,
+        "options": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "skillId": "skill_tah_math_07",
+        "subSkillId": "sub_tah_math_07_02"
+      },
+      "answerMatch": true,
+      "status": "SOURCE_VISUAL_AND_INDEPENDENT_MATH_PASS"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P028-Q02",
+      "options": [
+        "(−∞,3]",
+        "(−∞,−3) ∪ {2}",
+        "(−∞,3)",
+        "(−∞,−2] ∪ {3}"
+      ],
+      "answer": 1,
+      "whyCorrect": "الشعاع السفلي يحقق y<−3 (النقطة عند −3 مفتوحة)، والقطعة الأفقية تعطي y=2؛ إذن المدى (−∞,−3)∪{2}.",
+      "whyOthersWrong": [
+        "A: يتضمن قيمًا غير موجودة بين −3 و2.",
+        "CORRECT_OPTION",
+        "C: يتضمن قيمًا غير ممثلة حتى 3.",
+        "D: يستبدل حد الشعاع وقيمة القطعة بقيم خاطئة."
+      ],
+      "hint": "اقرأ قيم y لا قيم x، وانتبه للدائرة المفتوحة.",
+      "strategy": "إسقاط جزأي الرسم على محور y ثم اتحاد المجموعتين.",
+      "mistakes": [
+        "الخلط بين المجال والمدى",
+        "إدخال نقطة مفتوحة"
+      ],
+      "difficulty": "Medium",
+      "source": {
+        "documentCode": "YLM26",
+        "sourceItemId": "YLM26-PDF027-P028-N02",
+        "pdfPageIndex": 27,
+        "printedPageNumber": 28,
+        "printedQuestionNumber": 2,
+        "imageHash": "6c2fdce26d6a760c530a6f675afb51fba4e3da13fc8b883f3c71fe0c65965a1c"
+      },
+      "current": {
+        "answerIndex": 1,
+        "options": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "skillId": "skill_tah_math_08",
+        "subSkillId": "sub_tah_math_08_02"
+      },
+      "answerMatch": true,
+      "status": "SOURCE_VISUAL_AND_INDEPENDENT_MATH_PASS"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P031-Q05",
+      "options": [
+        "[8, −12]",
+        "[[8], [−12]]",
+        "[[8, −4], [0, 0], [0, −8]]",
+        "غير معرّف"
+      ],
+      "answer": 0,
+      "whyCorrect": "حاصل ضرب مصفوفة 1×3 في مصفوفة 3×2 معرّف وينتج صفًا 1×2: [4·2+0·(−3)−2·0, 4·(−1)+0·0−2·4]=[8,−12].",
+      "whyOthersWrong": [
+        "CORRECT_OPTION",
+        "B: الناتج عمود 2×1 لا صف 1×2.",
+        "C: ضرب عنصر بعنصر وليس ضرب مصفوفات.",
+        "D: الأبعاد الداخلية 3 و3 متطابقة فالضرب معرّف."
+      ],
+      "hint": "تحقق من الأبعاد أولًا، ثم اضرب الصف في كل عمود.",
+      "strategy": "قاعدة ضرب المصفوفات (صف × عمود).",
+      "mistakes": [
+        "تجاهل أبعاد الناتج",
+        "نسيان الإشارة السالبة"
+      ],
+      "difficulty": "Medium",
+      "source": {
+        "documentCode": "YLM26",
+        "sourceItemId": "YLM26-PDF030-P031-N05",
+        "pdfPageIndex": 30,
+        "printedPageNumber": 31,
+        "printedQuestionNumber": 5,
+        "imageHash": "cb5992981d0937a2a04a2b18ae856b23835ededf00125155d583bcfe0148d1f7"
+      },
+      "current": {
+        "answerIndex": 0,
+        "options": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "skillId": "skill_tah_math_09",
+        "subSkillId": "sub_tah_math_09_01"
+      },
+      "answerMatch": true,
+      "status": "SOURCE_VISUAL_AND_INDEPENDENT_MATH_PASS"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P056-Q04",
+      "options": [
+        "(0,4)",
+        "(0,4]",
+        "[0,4]",
+        "(−4,4) \\ {0}"
+      ],
+      "answer": 1,
+      "whyCorrect": "قيمة y=0 لا تتحقق لأن طرفي المنحنى مفتوحان، أما y=4 فتتحقق عند رأس القطع المكافئ؛ إذن المدى (0,4].",
+      "whyOthersWrong": [
+        "A: يستبعد القيمة العظمى 4 رغم أنها موجودة.",
+        "CORRECT_OPTION",
+        "C: يدخل 0 رغم أن طرفي الرسم مفتوحان.",
+        "D: يخلط إحداثيات x بمدى y ويضيف قيمًا سالبة."
+      ],
+      "hint": "حدد أصغر وأكبر قيمة y، ثم افحص إذا كان كل طرف داخلًا.",
+      "strategy": "قراءة المدى من الرسم والانتباه لنوع النهايات.",
+      "mistakes": [
+        "الخلط بين المجال والمدى",
+        "الخلط بين الدائرة المفتوحة والرأس المغلق"
+      ],
+      "difficulty": "Easy",
+      "source": {
+        "documentCode": "YLM26",
+        "sourceItemId": "YLM26-PDF055-P056-N04",
+        "pdfPageIndex": 55,
+        "printedPageNumber": 56,
+        "printedQuestionNumber": 4,
+        "imageHash": "d2e1a3c1fd797494ca66d96ca326abe1775c55cce251e67b413d2c3cd548b2fd"
+      },
+      "current": {
+        "answerIndex": 1,
+        "options": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "skillId": "skill_tah_math_16",
+        "subSkillId": "sub_tah_math_16_01"
+      },
+      "answerMatch": true,
+      "status": "SOURCE_VISUAL_AND_INDEPENDENT_MATH_PASS"
+    }
+  ],
+  "productionMutation": false,
+  "approvalRequired": true
+}

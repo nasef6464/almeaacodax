@@ -1,0 +1,43 @@
+{
+  "project": "TAH-MATH",
+  "bank": "YLM26",
+  "checkpoint": "heavy-run9",
+  "source": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+  "sourceRangeReviewed": "printed pages 34-95",
+  "actualQuestionsReviewedThisRun": 211,
+  "cumulativeQuestionsSourceReviewed": 326,
+  "findings": {
+    "sourceRowsCovered": 211,
+    "missingImageHash": 0,
+    "answerIndexPresent": 211,
+    "explanationAnswerLetterContradictions": 22,
+    "contradictionQuestionCodes": [
+      "TAH-MATH-YLM26-P083-Q07",
+      "TAH-MATH-YLM26-P084-Q10",
+      "TAH-MATH-YLM26-P083-Q05",
+      "TAH-MATH-YLM26-P079-Q10",
+      "TAH-MATH-YLM26-P077-Q01",
+      "TAH-MATH-YLM26-P082-Q02",
+      "TAH-MATH-YLM26-P087-Q08",
+      "TAH-MATH-YLM26-P085-Q03",
+      "TAH-MATH-YLM26-P092-Q01",
+      "TAH-MATH-YLM26-P086-Q05",
+      "TAH-MATH-YLM26-P085-Q04",
+      "TAH-MATH-YLM26-P093-Q08",
+      "TAH-MATH-YLM26-P093-Q05",
+      "TAH-MATH-YLM26-P093-Q06",
+      "TAH-MATH-YLM26-P092-Q03",
+      "TAH-MATH-YLM26-P091-Q12",
+      "TAH-MATH-YLM26-P090-Q10",
+      "TAH-MATH-YLM26-P091-Q11",
+      "TAH-MATH-YLM26-P090-Q03",
+      "TAH-MATH-YLM26-P093-Q07",
+      "TAH-MATH-YLM26-P088-Q13",
+      "TAH-MATH-YLM26-P090-Q09"
+    ],
+    "optionTextExtractionStillBlocked": true,
+    "whyOthersWrongFinalStillBlocked": true
+  },
+  "productionMutation": false,
+  "next": "Resolve 22 explanation contradictions against exact source options/keys, extract actual A/B/C/D option texts, finalize YLM26 manifest, then move to COL26."
+}

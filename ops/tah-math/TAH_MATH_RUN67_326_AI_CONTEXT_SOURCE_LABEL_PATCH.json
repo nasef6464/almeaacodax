@@ -1,0 +1,18 @@
+{
+  "run": "RUN67",
+  "bank": "YLM26",
+  "targetFile": "ops/tah-math/TAH_MATH_YLM26_ENRICHED_REVIEW_V2.json",
+  "expectedSourceBlobSHA": "c2e05c155fb4486fb0ffc26173f2b1bc843ef902",
+  "expectedRowCount": 326,
+  "field": "rows[*].aiContext.requiredData[0]",
+  "expectedCurrent": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+  "replacement": "كتاب تأسيس يلو للرياضيات 2026 - التأسيس",
+  "reason": "Official YLM26 source is foundation, not collections",
+  "dryRun": {
+    "matchedRows": 326,
+    "unmatchedRows": 0,
+    "otherFieldsChanged": 0
+  },
+  "productionMutation": false,
+  "status": "PENDING_GUARDED_APPLICATION"
+}

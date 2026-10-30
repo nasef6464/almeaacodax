@@ -1,0 +1,22 @@
+{
+  "run": "RUN76",
+  "source": "official YLM26 foundation PDF",
+  "sourceSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+  "visuallyReviewed": 200,
+  "matchedToDirectPdf": 200,
+  "sourcePages": 74,
+  "exactPixel": 74,
+  "nearExactPixel": 126,
+  "minimumCorrelation": 0.999418,
+  "sourceRecropCandidates": 53,
+  "criticalCorrection": "P031-Q03 answer A; RUN70 candidate B invalid",
+  "sourceKeyResolution": "P081-Q01 answer B confirmed from book answer table",
+  "remainingHolds": [
+    "P050-Q04",
+    "P066-Q14"
+  ],
+  "cumulativeConditionalSourceReviewEvents": 9803,
+  "canonicalApproved": 0,
+  "productionMutation": false,
+  "status": "YLM26_NOT_GREEN"
+}

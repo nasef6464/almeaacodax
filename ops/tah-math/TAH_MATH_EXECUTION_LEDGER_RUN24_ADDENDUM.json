@@ -1,0 +1,23 @@
+{
+  "run": "RUN24",
+  "date": "2026-10-08",
+  "branch": "content/tah-math-full-taxonomy-closure",
+  "sourceQuestionsReviewedThisRun": 209,
+  "sourceAnswerCandidatesNewDistinctVsRUN19to23": 178,
+  "cumulativeDistinctYLM26SourceAnswerCandidates": 326,
+  "sourceAnswerComparedWithLive": 209,
+  "matches": 208,
+  "mismatches": 1,
+  "confirmedNewError": "TAH-MATH-YLM26-P021-Q04",
+  "confirmedPreviousError": "TAH-MATH-YLM26-P090-Q10",
+  "sourceSemanticCaveats": 3,
+  "explanationLetterContradictions": 23,
+  "fullPedagogyApproved": 0,
+  "sourceImageGate": "SOURCE_CROPS_INSPECTED_NOT_PRODUCTION_PIXELS",
+  "sourceAnswerGate": "FAIL_ONE_NEW_KEY_MISMATCH",
+  "pedagogyGate": "FAIL_PLACEHOLDER_OPTIONS_AND_INCOMPLETE_FIELDS",
+  "productionMutation": false,
+  "masterControlOriginalUpdated": true,
+  "executionLedgerOriginalUpdated": false,
+  "next": "Resolve 23 contradictions and 3 source ambiguities; approve reversible key/AI-context fixes; finish option transcriptions and topic/training references, then COL26."
+}

@@ -1,0 +1,446 @@
+{
+  "run": "RUN33",
+  "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+  "rows": [
+    {
+      "code": "TAH-MATH-YLM26-P005-Q01",
+      "page": 5,
+      "sourceItemId": "YLM26-PDF004-P005-N01",
+      "imageHash": "ff66954ac747d3b232851cd35444628a2c782baa7ef446af8cc75f9f8d132e6a",
+      "skillId": "skill_tah_math_01",
+      "subSkillId": "sub_tah_math_01_02",
+      "sourceVisual": "REVIEWED_OFFICIAL_PDF_RUN33",
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P005-Q02",
+      "page": 5,
+      "sourceItemId": "YLM26-PDF004-P005-N02",
+      "imageHash": "da3f5eb8b57441a7b4b5a1501c3dda47b8efc8a62cff435262bead31d3548374",
+      "skillId": "skill_tah_math_01",
+      "subSkillId": "sub_tah_math_01_01",
+      "sourceVisual": "REVIEWED_OFFICIAL_PDF_RUN33",
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P005-Q03",
+      "page": 5,
+      "sourceItemId": "YLM26-PDF004-P005-N03",
+      "imageHash": "913dfbd3e72de592fd04536eab27393e85998bc06ef6212098a0aa8fc9147179",
+      "skillId": "skill_tah_math_01",
+      "subSkillId": "sub_tah_math_01_01",
+      "sourceVisual": "REVIEWED_OFFICIAL_PDF_RUN33",
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P006-Q04",
+      "page": 6,
+      "sourceItemId": "YLM26-PDF005-P006-N04",
+      "imageHash": "ea9222b3ed6e7e3545ccc8337dd1415c9bbca945e9d283aaea6f64b89c7cf640",
+      "skillId": "skill_tah_math_01",
+      "subSkillId": "sub_tah_math_01_01",
+      "sourceVisual": "REVIEWED_OFFICIAL_PDF_RUN33",
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P006-Q05",
+      "page": 6,
+      "sourceItemId": "YLM26-PDF005-P006-N05",
+      "imageHash": "2ef252d482f24ead92fb63ea773a297fe9ebf965ba13769a73ee662dc46b3944",
+      "skillId": "skill_tah_math_01",
+      "subSkillId": "sub_tah_math_01_01",
+      "sourceVisual": "REVIEWED_OFFICIAL_PDF_RUN33",
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P006-Q06",
+      "page": 6,
+      "sourceItemId": "YLM26-PDF005-P006-N06",
+      "imageHash": "38ed85b7a1ec7713089005d83b2ec2e2ee8e492ee6e4d8af181c99450ea95c8a",
+      "skillId": "skill_tah_math_01",
+      "subSkillId": "sub_tah_math_01_01",
+      "sourceVisual": "REVIEWED_OFFICIAL_PDF_RUN33",
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P006-Q07",
+      "page": 6,
+      "sourceItemId": "YLM26-PDF005-P006-N07",
+      "imageHash": "fedf18e3bc258c5865236b8b2c5a844c7a43b369c2987b5e5565ccc3642639a1",
+      "skillId": "skill_tah_math_01",
+      "subSkillId": "sub_tah_math_01_02",
+      "sourceVisual": "REVIEWED_OFFICIAL_PDF_RUN33",
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P007-Q01",
+      "page": 7,
+      "sourceItemId": "YLM26-PDF006-P007-N01",
+      "imageHash": "6489d637039d907491b8665fc1aaf0598d5c5e59100f9ed02112ff26d08d62de",
+      "skillId": "skill_tah_math_02",
+      "subSkillId": "sub_tah_math_02_01",
+      "sourceVisual": "REVIEWED_OFFICIAL_PDF_RUN33",
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P007-Q02",
+      "page": 7,
+      "sourceItemId": "YLM26-PDF006-P007-N02",
+      "imageHash": "6b8fab0c1d01c5466c70c2037a66f2b0b7546d06f4486e3d93c2a90b52b9c153",
+      "skillId": "skill_tah_math_02",
+      "subSkillId": "sub_tah_math_02_01",
+      "sourceVisual": "REVIEWED_OFFICIAL_PDF_RUN33",
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P007-Q03",
+      "page": 7,
+      "sourceItemId": "YLM26-PDF006-P007-N03",
+      "imageHash": "b0910ff92c118a61cac8b3ad1cbb9ef2f0d878f3e5b6790d8e9b38ee6046254e",
+      "skillId": "skill_tah_math_02",
+      "subSkillId": "sub_tah_math_02_01",
+      "sourceVisual": "REVIEWED_OFFICIAL_PDF_RUN33",
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P007-Q04",
+      "page": 7,
+      "sourceItemId": "YLM26-PDF006-P007-N04",
+      "imageHash": "655386a44c8fe2d0b1eeb910b3a2466b9b081687c838a2694d6201982ac0acc2",
+      "skillId": "skill_tah_math_02",
+      "subSkillId": "sub_tah_math_02_01",
+      "sourceVisual": "REVIEWED_OFFICIAL_PDF_RUN33",
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P008-Q05",
+      "page": 8,
+      "sourceItemId": "YLM26-PDF007-P008-N05",
+      "imageHash": "a55ce83bfc635da0727bef94d5a864540d12e9e4e41024bca9a15092f44e384b",
+      "skillId": "skill_tah_math_02",
+      "subSkillId": "sub_tah_math_02_02",
+      "sourceVisual": "REVIEWED_OFFICIAL_PDF_RUN33",
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P008-Q06",
+      "page": 8,
+      "sourceItemId": "YLM26-PDF007-P008-N06",
+      "imageHash": "e88911420f32f4ce51fbae57096f2930d7b72bbdad81e8501bed2ba68fe03cd1",
+      "skillId": "skill_tah_math_02",
+      "subSkillId": "sub_tah_math_02_02",
+      "sourceVisual": "REVIEWED_OFFICIAL_PDF_RUN33",
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P008-Q07",
+      "page": 8,
+      "sourceItemId": "YLM26-PDF007-P008-N07",
+      "imageHash": "b6ccd925d95d7d6d19f0b87d17e71a713aca35f24f359ff7ee7d74226aff4d20",
+      "skillId": "skill_tah_math_02",
+      "subSkillId": "sub_tah_math_02_02",
+      "sourceVisual": "REVIEWED_OFFICIAL_PDF_RUN33",
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P008-Q08",
+      "page": 8,
+      "sourceItemId": "YLM26-PDF007-P008-N08",
+      "imageHash": "f9ab8c63c60ca17ef91479076d25f1eadb6560a89b03c0fc0ead6ac7a3abe568",
+      "skillId": "skill_tah_math_02",
+      "subSkillId": "sub_tah_math_02_02",
+      "sourceVisual": "REVIEWED_OFFICIAL_PDF_RUN33",
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P009-Q01",
+      "page": 9,
+      "sourceItemId": "YLM26-PDF008-P009-N01",
+      "imageHash": "27bb1f95a03af8dd932177bfa0a7371ea47d293bb476470dc46e0491a0873db9",
+      "skillId": "skill_tah_math_02",
+      "subSkillId": "sub_tah_math_02_03",
+      "sourceVisual": "REVIEWED_OFFICIAL_PDF_RUN33",
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P009-Q02",
+      "page": 9,
+      "sourceItemId": "YLM26-PDF008-P009-N02",
+      "imageHash": "99bcf747675aed92dc27ca60706a13a1a0d26584a8b68578f7a44c1efc03c255",
+      "skillId": "skill_tah_math_02",
+      "subSkillId": "sub_tah_math_02_03",
+      "sourceVisual": "REVIEWED_OFFICIAL_PDF_RUN33",
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P009-Q03",
+      "page": 9,
+      "sourceItemId": "YLM26-PDF008-P009-N03",
+      "imageHash": "1eef80ac2258d1c95bcecdba3f46b10a9b35e08b3b68cc1174f719d8f8ae22b7",
+      "skillId": "skill_tah_math_02",
+      "subSkillId": "sub_tah_math_02_03",
+      "sourceVisual": "REVIEWED_OFFICIAL_PDF_RUN33",
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P009-Q04",
+      "page": 9,
+      "sourceItemId": "YLM26-PDF008-P009-N04",
+      "imageHash": "0f8a07f2c58f6de26336bc9791392d70ab962e930a019c9e0fbe9d8cbda2e94a",
+      "skillId": "skill_tah_math_02",
+      "subSkillId": "sub_tah_math_02_03",
+      "sourceVisual": "REVIEWED_OFFICIAL_PDF_RUN33",
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P010-Q05",
+      "page": 10,
+      "sourceItemId": "YLM26-PDF009-P010-N05",
+      "imageHash": "8f1045225dab00307778a9b7528016e48c19ad02a876cb8cf86c6a94a82384c2",
+      "skillId": "skill_tah_math_02",
+      "subSkillId": "sub_tah_math_02_03",
+      "sourceVisual": "REVIEWED_OFFICIAL_PDF_RUN33",
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P010-Q06",
+      "page": 10,
+      "sourceItemId": "YLM26-PDF009-P010-N06",
+      "imageHash": "ae763eca7875b6ff3a5da4e38ce2c66d5a12394f22b2abcbfc0f2237eab866a9",
+      "skillId": "skill_tah_math_02",
+      "subSkillId": "sub_tah_math_02_03",
+      "sourceVisual": "REVIEWED_OFFICIAL_PDF_RUN33",
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P010-Q07",
+      "page": 10,
+      "sourceItemId": "YLM26-PDF009-P010-N07",
+      "imageHash": "8eb29adfa0b750737525cc0ffdf8313e9d13d00a6ac172bd7c9e34fa42cae21c",
+      "skillId": "skill_tah_math_02",
+      "subSkillId": "sub_tah_math_02_01",
+      "sourceVisual": "REVIEWED_OFFICIAL_PDF_RUN33",
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P010-Q08",
+      "page": 10,
+      "sourceItemId": "YLM26-PDF009-P010-N08",
+      "imageHash": "da72f204453f857ba73f8352e0a84d6c46d2030a64a629c9d3b5fa9506643011",
+      "skillId": "skill_tah_math_02",
+      "subSkillId": "sub_tah_math_02_03",
+      "sourceVisual": "REVIEWED_OFFICIAL_PDF_RUN33",
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P010-Q09",
+      "page": 10,
+      "sourceItemId": "YLM26-PDF009-P010-N09",
+      "imageHash": "5652e2755ce77ddc8ea9b883b3112a2afc473c83cd7f0b91928afa141fe6eb91",
+      "skillId": "skill_tah_math_02",
+      "subSkillId": "sub_tah_math_02_03",
+      "sourceVisual": "REVIEWED_OFFICIAL_PDF_RUN33",
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P048-Q15",
+      "page": 48,
+      "sourceItemId": "YLM26-PDF047-P048-N15",
+      "imageHash": "9340d10eadde49c4435b86bd3624a751cec7707ba2220987b628f64e86376fb3",
+      "skillId": "skill_tah_math_14",
+      "subSkillId": "sub_tah_math_14_04",
+      "sourceVisual": "REVIEWED_OFFICIAL_PDF_RUN33",
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P049-Q16",
+      "page": 49,
+      "sourceItemId": "YLM26-PDF048-P049-N16",
+      "imageHash": "142ef9bbe9d1ad1751819b13d14194541d40b03f96bcdd07faba542097f72fe4",
+      "skillId": "skill_tah_math_14",
+      "subSkillId": "sub_tah_math_14_04",
+      "sourceVisual": "REVIEWED_OFFICIAL_PDF_RUN33",
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P049-Q17",
+      "page": 49,
+      "sourceItemId": "YLM26-PDF048-P049-N17",
+      "imageHash": "c2bcf009f90b985b53542d004147d3a4115b5c7a9944ecfabca5433fc910e76d",
+      "skillId": "skill_tah_math_14",
+      "subSkillId": "sub_tah_math_14_04",
+      "sourceVisual": "REVIEWED_OFFICIAL_PDF_RUN33",
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P049-Q18",
+      "page": 49,
+      "sourceItemId": "YLM26-PDF048-P049-N18",
+      "imageHash": "75ce957b77afe6757c5274110d07053bf9f174cc2005a849d68bd0f72218744d",
+      "skillId": "skill_tah_math_14",
+      "subSkillId": "sub_tah_math_14_04",
+      "sourceVisual": "REVIEWED_OFFICIAL_PDF_RUN33",
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P049-Q19",
+      "page": 49,
+      "sourceItemId": "YLM26-PDF048-P049-N19",
+      "imageHash": "d21ea0c833440ff2f986fca0438ab15756cedc915f9aed3582f6052af9848980",
+      "skillId": "skill_tah_math_14",
+      "subSkillId": "sub_tah_math_14_04",
+      "sourceVisual": "REVIEWED_OFFICIAL_PDF_RUN33",
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P050-Q01",
+      "page": 50,
+      "sourceItemId": "YLM26-PDF049-P050-N01",
+      "imageHash": "79d9d203214308a58aee8732f6ca799756b20d5e38f9c04d49a14e03d17ba5fc",
+      "skillId": "skill_tah_math_15",
+      "subSkillId": "sub_tah_math_15_01",
+      "sourceVisual": "REVIEWED_OFFICIAL_PDF_RUN33",
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P050-Q02",
+      "page": 50,
+      "sourceItemId": "YLM26-PDF049-P050-N02",
+      "imageHash": "2976e9066f0818dff7fc279a0fa81aad2aa9a4a664ea46d47a5f130bd556d01c",
+      "skillId": "skill_tah_math_18",
+      "subSkillId": "sub_tah_math_18_01",
+      "sourceVisual": "REVIEWED_OFFICIAL_PDF_RUN33",
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P050-Q03",
+      "page": 50,
+      "sourceItemId": "YLM26-PDF049-P050-N03",
+      "imageHash": "da59d13e2c02bbc2e84553495a32eb7c158561decfc6072415d63ceb5e97ada0",
+      "skillId": "skill_tah_math_15",
+      "subSkillId": "sub_tah_math_15_02",
+      "sourceVisual": "REVIEWED_OFFICIAL_PDF_RUN33",
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P050-Q04",
+      "page": 50,
+      "sourceItemId": "YLM26-PDF049-P050-N04",
+      "imageHash": "6e208434991e0979013ef06df9f90883c66a5000be5ea735eaf6df19f09d4127",
+      "skillId": "skill_tah_math_15",
+      "subSkillId": "sub_tah_math_15_02",
+      "sourceVisual": "REVIEWED_OFFICIAL_PDF_RUN33",
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P051-Q05",
+      "page": 51,
+      "sourceItemId": "YLM26-PDF050-P051-N05",
+      "imageHash": "6e46a06a7f82c6fba05dcef644283e25c4a59d543b62554f7d3aae95b19ac776",
+      "skillId": "skill_tah_math_15",
+      "subSkillId": "sub_tah_math_15_02",
+      "sourceVisual": "REVIEWED_OFFICIAL_PDF_RUN33",
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P051-Q06",
+      "page": 51,
+      "sourceItemId": "YLM26-PDF050-P051-N06",
+      "imageHash": "5f17a0d7a206f46d08f9930fc79d308df9a09effe9d2ef568b5650b2b8ef42f4",
+      "skillId": "skill_tah_math_15",
+      "subSkillId": "sub_tah_math_15_02",
+      "sourceVisual": "REVIEWED_OFFICIAL_PDF_RUN33",
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P051-Q07",
+      "page": 51,
+      "sourceItemId": "YLM26-PDF050-P051-N07",
+      "imageHash": "d8c65e5eab72794fbe117a17d38b47d7be82a0617f7abdc8d8c2cd9d8e7ceba5",
+      "skillId": "skill_tah_math_15",
+      "subSkillId": "sub_tah_math_15_02",
+      "sourceVisual": "REVIEWED_OFFICIAL_PDF_RUN33",
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P051-Q08",
+      "page": 51,
+      "sourceItemId": "YLM26-PDF050-P051-N08",
+      "imageHash": "e38ca0e2dd9a0d501c8631dbeaf5836a8c6f97f8446f27be5a266fb26598d1ac",
+      "skillId": "skill_tah_math_15",
+      "subSkillId": "sub_tah_math_15_02",
+      "sourceVisual": "REVIEWED_OFFICIAL_PDF_RUN33",
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P052-Q09",
+      "page": 52,
+      "sourceItemId": "YLM26-PDF051-P052-N09",
+      "imageHash": "5111601eaa8793e441a1327071325833969b8c64fdbc251be4b5cfb90823e63c",
+      "skillId": "skill_tah_math_15",
+      "subSkillId": "sub_tah_math_15_02",
+      "sourceVisual": "REVIEWED_OFFICIAL_PDF_RUN33",
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P052-Q10",
+      "page": 52,
+      "sourceItemId": "YLM26-PDF051-P052-N10",
+      "imageHash": "bb679ba80206bddec24afe036f3790d87459df1079291047ae2fafb8ded1be53",
+      "skillId": "skill_tah_math_15",
+      "subSkillId": "sub_tah_math_15_02",
+      "sourceVisual": "REVIEWED_OFFICIAL_PDF_RUN33",
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P052-Q11",
+      "page": 52,
+      "sourceItemId": "YLM26-PDF051-P052-N11",
+      "imageHash": "097eec371fb6b1cdc01a81fef0311d32f2231ce9b158ecc87401204af22c048b",
+      "skillId": "skill_tah_math_15",
+      "subSkillId": "sub_tah_math_15_03",
+      "sourceVisual": "REVIEWED_OFFICIAL_PDF_RUN33",
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P053-Q12",
+      "page": 53,
+      "sourceItemId": "YLM26-PDF052-P053-N12",
+      "imageHash": "27b841020c56592cbff8f2088ab99d524e166d215373dca95a62919dee80e910",
+      "skillId": "skill_tah_math_15",
+      "subSkillId": "sub_tah_math_15_03",
+      "sourceVisual": "REVIEWED_OFFICIAL_PDF_RUN33",
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P053-Q13",
+      "page": 53,
+      "sourceItemId": "YLM26-PDF052-P053-N13",
+      "imageHash": "d7bc8f66de687fee2b3356aea61e7e1d22342d8090baa3530fd70741bad3be36",
+      "skillId": "skill_tah_math_15",
+      "subSkillId": "sub_tah_math_15_03",
+      "sourceVisual": "REVIEWED_OFFICIAL_PDF_RUN33",
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P053-Q14",
+      "page": 53,
+      "sourceItemId": "YLM26-PDF052-P053-N14",
+      "imageHash": "cbf30acfc3399a45c9879ef915c44222d99fb71b45788ce5b63e71ab27ae7c79",
+      "skillId": "skill_tah_math_15",
+      "subSkillId": "sub_tah_math_15_04",
+      "sourceVisual": "REVIEWED_OFFICIAL_PDF_RUN33",
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P055-Q01",
+      "page": 55,
+      "sourceItemId": "YLM26-PDF054-P055-N01",
+      "imageHash": "3ec982334d241abfea89366abec8301468805791c24e91c89be1ca9513e3c368",
+      "skillId": "skill_tah_math_16",
+      "subSkillId": "sub_tah_math_16_01",
+      "sourceVisual": "REVIEWED_OFFICIAL_PDF_RUN33",
+      "productionImageParity": "NOT_TESTED"
+    }
+  ]
+}

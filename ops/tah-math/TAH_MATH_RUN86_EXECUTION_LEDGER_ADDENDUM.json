@@ -1,0 +1,42 @@
+{
+  "date": "2026-10-11",
+  "stage": "P2_YLM26_LIVE_PREIMAGE_AND_PEDAGOGY_RECOVERY",
+  "newMastered": 0,
+  "newFinalReviewed": 0,
+  "newSourceHolds": 0,
+  "priorUniqueFinalReviewedContent": 321,
+  "priorUniqueSourceHolds": 5,
+  "liveAtlasReadOnly": {
+    "questionCount": 326,
+    "missingTopicId": 326,
+    "missingWhyOthersWrong": 326,
+    "letterOnlyOptions": 326,
+    "subtopicTargets": 70,
+    "duplicateSubtopicTargets": 0,
+    "mainSkills": 22
+  },
+  "reversibleLiveManifest": {
+    "rows": 326,
+    "parts": 4,
+    "sourceBackedRemaps": 7,
+    "sourceTitleCorrectionsStaged": 326,
+    "productionMutation": false
+  },
+  "pedagogyRecovery": {
+    "distinctSourceSpecificCandidates": 44,
+    "parts": 2,
+    "uncoveredByTheseEvidenceFiles": 282,
+    "remapAndFoundationTeachingReconciliationPending": 4,
+    "finalApproval": false
+  },
+  "gates": {
+    "preimage": "PASS_LIVE_ATLAS_READ_ONLY",
+    "topicIdTarget": "PASS_UNIQUE_70",
+    "r2Http": "NOT_VERIFIED",
+    "pedagogy": "FAIL_INCOMPLETE",
+    "productionMutation": "NOT_RUN",
+    "studentE2E": "NOT_RUN"
+  },
+  "status": "NOT_FINAL_CLOSED",
+  "next": "Resolve four stale pedagogical mappings, recover and independently certify remaining 282 option-specific pedagogy records from source; verify R2; build complete 326-row educational apply manifest and guarded dry run before production mutation; then COL26."
+}
