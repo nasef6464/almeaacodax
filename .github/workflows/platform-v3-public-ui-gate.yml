@@ -34,7 +34,7 @@ concurrency:
 jobs:
   public-ui-live:
     name: Branch public UI — desktop + mobile
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     env:
       VITE_API_URL: /api
