@@ -41,6 +41,7 @@ import { buildQuizRouteWithContext } from '../utils/quizLinks';
 import { resolveCoursePathId, resolveCourseSubjectId } from '../utils/courseScope';
 import { getCourseAudienceCount } from '../utils/courseStats';
 import { resolveFoundationTopicAccess } from '../utils/foundationTopicAccess';
+import { foundationTopicSidebarItemTone, foundationTopicSidebarListSpacing } from '../utils/foundationTopicSidebarStyle';
 
 export const SubjectLearningPage: React.FC = () => {
   const { pathId, subjectId } = useParams();
@@ -891,12 +892,10 @@ export const SubjectLearningPage: React.FC = () => {
                   <div className="w-1.5 h-6 bg-indigo-600 rounded-full"></div>
                   <h3 className="font-bold text-gray-800">الموضوعات الفرعية</h3>
                 </div>
-                <div className="p-2 space-y-1">
+                <div className={`p-2 ${foundationTopicSidebarListSpacing}`}>
                   <button
                     onClick={() => updateSubjectQuery({ topic: selectedTopic.id, content: topicModalTab })}
-                    className={`w-full text-right p-4 rounded-xl transition-all flex items-center justify-between group ${
-                      selectedSubTopic === null ? 'bg-indigo-50 border border-indigo-100' : 'hover:bg-gray-50 border border-transparent'
-                    }`}
+                    className={`w-full text-right p-4 rounded-xl border transition-all flex items-center justify-between group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-300 ${foundationTopicSidebarItemTone(selectedSubTopic === null)}`}
                   >
                     <div>
                       <h4 className={`font-bold ${selectedSubTopic === null ? 'text-indigo-700' : 'text-gray-700 group-hover:text-indigo-600'}`}>
@@ -909,9 +908,7 @@ export const SubjectLearningPage: React.FC = () => {
                     <button
                       key={subTopic.id}
                       onClick={() => isTopicLockedForStudent(subTopic) ? openPackageTab('foundation') : updateSubjectQuery({ topic: subTopic.id, content: topicModalTab })}
-                      className={`w-full text-right p-4 rounded-xl transition-all flex items-center justify-between group ${
-                        selectedSubTopic?.id === subTopic.id ? 'bg-indigo-50 border border-indigo-100 shadow-sm' : 'hover:bg-gray-50 border border-transparent'
-                      }`}
+                      className={`w-full text-right p-4 rounded-xl border transition-all flex items-center justify-between group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-300 ${foundationTopicSidebarItemTone(selectedSubTopic?.id === subTopic.id)}`}
                     >
                       <div>
                         <h4 className={`font-bold transition-colors ${selectedSubTopic?.id === subTopic.id ? 'text-indigo-700' : 'text-gray-700 group-hover:text-indigo-600'}`}>
