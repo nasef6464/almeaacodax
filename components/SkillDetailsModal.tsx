@@ -9,6 +9,7 @@ import { getYouTubeVideoId, sanitizeVideoUrl } from '../utils/videoLinks';
 import { matchesEntityId } from '../utils/entityIds';
 import { isMaterialQuizCandidate } from '../utils/mockExam';
 import { buildQuizRouteWithContext } from '../utils/quizLinks';
+import { foundationTopicSidebarItemTone, foundationTopicSidebarListSpacing } from '../utils/foundationTopicSidebarStyle';
 
 interface SkillDetailsModalProps {
   isOpen: boolean;
@@ -333,12 +334,10 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
               <h3 className="font-bold text-gray-800">الموضوعات الفرعية</h3>
             </div>
 
-            <div className="p-2 space-y-1">
+            <div className={`p-2 ${foundationTopicSidebarListSpacing}`}>
               <button
                 onClick={() => setSelectedSubTopic(null)}
-                className={`w-full text-right p-4 rounded-xl transition-all border ${
-                  selectedSubTopic === null ? 'bg-indigo-50 border-indigo-100' : 'hover:bg-gray-50 border-transparent'
-                }`}
+                className={`w-full text-right p-4 rounded-xl transition-all border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-300 ${foundationTopicSidebarItemTone(selectedSubTopic === null)}`}
               >
                 <h4 className={`font-bold ${selectedSubTopic === null ? 'text-indigo-700' : 'text-gray-700'}`}>
                   عام للمهارة الرئيسية
@@ -362,9 +361,7 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
                         }
                         setSelectedSubTopic(subTopic);
                       }}
-                      className={`w-full text-right p-4 rounded-xl transition-all border ${
-                        selectedSubTopic?.id === subTopic.id ? 'bg-indigo-50 border-indigo-100 shadow-sm' : 'hover:bg-gray-50 border-transparent'
-                      }`}
+                      className={`w-full text-right p-4 rounded-xl transition-all border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-300 ${foundationTopicSidebarItemTone(selectedSubTopic?.id === subTopic.id)}`}
                     >
                       <span className="flex items-center justify-between gap-3">
                         <h4 className={`font-bold ${locked ? 'text-amber-700' : selectedSubTopic?.id === subTopic.id ? 'text-indigo-700' : 'text-gray-700'}`}>
